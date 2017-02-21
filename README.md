@@ -5,11 +5,13 @@ JSON Abstract Encoding Notation (JAEN, pronounced "Jane") is a JSON document for
 Unlike concrete schema languages such as XSD and JSON Schema, JAEN defines the structure of datatypes independently
 of the serialization used to communicate and store data objects.  An encoder/decoder (codec) validates the structure
 of data objects against the JAEN schema and serializes/deserializes objects using a specified message format.
+
 ## JAS
 JAEN Abstract Syntax (or perhaps JAen Source -- JAS) is a source format used to create JAEN files.  Although a JAEN
 schema is a human-readable JSON document and can be edited directly, JAS is simpler to read and write, eliminating
 the boilerplate (quotes, braces, brackets) inherent to JSON.  A converter utility translates a schema bidirectionally
 between JAS and JAEN formats.
+
 ### JAEN Python package
 The JAEN package contains two subpackages:
 - Codec -- Validate messages against JAEN schema, serialize and deserialize messages
@@ -21,6 +23,7 @@ The JAEN package contains two subpackages:
   - jas_parse.py - JAS parser generated from EBNF by the Grako grammar compiler
   - tr_jas.py - load and save JAS files
   - tr_tables.py - generate property tables (xlsx workbook format) from JAEN schema
+
 ### Scripts
 The JAEN package was created using the Test Driven Development process, where tests containing desired results
 are developed first, then software is written to make the tests pass.  Test scripts serve to document both

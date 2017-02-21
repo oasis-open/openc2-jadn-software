@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4.",
+  "module": "cybox3",
+  "namespace": "http://openc2.org/observables",
+  "title": "Cyber Observable Expression v3 definitions",
+  "version": "0.1"
+ },
+
+ "types": [
+  ["Base64", "String", [], "A sequence of octets encoded as a Base64 string"],
+
+  ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
+
+  ["Timestamp", "String", [], "A timestamp"],
+
+  ["hashes-type", "Map", [], "", [
+    [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],
+    [2, "MD6", "Hex", [], "MD6 message digest as defined in MD6 proposal"],
+    [3, "RIPEMD-160", "Hex", [], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
+    [4, "SHA-1", "Hex", [], "Secure Hash Algorithm (SHA)-1 as defined in RFC3174"],
+    [5, "SHA-224", "Hex", [], "SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)"],
+    [6, "SHA-256", "Hex", [], "SHA-256 as defined in RFC6234"],
+    [7, "SHA-384", "Hex", [], "SHA-384 as defined in RFC6234"],
+    [8, "SHA-512", "Hex", [], "SHA-512 as defined in RFC6234"],
+    [9, "SHA3-224", "Hex", [], "SHA3-224 as defined in FIPS PUP 202"],
+    [10, "SHA3-256", "Hex", [], "SHA3-256 as defined in FIPS PUP 202"],
+    [11, "SHA3-384", "Hex", [], "SHA3-384 as defined in FIPS PUP 202"],
+    [12, "SHA3-512", "Hex", [], "SHA3-512 as defined in FIPS PUP 202"],
+    [13, "ssdeep", "Hex", [], "ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification"],
+    [14, "WHIRLPOOL", "Hex", [], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
+  ],
+
+  ["payload", "Choice", [], "", [
+    [1, "payload_bin", "Base64", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
+    [2, "url", "String", [], "MUST be a valid URL that resolves to the un-encoded content"]]
+  ],
+
+  ["artifact", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"artifact\""],
+    [2, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
+    [3, "*", "payload", ["?"], "choice of literal content or URL to obtain content"],
+    [4, "hashes", "hashes-type", ["?"], "Specifies a dictionary of hashes for the contents of the payload"]]
+  ],
+
+  ["autonomous-system", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"autonomous-system\""],
+    [2, "number", "Integer", [], "Number assigned to the AS"],
+    [3, "name", "String", ["?"], "Name of the AS"],
+    [4, "rir", "String", ["?"], "Name of the Regional Internet Registry (RIR) that assigned the number to the AS."]]
+  ],
+
+  ["dirfile", "Choice", [], "", [
+    [1, "d", "directory", [], ""],
+    [2, "f", "file", [], ""]]
+  ],
+
+  ["dir-contents", "Array", [], "", [
+    [0, "", "dirfile", [], ""]]
+  ],
+
+  ["directory", "Map", [], "", [
+    [1, "type", "String", [], "MUST be \"directory\""],
+    [2, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
+    [3, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
+    [4, "created", "Timestamp", ["?"], "Date/time the directory was created"],
+    [5, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
+    [6, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
+    [7, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
+  ],
+
+  ["dnvalue", "Choice", [], "", [
+    [1, "v4", "ipv4-addr", [], ""],
+    [2, "v6", "ipv6-addr", [], ""],
+    [3, "name", "domain-name", [], ""]]
+  ],
+
+  ["dnvalues", "Array", [], "List if IP addresses or domain names", [
+    [0, "", "String", [], ""]]
+  ],
+
+  ["domain-name", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"domain-name\""],
+    [2, "value", "String", [], "Value of the domain name"],
+    [3, "resolves-to", "dnvalues", [], "List of IP addresses or domain names"]]
+  ],
+
+  ["email-addr", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"email-addr\""],
+    [2, "value", "String", [], "Email address (addr-spec in RFC 5322 Section 3.4)"],
+    [3, "display_name", "String", ["?"], "Name that is displayed to the user of a mail application"],
+    [4, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
+  ],
+
+  ["email-message", "Record", [], "TODO: finish", [
+    [1, "type", "String", [], "MUST be \"email-message\""]]
+  ],
+
+  ["file", "Record", [], "TODO: finish", [
+    [1, "type", "String", [], "MUST be \"file\""]]
+  ],
+
+  ["mac-addrs", "Array", [], "", [
+    [0, "", "mac-addr", [], ""]]
+  ],
+
+  ["asystems", "Array", [], "", [
+    [0, "", "autonomous-system", [], ""]]
+  ],
+
+  ["ipv4-addr", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"ipv4-addr\""],
+    [2, "value", "ipv4-str", [], "Specifies one or more IPv4 addresses using CIDR notation"],
+    [3, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
+    [4, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
+  ],
+
+  ["ipv6-addr", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"ipv6-addr\""],
+    [2, "value", "ipv4-str", [], "Specifies one or more IPv4 addresses using CIDR notation"],
+    [3, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
+    [4, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
+  ],
+
+  ["mac-addr", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"mac-addr\""],
+    [2, "value", "String", [], "Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01"]]
+  ],
+
+  ["mutex", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"mutex\""],
+    [2, "name", "String", [], "Specifies the name of the mutex object."]]
+  ],
+
+  ["socket-addrs", "Array", [], "", [
+    [0, "", "socket-addr", [], ""]]
+  ],
+
+  ["socket-addr", "Choice", [], "", [
+    [1, "v4", "ipv4-addr", [], ""],
+    [2, "v6", "ipv6-addr", [], ""],
+    [3, "mac", "mac-addr", [], ""],
+    [4, "dn", "domain-name", [], ""]]
+  ],
+
+  ["strings", "Array", [], "", [
+    [0, "", "String", [], ""]]
+  ],
+
+  ["network-traffic", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"network-traffic\""],
+    [2, "extensions", "dictionary", ["?"], "http-ext, tcp-ext, icmp-ext, socket-ext"],
+    [3, "start", "timestamp", ["?"], "date/time the network traffic was initiated, if known"],
+    [4, "end", "timestamp", ["?"], "date/time the network traffic ended, if known.  MUST NOT be included if is_active"],
+    [5, "is_active", "Boolean", ["?"], "indicates whether the network traffic is still ongoing"],
+    [6, "src_ref", "socket-addrs", ["?"], "source of the network traffic"],
+    [7, "dst_ref", "socket-addrs", ["?"], "destination of the network traffic"],
+    [8, "src_port", "Integer", ["?"], "source port used in the network traffic, 0-65535"],
+    [9, "dst_port", "Integer", ["?"], "destination port used in the network traffic, 0-65535"],
+    [10, "protocols", "strings", ["?"], "protocols observed in network traffic"],
+    [11, "src_byte_count", "Integer", ["?"], "number of bytes sent from the source to the destination"],
+    [12, "dst_byte_count", "Integer", ["?"], "number of bytes sent from the destination to the source"],
+    [13, "src_packets", "Integer", ["?"], "number of packets sent from the source to the destination"],
+    [14, "dst_packets", "Integer", ["?"], "number of packets sent from the destination to the source"],
+    [15, "ipfix", "dictionary", ["?"], "IP Flow Information Export data for the traffic"]]
+  ],
+
+  ["process", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"process\""]]
+  ],
+
+  ["software", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"software\""]]
+  ],
+
+  ["url", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"url\""]]
+  ],
+
+  ["user-account", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"user-account\""]]
+  ],
+
+  ["windows-registry-key", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"windows-registry-key\""]]
+  ],
+
+  ["x509-certificate", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"x509-certificate\""]]
+  ]]
+
+}

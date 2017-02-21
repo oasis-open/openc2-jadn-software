@@ -1,0 +1,177 @@
+/*
+module:        cybox3
+title:         Cyber Observable Expression v3 definitions
+version:       0.1
+description:   OpenC2 Cyber Observable datatypes based on objects defined in
+               STIX v2 Part 4.
+namespace:     http://openc2.org/observables
+*/
+
+Base64 ::= STRING       -- A sequence of octets encoded as a Base64 string
+
+Hex ::= STRING          -- A sequence of octets encoded as a hexadecimal string
+
+Timestamp ::= STRING    -- A timestamp
+
+hashes-type ::= MAP {
+    MD5          [1] Hex,    -- MD5 message digest as defined in RFC3121
+    MD6          [2] Hex,    -- MD6 message digest as defined in MD6 proposal
+    RIPEMD-160   [3] Hex,    -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
+    SHA-1        [4] Hex,    -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
+    SHA-224      [5] Hex,    -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
+    SHA-256      [6] Hex,    -- SHA-256 as defined in RFC6234
+    SHA-384      [7] Hex,    -- SHA-384 as defined in RFC6234
+    SHA-512      [8] Hex,    -- SHA-512 as defined in RFC6234
+    SHA3-224     [9] Hex,    -- SHA3-224 as defined in FIPS PUP 202
+    SHA3-256     [10] Hex,    -- SHA3-256 as defined in FIPS PUP 202
+    SHA3-384     [11] Hex,    -- SHA3-384 as defined in FIPS PUP 202
+    SHA3-512     [12] Hex,    -- SHA3-512 as defined in FIPS PUP 202
+    ssdeep       [13] Hex,    -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
+    WHIRLPOOL    [14] Hex     -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
+}
+
+payload ::= CHOICE {
+    payload_bin  [1] Base64,    -- Specifies the binary data contained in the artifact as a base64-encoded string.
+    url          [2] STRING     -- MUST be a valid URL that resolves to the un-encoded content
+}
+
+artifact ::= RECORD {
+    type         STRING,             -- MUST be "artifact"
+    mime_type    STRING OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
+    *            payload OPTIONAL,       -- choice of literal content or URL to obtain content
+    hashes       hashes-type OPTIONAL    -- Specifies a dictionary of hashes for the contents of the payload
+}
+
+autonomous-system ::= RECORD {
+    type         STRING,             -- MUST be "autonomous-system"
+    number       INTEGER,            -- Number assigned to the AS
+    name         STRING OPTIONAL,    -- Name of the AS
+    rir          STRING OPTIONAL     -- Name of the Regional Internet Registry (RIR) that assigned the number to the AS.
+}
+
+dirfile ::= CHOICE {
+    d           [1] directory,
+    f           [2] file
+}
+
+dir-contents ::= ARRAY_OF(dirfile)
+
+directory ::= MAP {
+    type        [1] STRING,                 -- MUST be "directory"
+    path        [2] STRING,                 -- Path, as originally observed, to the directory on the filesystem
+    path_enc    [3] STRING OPTIONAL,        -- Observed encoding for the path, from the IANA Character Set Registry
+    created     [4] Timestamp OPTIONAL,     -- Date/time the directory was created
+    modified    [5] Timestamp OPTIONAL,     -- Date/time the directory was last written-to/modified
+    accessed    [6] Timestamp OPTIONAL,     -- Date/time the directory was last accessed
+    contains    [7] dir-contents OPTIONAL   -- List of files/directories contained within the directory
+}
+
+dnvalue ::= CHOICE {
+    v4           [1] ipv4-addr,
+    v6           [2] ipv6-addr,
+    name         [3] domain-name
+}
+
+dnvalues ::= ARRAY_OF (STRING)        -- List if IP addresses or domain names
+
+domain-name ::= RECORD {
+    type         STRING,            -- MUST be "domain-name"
+    value        STRING,            -- Value of the domain name
+    resolves-to  dnvalues           -- List of IP addresses or domain names
+}
+
+email-addr ::= RECORD {
+    type          STRING,               -- MUST be "email-addr"
+    value         STRING,               -- Email address (addr-spec in RFC 5322 Section 3.4)
+    display_name  STRING OPTIONAL,      -- Name that is displayed to the user of a mail application
+    belongs_to    user-account OPTIONAL -- User account that the email address belongs to
+}
+
+email-message ::= RECORD {  -- TODO: finish
+    type         STRING              -- MUST be "email-message"
+}
+
+file ::= RECORD {  -- TODO: finish
+    type         STRING              -- MUST be "file"
+}
+
+mac-addrs ::= ARRAY_OF(mac-addr)
+
+asystems ::= ARRAY_OF(autonomous-system)
+
+ipv4-addr ::= RECORD {
+    type              STRING,               -- MUST be "ipv4-addr"
+    value             ipv4-str,             -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+ipv6-addr ::= RECORD {
+    type              STRING,               -- MUST be "ipv6-addr"
+    value             ipv4-str,             -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+mac-addr ::= RECORD {
+    type         STRING,     -- MUST be "mac-addr"
+    value        STRING      -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
+}
+
+mutex ::= RECORD {
+    type         STRING,     -- MUST be "mutex"
+    name         STRING      -- Specifies the name of the mutex object.
+}
+
+socket-addrs ::= ARRAY_OF(socket-addr)
+
+socket-addr ::= CHOICE {
+    v4      [1] ipv4-addr,
+    v6      [2] ipv6-addr,
+    mac     [3] mac-addr,
+    dn      [4] domain-name
+}
+
+strings ::= ARRAY_OF(STRING)
+
+network-traffic ::= RECORD {
+    type        STRING,                 -- MUST be "network-traffic"
+    extensions  dictionary OPTIONAL,    -- http-ext, tcp-ext, icmp-ext, socket-ext
+    start       timestamp OPTIONAL,     -- date/time the network traffic was initiated, if known
+    end         timestamp OPTIONAL,     -- date/time the network traffic ended, if known.  MUST NOT be included if is_active
+    is_active   BOOLEAN OPTIONAL,       -- indicates whether the network traffic is still ongoing
+    src_ref     socket-addrs OPTIONAL,  -- source of the network traffic
+    dst_ref     socket-addrs OPTIONAL,  -- destination of the network traffic
+    src_port    INTEGER OPTIONAL,       -- source port used in the network traffic, 0-65535
+    dst_port    INTEGER OPTIONAL,       -- destination port used in the network traffic, 0-65535
+    protocols   strings OPTIONAL,       -- protocols observed in network traffic
+    src_byte_count  INTEGER OPTIONAL,   -- number of bytes sent from the source to the destination
+    dst_byte_count  INTEGER OPTIONAL,   -- number of bytes sent from the destination to the source
+    src_packets INTEGER OPTIONAL,       -- number of packets sent from the source to the destination
+    dst_packets INTEGER OPTIONAL,       -- number of packets sent from the destination to the source
+    ipfix       dictionary OPTIONAL     -- IP Flow Information Export data for the traffic
+}
+
+process ::= RECORD {
+    type         STRING     -- MUST be "process"
+}
+
+software ::= RECORD {
+    type         STRING     -- MUST be "software"
+}
+
+url ::= RECORD {
+    type         STRING     -- MUST be "url"
+}
+
+user-account ::= RECORD {
+    type         STRING     -- MUST be "user-account"
+}
+
+windows-registry-key ::= RECORD {
+    type         STRING     -- MUST be "windows-registry-key"
+}
+
+x509-certificate ::= RECORD {
+    type         STRING     -- MUST be "x509-certificate"
+}

@@ -159,7 +159,7 @@ X509CertificateObject ::= ENUMERATED {
     CertificateSignature  (3)
 }
 
-CyboxObject ::= ATTRIBUTE {
+CyboxObject ::= MAP {
     Address               [1] AddressObject,
     Device                [2] DeviceObject,
     Disk                  [3] DiskObject,

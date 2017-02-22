@@ -16,21 +16,28 @@ between JAS and JAEN formats.
 The JAEN package contains two subpackages:
 - Codec -- Validate messages against JAEN schema, serialize and deserialize messages
   - codec.py - Message encoder and decoder.
-  - codec_uitils.py - Utility routines used with the Codec class.
-  - jaen.py - Jaen module used to load, validate, and save JAEN schemas.
+  - codec_utils.py - Utility routines used with the Codec class.
+  - jaen.py - Load, validate, and save JAEN schemas.
 - Convert -- Translate between JAEN, JAS, and property table files.
   - jas.ebnf - EBNF grammar for JAS files
   - jas_parse.py - JAS parser generated from EBNF by the Grako grammar compiler
   - tr_jas.py - load and save JAS files
-  - tr_tables.py - generate property tables (xlsx workbook format) from JAEN schema
+  - tr_tables.py - generate property tables (.xlsx workbook format) from JAEN schema
 
 ### Scripts
 The JAEN package was created using the Test Driven Development process, where tests containing desired results
 are developed first, then software is written to make the tests pass.  Test scripts serve to document both
 example data (good and bad cases) and calling conventions for the software.
-- test_codec.py - unittest file for encoder and decoder functions
-- test_openc2.py - unittest file for OpenC2 commands
-- jaen-convert.py - convert JAEN specifications between formats
+- test_codec.py - Unit test for encoder and decoder functions
+- test_openc2.py - Unit test for OpenC2 commands
+- jaen-convert.py - Convert JAEN specifications between formats
    - openc2 - Schema that defines the OpenC2 message format
    - cybox - Target data model based on CybOX 2.1 (legacy)
    - observables - Target data model based on STIX Cyber Observables (under development)
+
+### Data
+The converter utility reads `.jas` and `.jaen` schemas from an input directory (data) and writes
+converted files to an output directory (data_gen).  Output files ending in `_genj` are
+produced from JAEN sources, while those ending in `_gens` are produced from JAS sources.
+After editing a JAS schema, the corresponding JAEN schema (`xxx_gens.jaen') should be moved
+from the output to the input directory after deleting the source line at the top of the file.

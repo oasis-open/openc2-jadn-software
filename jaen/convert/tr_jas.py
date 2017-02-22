@@ -9,22 +9,35 @@ from copy import deepcopy
 from datetime import datetime
 from textwrap import fill, shorten
 
+# JAEN Type Definition columns (MUST remain in sync with codec).
+TNAME = 0       # Datatype name
+TTYPE = 1       # Base type
+TOPTS = 2       # Type options
+TDESC = 3       # Type description
+FIELDS = 4      # List of fields
+
+# JAEN Field Definition columns
+TAG = 0         # Element ID
+NAME = 1        # Element name
+EDESC = 2       # Description (for enumerated types)
+FTYPE = 2       # Datatype of field
+FOPTS = 3       # Field options
+FDESC = 4       # Field Description
 
 class Jastype:
 
     def __init__(self):
         types = [
-            ("Attribute", "ATTRIBUTE"),         # (AttributeValueAssertion structure)
-            ("Array", "ARRAY_OF"),              # SEQUENCE OF
-            ("Choice", "CHOICE"),               # CHOICE
-            ("Enumerated", "ENUMERATED"),       # ENUMERATED
-            ("Map", "MAP"),                     # SET
-            ("Record", "RECORD"),               # SEQUENCE
-            ("Binary", "BINARY"),               # OCTET STRING
-            ("Boolean", "BOOLEAN"),             # BOOLEAN
-            ("Integer", "INTEGER"),             # INTEGER
-            ("Number", "REAL"),                 # REAL
-            ("String", "STRING")                # UTF8String
+            ("Binary", "BINARY"),           # OCTET STRING
+            ("Boolean", "BOOLEAN"),         # BOOLEAN
+            ("Integer", "INTEGER"),         # INTEGER
+            ("Number", "REAL"),             # REAL
+            ("String", "STRING"),           # UTF8String
+            ("Array", "ARRAY_OF"),          # SEQUENCE OF
+            ("Choice", "CHOICE"),           # CHOICE
+            ("Enumerated", "ENUMERATED"),   # ENUMERATED
+            ("Map", "MAP"),                 # SET
+            ("Record", "RECORD")            # SEQUENCE
         ]
         self._ptype = {t[0].lower(): t[1] for t in types}
         self._jtype = {t[1].lower(): t[0] for t in types}

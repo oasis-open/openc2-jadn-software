@@ -145,7 +145,7 @@
     [3, "CertificateSignature", ""]]
   ],
 
-  ["CyboxObject", "Attribute", [], "", [
+  ["CyboxObject", "Map", [], "", [
     [1, "Address", "AddressObject", [], ""],
     [2, "Device", "DeviceObject", [], ""],
     [3, "Disk", "DiskObject", [], ""],

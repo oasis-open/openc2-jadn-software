@@ -117,6 +117,10 @@ class BasicTypes(unittest.TestCase):
     B2s = "ZGF0YQp0byBiZSDDq25jb2RlZCDml4XnqIs="
     B3b = binascii.a2b_hex("18e0c9987b8f32417ca6744f544b815ad2a6b4adca69d2c310bd033c57d363e3")
     B3s = "GODJmHuPMkF8pnRPVEuBWtKmtK3KadLDEL0DPFfTY+M="
+    B_bad1b = "string"
+    B_bad2b = 394
+    B_bad3b = True
+    B_bad1s = "ZgF%&0B++"
 
     def test_binary(self):
         self.assertEqual(self.tc.decode("t_bin", self.B1s), self.B1b)
@@ -125,6 +129,14 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.encode("t_bin", self.B1b), self.B1s)
         self.assertEqual(self.tc.encode("t_bin", self.B2b), self.B2s)
         self.assertEqual(self.tc.encode("t_bin", self.B3b), self.B3s)
+        with self.assertRaises(binascii.Error):
+            self.tc.decode("t_bin", self.B_bad1s)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_bin", self.B_bad1b)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_bin", self.B_bad2b)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_bin", self.B_bad3b)
 
     C1a = {"type1": "foo"}
     C2a = {"type2": False}

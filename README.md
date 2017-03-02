@@ -26,12 +26,13 @@ The JAEN package contains two subpackages:
 The JAEN package was created using the Test Driven Development process, where tests containing desired results
 are developed first, then software is written to make the tests pass.  Test scripts serve to document both
 example data (good and bad cases) and calling conventions for the software.
-- test_codec.py - Unit test for encoder and decoder functions
-- test_openc2.py - Unit test for OpenC2 commands
+- test_codec.py - Unit tests for encoder and decoder functions
+- test_openc2.py - Unit tests for OpenC2 commands
+   - This file contains example OpenC2 commands in API format and three JSON-encoded formats
+   (Minified, Concise, and an unused format included for completeness of the codec test suite.)
 - jaen-convert.py - Convert JAEN specifications between formats
-   - openc2 - Schema that defines the OpenC2 message format
-   - cybox - Target data model based on CybOX 2.1 (legacy)
-   - observables - Target data model based on STIX Cyber Observables (under development)
+   - openc2 - Schema that defines the OpenC2 message format, including the target data model.
+   The ability to import data models is planned but not supported in the current version.
 
 ### Data
 The converter utility reads `.jas` and `.jaen` schemas from an input directory (data) and writes

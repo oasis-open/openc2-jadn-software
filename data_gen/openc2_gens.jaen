@@ -1,4 +1,4 @@
-"Generated from data\openc2.jas, Thu Mar  2 09:32:35 2017"
+"Generated from data\openc2.jas, Thu Mar  2 10:34:55 2017"
 
 {
  "meta": {
@@ -40,7 +40,8 @@
   ],
 
   ["Action", "Enumerated", [], "", [
-    [1, "scan", "locate       (2),"],
+    [1, "scan", ""],
+    [2, "locate", ""],
     [3, "query", ""],
     [4, "report", ""],
     [5, "get", ""],
@@ -104,7 +105,7 @@
 
   ["Actuator", "Record", [], "", [
     [1, "type", "ActuatorType", [], ""],
-    [2, "specifiers", "ActuatorObject", ["?", "{type"], ""]]
+    [2, "specifiers", "ActuatorObject", ["{type", "?"], ""]]
   ],
 
   ["ActuatorType", "Enumerated", [], "", [

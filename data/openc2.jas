@@ -39,7 +39,7 @@ OpenC2Alert ::= RECORD {
 }
 
 Action ::= ENUMERATED {
-    scan         (1),   --
+    scan         (1),
     locate       (2),
     query        (3),
     report       (4),

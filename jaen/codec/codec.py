@@ -140,7 +140,7 @@ def _bad_value(ts, val, fld=None):
 
 def _extra_value(ts, val, fld):
     td = ts[S_TDEF]
-    raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], fld, val))
+    raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], val, fld))
 
 def _decode_array(ts, val, codec):
     _check_type(ts, val, list)                  # TODO: check min/max array length
@@ -263,7 +263,7 @@ def _encode_maprec(ts, val, codec):
     fnames = [f[S_FDEF][NAME] for k,f in ts[S_FLD].items()]
     extra = set(val) - set(fnames)
     if extra:
-        _extra_value(ts, val, extra)
+        _extra_value(ts, val, fnames)
     fx = NAME if ts[S_VSTR] else TAG    # Verbose or minified identifier strings
     if ts[S_ETYPE] == list:
         fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][TAG] for f in val])

@@ -1,19 +1,45 @@
 /*
 module:        openc2
 title:         OpenC2 Command Definitions
-version:       0.2
+version:       0.3
 description:   Datatypes that define the content of OpenC2 commands.  These
                types are used with an Encoder/Decoder (codec) to serialize and
                deserialize commands for transmission in a format such as JSON,
                XML, or CBOR, or to generate format-specific message schemas.
-namespace:     http://openc2.org/commands
-root:          OpenC2Command
-import:        1, cybox, http://cybox.mitre.org/common-2
-               2, cybox3, http://openc2.org/observables
+               This version includes an embedded target data model, pending
+               development of the import mechanism.
+namespace:     http://openc2.org/openc2
+root:          OpenC2Object
+import:        1, target, http://openc2.org/target
 */
 
+OpenC2Object ::= CHOICE {
+    command      [1] OpenC2Command,
+    response     [2] OpenC2Response,
+    alert        [3] OpenC2Alert
+}
+
+OpenC2Command ::= RECORD {
+    action       Action,
+    target       Target,
+    actuator     Actuator OPTIONAL,
+    modifiers    Modifiers OPTIONAL
+}
+
+OpenC2Response ::= RECORD {
+    source      DeviceID,       -- Device Identifier of the command issuer
+    cmdref      CommandID,      -- Command unique identifier, from "id" modifier
+    status      StatusCode,     -- Adapted from HTTP Status Codes, RFC 7231
+    statusText  STRING,         -- Status description
+    results     STRING          -- Results of executing the command
+}
+
+OpenC2Alert ::= RECORD {
+    message      STRING
+}
+
 Action ::= ENUMERATED {
-    scan         (1),
+    scan         (1),   --
     locate       (2),
     query        (3),
     report       (4),
@@ -50,39 +76,35 @@ Action ::= ENUMERATED {
     remediate    (35)
 }
 
-TargetType ::= ENUMERATED {
-    openc2                      (1),
-    commands                    (2),
-    cybox:Address               (41),
-    cybox:Device                (42),
-    cybox:Disk                  (3),
-    cybox:Disk_Partition        (4),
-    cybox:Domain_Name           (5),
-    cybox:Email_Message         (6),
-    cybox:File                  (7),
-    cybox:Hostname              (8),
-    cybox:Memory                (9),
-    cybox:Network_Connection    (10),
-    cybox:Network_Flow          (11),
-    cybox:Network_Packet        (12),
-    cybox:Network_Subnet        (13),
-    cybox:Port                  (14),
-    cybox:Process               (15),
-    cybox:Product               (16),
-    cybox:Socket_Address        (17),
-    cybox:System                (18),
-    cybox:URI                   (19),
-    cybox:User_Account          (20),
-    cybox:User_Session          (21),
-    cybox:Volume                (22),
-    cybox:Windows_Registry_Key  (23),
-    cybox:Windows_Service       (24),
-    cybox:X509_Certificate      (25)
+Target ::= CHOICE {     -- OpenC2 Target datatypes
+    artifact            [1] artifact,               -- SCO v2
+    commands            [2] commands,               -- OpenC2 - query actuator for supported capabilities
+    device              [3] device,                 -- CybOX 2.1
+    directory           [4] directory,              -- SCO v2
+    disk                [5] disk,                   -- CybOX 2.1
+    disk-partition      [6] disk-partition,         -- CybOX 2.1
+    domain-name         [7] domain-name,            -- SCO v2
+    email-addr          [8] email-addr,             -- SCO v2
+    email-message       [9] email-message,          -- SCO v2
+    file                [10] file,                  -- SCO v2
+    ipv4-addr           [11] ipv4-addr,             -- SCO v2
+    ipv6-addr           [12] ipv6-addr,             -- SCO v2
+    mac-addr            [13] mac-addr,              -- SCO v2
+    memory              [14] memory,                -- CybOX 2.1
+    ip-connection       [15] ip-connection,         -- OpenC2
+    process             [16] process,               -- SCO v2
+    software            [17] software,              -- SCO v2
+    url                 [18] url,                   -- SCO v2
+    user-account        [19] user-account,          -- SCO v2
+    user-session        [20] user-session,          -- CybOX 2.1
+    volume              [21] volume,                -- CybOX 2.1
+    windows-registry-key [22] windows-registry-key, -- SCO v2
+    x509-certificate    [23] x509-certificate       -- SCO v2
 }
 
-Target ::= RECORD {
-    type         TargetType,
-    specifiers   cybox:CyboxObject.&type OPTIONAL
+Actuator ::= RECORD {
+    type         ActuatorType,
+    specifiers   ActuatorObject.&type OPTIONAL
 }
 
 ActuatorType ::= ENUMERATED {
@@ -186,9 +208,16 @@ ActuatorObject ::= MAP {
     process-vulnerability-scanner    [45] ActuatorSpecifiers
 }
 
-Actuator ::= RECORD {
-    type         ActuatorType,
-    specifiers   ActuatorObject.&type OPTIONAL
+Modifiers ::= MAP {
+    delay        [1] Duration OPTIONAL,
+    duration     [2] Duration OPTIONAL,
+    frequency    [3] Duration OPTIONAL,
+    datetime     [4] DateTime OPTIONAL,
+    response     [5] ResponseValue OPTIONAL,
+    method       [6] MethodValue OPTIONAL,
+    where        [7] WhereValue OPTIONAL,
+    context_ref  [8] INTEGER OPTIONAL,
+    id           [9] CommandID OPTIONAL
 }
 
 Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
@@ -198,6 +227,14 @@ DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\
 ResponseValue ::= ENUMERATED {
     ack          (1),
     status       (2)
+}
+
+MethodValue ::= CHOICE {            -- Method must agree with Action (test descriptions)
+    deny         [1] DenyMethod,    -- Action must be "deny"
+    pause        [2] PauseMethod,   -- Action must be 'pause'
+    scan         [3] ScanMethod,    -- Action must be 'scan"
+    start        [4] StartMethod,   -- Action must be start
+    stop         [5] StopMethod     -- Action must be "stop"
 }
 
 DenyMethod ::= ENUMERATED {
@@ -228,41 +265,14 @@ StopMethod ::= ENUMERATED {
     immediate    (2)
 }
 
-MethodValue ::= CHOICE {            -- Method must agree with Action (test descriptions)
-    deny         [1] DenyMethod,    -- Action must be "deny"
-    pause        [2] PauseMethod,   -- Action must be 'pause'
-    scan         [3] ScanMethod,    -- Action must be 'scan"
-    start        [4] StartMethod,   -- Action must be start
-    stop         [5] StopMethod     -- Action must be "stop"
+WhereValue ::= ENUMERATED {
+    internal     (1),
+    perimeter    (2)
 }
 
-WhereValue ::= ENUMERATED {     -- Test typedef descriptions
-    internal     (1),           -- First field
-    perimeter    (2)            -- Second field !@#%$%^&*()_+=-
-}
+DeviceID ::= STRING             -- Device Identifier of the command issuer
 
-CommandID ::= STRING        -- Command unique identifier
-
-Modifiers ::= MAP {
-    delay        [1] Duration OPTIONAL,
-    duration     [2] Duration OPTIONAL,
-    frequency    [3] Duration OPTIONAL,
-    datetime     [4] DateTime OPTIONAL,
-    response     [5] ResponseValue OPTIONAL,
-    method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL,
-    context_ref  [8] INTEGER OPTIONAL,
-    id           [9] CommandID OPTIONAL
-}
-
-OpenC2Command ::= RECORD {
-    action       Action,
-    target       Target,
-    actuator     Actuator OPTIONAL,
-    modifiers    Modifiers OPTIONAL
-}
-
-DeviceID ::= STRING         -- Device Identifier of the command issuer
+CommandID ::= STRING            -- Command unique identifier
 
 StatusCode ::= ENUMERATED {     -- Adapted from HTTP Status Codes, RFC 7231
     Processing              (102),      -- 1xx: Informational
@@ -274,20 +284,190 @@ StatusCode ::= ENUMERATED {     -- Adapted from HTTP Status Codes, RFC 7231
     Not_Implemented         (501)
 }
 
-OpenC2Response ::= RECORD {
-    source      DeviceID,       -- Device Identifier of the command issuer
-    cmdref      CommandID,      -- Command unique identifier, from "id" modifier
-    status      StatusCode,     -- Adapted from HTTP Status Codes, RFC 7231
-    statusText  STRING,         -- Status description
-    results     STRING          -- Results of executing the command
+Base64 ::= STRING       -- A sequence of octets encoded as a Base64 string
+
+Hex ::= STRING          -- A sequence of octets encoded as a hexadecimal string
+
+Timestamp ::= STRING    -- RFC 3339 format date and time
+
+hashes-type ::= MAP {
+    MD5          [1] Hex,       -- MD5 message digest as defined in RFC3121
+    MD6          [2] Hex,       -- MD6 message digest as defined in MD6 proposal
+    RIPEMD-160   [3] Hex,       -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
+    SHA-1        [4] Hex,       -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
+    SHA-224      [5] Hex,       -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
+    SHA-256      [6] Hex,       -- SHA-256 as defined in RFC6234
+    SHA-384      [7] Hex,       -- SHA-384 as defined in RFC6234
+    SHA-512      [8] Hex,       -- SHA-512 as defined in RFC6234
+    SHA3-224     [9] Hex,       -- SHA3-224 as defined in FIPS PUP 202
+    SHA3-256     [10] Hex,      -- SHA3-256 as defined in FIPS PUP 202
+    SHA3-384     [11] Hex,      -- SHA3-384 as defined in FIPS PUP 202
+    SHA3-512     [12] Hex,      -- SHA3-512 as defined in FIPS PUP 202
+    ssdeep       [13] Hex,      -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
+    WHIRLPOOL    [14] Hex       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
 }
 
-OpenC2Alert ::= RECORD {
-    message      STRING
+payload ::= CHOICE {
+    payload_bin  [1] Base64,    -- Specifies the binary data contained in the artifact as a base64-encoded string.
+    url          [2] STRING     -- MUST be a valid URL that resolves to the un-encoded content
 }
 
-OpenC2Object ::= CHOICE {
-    command      [1] OpenC2Command,
-    response     [2] OpenC2Response,
-    alert        [3] OpenC2Alert
+artifact ::= RECORD {
+    type         STRING,             -- MUST be "artifact"
+    mime_type    STRING OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
+    *            payload OPTIONAL,       -- choice of literal content or URL to obtain content
+    hashes       hashes-type OPTIONAL    -- Specifies a dictionary of hashes for the contents of the payload
+}
+
+commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
+    actions     (1),            -- results = JSON array of supported action verbs
+    schema      (2)             -- results = JAEN syntax of supported commands
+}
+
+device ::= MAP {
+    Description       [1] STRING OPTIONAL,
+    Device_Type       [2] STRING OPTIONAL,
+    Manufacturer      [3] STRING OPTIONAL,
+    Model             [4] STRING OPTIONAL,
+    Serial_Number     [5] STRING OPTIONAL,
+    Firmware_Version  [6] STRING OPTIONAL,
+    System_Details    [7] STRING OPTIONAL
+}
+
+directory ::= MAP {
+    type        [1] STRING,                 -- MUST be "directory"
+    path        [2] STRING,                 -- Path, as originally observed, to the directory on the filesystem
+    path_enc    [3] STRING OPTIONAL,        -- Observed encoding for the path, from the IANA Character Set Registry
+    created     [4] Timestamp OPTIONAL,     -- Date/time the directory was created
+    modified    [5] Timestamp OPTIONAL,     -- Date/time the directory was last written-to/modified
+    accessed    [6] Timestamp OPTIONAL,     -- Date/time the directory was last accessed
+    contains    [7] dir-contents OPTIONAL   -- List of files/directories contained within the directory
+}
+
+dir-contents ::= ARRAY_OF(dirfile)
+
+dirfile ::= CHOICE {
+    d           [1] directory,
+    f           [2] file
+}
+
+domain-name ::= RECORD {
+    value        STRING,            -- Value of the domain name
+    resolves_to  dnvalues OPTIONAL  -- List of IP addresses or domain names
+}
+
+dnvalues ::= ARRAY_OF(dnvalue)      -- List of IP addresses or domain names
+
+dnvalue ::= CHOICE {
+    v4           [1] ipv4-addr,
+    v6           [2] ipv6-addr,
+    name         [3] domain-name
+}
+
+email-addr ::= RECORD {
+    value         STRING,               -- Email address (addr-spec in RFC 5322 Section 3.4)
+    display_name  STRING OPTIONAL,      -- Name that is displayed to the user of a mail application
+    belongs_to    user-account OPTIONAL -- User account that the email address belongs to
+}
+
+email-message ::= RECORD {  -- TODO: finish
+    type         STRING              -- MUST be "email-message"
+}
+
+file ::= RECORD {  -- TODO: finish
+    type         STRING              -- MUST be "file"
+}
+
+ipv4-addr ::= RECORD {
+    value             STRING,               -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+ipv6-addr ::= RECORD {
+    value             ipv4-str,             -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+mac-addrs ::= ARRAY_OF(mac-addr)
+
+asystems ::= ARRAY_OF(autonomous-system)
+
+mac-addr ::= RECORD {
+    value        STRING      -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
+}
+
+mutex ::= RECORD {
+    name         STRING      -- Specifies the name of the mutex object.
+}
+
+ip-connection ::= RECORD {                  -- 5-tuple that specifies a tcp/ip connection
+    src-addr        socket-addr OPTIONAL,       -- source address
+    src-port        port OPTIONAL,              -- source TCP/UDP port number
+    dst-addr        socket-addr OPTIONAL,       -- destination address
+    dst-port        port OPTIONAL,              -- destination TCP/UDP port number
+    layer3-protocol layer3-protocol OPTIONAL,   -- IEEE 802 Ether Type
+    layer4-protocol layer4-protocol OPTIONAL    -- Protocol (IPv4) / Next Header (IPv6)
+}
+
+layer3-protocol ::= ENUMERATED {    -- IEEE 802 Ether Types - any IANA value, RFC 7042
+    IPv4        (2048),     -- 0x0800 Internet Protocol Version 4
+    ARP         (2054),     -- 0x0806 Address Resolution Protocol
+    IPv6        (34525),    -- 0x86DD Internet Protocol Version 6
+    MPLS        (34887)     -- 0x8847 Multi-Protocol Label Switching
+}
+
+socket-addrs ::= ARRAY_OF(socket-addr)
+
+socket-addr ::= CHOICE {
+    v4      [1] ipv4-addr,
+    v6      [2] ipv6-addr,
+    mac     [3] mac-addr,
+    dns     [4] domain-name
+}
+
+port ::= CHOICE {                   -- TCP/UDP port number or protocol
+    number      [1] INTEGER,            -- Port number (e.g., dynamically assigned)
+    protocol    [2] layer7-protocol     -- Registered port nummber (registered with IANA)
+}
+
+layer4-protocol ::= ENUMERATED {    -- protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
+    ICMP        (1),        -- Internet Control Message Protocol - RFC 792
+    TCP         (6),        -- Transmission Control Protocol - RFC 793
+    UDP         (17)        -- User Datagram Protocol - RFC 768
+}
+
+layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port - any IANA value, RFC 6335
+    ftp-data    (20),       -- File Transfer Protocol (data)
+    ftp         (21),       -- File Transfer Protocol (control)
+    ssh         (22),       -- Secure Shell Protocol
+    telnet      (23),       -- Telnet
+    smtp        (25),       -- Simple Mail Transfer Protocol
+    http        (80),       -- Hypertext Transport Protocol
+    https       (443)       -- HTTP over TLS
+}
+
+process ::= RECORD {
+    type         STRING     -- MUST be "process"
+}
+
+software ::= RECORD {
+    type         STRING     -- MUST be "software"
+}
+
+url ::= RECORD {
+    type         STRING     -- MUST be "url"
+}
+
+user-account ::= RECORD {
+    type         STRING     -- MUST be "user-account"
+}
+
+windows-registry-key ::= RECORD {
+    type         STRING     -- MUST be "windows-registry-key"
+}
+
+x509-certificate ::= RECORD {
+    type         STRING     -- MUST be "x509-certificate"
 }

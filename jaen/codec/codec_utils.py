@@ -45,7 +45,8 @@ def flatten(cmd, path="", fc={}, sep="."):
             k = k.split(":")[1] if ":" in k else k
             fcmd = flatten(v, sep.join((path, k)) if path else k, fcmd)
     else:
-        fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
+#        fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
+        fcmd[path] = str(cmd)
     return (fcmd)
 
 

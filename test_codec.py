@@ -18,7 +18,12 @@ jaen = {                # JAEN schema for datatypes used in Basic Types tests
         ["t_choice", "Choice", [], "", [
             [1, "type1", "String", [], ""],
             [4, "type2", "Boolean", [], ""],
-            [7, "type3", "Integer", [], ""]]
+            [7, "type3", "Integer", [], ""],
+            [9, "type4", "t_crec", [], ""]]
+         ],
+        ["t_crec", "Record", [], "", [
+            [1, "a", "Integer", [], ""],
+            [2, "b", "String", [], ""]]
          ],
         ["t_enum", "Enumerated", [], "", [
             [1, "first", ""],
@@ -141,29 +146,36 @@ class BasicTypes(unittest.TestCase):
     C1a = {"type1": "foo"}
     C2a = {"type2": False}
     C3a = {"type3": 42}
-    C1m = {1: "foo"}
-    C2m = {4: False}
-    C3m = {7: 42}
+    C4a = {"type4": {"a": 1, "b": "c"}}
+    C1m = {"1": "foo"}
+    C2m = {"4": False}
+    C3m = {"7": 42}
+    C4m = {"9":[1,"c"]}
     C1_bad1a = {"type1": 15}
-    C1_bad2a = {"type4": "foo"}
+    C1_bad2a = {"type5": "foo"}
     C1_bad3a = {"type1": "foo", "type2": False}
-    C1_bad1m = {1: 15}
-    C1_bad2m = {3: "foo"}
-    C1_bad3m = {1: "foo", 4: False}
+    C1_bad1m = {"1": 15}
+    C1_bad2m = {"3": "foo"}
+    C1_bad3m = {"1": "foo", "4": False}
+    C1_bad4m = {1: "foo"}
 
     def test_choice_min(self):
         self.assertEqual(self.tc.decode("t_choice", self.C1m), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2m), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3m), self.C3a)
+        self.assertEqual(self.tc.decode("t_choice", self.C4m), self.C4a)
         self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1m)
         self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2m)
         self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3m)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4m)
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1m)
         with self.assertRaises(ValueError):
             self.tc.decode("t_choice", self.C1_bad2m)
         with self.assertRaises(ValueError):
             self.tc.decode("t_choice", self.C1_bad3m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_choice", self.C1_bad4m)
         with self.assertRaises(TypeError):
             self.tc.encode("t_choice", self.C1_bad1a)
         with self.assertRaises(ValueError):
@@ -177,6 +189,11 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2a), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3a), self.C3a)
+        self.assertEqual(self.tc.decode("t_choice", self.C4a), self.C4a)
+        self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1a)
+        self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2a)
+        self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3a)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4a)
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1a)
         with self.assertRaises(ValueError):
@@ -235,13 +252,14 @@ class BasicTypes(unittest.TestCase):
     RGB_bad6a = {"red": 24, "green": 120, "bleu": 240}
     RGB_bad7a = {2: 24, "green": 120, "blue": 240}
 
-    Map1m = {2: 24, 4: 120, 6: 240}                  # Encoded values Map (minimized and dict/tag mode)
-    Map2m = {2: 50, 6: 100}
-    Map3m = {2: 9, 4: 80, 6: 96, 9: 128}
-    Map_bad1m = {2: 24, 4: 120}
-    Map_bad2m = {2: 9, 4: 80, 6: 96, 9: 128, 12: 42}
-    Map_bad3m = {2: "four", 4: 120, 6: 240}
-    Map_bad4m = {"2": 24, 4: 120, 6: 240}
+    Map1m = {"2": 24, "4": 120, "6": 240}                  # Encoded values Map (minimized and dict/tag mode)
+    Map2m = {"2": 50, "6": 100}
+    Map3m = {"2": 9, "4": 80, "6": 96, "9": 128}
+    Map_bad1m = {"2": 24, "4": 120}
+    Map_bad2m = {"2": 9, "4": 80, "6": 96, "9": 128, "12": 42}
+    Map_bad3m = {"2": "four", "4": 120, "6": 240}
+    Map_bad4m = {2: 24, 4: 120, 6: 240}
+    Map_bad5m = [24, 120, 240]
 
     Rec1m = [24, 120, 240]                          # Encoded values Record (minimized)
     Rec2m = [50, None, 100]
@@ -250,13 +268,13 @@ class BasicTypes(unittest.TestCase):
     Rec_bad2m = [9, 80, 96, 128, 42]
     Rec_bad3m = ["four", 120, 240]
 
-    Rec1n = {1: 24, 2: 120, 3: 240}                  # Encoded values Record (unused dict/tag mode)
-    Rec2n = {1: 50, 3: 100}
-    Rec3n = {1: 9, 2: 80, 3: 96, 4: 128}
-    Rec_bad1n = {1: 24, 2: 120}
-    Rec_bad2n = {1: 9, 2: 80, 3: 96, 4: 128, 5: 42}
-    Rec_bad3n = {1: "four", 2: 120, 3: 240}
-    Rec_bad4n = {"1": 24, 2: 120, 3: 240}
+    Rec1n = {"1": 24, "2": 120, "3": 240}                  # Encoded values Record (unused dict/tag mode)
+    Rec2n = {"1": 50, "3": 100}
+    Rec3n = {"1": 9, "2": 80, "3": 96, "4": 128}
+    Rec_bad1n = {"1": 24, "2": 120}
+    Rec_bad2n = {"1": 9, "2": 80, "3": 96, "4": 128, "5": 42}
+    Rec_bad3n = {"1": "four", "2": 120, "3": 240}
+    Rec_bad4n = {1: 24, 2: 120, 3: 240}
 
     RGB1c = [24, 120, 240]                           # Encoded values Record (concise)
     RGB2c = [50, None, 100]
@@ -280,6 +298,8 @@ class BasicTypes(unittest.TestCase):
             self.tc.decode("t_map", self.Map_bad3m)
         with self.assertRaises(ValueError):
             self.tc.decode("t_map", self.Map_bad4m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.Map_bad5m)
         with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB_bad1a)
         with self.assertRaises(ValueError):

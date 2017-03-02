@@ -158,22 +158,22 @@ def jas_dumps(jaen):
 
     pt = Jastype()
     for td in jaen["types"]:                    # 0:name, 1:type, 2:topts, 3:tdesc, 4:fields
-        tname, ttype = td[0:2]
-        topts = opts_s2d(td[2])
+        tname, ttype = td[TNAME:TTYPE+1]
+        topts = opts_s2d(td[TOPTS])
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
-        tdesc = "    -- " + td[3] if td[3] else ""
+        tdesc = "    -- " + td[TDESC] if td[TDESC] else ""
         jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
-        if len(td) > 4:
-            titems = deepcopy(td[4])
-            for n, i in enumerate(titems):      # 0:id, 1:name, 2:fdesc  (enumerated), or
-                if len(i) > 3:                  # 0:id, 1:name, 2:type, 3: fopts, 4:fdesc
-                    desc = i[4]
-                    i[2] = pt.ptype(i[2])
+        if len(td) > FIELDS:
+            titems = deepcopy(td[FIELDS])
+            for n, i in enumerate(titems):      # 0:tag, 1:name, 2:edesc  (enumerated), or
+                if len(i) > FOPTS:              # 0:tag, 1:name, 2:type, 3: fopts, 4:fdesc
+                    desc = i[FDESC]
+                    i[FTYPE] = pt.ptype(i[FTYPE])
                 else:
-                    desc = i[2]
+                    desc = i[EDESC]
                 desc = "    -- " + desc if desc else ""
-                i.append("," + desc if n < len(titems) - 1 else (" " + desc if desc else ""))
-            flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
+                i.append("," + desc if n < len(titems) - 1 else (" " + desc if desc else ""))   # TODO: fix hacked desc for join
+            flen = min(32, max(12, max([len(i[NAME]) for i in titems]) + 1 if titems else 0))
             jas += " {" + tdesc + "\n"
             if ttype.lower() == "enumerated":
                 fmt = "    {1:" + str(flen) + "} ({0:d}){3}"
@@ -185,14 +185,14 @@ def jas_dumps(jaen):
                 items = []
                 for n, i in enumerate(titems):
                     ostr = ""
-                    opts = opts_s2d(i[3])
+                    opts = opts_s2d(i[FOPTS])
                     if "atfield" in opts:
                         ostr += ".&" + opts["atfield"]
                         del opts["atfield"]
                     if opts["optional"]:
                         ostr += " OPTIONAL"
                     del opts["optional"]
-                    items += [fmt.format(i[0], i[1], i[2], ostr, i[5]) + (" ***" + str(opts) if opts else "")]
+                    items += [fmt.format(i[TAG], i[NAME], i[FTYPE], ostr, i[5]) + (" ***" + str(opts) if opts else "")]
                 jas += "\n".join(items)
             jas += "\n}\n" if titems else "}\n"
         else:

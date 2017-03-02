@@ -9,7 +9,7 @@ from jaen.convert.tr_jas import jas_load, jas_dump
 from jaen.convert.tr_tables import table_dump
 
 if __name__ == "__main__":
-    for fn in ("openc2", "cybox", "observables"):
+    for fn in ("openc2",):
         ifname = os.path.join("data", fn)
         ofname = os.path.join("data_gen", fn)
 

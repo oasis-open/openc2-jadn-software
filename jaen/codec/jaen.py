@@ -77,43 +77,61 @@ jaen_schema = {
     }
 }
 
+# JAEN Type Definition columns      # MUST remain in sync with codec
+TNAME = 0       # Datatype name
+TTYPE = 1       # Base type
+TOPTS = 2       # Type options
+TDESC = 3       # Type description
+FIELDS = 4      # List of fields
+
+# JAEN Field Definition columns
+TAG = 0         # Element ID
+NAME = 1        # Element name
+EDESC = 2       # Description (for enumerated types)
+FTYPE = 2       # Datatype of field
+FOPTS = 3       # Field options
+FDESC = 4       # Field Description
+
 
 def jaen_check(jaen):
     """
-    Check JAEN structure against schema, then perform additional checks on type definitions
+    Check JAEN structure against JSON schema, then perform additional checks on type definitions
     """
 
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
 
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
-        if t[1] in ("Binary", "Boolean", "Integer", "Number", "String"):
+        if t[TTYPE] not in ("Binary", "Boolean", "Integer", "Number", "String",
+                            "Array", "Choice", "Enumerated", "Map", "Record"):
+            print("Type error: Unknown type", t[TTYPE])
+        if t[TTYPE] in ("Binary", "Boolean", "Integer", "Number", "String"):
             if len(t) != 4:    # TODO: trace back to base type
-                print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
+                print("Type format error:", t[TNAME], "- primitive type", t[TTYPE], "cannot have items")
         else:
             if len(t) != 5:
-                print("Type format error:", t[0], "- missing items from compound type", t[1])
+                print("Type format error:", t[TNAME], "- missing items from compound type", t[TTYPE])
         if t[1] == "Array":
-            if len(t[4]) != 1:
-                print("Type format error:", t[0], "- array must have one type element, not", len(t[4]))
-            if t[4][0][0] != 0:
-                print("Type format error:", t[0], "- array type must not have tag", t[4][0][0])
+            if len(t[FIELDS]) != 1:
+                print("Type format error:", t[TNAME], "- array must have one type element, not", len(t[FIELDS]))
+            if t[FIELDS][0][TAG] != 0:
+                print("Type format error:", t[TNAME], "- array type must not have tag", t[FIELDS][0][TAG])
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
         tags = set()
         if len(t) > 4:
             n = 3 if t[1] == "Enumerated" else 5
-            for k, i in enumerate(t[4]):        # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
-                tags.update(set([i[0]]))        # or (enumerated): 0-tag, 1-name, 2-description
-                if t[1] == "Record" and i[0] != k + 1:
-                    print("Item tag error:", t[1], i[1], i[0], "should be", k + 1)
+            for k, i in enumerate(t[FIELDS]):       # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
+                tags.update(set([i[TAG]]))          # or (enumerated): 0-tag, 1-name, 2-description
+                if t[TTYPE] == "Record" and i[TAG] != k + 1:
+                    print("Item tag error:", t[TTYPE], i[NAME], i[TAG], "should be", k + 1)
                 if len(i) != n:
-                    print("Item format error:", t[0], t[1], i[1], "-", len(i), "!=", n)
+                    print("Item format error:", t[TNAME], t[TTYPE], i[NAME], "-", len(i), "!=", n)
                 for o in opts_s2d(i[3]) if n > 3 else []:
                     if o not in ["atfield", "optional", "range"]:
-                        print("Invalid field option:", t[0], i[1], o)
-            if len(t[4]) != len(tags):
-                print("Tag collision", t[0], len(t[4]), "items,", len(tags), "unique tags")
+                        print("Invalid field option:", t[TNAME], i[NAME], o)
+            if len(t[FIELDS]) != len(tags):
+                print("Tag collision", t[TNAME], len(t[FIELDS]), "items,", len(tags), "unique tags")
     return jaen
 
 

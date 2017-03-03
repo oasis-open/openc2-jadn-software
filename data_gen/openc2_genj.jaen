@@ -1,4 +1,4 @@
-"Generated from data\openc2.jaen, Thu Mar  2 10:34:55 2017"
+"Generated from data\openc2.jaen, Fri Mar  3 14:21:40 2017"
 
 {
  "meta": {
@@ -103,65 +103,7 @@
     [23, "x509-certificate", "x509-certificate", [], "SCO v2"]]
   ],
 
-  ["Actuator", "Record", [], "", [
-    [1, "type", "ActuatorType", [], ""],
-    [2, "specifiers", "ActuatorObject", ["?", "{type"], ""]]
-  ],
-
-  ["ActuatorType", "Enumerated", [], "", [
-    [1, "endpoint", ""],
-    [2, "endpoint-digital-telephone-handset", ""],
-    [3, "endpoint-laptop", ""],
-    [4, "endpoint-pos-terminal", ""],
-    [5, "endpoint-printer", ""],
-    [6, "endpoint-sensor", ""],
-    [7, "endpoint-server", ""],
-    [8, "endpoint-smart-meter", ""],
-    [9, "endpoint-smart-phone", ""],
-    [10, "endpoint-tablet", ""],
-    [11, "endpoint-workstation", ""],
-    [12, "network", ""],
-    [13, "network-bridge", ""],
-    [14, "network-firewall", ""],
-    [15, "network-gateway", ""],
-    [16, "network-guard", ""],
-    [17, "network-hips", ""],
-    [18, "network-hub", ""],
-    [19, "network-ids", ""],
-    [20, "network-ips", ""],
-    [21, "network-modem", ""],
-    [22, "network-nic", ""],
-    [23, "network-proxy", ""],
-    [24, "network-router", ""],
-    [25, "network-security-manager", ""],
-    [26, "network-sense-making", ""],
-    [27, "network-sensor", ""],
-    [28, "network-switch", ""],
-    [29, "network-vpn", ""],
-    [30, "network-wap", ""],
-    [31, "process", ""],
-    [32, "process-aaa-server", ""],
-    [33, "process-anti-virus-scanner", ""],
-    [34, "process-connection-scanner", ""],
-    [35, "process-directory-server", ""],
-    [36, "process-dns-server", ""],
-    [37, "process-email-service", ""],
-    [38, "process-file-scanner", ""],
-    [39, "process-location-service", ""],
-    [40, "process-network-scanner", ""],
-    [41, "process-remediation-service", ""],
-    [42, "process-reputation-service", ""],
-    [43, "process-sandbox", ""],
-    [44, "process-virtualization-service", ""],
-    [45, "process-vulnerability-scanner", ""]]
-  ],
-
-  ["ActuatorSpecifiers", "Record", [], "", [
-    [1, "port", "String", ["?"], ""],
-    [2, "asset_id", "String", ["?"], ""]]
-  ],
-
-  ["ActuatorObject", "Map", [], "", [
+  ["Actuator", "Choice", [], "", [
     [1, "endpoint", "ActuatorSpecifiers", [], ""],
     [2, "endpoint-digital-telephone-handset", "ActuatorSpecifiers", [], ""],
     [3, "endpoint-laptop", "ActuatorSpecifiers", [], ""],
@@ -207,6 +149,11 @@
     [43, "process-sandbox", "ActuatorSpecifiers", [], ""],
     [44, "process-virtualization-service", "ActuatorSpecifiers", [], ""],
     [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]]
+  ],
+
+  ["ActuatorSpecifiers", "Record", [], "", [
+    [1, "port", "String", ["?"], ""],
+    [2, "asset_id", "String", ["?"], ""]]
   ],
 
   ["Modifiers", "Map", [], "", [

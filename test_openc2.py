@@ -52,17 +52,67 @@ class OpenC2(unittest.TestCase):
                 }
             },
             "actuator": {
-                "type": "network-firewall",
-                "specifiers": {
-                    "asset_id": "30"}},
+                "network-firewall": {"asset_id": "30"}},
             "modifiers": {
                 "id": "pf17_8675309",
                 "context_ref": 91,
                 "datetime": "2016-11-25T08:10:31-04:00",
                 "duration": "PT2M30S"}}
-        cmd_noname = {}
-        cmd_concise = []
-        cmd_min = []
+
+        cmd_noname = {
+            "1": 7,
+            "2": {"15": {
+                "1": {"4": {"1": "www.badco.com"}},
+                "2": {"2": 443},
+                "3": {"1": {"1": "192.168.1.1"}},
+                "6": 6}},
+            "3": {"14": {"2": "30"}},
+            "4": {
+                "2": "PT2M30S",
+                "4": "2016-11-25T08:10:31-04:00",
+                "8": 91,
+                "9": "pf17_8675309"}}
+
+        cmd_concise = [
+            "deny",
+            {"ip-connection": [
+                {"dns": ["www.badco.com"]},
+                {"protocol": "https"},
+                {"v4": ["192.168.1.1"]},
+                None,
+                None,
+                "TCP"]},
+            {"network-firewall": [None, "30"]},
+            {"context_ref": 91,
+            "datetime": "2016-11-25T08:10:31-04:00",
+            "duration": "PT2M30S",
+            "id": "pf17_8675309"}]
+
+        cmd_min = [7,
+            {"15": [
+                {"4": ["www.badco.com"]},
+                {"2": 443},
+                {"1": ["192.168.1.1"]},
+                None,
+                None,
+                6]},
+            {"14": [None, "30"]},
+            {"2": "PT2M30S",
+            "4": "2016-11-25T08:10:31-04:00",
+            "8": 91,
+            "9": "pf17_8675309"}]
+
+        """
+        # Legacy schema:
+        Actuator ::= RECORD {
+            type         ActuatorType,
+            specifiers   ActuatorObject.&type OPTIONAL
+        }
+        "actuator": {
+            "type": "network-firewall",
+            "specifiers": {
+                "asset_id": "30"}}
+        """
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
@@ -82,16 +132,16 @@ class OpenC2(unittest.TestCase):
         cmd_concise = ["query", {"commands":"schema"}]
         cmd_min = [3,{"2":2}]
 
-        # Minified (list/tag)
+                                            # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
-        self.tc.set_mode(False, True)  # Concise (list/name)
+        self.tc.set_mode(False, True)       # Concise (list/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
-        self.tc.set_mode(True, False)  # unused (dict/tag)
+        self.tc.set_mode(True, False)       # unused (dict/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
-        self.tc.set_mode(True, True)  # API / Verbose (dict/name)
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
@@ -174,10 +224,10 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test5_flat(self):    # Copy of api commands from separate test cases
+    def test5_flat(self):       # Copy of api commands from separate test cases
         cmd1_api = {"action": "query", "target": {"commands":"schema"}}
         cmd1_flat = {"action": "query", "target.commands":"schema"}
-        cmd2_api = {           # API / Verbose (dict/name)
+        cmd2_api = {            # API / Verbose (dict/name)
             "action": "scan",
             "target": {
                 "domain-name": {

@@ -102,17 +102,6 @@ class OpenC2(unittest.TestCase):
             "8": 91,
             "9": "pf17_8675309"}]
 
-        """
-        # Legacy schema:
-        Actuator ::= RECORD {
-            type         ActuatorType,
-            specifiers   ActuatorObject.&type OPTIONAL
-        }
-        "actuator": {
-            "type": "network-firewall",
-            "specifiers": {
-                "asset_id": "30"}}
-        """
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
@@ -146,44 +135,6 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
     def test4_query2(self):
-        '''
-        # Alternate Target Data Model Schemas
-        cmd_api2 = {           # Literal STIX Object
-            "action": "scan",
-            "target": {
-                "0": {
-                    "type": "domain-name",
-                    "value": "www.example.com",
-                    "resolves_to_refs": ["1", "2"]
-                },
-                "1": {
-                    "type": "ipv4-addr",
-                    "value": "198.51.100.2"
-                },
-                "2": {
-                    "type": "domain-name",
-                    "value": "ms34.example.com"
-                }
-            }
-        }
-
-        cmd_api3 = {           # Type-Specifiers
-            "action": "scan",
-            "target": {
-                "type": "domain-name",
-                "specifiers": {
-                    "value": "www.example.com",
-                    "resolves_to": [{
-                        "type": "ipv4-addr",
-                        "value": "198.51.100.2"
-                    },{
-                        "type": "domain-name",
-                        "value": "ms34.example.com"
-                    }]
-                }
-            }
-        }
-        '''
 
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
@@ -224,7 +175,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test5_flat(self):       # Copy of api commands from separate test cases
+    def test5_flat(self):       # Copy api commands from other test cases
         cmd1_api = {"action": "query", "target": {"commands":"schema"}}
         cmd1_flat = {"action": "query", "target.commands":"schema"}
         cmd2_api = {            # API / Verbose (dict/name)

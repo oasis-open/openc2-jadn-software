@@ -40,3 +40,38 @@ converted files to an output directory (data_gen).  Output files ending in `_gen
 produced from JAEN sources, while those ending in `_gens` are produced from JAS sources.
 After editing a JAS schema, the corresponding JAEN schema (`xxx_gens.jaen') should be moved
 from the output to the input directory after deleting the source line at the top of the file.
+
+### Getting Started
+1. Use a Python 3 environment.  Install the jsonschema (for the codec)and XlsxWriter
+(for the converter property table generator) packages if not already installed.
+This software was developed under Python 3.5 and is not yet ported to Python 2.x.
+
+2. Look at the test_openc2.py file for example OpenC2 commands in JSON format.
+
+3. An OpenC2 producer application would create a python dict containing an OpenC2 command, load the
+openc2.jaen schema, and encode the command:
+
+```
+import json
+from jaen.codec.codec import Codec
+from jaen.codec.jaen import jaen_load
+
+command = {
+    "action": "mitigate",
+    "target": {
+        "domain-name": {
+            "value": "cdn.badco.org"}}}
+
+schema = jaen_load("openc2.jaen")                           # Load and validate the OpenC2 schema
+codec = Codec(schema, verbose_rec=True, verbose_str=True)   # Create an OpenC2 encoder/decoder (JSON-Verbose encoding)
+message1 = codec.encode("OpenC2Command", command)           # Validate and encode the command
+print("Sent Message =", json.dumps(message1))
+```
+4. An OpenC2 consumer application would receive an encoded message, then decode/validate it:
+```
+received_msg = '[34, {"7": ["cdn.badco.org"]}]'             # Received OpenC2 command in JSON-minified format
+message2 = json.loads(received_msg)
+codec.set_mode(verbose_rec=False, verbose_str=False)        # Tell codec to use JSON-minified encoding
+command2 = codec.decode("OpenC2Command", message2)          # Validate and decode the command
+print("Received Command =", command2)
+```

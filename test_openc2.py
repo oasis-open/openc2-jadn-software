@@ -16,9 +16,9 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "mitigate",
             "target": {
-                "domain-name": {"value": "cdn.badco.org"}}}
+                "domain_name": {"value": "cdn.badco.org"}}}
         cmd_noname = {'1': 32, '2': {'7': {'1': 'cdn.badco.org'}}}
-        cmd_concise = ["mitigate",{"domain-name": ["cdn.badco.org"]}]
+        cmd_concise = ["mitigate",{"domain_name": ["cdn.badco.org"]}]
         cmd_min = [32, {'7': ['cdn.badco.org']}]
 
                                             # Minified (list/tag)
@@ -38,23 +38,23 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "deny",
             "target": {
-                "ip-connection": {
-                    "src-addr": {
+                "ip_connection": {
+                    "src_addr": {
                         "dns": {"value": "www.badco.com"}
                     },
-                    "src-port": {
+                    "src_port": {
                         "protocol": "https"
                     },
-                    "dst-addr": {
+                    "dst_addr": {
                         "v4": {"value": "192.168.1.1"}
                     },
-                    "layer4-protocol": "TCP"
+                    "layer4_protocol": "TCP"
                 }
             },
             "actuator": {
-                "network-firewall": {"asset_id": "30"}},
+                "network_firewall": {"asset_id": "30"}},
             "modifiers": {
-                "command-ref": "pf17_8675309",
+                "command_ref": "pf17_8675309",
                 "context": "91",
                 "datetime": "2016-11-25T08:10:31-04:00",
                 "duration": "PT2M30S"}}
@@ -75,18 +75,18 @@ class OpenC2(unittest.TestCase):
 
         cmd_concise = [
             "deny",
-            {"ip-connection": [
+            {"ip_connection": [
                 {"dns": ["www.badco.com"]},
                 {"protocol": "https"},
                 {"v4": ["192.168.1.1"]},
                 None,
                 None,
                 "TCP"]},
-            {"network-firewall": [None, "30"]},
+            {"network_firewall": [None, "30"]},
             {"context": "91",
             "datetime": "2016-11-25T08:10:31-04:00",
             "duration": "PT2M30S",
-            "command-ref": "pf17_8675309"}]
+            "command_ref": "pf17_8675309"}]
 
         cmd_min = [6,
             {"15": [
@@ -102,6 +102,17 @@ class OpenC2(unittest.TestCase):
              "4": "PT2M30S",
              "6": "pf17_8675309"}]
 
+        """
+        # Legacy schema:
+        Actuator ::= RECORD {
+            type         ActuatorType,
+            specifiers   ActuatorObject.&type OPTIONAL
+        }
+        "actuator": {
+            "type": "network-firewall",
+            "specifiers": {
+                "asset_id": "30"}}
+        """
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
@@ -135,10 +146,49 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
     def test4_query2(self):
+        '''
+        # Alternate Target Data Model Schemas
+        cmd_api2 = {           # Literal STIX Object
+            "action": "scan",
+            "target": {
+                "0": {
+                    "type": "domain-name",
+                    "value": "www.example.com",
+                    "resolves_to_refs": ["1", "2"]
+                },
+                "1": {
+                    "type": "ipv4-addr",
+                    "value": "198.51.100.2"
+                },
+                "2": {
+                    "type": "domain-name",
+                    "value": "ms34.example.com"
+                }
+            }
+        }
+
+        cmd_api3 = {           # Type-Specifiers
+            "action": "scan",
+            "target": {
+                "type": "domain-name",
+                "specifiers": {
+                    "value": "www.example.com",
+                    "resolves_to": [{
+                        "type": "ipv4-addr",
+                        "value": "198.51.100.2"
+                    },{
+                        "type": "domain-name",
+                        "value": "ms34.example.com"
+                    }]
+                }
+            }
+        }
+        '''
+
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {
-                "domain-name": {
+                "domain_name": {
                     "value": "www.example.com",
                     "resolves_to": [
                         {"v4": {"value": "198.51.100.2"}},
@@ -154,7 +204,7 @@ class OpenC2(unittest.TestCase):
         cmd_concise = [        # Concise (list/name)
             "scan",
             {
-                "domain-name": [
+                "domain_name": [
                     "www.example.com",
                     [
                         {"v4": ["198.51.100.2"]},
@@ -173,6 +223,7 @@ class OpenC2(unittest.TestCase):
         self.tc.set_mode(True, True)        # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+
 
 if __name__ == "__main__":
     unittest.main()

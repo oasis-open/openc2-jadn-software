@@ -27,8 +27,8 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source      DeviceID,       -- Device Identifier of the command issuer
-    cmdref      CommandID,      -- Command unique identifier, from "id" modifier
+    source      DeviceID,       -- ID of the command issuer, from "command-src" modifier
+    cmdref      CommandID,      -- Command unique identifier, from "command-ref" modifier
     status      StatusCode,     -- Adapted from HTTP Status Codes, RFC 7231
     statusText  STRING,         -- Status description
     results     STRING          -- Results of executing the command
@@ -80,72 +80,72 @@ Target ::= CHOICE {     -- OpenC2 Target datatypes
     device              [3] device,                 -- CybOX 2.1
     directory           [4] directory,              -- SCO v2
     disk                [5] disk,                   -- CybOX 2.1
-    disk-partition      [6] disk-partition,         -- CybOX 2.1
-    domain-name         [7] domain-name,            -- SCO v2
-    email-addr          [8] email-addr,             -- SCO v2
-    email-message       [9] email-message,          -- SCO v2
+    disk_partition      [6] disk-partition,         -- CybOX 2.1
+    domain_name         [7] domain-name,            -- SCO v2
+    email_addr          [8] email-addr,             -- SCO v2
+    email_message       [9] email-message,          -- SCO v2
     file                [10] file,                  -- SCO v2
-    ipv4-addr           [11] ipv4-addr,             -- SCO v2
-    ipv6-addr           [12] ipv6-addr,             -- SCO v2
-    mac-addr            [13] mac-addr,              -- SCO v2
+    ipv4_addr           [11] ipv4-addr,             -- SCO v2
+    ipv6_addr           [12] ipv6-addr,             -- SCO v2
+    mac_addr            [13] mac-addr,              -- SCO v2
     memory              [14] memory,                -- CybOX 2.1
-    ip-connection       [15] ip-connection,         -- OpenC2
+    ip_connection       [15] ip-connection,         -- OpenC2
     process             [16] process,               -- SCO v2
     software            [17] software,              -- SCO v2
     url                 [18] url,                   -- SCO v2
-    user-account        [19] user-account,          -- SCO v2
-    user-session        [20] user-session,          -- CybOX 2.1
+    user_account        [19] user-account,          -- SCO v2
+    user_session        [20] user-session,          -- CybOX 2.1
     volume              [21] volume,                -- CybOX 2.1
-    windows-registry-key [22] windows-registry-key, -- SCO v2
-    x509-certificate    [23] x509-certificate       -- SCO v2
+    windows_registry_key [22] windows-registry-key, -- SCO v2
+    x509_certificate    [23] x509-certificate       -- SCO v2
 }
 
 Actuator ::= CHOICE {
     endpoint                         [1] ActuatorSpecifiers,
-    endpoint-digital-telephone-handset [2] ActuatorSpecifiers,
-    endpoint-laptop                  [3] ActuatorSpecifiers,
-    endpoint-pos-terminal            [4] ActuatorSpecifiers,
-    endpoint-printer                 [5] ActuatorSpecifiers,
-    endpoint-sensor                  [6] ActuatorSpecifiers,
-    endpoint-server                  [7] ActuatorSpecifiers,
-    endpoint-smart-meter             [8] ActuatorSpecifiers,
-    endpoint-smart-phone             [9] ActuatorSpecifiers,
-    endpoint-tablet                  [10] ActuatorSpecifiers,
-    endpoint-workstation             [11] ActuatorSpecifiers,
+    endpoint_digital_telephone_handset [2] ActuatorSpecifiers,
+    endpoint_laptop                  [3] ActuatorSpecifiers,
+    endpoint_pos_terminal            [4] ActuatorSpecifiers,
+    endpoint_printer                 [5] ActuatorSpecifiers,
+    endpoint_sensor                  [6] ActuatorSpecifiers,
+    endpoint_server                  [7] ActuatorSpecifiers,
+    endpoint_smart_meter             [8] ActuatorSpecifiers,
+    endpoint_smart_phone             [9] ActuatorSpecifiers,
+    endpoint_tablet                  [10] ActuatorSpecifiers,
+    endpoint_workstation             [11] ActuatorSpecifiers,
     network                          [12] ActuatorSpecifiers,
-    network-bridge                   [13] ActuatorSpecifiers,
-    network-firewall                 [14] ActuatorSpecifiers,
-    network-gateway                  [15] ActuatorSpecifiers,
-    network-guard                    [16] ActuatorSpecifiers,
-    network-hips                     [17] ActuatorSpecifiers,
-    network-hub                      [18] ActuatorSpecifiers,
-    network-ids                      [19] ActuatorSpecifiers,
-    network-ips                      [20] ActuatorSpecifiers,
-    network-modem                    [21] ActuatorSpecifiers,
-    network-nic                      [22] ActuatorSpecifiers,
-    network-proxy                    [23] ActuatorSpecifiers,
-    network-router                   [24] ActuatorSpecifiers,
-    network-security-manager         [25] ActuatorSpecifiers,
-    network-sense-making             [26] ActuatorSpecifiers,
-    network-sensor                   [27] ActuatorSpecifiers,
-    network-switch                   [28] ActuatorSpecifiers,
-    network-vpn                      [29] ActuatorSpecifiers,
-    network-wap                      [30] ActuatorSpecifiers,
+    network_bridge                   [13] ActuatorSpecifiers,
+    network_firewall                 [14] ActuatorSpecifiers,
+    network_gateway                  [15] ActuatorSpecifiers,
+    network_guard                    [16] ActuatorSpecifiers,
+    network_hips                     [17] ActuatorSpecifiers,
+    network_hub                      [18] ActuatorSpecifiers,
+    network_ids                      [19] ActuatorSpecifiers,
+    network_ips                      [20] ActuatorSpecifiers,
+    network_modem                    [21] ActuatorSpecifiers,
+    network_nic                      [22] ActuatorSpecifiers,
+    network_proxy                    [23] ActuatorSpecifiers,
+    network_router                   [24] ActuatorSpecifiers,
+    network_security_manager         [25] ActuatorSpecifiers,
+    network_sense_making             [26] ActuatorSpecifiers,
+    network_sensor                   [27] ActuatorSpecifiers,
+    network_switch                   [28] ActuatorSpecifiers,
+    network_vpn                      [29] ActuatorSpecifiers,
+    network_wap                      [30] ActuatorSpecifiers,
     process                          [31] ActuatorSpecifiers,
-    process-aaa-server               [32] ActuatorSpecifiers,
-    process-anti-virus-scanner       [33] ActuatorSpecifiers,
-    process-connection-scanner       [34] ActuatorSpecifiers,
-    process-directory-server         [35] ActuatorSpecifiers,
-    process-dns-server               [36] ActuatorSpecifiers,
-    process-email-service            [37] ActuatorSpecifiers,
-    process-file-scanner             [38] ActuatorSpecifiers,
-    process-location-service         [39] ActuatorSpecifiers,
-    process-network-scanner          [40] ActuatorSpecifiers,
-    process-remediation-service      [41] ActuatorSpecifiers,
-    process-reputation-service       [42] ActuatorSpecifiers,
-    process-sandbox                  [43] ActuatorSpecifiers,
-    process-virtualization-service   [44] ActuatorSpecifiers,
-    process-vulnerability-scanner    [45] ActuatorSpecifiers
+    process_aaa_server               [32] ActuatorSpecifiers,
+    process_anti_virus_scanner       [33] ActuatorSpecifiers,
+    process_connection_scanner       [34] ActuatorSpecifiers,
+    process_directory_server         [35] ActuatorSpecifiers,
+    process_dns_server               [36] ActuatorSpecifiers,
+    process_email_service            [37] ActuatorSpecifiers,
+    process_file_scanner             [38] ActuatorSpecifiers,
+    process_location_service         [39] ActuatorSpecifiers,
+    process_network_scanner          [40] ActuatorSpecifiers,
+    process_remediation_service      [41] ActuatorSpecifiers,
+    process_reputation_service       [42] ActuatorSpecifiers,
+    process_sandbox                  [43] ActuatorSpecifiers,
+    process_virtualization_service   [44] ActuatorSpecifiers,
+    process_vulnerability_scanner    [45] ActuatorSpecifiers
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -159,12 +159,13 @@ Modifiers ::= MAP {
     delay        [3] Duration OPTIONAL,
     duration     [4] Duration OPTIONAL,
     frequency    [5] Duration OPTIONAL,
-    command-ref  [6] CommandID OPTIONAL,
+    command_ref  [6] CommandID OPTIONAL,
     response     [7] ResponseValue OPTIONAL,
     method       [8] MethodValue OPTIONAL,
     options      [9] STRING OPTIONAL,
     search       [10] SearchValue OPTIONAL,
-    where        [11] WhereValue OPTIONAL
+    where        [11] WhereValue OPTIONAL,
+    command_src  [12] DeviceID OPTIONAL
 }
 
 Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
@@ -356,12 +357,12 @@ mutex ::= RECORD {
 }
 
 ip-connection ::= RECORD {                  -- 5-tuple that specifies a tcp/ip connection
-    src-addr        socket-addr OPTIONAL,       -- source address
-    src-port        port OPTIONAL,              -- source TCP/UDP port number
-    dst-addr        socket-addr OPTIONAL,       -- destination address
-    dst-port        port OPTIONAL,              -- destination TCP/UDP port number
-    layer3-protocol layer3-protocol OPTIONAL,   -- IEEE 802 Ether Type
-    layer4-protocol layer4-protocol OPTIONAL    -- Protocol (IPv4) / Next Header (IPv6)
+    src_addr        socket-addr OPTIONAL,       -- source address
+    src_port        port OPTIONAL,              -- source TCP/UDP port number
+    dst_addr        socket-addr OPTIONAL,       -- destination address
+    dst_port        port OPTIONAL,              -- destination TCP/UDP port number
+    layer3_protocol layer3-protocol OPTIONAL,   -- IEEE 802 Ether Type
+    layer4_protocol layer4-protocol OPTIONAL    -- Protocol (IPv4) / Next Header (IPv6)
 }
 
 layer3-protocol ::= ENUMERATED {    -- IEEE 802 Ether Types - any IANA value, RFC 7042

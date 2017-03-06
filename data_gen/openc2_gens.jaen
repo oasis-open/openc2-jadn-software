@@ -1,4 +1,4 @@
-"Generated from data\openc2.jas, Mon Mar  6 16:24:35 2017"
+"Generated from data\openc2.jas, Mon Mar  6 16:44:24 2017"
 
 {
  "meta": {
@@ -281,13 +281,13 @@
   ],
 
   ["device", "Map", [], "", [
-    [1, "Description", "String", ["?"], ""],
-    [2, "Device_Type", "String", ["?"], ""],
-    [3, "Manufacturer", "String", ["?"], ""],
-    [4, "Model", "String", ["?"], ""],
-    [5, "Serial_Number", "String", ["?"], ""],
-    [6, "Firmware_Version", "String", ["?"], ""],
-    [7, "System_Details", "String", ["?"], ""]]
+    [1, "description", "String", ["?"], ""],
+    [2, "device_type", "String", ["?"], ""],
+    [3, "manufacturer", "String", ["?"], ""],
+    [4, "model", "String", ["?"], ""],
+    [5, "serial_number", "String", ["?"], ""],
+    [6, "firmware_version", "String", ["?"], ""],
+    [7, "system_details", "String", ["?"], ""]]
   ],
 
   ["directory", "Map", [], "", [

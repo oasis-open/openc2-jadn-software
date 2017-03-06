@@ -59,7 +59,7 @@ from jaen.codec.jaen import jaen_load
 command = {
     "action": "mitigate",
     "target": {
-        "domain-name": {
+        "domain_name": {
             "value": "cdn.badco.org"}}}
 
 schema = jaen_load("openc2.jaen")                           # Load and validate the OpenC2 schema

@@ -43,37 +43,35 @@ Action ::= ENUMERATED {
     locate       (2),
     query        (3),
     report       (4),
-    get          (5),
-    notify       (6),
-    deny         (7),
-    contain      (8),
-    allow        (9),
-    start        (10),
-    stop         (11),
-    restart      (12),
-    pause        (13),
-    resume       (14),
-    cancel       (15),
-    set          (16),
-    update       (17),
-    move         (18),
-    redirect     (19),
-    delete       (20),
-    snapshot     (21),
-    detonate     (22),
-    restore      (23),
-    save         (24),
-    modify       (25),
-    throttle     (26),
-    delay        (27),
-    substitute   (28),
-    copy         (29),
-    sync         (30),
-    distill      (31),
-    augment      (32),
-    investigate  (33),
-    mitigate     (34),
-    remediate    (35)
+    notify       (5),
+    deny         (6),
+    contain      (7),
+    allow        (8),
+    start        (9),
+    stop         (10),
+    restart      (11),
+    pause        (12),
+    resume       (13),
+    cancel       (14),
+    set          (15),
+    update       (16),
+    move         (17),
+    redirect     (18),
+    delete       (19),
+    snapshot     (20),
+    detonate     (21),
+    restore      (22),
+    save         (23),
+    throttle     (24),
+    delay        (25),
+    substitute   (26),
+    copy         (27),
+    sync         (28),
+    distill      (29),
+    augment      (30),
+    investigate  (31),
+    mitigate     (32),
+    remediate    (33)
 }
 
 Target ::= CHOICE {     -- OpenC2 Target datatypes
@@ -156,15 +154,17 @@ ActuatorSpecifiers ::= RECORD {
 }
 
 Modifiers ::= MAP {
-    delay        [1] Duration OPTIONAL,
-    duration     [2] Duration OPTIONAL,
-    frequency    [3] Duration OPTIONAL,
-    datetime     [4] DateTime OPTIONAL,
-    response     [5] ResponseValue OPTIONAL,
-    method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL,
-    context_ref  [8] INTEGER OPTIONAL,
-    id           [9] CommandID OPTIONAL
+    context      [1] STRING OPTIONAL,
+    datetime     [2] DateTime OPTIONAL,
+    delay        [3] Duration OPTIONAL,
+    duration     [4] Duration OPTIONAL,
+    frequency    [5] Duration OPTIONAL,
+    command-ref  [6] CommandID OPTIONAL,
+    response     [7] ResponseValue OPTIONAL,
+    method       [8] MethodValue OPTIONAL,
+    options      [9] STRING OPTIONAL,
+    search       [10] SearchValue OPTIONAL,
+    where        [11] WhereValue OPTIONAL
 }
 
 Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
@@ -215,6 +215,13 @@ StopMethod ::= ENUMERATED {
 WhereValue ::= ENUMERATED {
     internal     (1),
     perimeter    (2)
+}
+
+SearchValue ::= ENUMERATED {
+    cve             (1),
+    patch           (2),
+    vendor-bulletin (3),
+    signature       (4)
 }
 
 DeviceID ::= STRING             -- Device Identifier of the command issuer
@@ -282,13 +289,12 @@ device ::= MAP {
 }
 
 directory ::= MAP {
-    type        [1] STRING,                 -- MUST be "directory"
-    path        [2] STRING,                 -- Path, as originally observed, to the directory on the filesystem
-    path_enc    [3] STRING OPTIONAL,        -- Observed encoding for the path, from the IANA Character Set Registry
-    created     [4] Timestamp OPTIONAL,     -- Date/time the directory was created
-    modified    [5] Timestamp OPTIONAL,     -- Date/time the directory was last written-to/modified
-    accessed    [6] Timestamp OPTIONAL,     -- Date/time the directory was last accessed
-    contains    [7] dir-contents OPTIONAL   -- List of files/directories contained within the directory
+    path        [1] STRING,                 -- Path, as originally observed, to the directory on the filesystem
+    path_enc    [2] STRING OPTIONAL,        -- Observed encoding for the path, from the IANA Character Set Registry
+    created     [3] Timestamp OPTIONAL,     -- Date/time the directory was created
+    modified    [4] Timestamp OPTIONAL,     -- Date/time the directory was last written-to/modified
+    accessed    [5] Timestamp OPTIONAL,     -- Date/time the directory was last accessed
+    contains    [6] dir-contents OPTIONAL   -- List of files/directories contained within the directory
 }
 
 dir-contents ::= ARRAY_OF(dirfile)
@@ -318,11 +324,11 @@ email-addr ::= RECORD {
 }
 
 email-message ::= RECORD {  -- TODO: finish
-    type         STRING              -- MUST be "email-message"
+
 }
 
 file ::= RECORD {  -- TODO: finish
-    type         STRING              -- MUST be "file"
+
 }
 
 ipv4-addr ::= RECORD {
@@ -396,25 +402,25 @@ layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port 
 }
 
 process ::= RECORD {
-    type         STRING     -- MUST be "process"
+
 }
 
 software ::= RECORD {
-    type         STRING     -- MUST be "software"
+
 }
 
 url ::= RECORD {
-    type         STRING     -- MUST be "url"
+
 }
 
 user-account ::= RECORD {
-    type         STRING     -- MUST be "user-account"
+
 }
 
 windows-registry-key ::= RECORD {
-    type         STRING     -- MUST be "windows-registry-key"
+
 }
 
 x509-certificate ::= RECORD {
-    type         STRING     -- MUST be "x509-certificate"
+
 }

@@ -42,37 +42,35 @@
     [2, "locate", ""],
     [3, "query", ""],
     [4, "report", ""],
-    [5, "get", ""],
-    [6, "notify", ""],
-    [7, "deny", ""],
-    [8, "contain", ""],
-    [9, "allow", ""],
-    [10, "start", ""],
-    [11, "stop", ""],
-    [12, "restart", ""],
-    [13, "pause", ""],
-    [14, "resume", ""],
-    [15, "cancel", ""],
-    [16, "set", ""],
-    [17, "update", ""],
-    [18, "move", ""],
-    [19, "redirect", ""],
-    [20, "delete", ""],
-    [21, "snapshot", ""],
-    [22, "detonate", ""],
-    [23, "restore", ""],
-    [24, "save", ""],
-    [25, "modify", ""],
-    [26, "throttle", ""],
-    [27, "delay", ""],
-    [28, "substitute", ""],
-    [29, "copy", ""],
-    [30, "sync", ""],
-    [31, "distill", ""],
-    [32, "augment", ""],
-    [33, "investigate", ""],
-    [34, "mitigate", ""],
-    [35, "remediate", ""]]
+    [5, "notify", ""],
+    [6, "deny", ""],
+    [7, "contain", ""],
+    [8, "allow", ""],
+    [9, "start", ""],
+    [10, "stop", ""],
+    [11, "restart", ""],
+    [12, "pause", ""],
+    [13, "resume", ""],
+    [14, "cancel", ""],
+    [15, "set", ""],
+    [16, "update", ""],
+    [17, "move", ""],
+    [18, "redirect", ""],
+    [19, "delete", ""],
+    [20, "snapshot", ""],
+    [21, "detonate", ""],
+    [22, "restore", ""],
+    [23, "save", ""],
+    [24, "throttle", ""],
+    [25, "delay", ""],
+    [26, "substitute", ""],
+    [27, "copy", ""],
+    [28, "sync", ""],
+    [29, "distill", ""],
+    [30, "augment", ""],
+    [31, "investigate", ""],
+    [32, "mitigate", ""],
+    [33, "remediate", ""]]
   ],
 
   ["Target", "Choice", [], "OpenC2 Target datatypes", [
@@ -155,15 +153,17 @@
   ],
 
   ["Modifiers", "Map", [], "", [
-    [1, "delay", "Duration", ["?"], ""],
-    [2, "duration", "Duration", ["?"], ""],
-    [3, "frequency", "Duration", ["?"], ""],
-    [4, "datetime", "DateTime", ["?"], ""],
-    [5, "response", "ResponseValue", ["?"], ""],
-    [6, "method", "MethodValue", ["?"], ""],
-    [7, "where", "WhereValue", ["?"], ""],
-    [8, "context_ref", "Integer", ["?"], ""],
-    [9, "id", "CommandID", ["?"], ""]]
+    [1, "context", "String", ["?"], ""],
+    [2, "datetime", "DateTime", ["?"], ""],
+    [3, "delay", "Duration", ["?"], ""],
+    [4, "duration", "Duration", ["?"], ""],
+    [5, "frequency", "Duration", ["?"], ""],
+    [6, "command-ref", "CommandID", ["?"], ""],
+    [7, "response", "ResponseValue", ["?"], ""],
+    [8, "method", "MethodValue", ["?"], ""],
+    [9, "options", "String", ["?"], ""],
+    [10, "search", "SearchValue", ["?"], ""],
+    [11, "where", "WhereValue", ["?"], ""]]
   ],
 
   ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
@@ -214,6 +214,13 @@
   ["WhereValue", "Enumerated", [], "", [
     [1, "internal", ""],
     [2, "perimeter", ""]]
+  ],
+
+  ["SearchValue", "Enumerated", [], "", [
+    [1, "cve", ""],
+    [2, "patch", ""],
+    [3, "vendor-bulletin", ""],
+    [4, "signature", ""]]
   ],
 
   ["DeviceID", "String", [], "Device Identifier of the command issuer"],
@@ -281,13 +288,12 @@
   ],
 
   ["directory", "Map", [], "", [
-    [1, "type", "String", [], "MUST be \"directory\""],
-    [2, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
-    [3, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
-    [4, "created", "Timestamp", ["?"], "Date/time the directory was created"],
-    [5, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
-    [6, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
-    [7, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
+    [1, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
+    [2, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
+    [3, "created", "Timestamp", ["?"], "Date/time the directory was created"],
+    [4, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
+    [5, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
+    [6, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
   ["dir-contents", "Array", [], "", [
@@ -320,13 +326,9 @@
     [3, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
-  ["email-message", "Record", [], "TODO: finish", [
-    [1, "type", "String", [], "MUST be \"email-message\""]]
-  ],
+  ["email-message", "Record", [], "TODO: finish", []],
 
-  ["file", "Record", [], "TODO: finish", [
-    [1, "type", "String", [], "MUST be \"file\""]]
-  ],
+  ["file", "Record", [], "TODO: finish", []],
 
   ["ipv4-addr", "Record", [], "", [
     [1, "value", "String", [], "Specifies one or more IPv4 addresses using CIDR notation"],
@@ -404,28 +406,16 @@
     [443, "https", "HTTP over TLS"]]
   ],
 
-  ["process", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"process\""]]
-  ],
+  ["process", "Record", [], "", []],
 
-  ["software", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"software\""]]
-  ],
+  ["software", "Record", [], "", []],
 
-  ["url", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"url\""]]
-  ],
+  ["url", "Record", [], "", []],
 
-  ["user-account", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"user-account\""]]
-  ],
+  ["user-account", "Record", [], "", []],
 
-  ["windows-registry-key", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"windows-registry-key\""]]
-  ],
+  ["windows-registry-key", "Record", [], "", []],
 
-  ["x509-certificate", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"x509-certificate\""]]
-  ]]
+  ["x509-certificate", "Record", [], "", []]]
 
 }

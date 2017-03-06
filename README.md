@@ -42,9 +42,9 @@ After editing a JAS schema, the corresponding JAEN schema (`xxx_gens.jaen') shou
 from the output to the input directory after deleting the source line at the top of the file.
 
 ### Getting Started
-1. Use a Python 3 environment.  Install the jsonschema (for the codec)and XlsxWriter
+1. Use a Python 3 environment.  Install the jsonschema (for the codec) and XlsxWriter
 (for the converter property table generator) packages if not already installed.
-This software was developed under Python 3.5 and is not yet ported to Python 2.x.
+This software was developed under Python 3.3-3.5 and is not yet ported to Python 2.x.
 
 2. Look at the test_openc2.py file for example OpenC2 commands in JSON format.
 
@@ -69,7 +69,7 @@ print("Sent Message =", json.dumps(message1))
 ```
 4. An OpenC2 consumer application would receive an encoded message, then decode/validate it:
 ```
-received_msg = '[34, {"7": ["cdn.badco.org"]}]'             # Received OpenC2 command in JSON-minified format
+received_msg = '[32, {"7": ["cdn.badco.org"]}]'             # Received OpenC2 command in JSON-minified format
 message2 = json.loads(received_msg)
 codec.set_mode(verbose_rec=False, verbose_str=False)        # Tell codec to use JSON-minified encoding
 command2 = codec.decode("OpenC2Command", message2)          # Validate and decode the command

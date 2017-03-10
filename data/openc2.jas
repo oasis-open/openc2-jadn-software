@@ -307,14 +307,14 @@ dirfile ::= CHOICE {
 
 domain-name ::= RECORD {
     value        STRING,            -- Value of the domain name
-    resolves_to  dnvalues OPTIONAL  -- List of IP addresses or domain names
+    resolves_to  ip-addrs OPTIONAL  -- List of IP addresses or domain names
 }
 
-dnvalues ::= ARRAY_OF(dnvalue)      -- List of IP addresses or domain names
+ip-addrs ::= ARRAY_OF(ip-addr)      -- List of IP addresses or domain names
 
-dnvalue ::= CHOICE {
-    v4           [1] ipv4-addr,
-    v6           [2] ipv6-addr,
+ip-addr ::= CHOICE {
+    ipv4         [1] ipv4-addr,
+    ipv6         [2] ipv6-addr,
     name         [3] domain-name
 }
 
@@ -332,14 +332,18 @@ file ::= RECORD {  -- TODO: finish
 
 }
 
+ipv4-str ::= STRING                     -- IPv4 address or range in CIDR notation
+
 ipv4-addr ::= RECORD {
-    value             STRING,               -- Specifies one or more IPv4 addresses using CIDR notation
+    value             ipv4-str,             -- Specifies one or more IPv4 addresses
     resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
     belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
+ipv6-str ::= STRING                     -- IPv6 address or range
+
 ipv6-addr ::= RECORD {
-    value             ipv4-str,             -- Specifies one or more IPv4 addresses using CIDR notation
+    value             ipv6-str,             -- Specifies one or more IPv6 addresses
     resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
     belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
@@ -357,9 +361,9 @@ mutex ::= RECORD {
 }
 
 ip-connection ::= RECORD {                  -- 5-tuple that specifies a tcp/ip connection
-    src_addr        socket-addr OPTIONAL,       -- source address
+    src_addr        ip-addr OPTIONAL,           -- source address
     src_port        port OPTIONAL,              -- source TCP/UDP port number
-    dst_addr        socket-addr OPTIONAL,       -- destination address
+    dst_addr        ip-addr OPTIONAL,           -- destination address
     dst_port        port OPTIONAL,              -- destination TCP/UDP port number
     layer3_protocol layer3-protocol OPTIONAL,   -- IEEE 802 Ether Type
     layer4_protocol layer4-protocol OPTIONAL    -- Protocol (IPv4) / Next Header (IPv6)
@@ -370,15 +374,6 @@ layer3-protocol ::= ENUMERATED {    -- IEEE 802 Ether Types - any IANA value, RF
     ARP         (2054),     -- 0x0806 Address Resolution Protocol
     IPv6        (34525),    -- 0x86DD Internet Protocol Version 6
     MPLS        (34887)     -- 0x8847 Multi-Protocol Label Switching
-}
-
-socket-addrs ::= ARRAY_OF(socket-addr)
-
-socket-addr ::= CHOICE {
-    ipv4    [1] ipv4-addr,
-    ipv6    [2] ipv6-addr,
-    mac     [3] mac-addr,
-    dns     [4] domain-name
 }
 
 port ::= CHOICE {                   -- TCP/UDP port number or protocol

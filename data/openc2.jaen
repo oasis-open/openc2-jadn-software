@@ -308,16 +308,16 @@
 
   ["domain-name", "Record", [], "", [
     [1, "value", "String", [], "Value of the domain name"],
-    [2, "resolves_to", "dnvalues", ["?"], "List of IP addresses or domain names"]]
+    [2, "resolves_to", "ip-addrs", ["?"], "List of IP addresses or domain names"]]
   ],
 
-  ["dnvalues", "Array", [], "List of IP addresses or domain names", [
-    [0, "", "dnvalue", [], ""]]
+  ["ip-addrs", "Array", [], "List of IP addresses or domain names", [
+    [0, "", "ip-addr", [], ""]]
   ],
 
-  ["dnvalue", "Choice", [], "", [
-    [1, "v4", "ipv4-addr", [], ""],
-    [2, "v6", "ipv6-addr", [], ""],
+  ["ip-addr", "Choice", [], "", [
+    [1, "ipv4", "ipv4-addr", [], ""],
+    [2, "ipv6", "ipv6-addr", [], ""],
     [3, "name", "domain-name", [], ""]]
   ],
 
@@ -331,14 +331,18 @@
 
   ["file", "Record", [], "TODO: finish", []],
 
+  ["ipv4-str", "String", [], "IPv4 address or range in CIDR notation"],
+
   ["ipv4-addr", "Record", [], "", [
-    [1, "value", "String", [], "Specifies one or more IPv4 addresses using CIDR notation"],
+    [1, "value", "ipv4-str", [], "Specifies one or more IPv4 addresses"],
     [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
     [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
 
+  ["ipv6-str", "String", [], "IPv6 address or range"],
+
   ["ipv6-addr", "Record", [], "", [
-    [1, "value", "ipv4-str", [], "Specifies one or more IPv4 addresses using CIDR notation"],
+    [1, "value", "ipv6-str", [], "Specifies one or more IPv6 addresses"],
     [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
     [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
@@ -360,9 +364,9 @@
   ],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
-    [1, "src_addr", "socket-addr", ["?"], "source address"],
+    [1, "src_addr", "ip-addr", ["?"], "source address"],
     [2, "src_port", "port", ["?"], "source TCP/UDP port number"],
-    [3, "dst_addr", "socket-addr", ["?"], "destination address"],
+    [3, "dst_addr", "ip-addr", ["?"], "destination address"],
     [4, "dst_port", "port", ["?"], "destination TCP/UDP port number"],
     [5, "layer3_protocol", "layer3-protocol", ["?"], "IEEE 802 Ether Type"],
     [6, "layer4_protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
@@ -373,17 +377,6 @@
     [2054, "ARP", "0x0806 Address Resolution Protocol"],
     [34525, "IPv6", "0x86DD Internet Protocol Version 6"],
     [34887, "MPLS", "0x8847 Multi-Protocol Label Switching"]]
-  ],
-
-  ["socket-addrs", "Array", [], "", [
-    [0, "", "socket-addr", [], ""]]
-  ],
-
-  ["socket-addr", "Choice", [], "", [
-    [1, "ipv4", "ipv4-addr", [], ""],
-    [2, "ipv6", "ipv6-addr", [], ""],
-    [3, "mac", "mac-addr", [], ""],
-    [4, "dns", "domain-name", [], ""]]
   ],
 
   ["port", "Choice", [], "TCP/UDP port number or protocol", [

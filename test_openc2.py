@@ -40,7 +40,7 @@ class OpenC2(unittest.TestCase):
             "target": {
                 "ip_connection": {
                     "src_addr": {
-                        "dns": {"value": "www.badco.com"}
+                        "name": {"value": "www.badco.com"}
                     },
                     "src_port": {
                         "protocol": "https"
@@ -62,7 +62,7 @@ class OpenC2(unittest.TestCase):
         cmd_noname = {
             "1": 6,
             "2": {"15": {
-                "1": {"4": {"1": "www.badco.com"}},
+                "1": {"3": {"1": "www.badco.com"}},
                 "2": {"2": 443},
                 "3": {"1": {"1": "192.168.1.1"}},
                 "6": 6}},
@@ -76,7 +76,7 @@ class OpenC2(unittest.TestCase):
         cmd_concise = [
             "deny",
             {"ip_connection": [
-                {"dns": ["www.badco.com"]},
+                {"name": ["www.badco.com"]},
                 {"protocol": "https"},
                 {"ipv4": ["192.168.1.1"]},
                 None,
@@ -90,7 +90,7 @@ class OpenC2(unittest.TestCase):
 
         cmd_min = [6,
             {"15": [
-                {"4": ["www.badco.com"]},
+                {"3": ["www.badco.com"]},
                 {"2": 443},
                 {"1": ["192.168.1.1"]},
                 None,
@@ -191,7 +191,7 @@ class OpenC2(unittest.TestCase):
                 "domain_name": {
                     "value": "www.example.com",
                     "resolves_to": [
-                        {"v4": {"value": "198.51.100.2"}},
+                        {"ipv4": {"value": "198.51.100.2"}},
                         {"name": {"value": "ms34.example.com"}}]}}}
         cmd_noname = {         # unused (dict/tag)
             "1": 1,
@@ -207,7 +207,7 @@ class OpenC2(unittest.TestCase):
                 "domain_name": [
                     "www.example.com",
                     [
-                        {"v4": ["198.51.100.2"]},
+                        {"ipv4": ["198.51.100.2"]},
                         {"name": ["ms34.example.com"]}]]}]
         cmd_min = [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
 

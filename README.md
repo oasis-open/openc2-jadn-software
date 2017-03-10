@@ -37,8 +37,6 @@ example data (good and bad cases) and calling conventions for the software.
    None vs. null, etc.)
 - jaen-convert.py - Convert JAEN specifications between formats (Current: JAS, JAEN, and property
  tables.  Potential: JSON schema, XSD, CDDL)
-   - openc2 - Schema that defines the OpenC2 message format, including the target data model.
-   The ability to import data models is planned but not supported in the current version.
 
 ### Data
 The converter utility reads `.jas` and `.jaen` schemas from an input directory (data) and writes
@@ -46,6 +44,9 @@ converted files to an output directory (data_gen).  Output files ending in `_gen
 produced from JAEN sources, while those ending in `_gens` are produced from JAS sources.
 After editing a JAS schema, the corresponding JAEN schema (`xxx_gens.jaen') should be moved
 from the output to the input directory after deleting the source line at the top of the file.
+- openc2.jaen - Schema that defines the OpenC2 message format, including the target data model.  The
+ability to import data models from multiple schema files is planned but not supported
+in the current version.
 
 ### Getting Started
 1. Use a Python 3 environment.  Install the jsonschema (for the codec) and XlsxWriter
@@ -75,7 +76,7 @@ print("Sent Message =", json.dumps(message1))
 ```
 4. An OpenC2 consumer application would receive an encoded message, then decode/validate it:
 ```
-received_msg = '[32, {"7": ["cdn.badco.org"]}]'             # Received OpenC2 command in JSON-minified format
+received_msg = '[32,{"7":["cdn.badco.org"]}]'               # Received OpenC2 command in JSON-minified format
 message2 = json.loads(received_msg)
 codec.set_mode(verbose_rec=False, verbose_str=False)        # Tell codec to use JSON-minified encoding
 command2 = codec.decode("OpenC2Command", message2)          # Validate and decode the command

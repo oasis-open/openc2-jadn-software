@@ -262,16 +262,16 @@ hashes-type ::= MAP {
     WHIRLPOOL    [14] Hex       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
 }
 
-payload ::= CHOICE {
-    payload_bin  [1] Base64,    -- Specifies the binary data contained in the artifact as a base64-encoded string.
-    url          [2] STRING     -- MUST be a valid URL that resolves to the un-encoded content
-}
-
 artifact ::= RECORD {
     type         STRING,             -- MUST be "artifact"
     mime_type    STRING OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
     *            payload OPTIONAL,       -- choice of literal content or URL to obtain content
     hashes       hashes-type OPTIONAL    -- Specifies a dictionary of hashes for the contents of the payload
+}
+
+payload ::= CHOICE {
+    payload_bin  [1] Base64,    -- Specifies the binary data contained in the artifact as a base64-encoded string.
+    url          [2] STRING     -- MUST be a valid URL that resolves to the un-encoded content
 }
 
 commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
@@ -332,33 +332,23 @@ file ::= RECORD {  -- TODO: finish
 
 }
 
-ipv4-str ::= STRING                     -- IPv4 address or range in CIDR notation
-
 ipv4-addr ::= RECORD {
-    value             ipv4-str,             -- Specifies one or more IPv4 addresses
+    value             STRING,               -- IPv4 address or range in CIDR notation
     resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
     belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
-ipv6-str ::= STRING                     -- IPv6 address or range
-
 ipv6-addr ::= RECORD {
-    value             ipv6-str,             -- Specifies one or more IPv6 addresses
+    value             STRING,               -- IPv6 address or range
     resolves_to_refs  mac-addrs OPTIONAL,   -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
     belongs_to_refs   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
 mac-addrs ::= ARRAY_OF(mac-addr)
 
+mac-addr ::= STRING                         -- Colon-delimited MAC-48 address with leading zeros for each octet
+
 asystems ::= ARRAY_OF(autonomous-system)
-
-mac-addr ::= RECORD {
-    value        STRING      -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
-}
-
-mutex ::= RECORD {
-    name         STRING      -- Specifies the name of the mutex object.
-}
 
 ip-connection ::= RECORD {                  -- 5-tuple that specifies a tcp/ip connection
     src_addr        ip-addr OPTIONAL,           -- source address
@@ -369,16 +359,16 @@ ip-connection ::= RECORD {                  -- 5-tuple that specifies a tcp/ip c
     layer4_protocol layer4-protocol OPTIONAL    -- Protocol (IPv4) / Next Header (IPv6)
 }
 
+port ::= CHOICE {                   -- TCP/UDP port number or protocol
+    number      [1] INTEGER,            -- Port number (e.g., dynamically assigned)
+    protocol    [2] layer7-protocol     -- Registered port nummber (registered with IANA)
+}
+
 layer3-protocol ::= ENUMERATED {    -- IEEE 802 Ether Types - any IANA value, RFC 7042
     IPv4        (2048),     -- 0x0800 Internet Protocol Version 4
     ARP         (2054),     -- 0x0806 Address Resolution Protocol
     IPv6        (34525),    -- 0x86DD Internet Protocol Version 6
     MPLS        (34887)     -- 0x8847 Multi-Protocol Label Switching
-}
-
-port ::= CHOICE {                   -- TCP/UDP port number or protocol
-    number      [1] INTEGER,            -- Port number (e.g., dynamically assigned)
-    protocol    [2] layer7-protocol     -- Registered port nummber (registered with IANA)
 }
 
 layer4-protocol ::= ENUMERATED {    -- protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
@@ -402,12 +392,14 @@ process ::= RECORD {
 }
 
 software ::= RECORD {
-
+    name        STRING,             -- Name of the software
+    cpe         STRING OPTIONAL,    -- From Common Platform Enumeration (CPE) v2.3 dictionary
+    language    STRING OPTIONAL,    -- Language of the software from ISO 639-2
+    vendor      STRING OPTIONAL,    -- Vendor of the software
+    version     STRING OPTIONAL     -- Version of the software
 }
 
-url ::= RECORD {
-
-}
+url ::= STRING
 
 user-account ::= RECORD {
 

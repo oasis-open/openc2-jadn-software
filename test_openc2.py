@@ -39,18 +39,11 @@ class OpenC2(unittest.TestCase):
             "action": "deny",
             "target": {
                 "ip_connection": {
-                    "src_addr": {
-                        "name": {"value": "www.badco.com"}
-                    },
-                    "src_port": {
-                        "protocol": "https"
-                    },
-                    "dst_addr": {
-                        "ipv4": {"value": "192.168.1.1"}
-                    },
+                    "src_addr": {"name": {"value": "www.badco.com"}},
+                    "src_port": {"protocol": "https"},
+                    "dst_addr": {"ipv4": {"value": "192.168.1.1"}},
                     "layer4_protocol": "TCP"
-                }
-            },
+                }},
             "actuator": {
                 "network_firewall": {"asset_id": "30"}},
             "modifiers": {

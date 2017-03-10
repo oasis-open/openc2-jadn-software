@@ -261,16 +261,16 @@
     [14, "WHIRLPOOL", "Hex", [], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
   ],
 
-  ["payload", "Choice", [], "", [
-    [1, "payload_bin", "Base64", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
-    [2, "url", "String", [], "MUST be a valid URL that resolves to the un-encoded content"]]
-  ],
-
   ["artifact", "Record", [], "", [
     [1, "type", "String", [], "MUST be \"artifact\""],
     [2, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
     [3, "*", "payload", ["?"], "choice of literal content or URL to obtain content"],
     [4, "hashes", "hashes-type", ["?"], "Specifies a dictionary of hashes for the contents of the payload"]]
+  ],
+
+  ["payload", "Choice", [], "", [
+    [1, "payload_bin", "Base64", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
+    [2, "url", "String", [], "MUST be a valid URL that resolves to the un-encoded content"]]
   ],
 
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
@@ -331,18 +331,14 @@
 
   ["file", "Record", [], "TODO: finish", []],
 
-  ["ipv4-str", "String", [], "IPv4 address or range in CIDR notation"],
-
   ["ipv4-addr", "Record", [], "", [
-    [1, "value", "ipv4-str", [], "Specifies one or more IPv4 addresses"],
+    [1, "value", "String", [], "IPv4 address or range in CIDR notation"],
     [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
     [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
 
-  ["ipv6-str", "String", [], "IPv6 address or range"],
-
   ["ipv6-addr", "Record", [], "", [
-    [1, "value", "ipv6-str", [], "Specifies one or more IPv6 addresses"],
+    [1, "value", "String", [], "IPv6 address or range"],
     [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
     [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
@@ -351,16 +347,10 @@
     [0, "", "mac-addr", [], ""]]
   ],
 
+  ["mac-addr", "String", [], "Colon-delimited MAC-48 address with leading zeros for each octet"],
+
   ["asystems", "Array", [], "", [
     [0, "", "autonomous-system", [], ""]]
-  ],
-
-  ["mac-addr", "Record", [], "", [
-    [1, "value", "String", [], "Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01"]]
-  ],
-
-  ["mutex", "Record", [], "", [
-    [1, "name", "String", [], "Specifies the name of the mutex object."]]
   ],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
@@ -372,16 +362,16 @@
     [6, "layer4_protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
   ],
 
+  ["port", "Choice", [], "TCP/UDP port number or protocol", [
+    [1, "number", "Integer", [], "Port number (e.g., dynamically assigned)"],
+    [2, "protocol", "layer7-protocol", [], "Registered port nummber (registered with IANA)"]]
+  ],
+
   ["layer3-protocol", "Enumerated", [], "IEEE 802 Ether Types - any IANA value, RFC 7042", [
     [2048, "IPv4", "0x0800 Internet Protocol Version 4"],
     [2054, "ARP", "0x0806 Address Resolution Protocol"],
     [34525, "IPv6", "0x86DD Internet Protocol Version 6"],
     [34887, "MPLS", "0x8847 Multi-Protocol Label Switching"]]
-  ],
-
-  ["port", "Choice", [], "TCP/UDP port number or protocol", [
-    [1, "number", "Integer", [], "Port number (e.g., dynamically assigned)"],
-    [2, "protocol", "layer7-protocol", [], "Registered port nummber (registered with IANA)"]]
   ],
 
   ["layer4-protocol", "Enumerated", [], "protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237", [
@@ -402,9 +392,15 @@
 
   ["process", "Record", [], "", []],
 
-  ["software", "Record", [], "", []],
+  ["software", "Record", [], "", [
+    [1, "name", "String", [], "Name of the software"],
+    [2, "cpe", "String", ["?"], "From Common Platform Enumeration (CPE) v2.3 dictionary"],
+    [3, "language", "String", ["?"], "Language of the software from ISO 639-2"],
+    [4, "vendor", "String", ["?"], "Vendor of the software"],
+    [5, "version", "String", ["?"], "Version of the software"]]
+  ],
 
-  ["url", "Record", [], "", []],
+  ["url", "String", [], ""],
 
   ["user-account", "Record", [], "", []],
 

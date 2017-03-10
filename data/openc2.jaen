@@ -380,8 +380,8 @@
   ],
 
   ["socket-addr", "Choice", [], "", [
-    [1, "v4", "ipv4-addr", [], ""],
-    [2, "v6", "ipv6-addr", [], ""],
+    [1, "ipv4", "ipv4-addr", [], ""],
+    [2, "ipv6", "ipv6-addr", [], ""],
     [3, "mac", "mac-addr", [], ""],
     [4, "dns", "domain-name", [], ""]]
   ],

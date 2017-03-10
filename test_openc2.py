@@ -46,7 +46,7 @@ class OpenC2(unittest.TestCase):
                         "protocol": "https"
                     },
                     "dst_addr": {
-                        "v4": {"value": "192.168.1.1"}
+                        "ipv4": {"value": "192.168.1.1"}
                     },
                     "layer4_protocol": "TCP"
                 }
@@ -78,7 +78,7 @@ class OpenC2(unittest.TestCase):
             {"ip_connection": [
                 {"dns": ["www.badco.com"]},
                 {"protocol": "https"},
-                {"v4": ["192.168.1.1"]},
+                {"ipv4": ["192.168.1.1"]},
                 None,
                 None,
                 "TCP"]},

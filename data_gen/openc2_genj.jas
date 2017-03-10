@@ -1,4 +1,4 @@
--- Generated from data\openc2.jaen, Mon Mar  6 16:44:24 2017
+-- Generated from data\openc2.jaen, Fri Mar 10 08:22:13 2017
 
 /*
 module:        openc2
@@ -385,8 +385,8 @@ socket-addrs ::= ARRAY_OF {
 }
 
 socket-addr ::= CHOICE {
-    v4           [1] ipv4-addr,
-    v6           [2] ipv6-addr,
+    ipv4         [1] ipv4-addr,
+    ipv6         [2] ipv6-addr,
     mac          [3] mac-addr,
     dns          [4] domain-name
 }

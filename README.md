@@ -2,7 +2,9 @@
 JSON Abstract Encoding Notation (JAEN, pronounced "Jane") is a JSON document format for defining abstract schemas.
 Unlike concrete schema languages such as XSD and JSON Schema, JAEN defines the structure of datatypes independently
 of the serialization used to communicate and store data objects.  An encoder/decoder (codec) validates the structure
-of data objects against the JAEN schema and serializes/deserializes objects using a specified message format.
+of data objects against the JAEN schema and serializes/deserializes objects using a specified message format.  The
+codec currently supports four JSON-based serialization formats, and can be extended to support XML and binary (CBOR,
+Protocol Buffers, etc) serializations.
 
 ## JAS
 JAEN Abstract Syntax (or perhaps JAen Source -- JAS) is a source format used to create JAEN files.  Although a JAEN
@@ -28,9 +30,13 @@ are developed first, then software is written to make the tests pass.  Test scri
 example data (good and bad cases) and calling conventions for the software.
 - test_codec.py - Unit tests for encoder and decoder functions
 - test_openc2.py - Unit tests for OpenC2 commands
-   - This file contains example OpenC2 commands in API format and three JSON-encoded formats
-   (Minified, Concise, and an unused format included for completeness of the codec test suite.)
-- jaen-convert.py - Convert JAEN specifications between formats
+   - This file contains example OpenC2 commands in API format and four JSON-based formats:
+   Verbose, Minified, Concise, and an unused format included for completeness of the codec test suite.
+   The API format is the Python literal representation of a data item, similar but not identical to the
+   JSON-Verbose serialization of that item ('single' vs. "double" quoted strings, True vs. true,
+   None vs. null, etc.)
+- jaen-convert.py - Convert JAEN specifications between formats (Current: JAS, JAEN, and property
+ tables.  Potential: JSON schema, XSD, CDDL)
    - openc2 - Schema that defines the OpenC2 message format, including the target data model.
    The ability to import data models is planned but not supported in the current version.
 

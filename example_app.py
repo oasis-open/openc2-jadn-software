@@ -11,7 +11,7 @@ command = {
         "domain_name": {
             "value": "cdn.badco.org"}}}
 
-schema = jaen_load(os.path.join("data", "openc2.jaen"))     # Load and validate the OpenC2 schema
+schema = jaen_load(os.path.join("schema", "openc2.jaen"))     # Load and validate the OpenC2 schema
 codec = Codec(schema, verbose_rec=True, verbose_str=True)   # Create an OpenC2 encoder/decoder (JSON-Verbose encoding)
 message1 = codec.encode("OpenC2Command", command)           # Validate and encode the command
 print("Sent Message =", json.dumps(message1))

@@ -9,7 +9,7 @@ from jaen.codec.codec_utils import flatten, fluff
 class OpenC2(unittest.TestCase):
 
     def setUp(self):
-        jaen = jaen_load(os.path.join("data", "openc2.jaen"))
+        jaen = jaen_load(os.path.join("schema", "openc2.jaen"))
         self.tc = Codec(jaen)
 
     def test1_mitigate(self):

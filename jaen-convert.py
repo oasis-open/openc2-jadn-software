@@ -10,8 +10,8 @@ from jaen.convert.tr_tables import table_dump
 
 if __name__ == "__main__":
     for fn in ("openc2",):
-        ifname = os.path.join("data", fn)
-        ofname = os.path.join("data_gen", fn)
+        ifname = os.path.join("schema", fn)
+        ofname = os.path.join("schema_gen", fn)
 
         # Convert JAEN Abstract Syntax (JAS) to JAEN
 

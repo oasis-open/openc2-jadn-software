@@ -38,9 +38,9 @@ example data (good and bad cases) and calling conventions for the software.
 - jaen-convert.py - Convert JAEN specifications between formats (Current: JAS, JAEN, and property
  tables.  Potential: JSON schema, XSD, CDDL)
 
-### Data
-The converter utility reads `.jas` and `.jaen` schemas from an input directory (data) and writes
-converted files to an output directory (data_gen).  Output files ending in `_genj` are
+### Schemas
+The converter utility reads `.jas` and `.jaen` schemas from an input directory (schema) and writes
+converted files to an output directory (schema_gen).  Output files ending in `_genj` are
 produced from JAEN sources, while those ending in `_gens` are produced from JAS sources.
 After editing a JAS schema, the corresponding JAEN schema (`xxx_gens.jaen') should be moved
 from the output to the input directory after deleting the source line at the top of the file.

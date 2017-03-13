@@ -170,7 +170,7 @@ Modifiers ::= MAP {
 
 Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
 
-DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
+DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")     -- RFC 3339 format date and time
 
 ResponseValue ::= ENUMERATED {
     ack          (1),
@@ -243,8 +243,6 @@ Base64 ::= STRING       -- A sequence of octets encoded as a Base64 string
 
 Hex ::= STRING          -- A sequence of octets encoded as a hexadecimal string
 
-Timestamp ::= STRING    -- RFC 3339 format date and time
-
 hashes-type ::= MAP {
     MD5          [1] Hex,       -- MD5 message digest as defined in RFC3121
     MD6          [2] Hex,       -- MD6 message digest as defined in MD6 proposal
@@ -274,6 +272,12 @@ payload ::= CHOICE {
     url          [2] STRING     -- MUST be a valid URL that resolves to the un-encoded content
 }
 
+autonomous-system ::= RECORD {
+    number      INTEGER,            -- Number assigned to the AS, typically by a Regional Internet Registry
+    name        STRING OPTIONAL,    -- Name of the AS
+    rir         STRING OPTIONAL     -- Regional Internet Registry (RIR) that assigned the number to the AS
+}
+
 commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
     actions     (1),            -- results = JSON array of supported action verbs
     schema      (2)             -- results = JAEN syntax of supported commands
@@ -292,9 +296,9 @@ device ::= MAP {
 directory ::= MAP {
     path        [1] STRING,                 -- Path, as originally observed, to the directory on the filesystem
     path_enc    [2] STRING OPTIONAL,        -- Observed encoding for the path, from the IANA Character Set Registry
-    created     [3] Timestamp OPTIONAL,     -- Date/time the directory was created
-    modified    [4] Timestamp OPTIONAL,     -- Date/time the directory was last written-to/modified
-    accessed    [5] Timestamp OPTIONAL,     -- Date/time the directory was last accessed
+    created     [3] DateTime OPTIONAL,      -- Date/time the directory was created
+    modified    [4] DateTime OPTIONAL,      -- Date/time the directory was last written-to/modified
+    accessed    [5] DateTime OPTIONAL,      -- Date/time the directory was last accessed
     contains    [6] dir-contents OPTIONAL   -- List of files/directories contained within the directory
 }
 
@@ -399,10 +403,36 @@ software ::= RECORD {
     version     STRING OPTIONAL     -- Version of the software
 }
 
-url ::= STRING
+url ::= STRING              -- Uniform Resource Locator
 
-user-account ::= RECORD {
+user-account ::= MAP {
+    user_id                 [1] STRING,             -- Identifier of the account.  Format depends on the system the account is maintained in.
+    account_login           [2] STRING OPTIONAL,    -- Account login string, in cases where user_id is other than what the user types to log in.
+    account_type            [3] STRING OPTIONAL,    -- Value from the account-type vocabulary
+    display_name            [4] STRING OPTIONAL,    -- Display name of the account (e.g., Unix GECOS field)
+    is_service_account      [5] BOOLEAN OPTIONAL,   -- Account is associated with a network service or system process, not an individual.
+    is_privileged           [6] BOOLEAN OPTIONAL,   -- Account has elevated privileges
+    can_escalate_privs      [7] BOOLEAN OPTIONAL,   -- Account has the ability to escalate privileges
+    is_disabled             [8] BOOLEAN OPTIONAL,   -- Account is disabled
+    account_created         [9] DateTime OPTIONAL,  -- Creation date of the account
+    account_expires        [10] DateTime OPTIONAL,  -- Expiration date of the account
+    password_last_changed  [11] DateTime OPTIONAL,  -- When the account password was last changed
+    account_first_login    [12] DateTime OPTIONAL,  -- When the account was first accessed
+    account_last_login     [13] DateTime OPTIONAL   -- When the account was last accessed
+}
 
+account-type ::= ENUMERATED {
+    unix            (1),    -- POSIX account
+    windows-local   (2),    -- Windows local account
+    windows-domain  (3),    -- Windows domain account
+    ldap            (4),    -- Lightweight Directory Access Protocol (LDAP) account
+    tacacs          (5),    -- Terminal Access Controller Access Control System (TACACS) account
+    radius          (6),    -- Remote Authentication Dial-in User Service (RADIUS - RFC 2865) account
+    nis             (7),    -- Network Information System (NIS) account
+    openid          (8),    -- OpenID account
+    facebook        (9),    -- Facebook account
+    skype           (10),   -- Skype account
+    twitter         (11)    -- Twitter account
 }
 
 windows-registry-key ::= RECORD {

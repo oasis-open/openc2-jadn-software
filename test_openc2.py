@@ -95,18 +95,7 @@ class OpenC2(unittest.TestCase):
              "4": "PT2M30S",
              "6": "pf17_8675309"}]
 
-        """
-        # Legacy schema:
-        Actuator ::= RECORD {
-            type         ActuatorType,
-            specifiers   ActuatorObject.&type OPTIONAL
-        }
-        "actuator": {
-            "type": "network-firewall",
-            "specifiers": {
-                "asset_id": "30"}}
-        """
-                                            # Minified (list/tag)
+                          # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
         self.tc.set_mode(False, True)       # Concise (list/name)
@@ -139,45 +128,6 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
     def test4_query2(self):
-        '''
-        # Alternate Target Data Model Schemas
-        cmd_api2 = {           # Literal STIX Object
-            "action": "scan",
-            "target": {
-                "0": {
-                    "type": "domain-name",
-                    "value": "www.example.com",
-                    "resolves_to_refs": ["1", "2"]
-                },
-                "1": {
-                    "type": "ipv4-addr",
-                    "value": "198.51.100.2"
-                },
-                "2": {
-                    "type": "domain-name",
-                    "value": "ms34.example.com"
-                }
-            }
-        }
-
-        cmd_api3 = {           # Type-Specifiers
-            "action": "scan",
-            "target": {
-                "type": "domain-name",
-                "specifiers": {
-                    "value": "www.example.com",
-                    "resolves_to": [{
-                        "type": "ipv4-addr",
-                        "value": "198.51.100.2"
-                    },{
-                        "type": "domain-name",
-                        "value": "ms34.example.com"
-                    }]
-                }
-            }
-        }
-        '''
-
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {
@@ -186,6 +136,7 @@ class OpenC2(unittest.TestCase):
                     "resolves_to": [
                         {"ipv4": {"value": "198.51.100.2"}},
                         {"name": {"value": "ms34.example.com"}}]}}}
+
         cmd_noname = {         # unused (dict/tag)
             "1": 1,
             "2": {
@@ -194,6 +145,7 @@ class OpenC2(unittest.TestCase):
                     "2": [
                         {"1":{"1": "198.51.100.2"}},
                         {"3":{"1": "ms34.example.com"}}]}}}
+
         cmd_concise = [        # Concise (list/name)
             "scan",
             {
@@ -202,6 +154,7 @@ class OpenC2(unittest.TestCase):
                     [
                         {"ipv4": ["198.51.100.2"]},
                         {"name": ["ms34.example.com"]}]]}]
+
         cmd_min = [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
 
                                             # Minified (list/tag)

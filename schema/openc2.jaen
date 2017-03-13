@@ -169,7 +169,7 @@
 
   ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
 
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 format date and time"],
 
   ["ResponseValue", "Enumerated", [], "", [
     [1, "ack", ""],
@@ -242,8 +242,6 @@
 
   ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
 
-  ["Timestamp", "String", [], "RFC 3339 format date and time"],
-
   ["hashes-type", "Map", [], "", [
     [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],
     [2, "MD6", "Hex", [], "MD6 message digest as defined in MD6 proposal"],
@@ -273,6 +271,12 @@
     [2, "url", "String", [], "MUST be a valid URL that resolves to the un-encoded content"]]
   ],
 
+  ["autonomous-system", "Record", [], "", [
+    [1, "number", "Integer", [], "Number assigned to the AS, typically by a Regional Internet Registry"],
+    [2, "name", "String", ["?"], "Name of the AS"],
+    [3, "rir", "String", ["?"], "Regional Internet Registry (RIR) that assigned the number to the AS"]]
+  ],
+
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
     [2, "schema", "results = JAEN syntax of supported commands"]]
@@ -291,9 +295,9 @@
   ["directory", "Map", [], "", [
     [1, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
     [2, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
-    [3, "created", "Timestamp", ["?"], "Date/time the directory was created"],
-    [4, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
-    [5, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
+    [3, "created", "DateTime", ["?"], "Date/time the directory was created"],
+    [4, "modified", "DateTime", ["?"], "Date/time the directory was last written-to/modified"],
+    [5, "accessed", "DateTime", ["?"], "Date/time the directory was last accessed"],
     [6, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
@@ -400,9 +404,37 @@
     [5, "version", "String", ["?"], "Version of the software"]]
   ],
 
-  ["url", "String", [], ""],
+  ["url", "String", [], "Uniform Resource Locator"],
 
-  ["user-account", "Record", [], "", []],
+  ["user-account", "Map", [], "", [
+    [1, "user_id", "String", [], "Identifier of the account.  Format depends on the system the account is maintained in."],
+    [2, "account_login", "String", ["?"], "Account login string, in cases where user_id is other than what the user types to log in."],
+    [3, "account_type", "String", ["?"], "Value from the account-type vocabulary"],
+    [4, "display_name", "String", ["?"], "Display name of the account (e.g., Unix GECOS field)"],
+    [5, "is_service_account", "Boolean", ["?"], "Account is associated with a network service or system process, not an individual."],
+    [6, "is_privileged", "Boolean", ["?"], "Account has elevated privileges"],
+    [7, "can_escalate_privs", "Boolean", ["?"], "Account has the ability to escalate privileges"],
+    [8, "is_disabled", "Boolean", ["?"], "Account is disabled"],
+    [9, "account_created", "DateTime", ["?"], "Creation date of the account"],
+    [10, "account_expires", "DateTime", ["?"], "Expiration date of the account"],
+    [11, "password_last_changed", "DateTime", ["?"], "When the account password was last changed"],
+    [12, "account_first_login", "DateTime", ["?"], "When the account was first accessed"],
+    [13, "account_last_login", "DateTime", ["?"], "When the account was last accessed"]]
+  ],
+
+  ["account-type", "Enumerated", [], "", [
+    [1, "unix", "POSIX account"],
+    [2, "windows-local", "Windows local account"],
+    [3, "windows-domain", "Windows domain account"],
+    [4, "ldap", "Lightweight Directory Access Protocol (LDAP) account"],
+    [5, "tacacs", "Terminal Access Controller Access Control System (TACACS) account"],
+    [6, "radius", "Remote Authentication Dial-in User Service (RADIUS - RFC 2865) account"],
+    [7, "nis", "Network Information System (NIS) account"],
+    [8, "openid", "OpenID account"],
+    [9, "facebook", "Facebook account"],
+    [10, "skype", "Skype account"],
+    [11, "twitter", "Twitter account"]]
+  ],
 
   ["windows-registry-key", "Record", [], "", []],
 

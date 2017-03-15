@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Mon Mar 13 13:02:15 2017"
+"Generated from schema\openc2.jaen, Wed Mar 15 11:05:41 2017"
 
 {
  "meta": {
@@ -281,7 +281,8 @@
 
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
-    [2, "schema", "results = JAEN syntax of supported commands"]]
+    [2, "schema", "results = JAEN syntax of supported commands"],
+    [3, "actuators", "results = JSON array of actuator group names"]]
   ],
 
   ["device", "Map", [], "", [

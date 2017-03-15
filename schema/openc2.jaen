@@ -279,7 +279,8 @@
 
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
-    [2, "schema", "results = JAEN syntax of supported commands"]]
+    [2, "schema", "results = JAEN syntax of supported commands"],
+    [3, "actuators", "results = JSON array of actuator group names"]]
   ],
 
   ["device", "Map", [], "", [

@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Mon Mar 13 13:02:15 2017
+-- Generated from schema\openc2.jaen, Wed Mar 15 11:05:41 2017
 
 /*
 module:        openc2
@@ -282,7 +282,8 @@ autonomous-system ::= RECORD {
 
 commands ::= ENUMERATED {    -- Target used to query Actuator for its supported capabilities
     actions      (1),    -- results = JSON array of supported action verbs
-    schema       (2)     -- results = JAEN syntax of supported commands
+    schema       (2),    -- results = JAEN syntax of supported commands
+    actuators    (3)     -- results = JSON array of actuator group names
 }
 
 device ::= MAP {

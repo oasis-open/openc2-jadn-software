@@ -280,7 +280,8 @@ autonomous-system ::= RECORD {
 
 commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
     actions     (1),            -- results = JSON array of supported action verbs
-    schema      (2)             -- results = JAEN syntax of supported commands
+    schema      (2),            -- results = JAEN syntax of supported commands
+    actuators   (3)             -- results = JSON array of actuator group names
 }
 
 device ::= MAP {

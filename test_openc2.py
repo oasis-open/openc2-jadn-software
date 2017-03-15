@@ -34,7 +34,49 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test2_deny(self):
+    def test2_contain(self):
+        cmd_api = {
+            "action": "contain",
+            "target": {
+                "user_account":{
+                    "user_id": "21942",
+                    "account_login": "jsmith",
+                    "is_disabled": True,
+                    "account_last_login": "1997"}}}
+
+        cmd_noname = {
+            "1":7,
+            "2":{
+                "19":{
+                    "1": "21942",
+                    "2": "jsmith",
+                    "8": True,
+                    "13": "1997"}}}
+
+        cmd_concise = [
+            "contain",{
+                "user_account":{
+                    "user_id": "21942",
+                    "account_login": "jsmith",
+                    "is_disabled": True,
+                    "account_last_login": "1997"}}]
+
+        cmd_min = [7,{"19":{"1":"21942","2":"jsmith","8": True,"13":"1997"}}]
+
+                                            # Minified (list/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
+        self.tc.set_mode(False, True)       # Concise (list/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
+        self.tc.set_mode(True, False)       # unused (dict/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+
+    def test3_deny(self):
         cmd_api = {
             "action": "deny",
             "target": {
@@ -108,7 +150,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test3_query1(self):
+    def test4_query1(self):
         cmd_api = {"action": "query", "target": {"commands":"schema"}}
         cmd_noname = {"1":3, "2":{"2":2}}
         cmd_concise = ["query", {"commands":"schema"}]
@@ -127,7 +169,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test4_query2(self):
+    def test5_query2(self):
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {

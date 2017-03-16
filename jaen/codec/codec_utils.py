@@ -44,11 +44,26 @@ def flatten(cmd, path="", fc={}, sep="."):
         for k, v in cmd.items():
             k = k.split(":")[1] if ":" in k else k
             fcmd = flatten(v, sep.join((path, k)) if path else k, fcmd)
+    elif isinstance(cmd, list):
+        for n, v in enumerate(cmd):
+            fcmd.update(flatten(v, sep.join([path, str(n)])))
     else:
-#        fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
-        fcmd[path] = str(cmd)
+        fcmd[path] = cmd
     return (fcmd)
 
+def dlist(src):
+    """
+    Convert dicts with numeric keys to lists
+
+    :param src: {"a": {"b": {"0":"red", "1":"blue"}, "c": "foo"}}
+    :return: {"a": {"b": ["red", "blue"], "c": "foo"}}
+    """
+    if isinstance(src, dict):
+        for k in src:
+            src[k] = dlist(src[k])
+        if set(src) == set([str(k) for k in range(len(src))]):
+            src = [src[str(k)] for k in range(len(src))]
+    return src
 
 # Option conversions
 

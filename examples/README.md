@@ -57,7 +57,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
             "user_id": "21942",
             "account_login": "jsmith",
             "is_disabled": true,
-            "account_last_login": "1997"}}}
+            "account_last_login": "2017-03-16T07:38:12-04:00"}}}
 ```
 #### API Flat
 ```
@@ -75,11 +75,11 @@ bandwidth messages for a text-based encoding, although binary encodings would be
             "user_id": "21942",
             "account_login": "jsmith",
             "is_disabled": true,
-            "account_last_login": "1997"}}]
+            "account_last_login": "2017-03-16T07:38:12-04:00"}}]
 ```
 #### Minified
 ```
-[7,{"19":{"1":"21942","2":"jsmith","8": true,"13":"1997"}}]
+[7,{"19":{"1":"21942","2":"jsmith","8": true,"13":"2017-03-16T07:38:12-04:00"}}]
 ```
 ### -- DENY --
 #### API / Verbose

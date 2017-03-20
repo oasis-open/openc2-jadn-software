@@ -32,9 +32,9 @@ class OpenC2(unittest.TestCase):
             "action": "mitigate",
             "target.domain_name.value": "cdn.badco.org"
         }
-        cmd_noname = {'1': 32, '2': {'7': {'1': 'cdn.badco.org'}}}
+        cmd_noname = {"1": 32, "2": {"7": {"1": "cdn.badco.org"}}}
         cmd_concise = ["mitigate",{"domain_name": ["cdn.badco.org"]}]
-        cmd_min = [32, {'7': ['cdn.badco.org']}]
+        cmd_min = [32, {"7": ["cdn.badco.org"]}]
 
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)

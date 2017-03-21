@@ -53,7 +53,8 @@ in the current version.
 (for the converter property table generator) packages if not already installed.
 This software was developed under Python 3.3-3.5 and is not yet ported to Python 2.x.
 
-2. Look at the test_openc2.py file for example OpenC2 commands in JSON format.
+2. Look at the [examples](examples) folder for example OpenC2 commands in JSON format.
+These files are generated automatically by the `test_openc2.py` unit test.
 
 3. An OpenC2 producer application would create a python dict containing an OpenC2 command, load the
 openc2.jaen schema, and encode the command:

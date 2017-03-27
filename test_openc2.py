@@ -118,9 +118,9 @@ class OpenC2(unittest.TestCase):
             "actuator": {
                 "network_firewall": {"asset_id": "30"}},
             "modifiers": {
-                "command_ref": "pf17_8675309",
+                "command_id": "pf17_8675309",
                 "context": "91",
-                "datetime": "2016-11-25T08:10:31-04:00",
+                "start_time": "2016-11-25T08:10:31-04:00",
                 "duration": "PT2M30S"}}
 
         cmd_flat = {
@@ -130,9 +130,9 @@ class OpenC2(unittest.TestCase):
             "target.ip_connection.dst_addr.ipv4.value": "192.168.1.1",
             "target.ip_connection.layer4_protocol": "TCP",
             "actuator.network_firewall.asset_id": "30",
-            "modifiers.command_ref": "pf17_8675309",
+            "modifiers.command_id": "pf17_8675309",
             "modifiers.context": "91",
-            "modifiers.datetime": "2016-11-25T08:10:31-04:00",
+            "modifiers.start_time": "2016-11-25T08:10:31-04:00",
             "modifiers.duration": "PT2M30S"
         }
 
@@ -161,9 +161,9 @@ class OpenC2(unittest.TestCase):
                 "TCP"]},
             {"network_firewall": [None, "30"]},
             {"context": "91",
-            "datetime": "2016-11-25T08:10:31-04:00",
+            "start_time": "2016-11-25T08:10:31-04:00",
             "duration": "PT2M30S",
-            "command_ref": "pf17_8675309"}]
+            "command_id": "pf17_8675309"}]
 
         cmd_min = [6,
             {"15": [

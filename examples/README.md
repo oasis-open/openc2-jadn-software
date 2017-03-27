@@ -9,14 +9,14 @@ use JSON serializations, but XML and binary serializations are also possible.  T
 are encoding alternatives derived from the same abstract syntax; they are not alternative syntax
 specifications requiring separate development and maintenance.
 
-**API / Verbose:** Structured data object as used by a Python application, and the direct JSON
-serialization of that object as produced by `json.dumps`.  Python literal notation is similar but
+**API and JSON-verbose:** Structured data object as used by a Python application, and the direct JSON
+serialization of that object as produced by `json.dump`.  Python literal notation is similar but
 not identical to JSON, so the JSON examples shown here would need to be slightly edited for use
 as Python literals if they contain boolean or null values.
 
 **API Flat:** Some developers may find it more convenient to work with flattened data values, e.g.
 a dictionary containing only primitive data values instead of a dictionary containing nested complex data.
-The JAEN package includes routines `flatten` and `fluff` to convert between structured and flat Python dicts.
+The JAEN package includes routines `flatten` and `fluff` to convert between structured and flat Python API values.
 
 **JSON-concise:** A message format shown primarily to illustrate how positional encoding eliminates
 the need to transmit dictionary keys with every message.  This format produces messages intermediate
@@ -28,7 +28,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 
 
 ### -- MITIGATE --
-#### API / Verbose
+#### API and JSON-verbose
 ```
 {   "action": "mitigate",
     "target": {
@@ -49,7 +49,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 [32,{"7":["cdn.badco.org"]}]
 ```
 ### -- CONTAIN --
-#### API / Verbose
+#### API and JSON-verbose
 ```
 {   "action": "contain",
     "target": {
@@ -82,7 +82,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 [7,{"19":{"1":"21942","2":"jsmith","8": true,"13":"2017-03-16T07:38:12-04:00"}}]
 ```
 ### -- DENY --
-#### API / Verbose
+#### API and JSON-verbose
 ```
 {   "action": "deny",
     "target": {
@@ -138,7 +138,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 "6":"pf17_8675309"}]
 ```
 ### -- Scan --
-#### API / Verbose
+#### API and JSON-verbose
 ```
 {   "action": "scan",
     "target": {

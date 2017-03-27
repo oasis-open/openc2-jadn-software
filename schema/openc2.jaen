@@ -26,9 +26,9 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "source", "DeviceID", [], "ID of the command issuer, from \"command-src\" modifier"],
-    [2, "cmdref", "CommandID", [], "Command unique identifier, from \"command-ref\" modifier"],
-    [3, "status", "StatusCode", [], "Adapted from HTTP Status Codes, RFC 7231"],
+    [1, "source", "device-id", [], "ID of the command issuer, from \"command-src\" modifier"],
+    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command-id\" modifier"],
+    [3, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [4, "statusText", "String", [], "Status description"],
     [5, "results", "String", [], "Results of executing the command"]]
   ],
@@ -38,10 +38,10 @@
   ],
 
   ["Action", "Enumerated", [], "", [
-    [1, "scan", ""],
-    [2, "locate", ""],
-    [3, "query", ""],
-    [4, "report", ""],
+    [1, "scan", "Systematic examination of some aspect of the target entity or its environment."],
+    [2, "locate", "Find the target object physically, logically, functionally, or by organization."],
+    [3, "query", "Initiate a request for information."],
+    [4, "report", "Task an entity to provide information to a designated recipient."],
     [5, "notify", ""],
     [6, "deny", ""],
     [7, "contain", ""],
@@ -153,30 +153,40 @@
   ],
 
   ["Modifiers", "Map", [], "", [
-    [1, "context", "String", ["?"], ""],
-    [2, "datetime", "DateTime", ["?"], ""],
-    [3, "delay", "Duration", ["?"], ""],
-    [4, "duration", "Duration", ["?"], ""],
-    [5, "frequency", "Duration", ["?"], ""],
-    [6, "command_ref", "CommandID", ["?"], ""],
-    [7, "response", "ResponseValue", ["?"], ""],
-    [8, "method", "MethodValue", ["?"], ""],
-    [9, "options", "String", ["?"], ""],
-    [10, "search", "SearchValue", ["?"], ""],
-    [11, "where", "WhereValue", ["?"], ""],
-    [12, "command_src", "DeviceID", ["?"], ""]]
+    [1, "context", "String", ["?"], "universal"],
+    [2, "start_time", "date-time", ["?"], "universal"],
+    [3, "end_time", "date-time", ["?"], "universal"],
+    [4, "duration", "duration", ["?"], "pause"],
+    [5, "frequency", "duration", ["?"], "report, notify, restart, update, sync"],
+    [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
+    [7, "command_src", "url", ["?"], "add to universal"],
+    [8, "response", "response-type", ["?"], "universal"],
+    [9, "source", "url", ["?"], "update"],
+    [10, "destination", "url", ["?"], "(investigate/mitigate/remediate was report_to, copy, move, save)"],
+    [11, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
+    [12, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
+    [13, "search", "search-type", ["?"], "scan"],
+    [14, "where", "where", ["?"], "allow, deny, contain"],
+    [15, "message", "String", ["?"], "notify"],
+    [16, "command_ref", "command-id", ["?"], "cancel"],
+    [17, "network_acl", "network-acl", ["?"], "firewall profile"],
+    [18, "segmentation", "segmentation", ["?"], "firewall profile"]]
   ],
 
-  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
+  ["date-time", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],
 
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 format date and time"],
+  ["duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], "RFC 3339 / ISO 8601 duration (regex is for dur-time option only, need full duration)"],
 
-  ["ResponseValue", "Enumerated", [], "", [
+  ["command-id", "String", [], "Command unique identifier"],
+
+  ["device-id", "String", [], "Device Identifier / Address"],
+
+  ["response-type", "Enumerated", [], "", [
     [1, "ack", ""],
     [2, "status", ""]]
   ],
 
-  ["MethodValue", "Choice", [], "Method must agree with Action (test descriptions)", [
+  ["method-value", "Choice", [], "Method must agree with Action (test descriptions)", [
     [1, "deny", "DenyMethod", [], "Action must be \"deny\""],
     [2, "pause", "PauseMethod", [], "Action must be 'pause'"],
     [3, "scan", "ScanMethod", [], "Action must be 'scan\""],
@@ -212,23 +222,24 @@
     [2, "immediate", ""]]
   ],
 
-  ["WhereValue", "Enumerated", [], "", [
-    [1, "internal", ""],
-    [2, "perimeter", ""]]
-  ],
-
-  ["SearchValue", "Enumerated", [], "", [
+  ["search-type", "Enumerated", [], "", [
     [1, "cve", ""],
     [2, "patch", ""],
     [3, "vendor-bulletin", ""],
     [4, "signature", ""]]
   ],
 
-  ["DeviceID", "String", [], "Device Identifier of the command issuer"],
+  ["where", "Enumerated", [], "", [
+    [1, "internal", ""],
+    [2, "perimeter", ""],
+    [3, "unspecified", "redirect, was \"where = null\""]]
+  ],
 
-  ["CommandID", "String", [], "Command unique identifier"],
+  ["network-acl", "Record", [], "", []],
 
-  ["StatusCode", "Enumerated", [], "Adapted from HTTP Status Codes, RFC 7231", [
+  ["segmentation", "Record", [], "", []],
+
+  ["status-code", "Enumerated", [], "Adapted from HTTP Status Codes, RFC 7231", [
     [102, "Processing", "1xx: Informational"],
     [200, "OK", "2xx: Success"],
     [400, "Bad_Request", "3xx: Redirection"],
@@ -280,7 +291,7 @@
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
     [2, "schema", "results = JAEN syntax of supported commands"],
-    [3, "actuators", "results = JSON array of actuator group names"]]
+    [3, "actuator_groups", "results = JSON array of actuator group names"]]
   ],
 
   ["device", "Map", [], "", [
@@ -296,9 +307,9 @@
   ["directory", "Map", [], "", [
     [1, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
     [2, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
-    [3, "created", "DateTime", ["?"], "Date/time the directory was created"],
-    [4, "modified", "DateTime", ["?"], "Date/time the directory was last written-to/modified"],
-    [5, "accessed", "DateTime", ["?"], "Date/time the directory was last accessed"],
+    [3, "created", "date-time", ["?"], "Date/time the directory was created"],
+    [4, "modified", "date-time", ["?"], "Date/time the directory was last written-to/modified"],
+    [5, "accessed", "date-time", ["?"], "Date/time the directory was last accessed"],
     [6, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
@@ -311,12 +322,16 @@
     [2, "f", "file", [], ""]]
   ],
 
+  ["disk", "Map", [], "CybOX 2.1", []],
+
+  ["disk-partition", "Map", [], "CybOX 2.1", []],
+
   ["domain-name", "Record", [], "", [
     [1, "value", "String", [], "Value of the domain name"],
     [2, "resolves_to", "ip-addrs", ["?"], "List of IP addresses or domain names"]]
   ],
 
-  ["ip-addrs", "Array", [], "List of IP addresses or domain names", [
+  ["ip-addrs", "Array", [], "", [
     [0, "", "ip-addr", [], ""]]
   ],
 
@@ -395,6 +410,8 @@
     [443, "https", "HTTP over TLS"]]
   ],
 
+  ["memory", "Map", [], "CybOX 2.1", []],
+
   ["process", "Record", [], "", []],
 
   ["software", "Record", [], "", [
@@ -410,17 +427,17 @@
   ["user-account", "Map", [], "", [
     [1, "user_id", "String", [], "Identifier of the account.  Format depends on the system the account is maintained in."],
     [2, "account_login", "String", ["?"], "Account login string, in cases where user_id is other than what the user types to log in."],
-    [3, "account_type", "String", ["?"], "Value from the account-type vocabulary"],
+    [3, "account_type", "account-type", ["?"], "Value from the account-type vocabulary"],
     [4, "display_name", "String", ["?"], "Display name of the account (e.g., Unix GECOS field)"],
     [5, "is_service_account", "Boolean", ["?"], "Account is associated with a network service or system process, not an individual."],
     [6, "is_privileged", "Boolean", ["?"], "Account has elevated privileges"],
     [7, "can_escalate_privs", "Boolean", ["?"], "Account has the ability to escalate privileges"],
     [8, "is_disabled", "Boolean", ["?"], "Account is disabled"],
-    [9, "account_created", "DateTime", ["?"], "Creation date of the account"],
-    [10, "account_expires", "DateTime", ["?"], "Expiration date of the account"],
-    [11, "password_last_changed", "DateTime", ["?"], "When the account password was last changed"],
-    [12, "account_first_login", "DateTime", ["?"], "When the account was first accessed"],
-    [13, "account_last_login", "DateTime", ["?"], "When the account was last accessed"]]
+    [9, "account_created", "date-time", ["?"], "Creation date of the account"],
+    [10, "account_expires", "date-time", ["?"], "Expiration date of the account"],
+    [11, "password_last_changed", "date-time", ["?"], "When the account password was last changed"],
+    [12, "account_first_login", "date-time", ["?"], "When the account was first accessed"],
+    [13, "account_last_login", "date-time", ["?"], "When the account was last accessed"]]
   ],
 
   ["account-type", "Enumerated", [], "", [
@@ -437,7 +454,43 @@
     [11, "twitter", "Twitter account"]]
   ],
 
-  ["windows-registry-key", "Record", [], "", []],
+  ["user-session", "Map", [], "CybOX 2.1", []],
+
+  ["volume", "Map", [], "CybOX 2.1", []],
+
+  ["windows-registry-key", "Record", [], "", [
+    [1, "key", "String", [], "Full registry key including the hive."],
+    [2, "values", "windows-registry-values", ["?"], "Values found under the registry key."],
+    [3, "modified", "date-time", ["?"], "Last date-time the registry key was modified."],
+    [4, "creator_user", "user-account", ["?"], "User account that created the registry key"],
+    [5, "number_of_subkeys", "Integer", ["?"], "Number of subkeys contained under the registry key"]]
+  ],
+
+  ["windows-registry-values", "Array", [], "", [
+    [0, "", "windows-registry-value", [], ""]]
+  ],
+
+  ["windows-registry-value", "Record", [], "", [
+    [1, "name", "String", [], "Name of the registry value.  Empty string specifies the default value."],
+    [2, "data", "String", ["?"], "Data contained in the registry key."],
+    [3, "data_type", "windows-registry-datatype-enum", ["?"], "Registry data type used in the registry value."]]
+  ],
+
+  ["windows-registry-datatype-enum", "Enumerated", [], "", [
+    [0, "REG_NONE", "No defined value type."],
+    [1, "REG_SZ", "A null-terminated string."],
+    [2, "REG_EXPAND_SZ", "A null-terminated string with unexpanded references to environment variables."],
+    [3, "REG_BINARY", "Binary data in any form."],
+    [4, "REG_DWORD", "A 32 bit number."],
+    [5, "REG_DWORD_BIG_ENDIAN", "A 32 bit number in big-endian format."],
+    [6, "REG_LINK", "A null-terminated string that contains the target path of a symbolic link."],
+    [7, "REG_MULTI_SZ", "A sequence of null-terminated strings, terminated by an empty string (\\0)."],
+    [8, "REG_RESOURCE_LIST", "A series of nested lists designed to store a resource list used by a hardware device driver."],
+    [9, "REG_FULL_RESOURCE_DESCRIPTION", "A series of nested lists designed to store a resource list used by a physical hardware device."],
+    [10, "REG_RESOURCE_REQUIREMENTS_LIST", "Device driver list of hardware resource requirements in Resource Map tree."],
+    [11, "REG_QWORD", "A 64 bit number."],
+    [12, "REG_INVALID_TYPE", "An invalid key."]]
+  ],
 
   ["x509-certificate", "Record", [], "", []]]
 

@@ -85,8 +85,8 @@ TDESC = 3       # Type description
 FIELDS = 4      # List of fields
 
 # JAEN Field Definition columns
-TAG = 0         # Element ID
-NAME = 1        # Element name
+FTAG = 0        # Element ID
+FNAME = 1        # Element name
 EDESC = 2       # Description (for enumerated types)
 FTYPE = 2       # Datatype of field
 FOPTS = 3       # Field options
@@ -113,8 +113,8 @@ def jaen_check(jaen):
         if t[1] == "Array":
             if len(t[FIELDS]) != 1:
                 print("Type format error:", t[TNAME], "- array must have one type element, not", len(t[FIELDS]))
-            if t[FIELDS][0][TAG] != 0:
-                print("Type format error:", t[TNAME], "- array type must not have tag", t[FIELDS][0][TAG])
+            if t[FIELDS][0][FTAG] != 0:
+                print("Type format error:", t[TNAME], "- array type must not have tag", t[FIELDS][0][FTAG])
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
@@ -122,14 +122,14 @@ def jaen_check(jaen):
         if len(t) > 4:
             n = 3 if t[1] == "Enumerated" else 5
             for k, i in enumerate(t[FIELDS]):       # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
-                tags.update(set([i[TAG]]))          # or (enumerated): 0-tag, 1-name, 2-description
-                if t[TTYPE] == "Record" and i[TAG] != k + 1:
-                    print("Item tag error:", t[TTYPE], i[NAME], i[TAG], "should be", k + 1)
+                tags.update(set([i[FTAG]]))         # or (enumerated): 0-tag, 1-name, 2-description
+                if t[TTYPE] == "Record" and i[FTAG] != k + 1:
+                    print("Item tag error:", t[TTYPE], i[FNAME], i[FTAG], "should be", k + 1)
                 if len(i) != n:
-                    print("Item format error:", t[TNAME], t[TTYPE], i[NAME], "-", len(i), "!=", n)
+                    print("Item format error:", t[TNAME], t[TTYPE], i[FNAME], "-", len(i), "!=", n)
                 for o in opts_s2d(i[3]) if n > 3 else []:
                     if o not in ["atfield", "optional", "range"]:
-                        print("Invalid field option:", t[TNAME], i[NAME], o)
+                        print("Invalid field option:", t[TNAME], i[FNAME], o)
             if len(t[FIELDS]) != len(tags):
                 print("Tag collision", t[TNAME], len(t[FIELDS]), "items,", len(tags), "unique tags")
     return jaen

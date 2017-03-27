@@ -119,7 +119,7 @@ class Codec:
                 symval[S_EMAP] = {f[NAME]: str(f[fx]) for f in t[FIELDS]}
             return symval
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
-        self.symtab.update({t:[None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
+        self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
 
 
 def _check_type(ts, val, vtype):
@@ -131,6 +131,7 @@ def _check_type(ts, val, vtype):
             else:
                 raise TypeError("Primitive: %r is not %s" % (val, vtype))
 
+
 def _bad_value(ts, val, fld=None):
     td = ts[S_TDEF]
     if fld is not None:
@@ -138,9 +139,11 @@ def _bad_value(ts, val, fld=None):
     else:
         raise ValueError("%s(%s): bad value: %s" % (td[TNAME], td[TTYPE], val))
 
+
 def _extra_value(ts, val, fld):
     td = ts[S_TDEF]
     raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], val, fld))
+
 
 def _decode_array(ts, val, codec):
     _check_type(ts, val, list)                  # TODO: check min/max array length
@@ -181,6 +184,7 @@ def _decode_choice(ts, val, codec):
         _bad_value(ts, val)
     f = ts[S_FLD][k][S_FDEF]
     return {f[NAME]: codec.decode(f[FTYPE], val[k])}
+
 
 def _encode_choice(ts, val, codec):
     _check_type(ts, val, dict)
@@ -260,7 +264,7 @@ def _decode_maprec(ts, val, codec):
 def _encode_maprec(ts, val, codec):
     _check_type(ts, val, dict)
     encval = ts[S_ETYPE]()
-    fnames = [f[S_FDEF][NAME] for k,f in ts[S_FLD].items()]
+    fnames = [f[S_FDEF][NAME] for k, f in ts[S_FLD].items()]
     extra = set(val) - set(fnames)
     if extra:
         _extra_value(ts, val, fnames)
@@ -289,6 +293,13 @@ def _encode_string(ts, val, codec):
     _check_type(ts, val, str)
     return val
 
+
+def is_primitive(vtype):
+    return vtype in "Binary", "Boolean", "Integer", "Number", "String"
+
+
+def is_builtin(vtype):
+    return vtype in enctab
 
 enctab = {  # decode, encode, min encoded type
     "Binary": [_decode_binary, _encode_binary, str],

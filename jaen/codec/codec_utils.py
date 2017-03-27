@@ -6,6 +6,7 @@ Support functions for JAEN codec
 
 from functools import reduce
 
+
 # Dict conversion utilities
 
 def _dmerge(x, y):
@@ -49,7 +50,8 @@ def flatten(cmd, path="", fc={}, sep="."):
             fcmd.update(flatten(v, sep.join([path, str(n)])))
     else:
         fcmd[path] = cmd
-    return (fcmd)
+    return fcmd
+
 
 def dlist(src):
     """
@@ -64,6 +66,7 @@ def dlist(src):
         if set(src) == set([str(k) for k in range(len(src))]):
             src = [src[str(k)] for k in range(len(src))]
     return src
+
 
 # Option conversions
 
@@ -87,7 +90,7 @@ def opts_s2d(ostr):
         elif o[0] == "{":
             opts["atfield"] = o[1:]
         elif o[0] == "[":
-            opts["range"] = (0,0)
+            opts["range"] = (0, 0)
         elif o[0] == ">":
             opts["pattern"] = o[1:]
         else:

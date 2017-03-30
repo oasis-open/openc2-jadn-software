@@ -27,8 +27,8 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source      device-id,      -- ID of the command issuer, from "command-src" modifier
-    command_ref command-id,     -- Command unique identifier, from "command-id" modifier
+    source      device-id,      -- ID of the command issuer, from "command_src" modifier
+    command_ref command-id,     -- Command unique identifier, from "command_id" modifier
     status      status-code,    -- Adapted from HTTP Status Codes, RFC 7231
     statusText  STRING,         -- Status description
     results     STRING          -- Results of executing the command
@@ -149,8 +149,8 @@ Actuator ::= CHOICE {
 }
 
 ActuatorSpecifiers ::= RECORD {
-    port         STRING OPTIONAL,
-    asset_id     STRING OPTIONAL
+    device_id   url OPTIONAL,
+    asset_id    STRING OPTIONAL
 }
 
 Modifiers ::= MAP {
@@ -160,18 +160,19 @@ Modifiers ::= MAP {
     duration        [4] duration OPTIONAL,          -- pause
     frequency       [5] duration OPTIONAL,          -- report, notify, restart, update, sync
     command_id      [6] command-id OPTIONAL,        -- universal  (was "id")
-    command_src     [7] url OPTIONAL,               -- add to universal
+    command_src     [7] device-id OPTIONAL,         -- add to universal
     response        [8] response-type OPTIONAL,     -- universal
-    source          [9] url OPTIONAL,               -- update
-    destination     [10] url OPTIONAL,              -- (investigate/mitigate/remediate was report_to, copy, move, save)
-    options         [11] STRING OPTIONAL,           -- add to universal? (restart, set, substitute, restore)
-    method          [12] method-value OPTIONAL,     -- deny, pause, scan, start, stop, augment
-    search          [13] search-type OPTIONAL,      -- scan
-    where           [14] where OPTIONAL,            -- allow, deny, contain
-    message         [15] STRING OPTIONAL,           -- notify
-    command_ref     [16] command-id OPTIONAL,       -- cancel
-    network_acl     [17] network-acl OPTIONAL,      -- firewall profile
-    segmentation    [18] segmentation OPTIONAL      -- firewall profile
+    respond_to      [9] respond-to OPTIONAL,        -- investigate/mitigate/remediate, was report_to
+    source          [10] location OPTIONAL,         -- update
+    destination     [11] location OPTIONAL,         -- copy, move, save
+    options         [12] STRING OPTIONAL,           -- add to universal? (restart, set, substitute, restore)
+    method          [13] method-value OPTIONAL,     -- deny, pause, scan, start, stop, augment
+    search          [14] search-type OPTIONAL,      -- scan
+    where           [15] where OPTIONAL,            -- allow, deny, contain
+    message         [16] STRING OPTIONAL,           -- notify
+    command_ref     [17] command-id OPTIONAL,       -- cancel
+    network_acl     [18] network-acl OPTIONAL,      -- firewall profile
+    segmentation    [19] segmentation OPTIONAL      -- firewall profile
 }
 
 date-time ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")    -- RFC 3339 date-time
@@ -180,7 +181,11 @@ duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")    -- R
 
 command-id ::= STRING               -- Command unique identifier
 
-device-id ::= STRING                -- Device Identifier / Address
+device-id ::= STRING                -- Device Identifier / Address (url)
+
+respond-to ::= STRING               -- Location to send responses to (url)
+
+location ::= STRING                 -- Object/data locations (url)
 
 response-type ::= ENUMERATED {
     ack          (1),

@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Mon Mar 27 15:21:19 2017"
+"Generated from schema\openc2.jaen, Thu Mar 30 10:04:05 2017"
 
 {
  "meta": {
@@ -28,8 +28,8 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "source", "device-id", [], "ID of the command issuer, from \"command-src\" modifier"],
-    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command-id\" modifier"],
+    [1, "source", "device-id", [], "ID of the command issuer, from \"command_src\" modifier"],
+    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command_id\" modifier"],
     [3, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [4, "statusText", "String", [], "Status description"],
     [5, "results", "String", [], "Results of executing the command"]]
@@ -150,7 +150,7 @@
   ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
-    [1, "port", "String", ["?"], ""],
+    [1, "device_id", "url", ["?"], ""],
     [2, "asset_id", "String", ["?"], ""]]
   ],
 
@@ -161,18 +161,19 @@
     [4, "duration", "duration", ["?"], "pause"],
     [5, "frequency", "duration", ["?"], "report, notify, restart, update, sync"],
     [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
-    [7, "command_src", "url", ["?"], "add to universal"],
+    [7, "command_src", "device-id", ["?"], "add to universal"],
     [8, "response", "response-type", ["?"], "universal"],
-    [9, "source", "url", ["?"], "update"],
-    [10, "destination", "url", ["?"], "(investigate/mitigate/remediate was report_to, copy, move, save)"],
-    [11, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
-    [12, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
-    [13, "search", "search-type", ["?"], "scan"],
-    [14, "where", "where", ["?"], "allow, deny, contain"],
-    [15, "message", "String", ["?"], "notify"],
-    [16, "command_ref", "command-id", ["?"], "cancel"],
-    [17, "network_acl", "network-acl", ["?"], "firewall profile"],
-    [18, "segmentation", "segmentation", ["?"], "firewall profile"]]
+    [9, "respond_to", "respond-to", ["?"], "investigate/mitigate/remediate, was report_to"],
+    [10, "source", "location", ["?"], "update"],
+    [11, "destination", "location", ["?"], "copy, move, save"],
+    [12, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
+    [13, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
+    [14, "search", "search-type", ["?"], "scan"],
+    [15, "where", "where", ["?"], "allow, deny, contain"],
+    [16, "message", "String", ["?"], "notify"],
+    [17, "command_ref", "command-id", ["?"], "cancel"],
+    [18, "network_acl", "network-acl", ["?"], "firewall profile"],
+    [19, "segmentation", "segmentation", ["?"], "firewall profile"]]
   ],
 
   ["date-time", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],
@@ -181,7 +182,11 @@
 
   ["command-id", "String", [], "Command unique identifier"],
 
-  ["device-id", "String", [], "Device Identifier / Address"],
+  ["device-id", "String", [], "Device Identifier / Address (url)"],
+
+  ["respond-to", "String", [], "Location to send responses to (url)"],
+
+  ["location", "String", [], "Object/data locations (url)"],
 
   ["response-type", "Enumerated", [], "", [
     [1, "ack", ""],

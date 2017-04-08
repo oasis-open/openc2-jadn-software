@@ -142,7 +142,7 @@ class OpenC2(unittest.TestCase):
                 "1": {"3": {"1": "www.badco.com"}},
                 "2": {"2": 443},
                 "3": {"1": {"1": "192.168.1.1"}},
-                "6": 6}},
+                "5": 6}},
             "3": {"14": {"2": "30"}},
             "4": {
                 "1": "91",
@@ -157,7 +157,6 @@ class OpenC2(unittest.TestCase):
                 {"protocol": "https"},
                 {"ipv4": ["192.168.1.1"]},
                 None,
-                None,
                 "TCP"]},
             {"network_firewall": [None, "30"]},
             {"context": "91",
@@ -171,7 +170,6 @@ class OpenC2(unittest.TestCase):
                 {"2": 443},
                 {"1": ["192.168.1.1"]},
                 None,
-                None,
                 6]},
             {"14": [None, "30"]},
             {"1": "91",
@@ -179,7 +177,7 @@ class OpenC2(unittest.TestCase):
              "4": "PT2M30S",
              "6": "pf17_8675309"}]
 
-                          # Minified (list/tag)
+                                            # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
         self.tc.set_mode(False, True)       # Concise (list/name)

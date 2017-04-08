@@ -40,37 +40,37 @@
   ["Action", "Enumerated", [], "", [
     [1, "scan", "Systematic examination of some aspect of the target entity or its environment."],
     [2, "locate", "Find the target object physically, logically, functionally, or by organization."],
-    [3, "query", "Initiate a request for information."],
+    [3, "query", "Initiate a single request for information."],
     [4, "report", "Task an entity to provide information to a designated recipient."],
-    [5, "notify", ""],
-    [6, "deny", ""],
-    [7, "contain", ""],
-    [8, "allow", ""],
-    [9, "start", ""],
-    [10, "stop", ""],
-    [11, "restart", ""],
-    [12, "pause", ""],
-    [13, "resume", ""],
-    [14, "cancel", ""],
-    [15, "set", ""],
-    [16, "update", ""],
-    [17, "move", ""],
-    [18, "redirect", ""],
-    [19, "delete", ""],
-    [20, "snapshot", ""],
-    [21, "detonate", ""],
-    [22, "restore", ""],
-    [23, "save", ""],
-    [24, "throttle", ""],
-    [25, "delay", ""],
-    [26, "substitute", ""],
-    [27, "copy", ""],
-    [28, "sync", ""],
-    [29, "distill", ""],
-    [30, "augment", ""],
-    [31, "investigate", ""],
-    [32, "mitigate", ""],
-    [33, "remediate", ""]]
+    [5, "notify", "Set an entity's alerting preferences"],
+    [6, "deny", "Prevent a certain event or action from completion"],
+    [7, "contain", "Isolate a file or process or entity so that it cannot modify or access other assets or processes"],
+    [8, "allow", "Permit access to or execution of a target"],
+    [9, "start", "Initiate a process, application, system, or activity"],
+    [10, "stop", "Halt a system or end an activity"],
+    [11, "restart", "Stop then start a system or activity"],
+    [12, "pause", "Cease a system or activity while maintaining state"],
+    [13, "resume", "Start a system or activity from a paused state"],
+    [14, "cancel", "Invalidate a previous action"],
+    [15, "set", "Change a value, configuration, or state of a managed entity"],
+    [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
+    [17, "move", "Change the location of a file, subnet, network, or process"],
+    [18, "redirect", "Change the flow of traffic to a destination other than its original destination"],
+    [19, "delete", "Remove data and files"],
+    [20, "snapshot", "Record and store the state of a target at an instant in time"],
+    [21, "detonate", "Execute and observe the behavior of a target in an isolated environment"],
+    [22, "restore", "Delete or replace files, settings, or attributes to return the system to an identical or similar known state"],
+    [23, "save", "Commit data or system state to memory"],
+    [24, "throttle", "Adjust the throughput of a data flow"],
+    [25, "delay", "Stop or hold up an activity or data transmittal"],
+    [26, "substitute", "Replace all or part of the data, content or payload in the least detectable manner"],
+    [27, "copy", "Duplicate a file or data flow"],
+    [28, "sync", "Synchronize a sensor or actuator with other system components"],
+    [29, "distill", "Task a sensor to send a summary or abstraction of the sensing information instead of the raw data feed"],
+    [30, "augment", "Task a sensor to do a level of preprocessing or sense making prior to sending the sensor data"],
+    [31, "investigate", "Task the recipient enclave to aggregate and report information as it pertains to an anomaly"],
+    [32, "mitigate", "Task the recipient enclave to circumvent the problem without necessarily eliminating the vulnerability or attack point"],
+    [33, "remediate", "Task the recipient enclave to eliminate the vulnerability or attack point"]]
   ],
 
   ["Target", "Choice", [], "OpenC2 Target datatypes", [
@@ -258,7 +258,7 @@
 
   ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
 
-  ["hashes-type", "Map", [], "", [
+  ["hashes-type", "Map", [], "Hash values for algorithms included in hash-algo-ov", [
     [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],
     [2, "MD6", "Hex", [], "MD6 message digest as defined in MD6 proposal"],
     [3, "RIPEMD-160", "Hex", [], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
@@ -275,11 +275,32 @@
     [14, "WHIRLPOOL", "Hex", [], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
   ],
 
+  ["encryption-algo", "Enumerated", [], "Replace with an IANA algorithm registry?  Which one?", [
+    [1, "AES128-ECB", "Advanced Encryption Standard (AES) with Electronic Codebook (ECB) mode, NIST SP 800-38A"],
+    [2, "AES128-CBC", "AES with Cipher Block Chaining (CBC) mode, NIST SP 800-38A"],
+    [3, "AES128-CFB", "AES with Cipher Feedback (CFB) mode, NIST SP 800-38A"],
+    [4, "AES128-OFB", "AES with Output Feedback (OFB) mode, NIST SP 800-38A"],
+    [5, "AES128-CTR", "AES with Counter (CTR) mode, NIST SP 800-38A"],
+    [6, "AES128-XTS", "AES with XEX Tweakable Block Cipher with Ciphertext Stealing (XTS) mode, NIST SP 800-38E"],
+    [7, "AES128-GCM", "AES with Galois Counter (GCM) mode, NIST SP 800-38D"],
+    [8, "Salsa20", "Salsa20 stream cipher"],
+    [9, "Salsa12", "Salsa20/12 stream cipher"],
+    [10, "ChaCha20-Poly1305", "ChaCha20-Poly1305 stream cipher, RFC 7539"],
+    [11, "ChaCha20", "ChaCha20 stream cipher without poly1305 authentication, RFC 7539"],
+    [12, "DES-CBC", "Data Encryption Standard (DES) with CBC mode, NIST FIPS Pub 81"],
+    [13, "3DES-CBC", "Triple DES (3DES) with CBC mode"],
+    [14, "DES-ECB", "DES with ECB mode, NIST FIPS Pub 81"],
+    [15, "3DES-ECB", "3DES with ECB mode"],
+    [16, "CAST128-CBC", "CAST-128 algorithm with CBC mode, RFC 2144"],
+    [17, "CAST256-CBC", "CAST-256 algorithm with CBC mode, RFC 2612"],
+    [18, "RSA", "RSA asymmetric encryption algorithm, RFC 2313"],
+    [19, "DSA", "Digital Signature Algorithm, NIST FIPS Pub 186-4 (*not an encryption algorithm)"]]
+  ],
+
   ["artifact", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"artifact\""],
-    [2, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
-    [3, "*", "payload", ["?"], "choice of literal content or URL to obtain content"],
-    [4, "hashes", "hashes-type", ["?"], "Specifies a dictionary of hashes for the contents of the payload"]]
+    [1, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
+    [2, "*", "payload", ["?"], "choice of literal content or URL to obtain content"],
+    [3, "hashes", "hashes-type", ["?"], "Specifies a dictionary of hashes for the contents of the payload"]]
   ],
 
   ["payload", "Choice", [], "", [
@@ -352,9 +373,48 @@
     [3, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
-  ["email-message", "Record", [], "TODO: finish", []],
+  ["email-message", "Map", [], "TODO: finish", []],
 
-  ["file", "Record", [], "TODO: finish", []],
+  ["file", "Map", [], "", [
+    [1, "extensions", "file-extensions", ["?"], "Content-specific file information"],
+    [2, "hashes", "hashes-type", ["?"], "Dictionary of hashes for the file"],
+    [3, "size", "Integer", ["?"], "Size of the file, in bytes."],
+    [4, "name", "String", ["?"], "Name of the file."],
+    [5, "name_enc", "String", ["?"], "Observed encoding of the file, from IANA Character Set Registry"],
+    [6, "magic_number_hex", "Hex", ["?"], "Hexadecimal constant associated with a specific file format."],
+    [7, "mime_type", "String", ["?"], "MIMI type name for the file, from the IANA media type registry."],
+    [8, "created", "date-time", ["?"], "Date/time the file was created."],
+    [9, "modified", "date-time", ["?"], "Date/time the file was last written to / modified."],
+    [10, "accessed", "date-time", ["?"], "Date/time the file was last accessed."],
+    [11, "parent-directory", "directory", ["?"], "Parent directory of the file."],
+    [12, "is_encrypted", "Boolean", ["?"], "Specifies whether the file is encrypted."],
+    [13, "encryption_algorithm", "encryption-algo", ["?"], "Specifies the algorithm used to encrypt the file."],
+    [14, "decryption_key", "String", ["?"], "Decryption key used to decrypt the file."],
+    [15, "contains", "file-contents", ["?"], "List of observables contained within the file"],
+    [16, "content", "artifact", ["?"], "Content of the file."]]
+  ],
+
+  ["file-contents", "Array", [], "", [
+    [0, "", "Target", [], ""]]
+  ],
+
+  ["file-extensions", "Map", [], "", [
+    [1, "ntfs_ext", "ntfs-ext", ["?"], ""],
+    [2, "raster_image_ext", "raster-image-ext", ["?"], ""],
+    [3, "pdf_ext", "pdf-ext", ["?"], ""],
+    [4, "archive_ext", "archive-ext", ["?"], ""],
+    [5, "windows_pebinary_ext", "windows-pebinary-ext", ["?"], ""]]
+  ],
+
+  ["ntfs-ext", "Map", [], "TODO", []],
+
+  ["raster-image-ext", "Map", [], "TODO", []],
+
+  ["pdf-ext", "Map", [], "TODO", []],
+
+  ["archive-ext", "Map", [], "TODO", []],
+
+  ["windows-pebinary-ext", "Map", [], "TODO", []],
 
   ["ipv4-addr", "Record", [], "", [
     [1, "value", "String", [], "IPv4 address or range in CIDR notation"],
@@ -383,8 +443,7 @@
     [2, "src_port", "port", ["?"], "source TCP/UDP port number"],
     [3, "dst_addr", "ip-addr", ["?"], "destination address"],
     [4, "dst_port", "port", ["?"], "destination TCP/UDP port number"],
-    [5, "layer3_protocol", "layer3-protocol", ["?"], "IEEE 802 Ether Type"],
-    [6, "layer4_protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
+    [5, "layer4_protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
   ],
 
   ["port", "Choice", [], "TCP/UDP port number or protocol", [
@@ -417,7 +476,34 @@
 
   ["memory", "Map", [], "CybOX 2.1", []],
 
-  ["process", "Record", [], "", []],
+  ["process", "Map", [], "", [
+    [1, "extensions", "process-ext", ["?"], "Process-type specific info"],
+    [2, "is_hidden", "Boolean", ["?"], "Whether the process is hidden"],
+    [3, "pid", "Integer", ["?"], "Process ID of the process"],
+    [4, "name", "String", ["?"], "Name of the process"],
+    [5, "created", "date-time", ["?"], "Date/time at which the process was created"],
+    [6, "cwd", "String", ["?"], "Current working directory of the process"],
+    [7, "arguments", "arguments", ["?"], "List of arguments used in executing the process"],
+    [8, "environment_variables", "envars", ["?"], "List of environment variables associated with the process"],
+    [9, "opened_connections", "opened-connections", ["?"], "List of network connections opened by the process"],
+    [10, "creator_user", "user-account", ["?"], "User that created the process"],
+    [11, "binary", "file", ["?"], "Executable binary that was executed as the process"],
+    [12, "parent", "process", ["?"], "Process that spawned this one"],
+    [13, "children", "process-children", ["?"], "Processes that were spawned by this one"]]
+  ],
+
+  ["process-ext", "Map", [], "", [
+    [1, "windows_process_ext", "windows-process-ext", ["?"], ""],
+    [2, "windows_service_ext", "windows-service-ext", ["?"], ""]]
+  ],
+
+  ["process-children", "Array", [], "", [
+    [0, "", "process", [], ""]]
+  ],
+
+  ["windows-process-ext", "Map", [], "TODO", []],
+
+  ["windows-service-ext", "Map", [], "TODO", []],
 
   ["software", "Record", [], "", [
     [1, "name", "String", [], "Name of the software"],
@@ -497,6 +583,9 @@
     [12, "REG_INVALID_TYPE", "An invalid key."]]
   ],
 
-  ["x509-certificate", "Record", [], "", []]]
+  ["x509-certificate", "Map", [], "TODO: finish", [
+    [1, "is_self_signed", "Boolean", ["?"], "Specifies whether the certificate is self-signed"],
+    [2, "hashes", "hashes-type", [], "Specifies any hashes calculated for the entire contents of the certificate"]]
+  ]]
 
 }

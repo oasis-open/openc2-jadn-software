@@ -27,8 +27,8 @@ TDESC = 3       # Type description
 FIELDS = 4      # List of fields
 
 # JAEN Field Definition columns
-TAG = 0         # Element ID
-NAME = 1        # Element name
+FTAG = 0        # Element ID
+FNAME = 1       # Element name
 EDESC = 2       # Description (for enumerated types)
 FTYPE = 2       # Datatype of field
 FOPTS = 3       # Field options
@@ -103,20 +103,20 @@ class Codec:
                 {},                         # 6: S_FLD/S_DMAP: Field list / Enum Val to Name
                 {}                          # 7: S_EMAP:  Enum Name to Val
             ]
-            fx = TAG
+            fx = FTAG
             symval[S_VSTR] = verbose_str
             if t[TTYPE] == "Record":
-                (fx, symval[S_ETYPE]) = (NAME, dict) if verbose_rec else (TAG, list)
+                (fx, symval[S_ETYPE]) = (FNAME, dict) if verbose_rec else (FTAG, list)
             if verbose_str and t[TTYPE] in ["Choice", "Enumerated", "Map"]:
-                fx = NAME
+                fx = FNAME
                 symval[S_STYPE] = str
             if t[TTYPE] == "Enumerated":
-                symval[S_DMAP] = {f[fx]: f[NAME] for f in t[FIELDS]}
-                symval[S_EMAP] = {f[NAME]: f[fx] for f in t[FIELDS]}
+                symval[S_DMAP] = {f[fx]: f[FNAME] for f in t[FIELDS]}
+                symval[S_EMAP] = {f[FNAME]: f[fx] for f in t[FIELDS]}
             if t[TTYPE] in ["Choice", "Map", "Record"]:
-                fx = NAME if verbose_str else TAG
+                fx = FNAME if verbose_str else FTAG
                 symval[S_FLD] = {str(f[fx]): symf(f) for f in t[FIELDS]}
-                symval[S_EMAP] = {f[NAME]: str(f[fx]) for f in t[FIELDS]}
+                symval[S_EMAP] = {f[FNAME]: str(f[fx]) for f in t[FIELDS]}
             return symval
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
         self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
@@ -135,7 +135,7 @@ def _check_type(ts, val, vtype):
 def _bad_value(ts, val, fld=None):
     td = ts[S_TDEF]
     if fld is not None:
-        raise ValueError("%s(%s): missing required field '%s': %s" % (td[TNAME], td[TTYPE], fld[NAME], val))
+        raise ValueError("%s(%s): missing required field '%s': %s" % (td[TNAME], td[TTYPE], fld[FNAME], val))
     else:
         raise ValueError("%s(%s): bad value: %s" % (td[TNAME], td[TTYPE], val))
 
@@ -183,7 +183,7 @@ def _decode_choice(ts, val, codec):
     if len(val) != 1 or k not in ts[S_FLD]:
         _bad_value(ts, val)
     f = ts[S_FLD][k][S_FDEF]
-    return {f[NAME]: codec.decode(f[FTYPE], val[k])}
+    return {f[FNAME]: codec.decode(f[FTYPE], val[k])}
 
 
 def _encode_choice(ts, val, codec):
@@ -192,7 +192,7 @@ def _encode_choice(ts, val, codec):
     if len(val) != 1 or k not in ts[S_EMAP]:
         _bad_value(ts, val)
     f = ts[S_FLD][ts[S_EMAP][k]][S_FDEF]
-    fx = f[NAME] if ts[S_VSTR] else f[TAG]            # Verbose or Minified identifier strings
+    fx = f[FNAME] if ts[S_VSTR] else f[FTAG]            # Verbose or Minified identifier strings
     return {str(fx): codec.encode(f[FTYPE], val[k])}
 
 
@@ -247,15 +247,15 @@ def _decode_maprec(ts, val, codec):
         _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
         if ts[S_ETYPE] == list:                     # Concise or Minified Record
-            fx = f[TAG] - 1
+            fx = f[FTAG] - 1
             exists = len(val) > fx and val[fx] is not None
         else:                                       # Map or Verbose Record
-            fx = f[NAME] if ts[S_VSTR] else str(f[TAG])  # Verbose or Minified identifier strings
+            fx = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
             exists = fx in val and val[fx] is not None
         if exists:
-            apival[f[NAME]] = codec.decode(f[FTYPE], val[fx])
+            apival[f[FNAME]] = codec.decode(f[FTYPE], val[fx])
         else:
-            fs = f[NAME] if ts[S_VSTR] else str(f[TAG])  # Verbose or Minified identifier strings
+            fs = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
             if not ts[S_FLD][fs][S_FOPT]["optional"]:
                 _bad_value(ts, val, f)
     return apival
@@ -264,19 +264,19 @@ def _decode_maprec(ts, val, codec):
 def _encode_maprec(ts, val, codec):
     _check_type(ts, val, dict)
     encval = ts[S_ETYPE]()
-    fnames = [f[S_FDEF][NAME] for k, f in ts[S_FLD].items()]
+    fnames = [f[S_FDEF][FNAME] for k, f in ts[S_FLD].items()]
     extra = set(val) - set(fnames)
     if extra:
         _extra_value(ts, val, fnames)
-    fx = NAME if ts[S_VSTR] else TAG    # Verbose or minified identifier strings
+    fx = FNAME if ts[S_VSTR] else FTAG    # Verbose or minified identifier strings
     if ts[S_ETYPE] == list:
-        fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][TAG] for f in val])
+        fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][FTAG] for f in val])
     for f in ts[S_TDEF][FIELDS]:
-        fv = codec.encode(f[FTYPE], val[f[NAME]]) if f[NAME] in val else None
+        fv = codec.encode(f[FTYPE], val[f[FNAME]]) if f[FNAME] in val else None
         if fv is None and not ts[S_FLD][str(f[fx])][S_FOPT]["optional"]:     # Missing required field
             _bad_value(ts, val, f)
         if ts[S_ETYPE] == list:         # Concise Record
-            if f[TAG] <= fmax:
+            if f[FTAG] <= fmax:
                 encval.append(fv)
         else:                           # Map or Verbose Record
             if fv is not None:

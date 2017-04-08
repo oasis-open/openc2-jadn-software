@@ -41,37 +41,37 @@ OpenC2Alert ::= RECORD {
 Action ::= ENUMERATED {
     scan         (1),       -- Systematic examination of some aspect of the target entity or its environment.
     locate       (2),       -- Find the target object physically, logically, functionally, or by organization.
-    query        (3),       -- Initiate a request for information.
+    query        (3),       -- Initiate a single request for information.
     report       (4),       -- Task an entity to provide information to a designated recipient.
-    notify       (5),
-    deny         (6),
-    contain      (7),
-    allow        (8),
-    start        (9),
-    stop         (10),
-    restart      (11),
-    pause        (12),
-    resume       (13),
-    cancel       (14),
-    set          (15),
-    update       (16),
-    move         (17),
-    redirect     (18),
-    delete       (19),
-    snapshot     (20),
-    detonate     (21),
-    restore      (22),
-    save         (23),
-    throttle     (24),
-    delay        (25),
-    substitute   (26),
-    copy         (27),
-    sync         (28),
-    distill      (29),
-    augment      (30),
-    investigate  (31),
-    mitigate     (32),
-    remediate    (33)
+    notify       (5),       -- Set an entity's alerting preferences
+    deny         (6),       -- Prevent a certain event or action from completion
+    contain      (7),       -- Isolate a file or process or entity so that it cannot modify or access other assets or processes
+    allow        (8),       -- Permit access to or execution of a target
+    start        (9),       -- Initiate a process, application, system, or activity
+    stop         (10),      -- Halt a system or end an activity
+    restart      (11),      -- Stop then start a system or activity
+    pause        (12),      -- Cease a system or activity while maintaining state
+    resume       (13),      -- Start a system or activity from a paused state
+    cancel       (14),      -- Invalidate a previous action
+    set          (15),      -- Change a value, configuration, or state of a managed entity
+    update       (16),      -- Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
+    move         (17),      -- Change the location of a file, subnet, network, or process
+    redirect     (18),      -- Change the flow of traffic to a destination other than its original destination
+    delete       (19),      -- Remove data and files
+    snapshot     (20),      -- Record and store the state of a target at an instant in time
+    detonate     (21),      -- Execute and observe the behavior of a target in an isolated environment
+    restore      (22),      -- Delete or replace files, settings, or attributes to return the system to an identical or similar known state
+    save         (23),      -- Commit data or system state to memory
+    throttle     (24),      -- Adjust the throughput of a data flow
+    delay        (25),      -- Stop or hold up an activity or data transmittal
+    substitute   (26),      -- Replace all or part of the data, content or payload in the least detectable manner
+    copy         (27),      -- Duplicate a file or data flow
+    sync         (28),      -- Synchronize a sensor or actuator with other system components
+    distill      (29),      -- Task a sensor to send a summary or abstraction of the sensing information instead of the raw data feed
+    augment      (30),      -- Task a sensor to do a level of preprocessing or sense making prior to sending the sensor data
+    investigate  (31),      -- Task the recipient enclave to aggregate and report information as it pertains to an anomaly
+    mitigate     (32),      -- Task the recipient enclave to circumvent the problem without necessarily eliminating the vulnerability or attack point
+    remediate    (33)       -- Task the recipient enclave to eliminate the vulnerability or attack point
 }
 
 Target ::= CHOICE {                             -- OpenC2 Target datatypes
@@ -261,7 +261,7 @@ Base64 ::= STRING           -- A sequence of octets encoded as a Base64 string
 
 Hex ::= STRING              -- A sequence of octets encoded as a hexadecimal string
 
-hashes-type ::= MAP {
+hashes-type ::= MAP {       -- Hash values for algorithms included in hash-algo-ov
     MD5          [1] Hex,       -- MD5 message digest as defined in RFC3121
     MD6          [2] Hex,       -- MD6 message digest as defined in MD6 proposal
     RIPEMD-160   [3] Hex,       -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
@@ -278,8 +278,29 @@ hashes-type ::= MAP {
     WHIRLPOOL    [14] Hex       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
 }
 
+encryption-algo ::= ENUMERATED { -- Replace with an IANA algorithm registry?  Which one?
+    AES128-ECB          (1),    -- Advanced Encryption Standard (AES) with Electronic Codebook (ECB) mode, NIST SP 800-38A
+    AES128-CBC          (2),    -- AES with Cipher Block Chaining (CBC) mode, NIST SP 800-38A
+    AES128-CFB          (3),    -- AES with Cipher Feedback (CFB) mode, NIST SP 800-38A
+    AES128-OFB          (4),    -- AES with Output Feedback (OFB) mode, NIST SP 800-38A
+    AES128-CTR          (5),    -- AES with Counter (CTR) mode, NIST SP 800-38A
+    AES128-XTS          (6),    -- AES with XEX Tweakable Block Cipher with Ciphertext Stealing (XTS) mode, NIST SP 800-38E
+    AES128-GCM          (7),    -- AES with Galois Counter (GCM) mode, NIST SP 800-38D
+    Salsa20             (8),    -- Salsa20 stream cipher
+    Salsa12             (9),    -- Salsa20/12 stream cipher
+    ChaCha20-Poly1305   (10),   -- ChaCha20-Poly1305 stream cipher, RFC 7539
+    ChaCha20            (11),   -- ChaCha20 stream cipher without poly1305 authentication, RFC 7539
+    DES-CBC             (12),   -- Data Encryption Standard (DES) with CBC mode, NIST FIPS Pub 81
+    3DES-CBC            (13),   -- Triple DES (3DES) with CBC mode
+    DES-ECB             (14),   -- DES with ECB mode, NIST FIPS Pub 81
+    3DES-ECB            (15),   -- 3DES with ECB mode
+    CAST128-CBC         (16),   -- CAST-128 algorithm with CBC mode, RFC 2144
+    CAST256-CBC         (17),   -- CAST-256 algorithm with CBC mode, RFC 2612
+    RSA                 (18),   -- RSA asymmetric encryption algorithm, RFC 2313
+    DSA                 (19)    -- Digital Signature Algorithm, NIST FIPS Pub 186-4 (*not an encryption algorithm)
+}
+
 artifact ::= RECORD {
-    type         STRING,                -- MUST be "artifact"
     mime_type    STRING OPTIONAL,       -- MUST be a valid MIME type as specified in the IANA Media Types registry
     *            payload OPTIONAL,      -- choice of literal content or URL to obtain content
     hashes       hashes-type OPTIONAL   -- Specifies a dictionary of hashes for the contents of the payload
@@ -353,11 +374,53 @@ email-addr ::= RECORD {
     belongs_to    user-account OPTIONAL     -- User account that the email address belongs to
 }
 
-email-message ::= RECORD {    -- TODO: finish
+email-message ::= MAP {    -- TODO: finish
 }
 
-file ::= RECORD {    -- TODO: finish
+file ::= MAP {
+    extensions          [1] file-extensions OPTIONAL,   -- Content-specific file information
+    hashes              [2] hashes-type OPTIONAL,       -- Dictionary of hashes for the file
+    size                [3] INTEGER OPTIONAL,           -- Size of the file, in bytes.
+    name                [4] STRING OPTIONAL,            -- Name of the file.
+    name_enc            [5] STRING OPTIONAL,            -- Observed encoding of the file, from IANA Character Set Registry
+    magic_number_hex    [6] Hex OPTIONAL,               -- Hexadecimal constant associated with a specific file format.
+    mime_type           [7] STRING OPTIONAL,            -- MIMI type name for the file, from the IANA media type registry.
+    created             [8] date-time OPTIONAL,         -- Date/time the file was created.
+    modified            [9] date-time OPTIONAL,         -- Date/time the file was last written to / modified.
+    accessed            [10] date-time OPTIONAL,        -- Date/time the file was last accessed.
+    parent-directory    [11] directory OPTIONAL,        -- Parent directory of the file.
+    is_encrypted        [12] BOOLEAN OPTIONAL,          -- Specifies whether the file is encrypted.
+    encryption_algorithm [13] encryption-algo OPTIONAL, -- Specifies the algorithm used to encrypt the file.
+    decryption_key      [14] STRING OPTIONAL,           -- Decryption key used to decrypt the file.
+    contains            [15] file-contents OPTIONAL,    -- List of observables contained within the file
+    content             [16] artifact OPTIONAL          -- Content of the file.
 }
+
+file-contents ::= ARRAY_OF(Target)
+
+file-extensions ::= MAP {
+    ntfs_ext                [1] ntfs-ext OPTIONAL,
+    raster_image_ext        [2] raster-image-ext OPTIONAL,
+    pdf_ext                 [3] pdf-ext OPTIONAL,
+    archive_ext             [4] archive-ext OPTIONAL,
+    windows_pebinary_ext    [5] windows-pebinary-ext OPTIONAL
+}
+
+ntfs-ext ::= MAP {              -- TODO
+}
+
+raster-image-ext ::= MAP {      -- TODO
+}
+
+pdf-ext ::= MAP {               -- TODO
+}
+
+archive-ext ::= MAP {           -- TODO
+}
+
+windows-pebinary-ext ::= MAP {  -- TODO
+}
+
 
 ipv4-addr ::= RECORD {
     value             STRING,                   -- IPv4 address or range in CIDR notation
@@ -382,7 +445,6 @@ ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
     src_port         port OPTIONAL,             -- source TCP/UDP port number
     dst_addr         ip-addr OPTIONAL,          -- destination address
     dst_port         port OPTIONAL,             -- destination TCP/UDP port number
-    layer3_protocol  layer3-protocol OPTIONAL,  -- IEEE 802 Ether Type
     layer4_protocol  layer4-protocol OPTIONAL   -- Protocol (IPv4) / Next Header (IPv6)
 }
 
@@ -417,7 +479,33 @@ layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port 
 memory ::= MAP {            -- CybOX 2.1
 }
 
-process ::= RECORD {
+process ::= MAP {
+    extensions              [1] process-ext OPTIONAL,   -- Process-type specific info
+    is_hidden               [2] BOOLEAN OPTIONAL,       -- Whether the process is hidden
+    pid                     [3] INTEGER OPTIONAL,       -- Process ID of the process
+    name                    [4] STRING OPTIONAL,        -- Name of the process
+    created                 [5] date-time OPTIONAL,     -- Date/time at which the process was created
+    cwd                     [6] STRING OPTIONAL,        -- Current working directory of the process
+    arguments               [7] arguments OPTIONAL,     -- List of arguments used in executing the process
+    environment_variables   [8] envars OPTIONAL,        -- List of environment variables associated with the process
+    opened_connections      [9] opened-connections OPTIONAL,    -- List of network connections opened by the process
+    creator_user            [10] user-account OPTIONAL, -- User that created the process
+    binary                  [11] file OPTIONAL,         -- Executable binary that was executed as the process
+    parent                  [12] process OPTIONAL,      -- Process that spawned this one
+    children                [13] process-children OPTIONAL  -- Processes that were spawned by this one
+}
+
+process-ext ::= MAP {
+    windows_process_ext     [1] windows-process-ext OPTIONAL,
+    windows_service_ext     [2] windows-service-ext OPTIONAL
+}
+
+process-children ::= ARRAY_OF(process)
+
+windows-process-ext ::= MAP {       -- TODO
+}
+
+windows-service-ext ::= MAP {       -- TODO
 }
 
 software ::= RECORD {
@@ -498,5 +586,7 @@ windows-registry-datatype-enum ::= ENUMERATED {
     REG_INVALID_TYPE                (12)    -- An invalid key.
 }
 
-x509-certificate ::= RECORD {
+x509-certificate ::= MAP {      -- TODO: finish
+    is_self_signed      [1] BOOLEAN OPTIONAL,   -- Specifies whether the certificate is self-signed
+    hashes              [2] hashes-type         -- Specifies any hashes calculated for the entire contents of the certificate
 }

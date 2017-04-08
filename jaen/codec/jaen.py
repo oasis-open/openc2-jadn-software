@@ -8,7 +8,6 @@ from datetime import datetime
 from .codec_utils import opts_s2d
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
-# TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
 # TODO: convert prints to ValidationError exception
 
 jaen_schema = {
@@ -86,7 +85,7 @@ FIELDS = 4      # List of fields
 
 # JAEN Field Definition columns
 FTAG = 0        # Element ID
-FNAME = 1        # Element name
+FNAME = 1       # Element name
 EDESC = 2       # Description (for enumerated types)
 FTYPE = 2       # Datatype of field
 FOPTS = 3       # Field options

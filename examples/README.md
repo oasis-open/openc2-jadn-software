@@ -168,3 +168,54 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
 ```
+### -- Update --
+#### API and JSON-verbose
+```
+{   "action": "update",
+    "target": {
+        "software": {
+            "name": "VirusBeGone",
+            "vendor": "McAfmantec"}},
+    "actuator": {
+        "process_remediation_service": {
+            "device_id": "dns://host03274.example.org"}},
+    "modifiers": {
+        "command_id": "5ce72...",
+        "command_src": "dns://orch.example.com",
+        "response": "ack",
+    "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
+```
+#### API Flat
+```
+{
+    "action": "update",
+    "target.software.vendor": "McAfmantec",
+    "target.software.name": "VirusBeGone",
+    "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
+    "modifiers.command_id": "5ce72...",
+    "modifiers.command_src": "dns://orch.example.com",
+    "modifiers.response": "ack",
+    "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
+```
+#### Minified
+```
+[   16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
+    {"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7": "dns://orch.example.com","6":"5ce72..."}]
+```
+### -- Update Response --
+#### API and JSON-verbose
+```
+{   "source": "dns://orch.example.com",
+    "command_ref": "5ce72...",
+    "status": "Processing",
+    "statusText": "Updating McAfmantec VirusBeGone ...",
+    "results": ""}
+```
+#### API Flat
+```
+(Same as API because response syntax has no nested elements)
+```
+#### Minified
+```
+["dns://orch.example.com","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+```

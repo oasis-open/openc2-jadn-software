@@ -267,5 +267,104 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)       # Convert numeric dict to list
         self._write_examples("t5_scan", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
+    def test6_update_usecase(self):
+        cmd_api = {         # API / Verbose (dict/name)
+            "action": "update",
+            "target": {
+                "software": {
+                    "name": "VirusBeGone",
+                    "vendor": "McAfmantec"}},
+            "actuator": {
+                "process_remediation_service": {
+                    "device_id": "dns://host03274.example.org"}},
+            "modifiers": {
+                "command_id": "5ce72...",
+                "command_src": "dns://orch.example.com",
+                "response": "ack",
+                "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
+
+        cmd_min = [
+            16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
+            {"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7": "dns://orch.example.com","6":"5ce72..."}]
+
+        cmd_concise = [
+            "update",
+            {"software": ["VirusBeGone", None, None, "McAfmantec"]},
+            {"process_remediation_service": ["dns://host03274.example.org"]},
+            {"command_id": "5ce72...",
+             "command_src": "dns://orch.example.com",
+             "response": "ack",
+             "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}]
+
+        cmd_noname = {
+            "1":16,
+            "2":{"17":{"4":"McAfmantec","1": "VirusBeGone"}},
+            "3":{"41":{"1":"dns://host03274.example.org"}},
+            "4":{"6":"5ce72...","7": "dns://orch.example.com","8":1,"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
+
+        cmd_flat = {
+            "action": "update",
+            "target.software.vendor": "McAfmantec",
+            "target.software.name": "VirusBeGone",
+            "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
+            "modifiers.command_id": "5ce72...",
+            "modifiers.command_src": "dns://orch.example.com",
+            "modifiers.response": "ack",
+            "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
+
+                                        # Minified (list/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
+        self.tc.set_mode(False, True)   # Concise (list/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
+        self.tc.set_mode(True, False)   # unused (dict/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(flatten(cmd_api), cmd_flat)
+        self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)  # Convert numeric dict to list
+        self._write_examples("t6_update_cmd", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+
+        # -- Response
+
+        rsp_api = {
+            "source": "dns://orch.example.com",
+            "command_ref": "5ce72...",
+            "status": "Processing",
+            "statusText": "Updating McAfmantec VirusBeGone ...",
+            "results": ""}
+
+        rsp_min = ["dns://orch.example.com","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+
+        rsp_concise = ["dns://orch.example.com", "5ce72...", "Processing", "Updating McAfmantec VirusBeGone ...", ""]
+
+        rsp_noname = {"3": 102, "1": "dns://orch.example.com", "4": "Updating McAfmantec VirusBeGone ...", "2": "5ce72...", "5": ""}
+
+        rsp_flat = {
+            "source": "dns://orch.example.com",
+            "command_ref": "5ce72...",
+            "status": "Processing",
+            "statusText": "Updating McAfmantec VirusBeGone ...",
+            "results": ""}
+
+        self.tc.set_mode(False, False)  # Minified (list/tag)
+        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_min)
+        self.assertEqual(self.tc.decode("OpenC2Response", rsp_min), rsp_api)
+        self.tc.set_mode(False, True)   # Concise (list/name)
+        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_concise)
+        self.assertEqual(self.tc.decode("OpenC2Response", rsp_concise), rsp_api)
+        self.tc.set_mode(True, False)   # unused (dict/tag)
+        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_noname)
+        self.assertEqual(self.tc.decode("OpenC2Response", rsp_noname), rsp_api)
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_api)
+        self.assertEqual(self.tc.decode("OpenC2Response", rsp_api), rsp_api)
+        self.assertEqual(flatten(rsp_api), rsp_flat)
+        self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
+        self._write_examples("t6_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
+
 if __name__ == "__main__":
     unittest.main()

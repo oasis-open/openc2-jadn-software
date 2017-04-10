@@ -183,7 +183,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
         "command_id": "5ce72...",
         "command_src": "dns://orch.example.com",
         "response": "ack",
-    "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
+        "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
 ```
 #### API Flat
 ```

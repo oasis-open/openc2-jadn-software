@@ -1,0 +1,1 @@
+{"modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab", "target.software.vendor": "McAfmantec", "modifiers.command_src": "dns://orch.example.com", "modifiers.command_id": "5ce72...", "actuator.process_remediation_service.device_id": "dns://host03274.example.org", "action": "update", "modifiers.response": "ack", "target.software.name": "VirusBeGone"}

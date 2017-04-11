@@ -137,7 +137,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 {"1":"91","2":"2016-11-25T08:10:31-04:00","4":"PT2M30S",
 "6":"pf17_8675309"}]
 ```
-### -- Scan --
+### -- SCAN --
 #### API and JSON-verbose
 ```
 {   "action": "scan",
@@ -168,7 +168,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
 ```
-### -- Update --
+### -- UPDATE --
 #### API and JSON-verbose
 ```
 {   "action": "update",
@@ -181,31 +181,30 @@ bandwidth messages for a text-based encoding, although binary encodings would be
             "device_id": "dns://host03274.example.org"}},
     "modifiers": {
         "command_id": "5ce72...",
-        "command_src": "dns://orch.example.com",
+        "command_src": "dns://orch.example.org",
         "response": "ack",
         "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
 ```
 #### API Flat
 ```
-{
-    "action": "update",
+{   "action": "update",
     "target.software.vendor": "McAfmantec",
     "target.software.name": "VirusBeGone",
     "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
     "modifiers.command_id": "5ce72...",
-    "modifiers.command_src": "dns://orch.example.com",
+    "modifiers.command_src": "dns://orch.example.org",
     "modifiers.response": "ack",
     "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
 ```
 #### Minified
 ```
-[   16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
-    {"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7": "dns://orch.example.com","6":"5ce72..."}]
+[16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
+{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"5ce72..."}]
 ```
-### -- Update Response --
+### -- UPDATE Response --
 #### API and JSON-verbose
 ```
-{   "source": "dns://orch.example.com",
+{   "source": "dns://orch.example.org",
     "command_ref": "5ce72...",
     "status": "Processing",
     "statusText": "Updating McAfmantec VirusBeGone ...",

@@ -4,7 +4,7 @@ Translate JSON Abstract Encoding Notation (JAEN) files
 
 import os
 
-from jaen.codec.jaen import jaen_load, jaen_dump, jaen_check
+from jaen.codec.jaen import jaen_load, jaen_dump, jaen_check, jaen_analyze
 from jaen.convert.tr_jas import jas_load, jas_dump
 from jaen.convert.tr_tables import table_dump
 
@@ -17,9 +17,10 @@ if __name__ == "__main__":
 
         source = ifname + ".jas"
         dest = ofname + "_gens"
-        jaen = jas_load(source)
-        jaen_check(jaen)
-        jaen_dump(jaen, dest + ".jaen", source)
+        schema = jas_load(source)
+        jaen_check(schema)
+        jaen_dump(schema, dest + ".jaen", source)
+        jaen_analyze(schema)
 
         # Convert JAEN to JAS, prettyprinted JAEN, and property tables
 

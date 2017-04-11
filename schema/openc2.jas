@@ -262,20 +262,20 @@ Base64 ::= STRING           -- A sequence of octets encoded as a Base64 string
 Hex ::= STRING              -- A sequence of octets encoded as a hexadecimal string
 
 hashes-type ::= MAP {       -- Hash values for algorithms included in hash-algo-ov
-    MD5          [1] Hex,       -- MD5 message digest as defined in RFC3121
-    MD6          [2] Hex,       -- MD6 message digest as defined in MD6 proposal
-    RIPEMD-160   [3] Hex,       -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
-    SHA-1        [4] Hex,       -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
-    SHA-224      [5] Hex,       -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
-    SHA-256      [6] Hex,       -- SHA-256 as defined in RFC6234
-    SHA-384      [7] Hex,       -- SHA-384 as defined in RFC6234
-    SHA-512      [8] Hex,       -- SHA-512 as defined in RFC6234
-    SHA3-224     [9] Hex,       -- SHA3-224 as defined in FIPS PUP 202
-    SHA3-256     [10] Hex,      -- SHA3-256 as defined in FIPS PUP 202
-    SHA3-384     [11] Hex,      -- SHA3-384 as defined in FIPS PUP 202
-    SHA3-512     [12] Hex,      -- SHA3-512 as defined in FIPS PUP 202
-    ssdeep       [13] Hex,      -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
-    WHIRLPOOL    [14] Hex       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
+    MD5          [1] Hex OPTIONAL,       -- MD5 message digest as defined in RFC3121
+    MD6          [2] Hex OPTIONAL,       -- MD6 message digest as defined in MD6 proposal
+    RIPEMD-160   [3] Hex OPTIONAL,       -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
+    SHA-1        [4] Hex OPTIONAL,       -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
+    SHA-224      [5] Hex OPTIONAL,       -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
+    SHA-256      [6] Hex OPTIONAL,       -- SHA-256 as defined in RFC6234
+    SHA-384      [7] Hex OPTIONAL,       -- SHA-384 as defined in RFC6234
+    SHA-512      [8] Hex OPTIONAL,       -- SHA-512 as defined in RFC6234
+    SHA3-224     [9] Hex OPTIONAL,       -- SHA3-224 as defined in FIPS PUP 202
+    SHA3-256     [10] Hex OPTIONAL,      -- SHA3-256 as defined in FIPS PUP 202
+    SHA3-384     [11] Hex OPTIONAL,      -- SHA3-384 as defined in FIPS PUP 202
+    SHA3-512     [12] Hex OPTIONAL,      -- SHA3-512 as defined in FIPS PUP 202
+    ssdeep       [13] Hex OPTIONAL,      -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
+    WHIRLPOOL    [14] Hex OPTIONAL       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
 }
 
 encryption-algo ::= ENUMERATED { -- Replace with an IANA algorithm registry?  Which one?

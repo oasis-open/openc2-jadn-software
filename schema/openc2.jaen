@@ -259,20 +259,20 @@
   ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
 
   ["hashes-type", "Map", [], "Hash values for algorithms included in hash-algo-ov", [
-    [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],
-    [2, "MD6", "Hex", [], "MD6 message digest as defined in MD6 proposal"],
-    [3, "RIPEMD-160", "Hex", [], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
-    [4, "SHA-1", "Hex", [], "Secure Hash Algorithm (SHA)-1 as defined in RFC3174"],
-    [5, "SHA-224", "Hex", [], "SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)"],
-    [6, "SHA-256", "Hex", [], "SHA-256 as defined in RFC6234"],
-    [7, "SHA-384", "Hex", [], "SHA-384 as defined in RFC6234"],
-    [8, "SHA-512", "Hex", [], "SHA-512 as defined in RFC6234"],
-    [9, "SHA3-224", "Hex", [], "SHA3-224 as defined in FIPS PUP 202"],
-    [10, "SHA3-256", "Hex", [], "SHA3-256 as defined in FIPS PUP 202"],
-    [11, "SHA3-384", "Hex", [], "SHA3-384 as defined in FIPS PUP 202"],
-    [12, "SHA3-512", "Hex", [], "SHA3-512 as defined in FIPS PUP 202"],
-    [13, "ssdeep", "Hex", [], "ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification"],
-    [14, "WHIRLPOOL", "Hex", [], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
+    [1, "MD5", "Hex", ["?"], "MD5 message digest as defined in RFC3121"],
+    [2, "MD6", "Hex", ["?"], "MD6 message digest as defined in MD6 proposal"],
+    [3, "RIPEMD-160", "Hex", ["?"], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
+    [4, "SHA-1", "Hex", ["?"], "Secure Hash Algorithm (SHA)-1 as defined in RFC3174"],
+    [5, "SHA-224", "Hex", ["?"], "SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)"],
+    [6, "SHA-256", "Hex", ["?"], "SHA-256 as defined in RFC6234"],
+    [7, "SHA-384", "Hex", ["?"], "SHA-384 as defined in RFC6234"],
+    [8, "SHA-512", "Hex", ["?"], "SHA-512 as defined in RFC6234"],
+    [9, "SHA3-224", "Hex", ["?"], "SHA3-224 as defined in FIPS PUP 202"],
+    [10, "SHA3-256", "Hex", ["?"], "SHA3-256 as defined in FIPS PUP 202"],
+    [11, "SHA3-384", "Hex", ["?"], "SHA3-384 as defined in FIPS PUP 202"],
+    [12, "SHA3-512", "Hex", ["?"], "SHA3-512 as defined in FIPS PUP 202"],
+    [13, "ssdeep", "Hex", ["?"], "ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification"],
+    [14, "WHIRLPOOL", "Hex", ["?"], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
   ],
 
   ["encryption-algo", "Enumerated", [], "Replace with an IANA algorithm registry?  Which one?", [

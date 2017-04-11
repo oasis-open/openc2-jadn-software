@@ -6,6 +6,7 @@ import json
 import jsonschema
 from datetime import datetime
 from .codec_utils import opts_s2d
+from .codec import is_builtin
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: convert prints to ValidationError exception
@@ -92,14 +93,14 @@ FOPTS = 3       # Field options
 FDESC = 4       # Field Description
 
 
-def jaen_check(jaen):
+def jaen_check(schema):
     """
     Check JAEN structure against JSON schema, then perform additional checks on type definitions
     """
 
-    jsonschema.Draft4Validator(jaen_schema).validate(jaen)
+    jsonschema.Draft4Validator(jaen_schema).validate(schema)
 
-    for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
+    for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if t[TTYPE] not in ("Binary", "Boolean", "Integer", "Number", "String",
                             "Array", "Choice", "Enumerated", "Map", "Record"):
             print("Type error: Unknown type", t[TTYPE])
@@ -131,7 +132,29 @@ def jaen_check(jaen):
                         print("Invalid field option:", t[TNAME], i[FNAME], o)
             if len(t[FIELDS]) != len(tags):
                 print("Tag collision", t[TNAME], len(t[FIELDS]), "items,", len(tags), "unique tags")
-    return jaen
+    return schema
+
+
+def build_jaen_deps(schema):
+    items = []
+    for tdef in schema["types"]:
+        deps = []
+        if len(tdef) > FIELDS and tdef[TTYPE] != "Enumerated":
+            for f in tdef[FIELDS]:
+                if not is_builtin(f[FTYPE]):
+                    deps.append(f[FTYPE])
+        items.append((tdef[TNAME], deps))
+    return items
+
+
+def jaen_analyze(schema):
+    items = build_jaen_deps(schema)
+    types = {i[0] for i in items}
+    refs = set().union(*[i[1] for i in items])
+    print(schema["meta"]["module"])
+    print("  unreferenced:", types - refs)
+    print("  undefined:", refs - types)
+    print("  cycles:", [])
 
 
 def jaen_loads(jaen_str):

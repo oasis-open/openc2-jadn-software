@@ -181,7 +181,6 @@ bandwidth messages for a text-based encoding, although binary encodings would be
             "device_id": "dns://host03274.example.org"}},
     "modifiers": {
         "command_id": "5ce72...",
-        "command_src": "dns://orch.example.org",
         "response": "ack",
         "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
 ```
@@ -192,23 +191,21 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.software.name": "VirusBeGone",
     "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
     "modifiers.command_id": "5ce72...",
-    "modifiers.command_src": "dns://orch.example.org",
     "modifiers.response": "ack",
     "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
 ```
 #### Minified
 ```
 [16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
-{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"5ce72..."}]
+{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"6":"5ce72..."}]
 ```
 ### -- UPDATE Response --
 #### API and JSON-verbose
 ```
-{   "source": "dns://orch.example.org",
-    "command_ref": "5ce72...",
-    "status": "Processing",
+{   "status": "Processing",
     "statusText": "Updating McAfmantec VirusBeGone ...",
-    "results": ""}
+    "response_src": "dns://orch.example.org",
+    "command_id": "5ce72..."}
 ```
 #### API Flat
 ```
@@ -216,5 +213,5 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 #### Minified
 ```
-["dns://orch.example.com","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
 ```

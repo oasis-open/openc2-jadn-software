@@ -48,6 +48,25 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 [32,{"7":["cdn.badco.org"]}]
 ```
+### -- QUERY --
+#### API and JSON-verbose
+```
+{   "action": "query",
+    "target": {"commands": "schema"}}
+```
+#### API Flat
+```
+{   "action": "query",
+    "target.commands": "schema"}
+```
+#### Concise
+```
+["query", {"commands": "schema"}]
+```
+#### Minified
+```
+[3, {"2": 2}]
+```
 ### -- CONTAIN --
 #### API and JSON-verbose
 ```

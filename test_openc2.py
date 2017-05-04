@@ -276,7 +276,7 @@ class OpenC2(unittest.TestCase):
                     "vendor": "McAfmantec"}},
             "actuator": {
                 "process_remediation_service": {
-                    "device_id": "dns://host03274.example.org"}},
+                    "actuator_id": "dns://host03274.example.org"}},
             "modifiers": {
                 "command_id": "5ce72...",
                 "command_src": "dns://orch.example.org",
@@ -306,7 +306,7 @@ class OpenC2(unittest.TestCase):
             "action": "update",
             "target.software.vendor": "McAfmantec",
             "target.software.name": "VirusBeGone",
-            "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
+            "actuator.process_remediation_service.actuator_id": "dns://host03274.example.org",
             "modifiers.command_id": "5ce72...",
             "modifiers.command_src": "dns://orch.example.org",
             "modifiers.response": "ack",
@@ -331,24 +331,22 @@ class OpenC2(unittest.TestCase):
         # -- Response
 
         rsp_api = {
-            "source": "dns://orch.example.org",
-            "command_ref": "5ce72...",
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
-            "results": ""}
+            "response_src": "dns://orch.example.org",
+            "command_id": "5ce72..."}
 
-        rsp_min = ["dns://orch.example.org","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+        rsp_min = [102,"Updating McAfmantec VirusBeGone ...","dns://orch.example.org","5ce72..."]
 
-        rsp_concise = ["dns://orch.example.org", "5ce72...", "Processing", "Updating McAfmantec VirusBeGone ...", ""]
+        rsp_concise = ["Processing", "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
 
-        rsp_noname = {"3": 102, "1": "dns://orch.example.org", "4": "Updating McAfmantec VirusBeGone ...", "2": "5ce72...", "5": ""}
+        rsp_noname = {"1": 102, "2": "Updating McAfmantec VirusBeGone ...", "3": "dns://orch.example.org", "4": "5ce72..."}
 
         rsp_flat = {
-            "source": "dns://orch.example.org",
-            "command_ref": "5ce72...",
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
-            "results": ""}
+            "response_src": "dns://orch.example.org",
+            "command_id": "5ce72..."}
 
         self.tc.set_mode(False, False)  # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_min)
@@ -365,6 +363,25 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(flatten(rsp_api), rsp_flat)
         self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
         self._write_examples("t6_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
+
+    def test7_joe(self):
+        cmd_api = {
+            "action": "update",
+            "target": {
+                "file": {
+                    "parent_directory": {
+                        "path":"\\\\someshared-drive\\somedirectory\\configurations"},
+                    "name": "firewallconfiguration.txt"
+                }
+            },
+            "actuator": {
+                "network_firewall": {}
+            }
+        }
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+
 
 if __name__ == "__main__":
     unittest.main()

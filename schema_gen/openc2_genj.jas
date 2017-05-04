@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Tue Apr 11 09:47:03 2017
+-- Generated from schema\openc2.jaen, Thu May  4 11:03:51 2017
 
 /*
 module:        openc2
@@ -29,11 +29,11 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source       device-id,    -- ID of the command issuer, from "command_src" modifier
-    command_ref  command-id,    -- Command unique identifier, from "command_id" modifier
-    status       status-code,    -- Adapted from HTTP Status Codes, RFC 7231
-    statusText   STRING,    -- Status description
-    results      STRING     -- Results of executing the command
+    status        status-code,    -- Adapted from HTTP Status Codes, RFC 7231
+    statusText    STRING OPTIONAL,    -- Status description
+    response_src  device-id OPTIONAL,    -- ID of the responder/actuator
+    command_id    command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
+    results       STRING OPTIONAL     -- Results of executing the command
 }
 
 OpenC2Alert ::= RECORD {
@@ -151,7 +151,7 @@ Actuator ::= CHOICE {
 }
 
 ActuatorSpecifiers ::= RECORD {
-    device_id    url OPTIONAL,
+    actuator_id  url OPTIONAL,
     asset_id     STRING OPTIONAL
 }
 
@@ -194,7 +194,7 @@ response-type ::= ENUMERATED {
     status       (2)
 }
 
-method-value ::= CHOICE {    -- Method must agree with Action (test descriptions)
+method-value ::= CHOICE {    -- Method must agree with Action
     deny         [1] DenyMethod,    -- Action must be "deny"
     pause        [2] PauseMethod,    -- Action must be 'pause'
     scan         [3] ScanMethod,    -- Action must be 'scan"
@@ -394,7 +394,7 @@ file ::= MAP {
     created               [8] date-time OPTIONAL,    -- Date/time the file was created.
     modified              [9] date-time OPTIONAL,    -- Date/time the file was last written to / modified.
     accessed              [10] date-time OPTIONAL,    -- Date/time the file was last accessed.
-    parent-directory      [11] directory OPTIONAL,    -- Parent directory of the file.
+    parent_directory      [11] directory OPTIONAL,    -- Parent directory of the file.
     is_encrypted          [12] BOOLEAN OPTIONAL,    -- Specifies whether the file is encrypted.
     encryption_algorithm  [13] encryption-algo OPTIONAL,    -- Specifies the algorithm used to encrypt the file.
     decryption_key        [14] STRING OPTIONAL,    -- Decryption key used to decrypt the file.
@@ -504,6 +504,18 @@ process ::= MAP {
     binary                 [11] file OPTIONAL,    -- Executable binary that was executed as the process
     parent                 [12] process OPTIONAL,    -- Process that spawned this one
     children               [13] process-children OPTIONAL     -- Processes that were spawned by this one
+}
+
+arguments ::= ARRAY_OF {
+                 [0] STRING
+}
+
+envars ::= ARRAY_OF {
+                 [0] STRING
+}
+
+opened-connections ::= ARRAY_OF {
+                 [0] STRING
 }
 
 process-ext ::= MAP {

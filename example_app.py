@@ -24,5 +24,5 @@ message2 = '[32,{"7":["cdn.badco.org"]}]'                   # Received OpenC2 co
 codec.set_mode(verbose_rec=False, verbose_str=False)        # Tell codec to use JSON-minified encoding
 command2 = codec.decode("OpenC2Command", json.loads(message2))      # Validate and decode the command
 print("Received Message (JSON-m string) =", message2)
-print("Decoded Command (API structure)  =", command2)
+print("Decoded Command (API)            =", command2)
 print("Decoded Command (API flat)       =", flatten(command2))

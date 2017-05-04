@@ -4,7 +4,7 @@ import unittest
 from jaen.codec.codec import Codec
 from jaen.codec.jaen import jaen_check
 
-jaen = {                # JAEN schema for datatypes used in Basic Types tests
+schema_basic = {                # JAEN schema for datatypes used in Basic Types tests
     "meta": {"module": "unittests-BasicTypes"},
     "types": [
         ["t_bool", "Boolean", [], ""],
@@ -48,8 +48,8 @@ jaen = {                # JAEN schema for datatypes used in Basic Types tests
 class BasicTypes(unittest.TestCase):
 
     def setUp(self):
-        jaen_check(jaen)
-        self.tc = Codec(jaen)
+        jaen_check(schema_basic)
+        self.tc = Codec(schema_basic)
 
     def test_primitive(self):   # Non-composed types (bool, int, num, str)
         self.assertEqual(self.tc.decode("t_bool", True), True)
@@ -544,6 +544,121 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_map", self.RGB_bad6a)
         with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB_bad7a)
+
+
+schema_selectors = {                # JAEN schema for selector tests
+    "meta": {"module": "unittests-Selectors"},
+    "types": [
+        ["t_attribute", "Record", [], "", [
+            [1, "type", "String", [], ""],
+            [2, "value", "", ["{type"], ""]]
+        ],
+        ["t_property_implicit_primitive", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "*", "Primitive", [], ""]]
+        ],
+        ["t_property_explicit_primitive", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "data", "Primitive", [], ""]]
+        ],
+        ["t_property_implicit_category", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "*", "Category", [], ""]]
+         ],
+        ["t_property_explicit_category", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "data", "Category", [], ""]]
+         ],
+
+        ["Primitive", "Choice", [], "", [
+            [1, "name", "String", [], ""],
+            [4, "flag", "Boolean", [], ""],
+            [7, "count", "Integer", [], ""]]
+        ],
+        ["Category", "Choice", [], "", [
+            [2, "animal", "Animals", [], ""],
+            [5, "color", "Colors", [], ""]]
+        ],
+        ["Animals", "Map", [], "", [
+            [3, "cat", "String", ["?"], ""],
+            [4, "dog", "Integer", ["?"], ""],
+            [5, "rat", "Rattrs", ["?"], ""]]
+        ],
+        ["Colors", "Enumerated", [], "", [
+            [2, "red", ""],
+            [3, "green", ""],
+            [4, "blue", ""]]
+         ],
+        ["Rattrs", "Record", [], "", [
+            [1, "length", "Integer", [], ""],
+            [2, "weight", "Number", [], ""]]
+        ]
+    ]}
+
+
+class Selectors(unittest.TestCase):
+
+    def setUp(self):
+        jaen_check(schema_selectors)
+        self.tc = Codec(schema_selectors)
+
+    attr1_api = {"type": "Integer", "value": 17}
+    attr2_api = {"type": "Primitive", "value": {"count": 17}}
+    attr3_api = {"type": "Category", "value": {"animal": {"rat": {"length": 21, "weight": .342}}}}
+    attr4_bad_api = {"type": "vegetable", "value": "turnip"}
+    attr5_bad_api = {"type": "vegetable", "value": {"turnip": ""}}
+
+    def test_attribute(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr1_api), self.attr1_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr1_api), self.attr1_api)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr2_api), self.attr2_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr2_api), self.attr2_api)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr3_api), self.attr3_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr3_api), self.attr3_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr4_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr4_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr5_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr5_bad_api)
+
+    pep_api = {"foo": "bar", "data": {"count": 17}}
+    pec_api = {"foo": "bar", "data": {"animal": {"rat": {"length": 21, "weight": .342}}}}
+    pep_bad_api = {"foo": "bar", "data": {"turnip": ""}}
+
+    def test_property_explicit(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_property_explicit_primitive", self.pep_api), self.pep_api)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_primitive", self.pep_api), self.pep_api)
+        self.assertDictEqual(self.tc.encode("t_property_explicit_category", self.pec_api), self.pec_api)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_category", self.pec_api), self.pec_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_explicit_primitive", self.pep_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_explicit_primitive", self.pep_bad_api)
+
+    pip_api = {"foo": "bar", "count": 17}
+    pic_api = {"foo": "bar", "animal": {"rat": {"length": 21, "weight": .342}}}
+    pip_bad1_api = {"foo": "bar", "value": "turnip"}
+    pip_bad2_api = {"foo": "bar", "value": {"turnip": ""}}
+
+    def test_property_implicit(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_property_implicit_primitive", self.pip_api), self.pip_api)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_api), self.pip_api)
+        self.assertDictEqual(self.tc.encode("t_property_implicit_category", self.pic_api), self.pic_api)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_category", self.pic_api), self.pic_api)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad1_api)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad1_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad2_api)
 
 if __name__ == "__main__":
     unittest.main()

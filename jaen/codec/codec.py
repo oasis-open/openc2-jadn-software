@@ -77,11 +77,17 @@ class Codec:
         self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
-        symtype = self.symtab[datatype]
+        try:
+            symtype = self.symtab[datatype]
+        except KeyError:
+            raise ValueError("datatype '%s' is not defined: %s" % (datatype, mstr))
         return symtype[S_CODEC][C_DEC](symtype, mstr, self)
 
     def encode(self, datatype, message):
-        symtype = self.symtab[datatype]
+        try:
+            symtype = self.symtab[datatype]
+        except KeyError:
+            raise ValueError("datatype '%s' is not defined: %s" % (datatype, message))
         return symtype[S_CODEC][C_ENC](symtype, message, self)
 
     def set_mode(self, verbose_rec=False, verbose_str=False):
@@ -246,17 +252,21 @@ def _decode_maprec(ts, val, codec):
     if extra:
         _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
+        fs = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
+        fopts = ts[S_FLD][fs][S_FOPT]
         if ts[S_ETYPE] == list:                     # Concise or Minified Record
             fx = f[FTAG] - 1
             exists = len(val) > fx and val[fx] is not None
         else:                                       # Map or Verbose Record
-            fx = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
+            fx = fs
             exists = fx in val and val[fx] is not None
         if exists:
-            apival[f[FNAME]] = codec.decode(f[FTYPE], val[fx])
+            ftype = f[FTYPE]
+            if "atfield" in fopts:
+                ftype = apival[fopts["atfield"]]
+            apival[f[FNAME]] = codec.decode(ftype, val[fx])
         else:
-            fs = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
-            if not ts[S_FLD][fs][S_FOPT]["optional"]:
+            if not fopts["optional"]:
                 _bad_value(ts, val, f)
     return apival
 
@@ -272,8 +282,12 @@ def _encode_maprec(ts, val, codec):
     if ts[S_ETYPE] == list:
         fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][FTAG] for f in val])
     for f in ts[S_TDEF][FIELDS]:
-        fv = codec.encode(f[FTYPE], val[f[FNAME]]) if f[FNAME] in val else None
-        if fv is None and not ts[S_FLD][str(f[fx])][S_FOPT]["optional"]:     # Missing required field
+        fopts = ts[S_FLD][str(f[fx])][S_FOPT]
+        ftype = f[FTYPE]
+        if "atfield" in fopts:
+            ftype = val[fopts["atfield"]]
+        fv = codec.encode(ftype, val[f[FNAME]]) if f[FNAME] in val else None
+        if fv is None and not fopts["optional"]:     # Missing required field
             _bad_value(ts, val, f)
         if ts[S_ETYPE] == list:         # Concise Record
             if f[FTAG] <= fmax:

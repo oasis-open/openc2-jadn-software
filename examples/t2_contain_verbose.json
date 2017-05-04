@@ -1,1 +1,1 @@
-{"target": {"user_account": {"user_id": "21942", "is_disabled": true, "account_last_login": "2017-03-16T07:38:12-04:00", "account_login": "jsmith"}}, "action": "contain"}
+{"action": "contain", "target": {"user_account": {"user_id": "21942", "account_last_login": "2017-03-16T07:38:12-04:00", "is_disabled": true, "account_login": "jsmith"}}}

@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jas, Tue Apr 11 09:47:03 2017"
+"Generated from schema\openc2.jas, Thu May  4 11:03:51 2017"
 
 {
  "meta": {
@@ -28,11 +28,11 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "source", "device-id", [], "ID of the command issuer, from \"command_src\" modifier"],
-    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command_id\" modifier"],
-    [3, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
-    [4, "statusText", "String", [], "Status description"],
-    [5, "results", "String", [], "Results of executing the command"]]
+    [1, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
+    [2, "statusText", "String", ["?"], "Status description"],
+    [3, "response_src", "device-id", ["?"], "ID of the responder/actuator"],
+    [4, "command_id", "command-id", ["?"], "Command unique identifier, from \"command_id\" modifier"],
+    [5, "results", "String", ["?"], "Results of executing the command"]]
   ],
 
   ["OpenC2Alert", "Record", [], "", [
@@ -150,7 +150,7 @@
   ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
-    [1, "device_id", "url", ["?"], ""],
+    [1, "actuator_id", "url", ["?"], ""],
     [2, "asset_id", "String", ["?"], ""]]
   ],
 
@@ -193,7 +193,7 @@
     [2, "status", ""]]
   ],
 
-  ["method-value", "Choice", [], "Method must agree with Action (test descriptions)", [
+  ["method-value", "Choice", [], "Method must agree with Action", [
     [1, "deny", "DenyMethod", [], "Action must be \"deny\""],
     [2, "pause", "PauseMethod", [], "Action must be 'pause'"],
     [3, "scan", "ScanMethod", [], "Action must be 'scan\""],
@@ -388,7 +388,7 @@
     [8, "created", "date-time", ["?"], "Date/time the file was created."],
     [9, "modified", "date-time", ["?"], "Date/time the file was last written to / modified."],
     [10, "accessed", "date-time", ["?"], "Date/time the file was last accessed."],
-    [11, "parent-directory", "directory", ["?"], "Parent directory of the file."],
+    [11, "parent_directory", "directory", ["?"], "Parent directory of the file."],
     [12, "is_encrypted", "Boolean", ["?"], "Specifies whether the file is encrypted."],
     [13, "encryption_algorithm", "encryption-algo", ["?"], "Specifies the algorithm used to encrypt the file."],
     [14, "decryption_key", "String", ["?"], "Decryption key used to decrypt the file."],
@@ -492,6 +492,18 @@
     [11, "binary", "file", ["?"], "Executable binary that was executed as the process"],
     [12, "parent", "process", ["?"], "Process that spawned this one"],
     [13, "children", "process-children", ["?"], "Processes that were spawned by this one"]]
+  ],
+
+  ["arguments", "Array", [], "", [
+    [0, "", "String", [], ""]]
+  ],
+
+  ["envars", "Array", [], "", [
+    [0, "", "String", [], ""]]
+  ],
+
+  ["opened-connections", "Array", [], "", [
+    [0, "", "String", [], ""]]
   ],
 
   ["process-ext", "Map", [], "", [

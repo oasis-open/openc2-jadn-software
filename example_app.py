@@ -14,7 +14,7 @@ command1 = {                     # Python literals use either single or double q
 
 schema = jaen_load(os.path.join("schema", "openc2.jaen"))   # Load and validate the OpenC2 schema
 codec = Codec(schema, verbose_rec=True, verbose_str=True)   # Create an OpenC2 encoder/decoder (JSON-Verbose encoding)
-message1 = codec.encode("OpenC2Command", command1)           # Validate and encode the command
+message1 = codec.encode("OpenC2Command", command1)          # Validate and encode the command
 print("Command to be sent (API)         =", command1)
 print("Sent Message (JSON-v string)     =", json.dumps(message1))   # Single quotes are invalid in JSON
 

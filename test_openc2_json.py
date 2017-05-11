@@ -103,27 +103,27 @@ class OpenC2(unittest.TestCase):
         }
         jsonschema.Draft4Validator(self.openc2_schema).validate(cmd_api)
 
-    def testb1_foo(self):
+    def testb1_foo(self):       # Unknown action
         cmd_api = {
             "action": "foo",
-            "target": {"artifact": {"type": "bar"}}}
+            "target": {"device": {"model": "bar"}}}
         with self.assertRaises(jsonschema.exceptions.ValidationError):
             jsonschema.Draft4Validator(self.openc2_schema).validate(cmd_api)
 
-    def testb2_scan(self):
+    def testb2_scan(self):      # Unknown target device property
         cmd_api = {
             "action": "scan",
             "target": {
-                "artifact": {"type": "bar"}
+                "device": {"dummy": "bar"}
                 }}
         with self.assertRaises(jsonschema.exceptions.ValidationError):
             jsonschema.Draft4Validator(self.openc2_schema).validate(cmd_api)
 
-    def testb3_scan(self):
+    def testb3_scan(self):      # Extra targets
         cmd_api = {
             "action": "scan",
             "target": {
-                "artifact": {"type": "bar"},
+                "device": {"model": "bar"},
                 "author": "Charles Dickens",
                 "title": "A Tale of Two Cities",
                 "quote": "We had everything before us, we had nothing before us, we were all going direct to Heaven, "

@@ -7,7 +7,7 @@ import unittest
 class OpenC2(unittest.TestCase):
 
     def setUp(self):
-        with open("schema/OpenC2-Concrete-JSON-schema.json") as f:
+        with open(os.path.join("schema", "OpenC2-Concrete-JSON-schema.json")) as f:
             self.openc2_schema = json.load(f)
 
     def test1_mitigate(self):

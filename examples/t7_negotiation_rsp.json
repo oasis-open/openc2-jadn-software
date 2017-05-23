@@ -1,0 +1,1 @@
+{"status": "OK", "results": {"comms": {"serialization": "JSON-min", "connection": {"REST": {"port": {"number": 1492}, "proto": "TCP"}}}}}

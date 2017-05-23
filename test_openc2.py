@@ -15,9 +15,10 @@ class OpenC2(unittest.TestCase):
         """
 
         if True:        # Set to False to not write example files
-            for n, encoding in enumerate(["verbose", "flat", "concise", "min"]):
-                with open(os.path.join("examples", name + "_" + encoding + ".json"), "w") as f:
-                    f.write(json.dumps(cmds[n]))
+            for n, encoding in enumerate(["", "_flat", "_concise", "_min"]):
+                if cmds[n] is not None:
+                    with open(os.path.join("examples", name + encoding + ".json"), "w") as f:
+                        f.write(json.dumps(cmds[n]))
 
     def setUp(self):
         jaen = jaen_load(os.path.join("schema", "openc2.jaen"))
@@ -326,7 +327,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)  # Convert numeric dict to list
-        self._write_examples("t6_update_cmd", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t6_update", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
         # -- Response
 
@@ -364,7 +365,44 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
         self._write_examples("t6_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
 
-    def test7_joe(self):
+    def test7_negotiation(self):
+        cmd_api = {"action": "query", "target": {"commands": "communication"}}
+        cmd_flat = {"action": "query", "target.commands": "communication"}
+
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(flatten(cmd_api), cmd_flat)
+        self.assertEqual(fluff(cmd_flat), cmd_api)
+        self._write_examples("t7_negotiation", [cmd_api, cmd_flat, None, None])
+
+        rsp_api = {
+            "status": "OK",
+            "results": {
+                "comms": {
+                    "serialization": "JSON-min",
+                    "connection": {
+                        "REST": {"port": {"number": 1492}, "proto": "TCP"}
+                    }
+                }
+            }
+        }
+
+        rsp_flat = {
+            "status": "OK",
+            "results.comms.serialization": "JSON-min",
+            "results.comms.connection.REST.port.number": 1492,
+            "results.comms.connection.REST.proto": "TCP"
+        }
+
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_api)
+        self.assertEqual(self.tc.decode("OpenC2Response", rsp_api), rsp_api)
+        self.assertEqual(flatten(rsp_api), rsp_flat)
+        self.assertEqual(fluff(rsp_flat), rsp_api)
+        self._write_examples("t7_negotiation_rsp", [rsp_api, rsp_flat, None, None])
+
+    def test99_joe(self):
         cmd_api = {
             "action": "update",
             "target": {

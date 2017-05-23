@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Thu May 11 16:10:34 2017"
+"Generated from schema\openc2.jaen, Tue May 23 12:30:11 2017"
 
 {
  "meta": {
@@ -319,7 +319,8 @@
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
     [2, "schema", "results = JAEN syntax of supported commands"],
-    [3, "actuator_groups", "results = JSON array of actuator group names"]]
+    [3, "communication", "results = communication protocol parameters"],
+    [4, "actuator_groups", "results = JSON array of actuator group names"]]
   ],
 
   ["device", "Map", [], "", [
@@ -600,6 +601,34 @@
   ["x509-certificate", "Map", [], "TODO: finish", [
     [1, "is_self_signed", "Boolean", ["?"], "Specifies whether the certificate is self-signed"],
     [2, "hashes", "hashes-type", [], "Specifies any hashes calculated for the entire contents of the certificate"]]
+  ],
+
+  ["comms", "Record", [], "Structure that is returned in response to a \"query communication\" command", [
+    [1, "serialization", "serialization", [], "Payload serialization format"],
+    [2, "connection", "connection", [], "Connection protocol"]]
+  ],
+
+  ["serialization", "Enumerated", [], "Payload serialization format", [
+    [1, "JSON", "JSON (uncompressed)"],
+    [2, "JSON-min", "JSON Minified"],
+    [3, "CBOR", "Concise Binary Object Representation (RFC 7049)"],
+    [4, "proto3", "Google Protocol Buffers v3"],
+    [5, "XML", "Extensible Markup Language"]]
+  ],
+
+  ["connection", "Choice", [], "Connection protocol", [
+    [1, "REST", "REST-params", [], "Representational State Transfer web service protocol"],
+    [2, "DXL", "DXL-params", [], "Data Exchange Layer protocol"]]
+  ],
+
+  ["REST-params", "Record", [], "", [
+    [1, "port", "port", [], "TCP/UDP port number or application protocol name"],
+    [2, "proto", "layer4-protocol", [], "IP protocol (TCP, UDP, etc)"],
+    [3, "ipver", "layer3-protocol", ["?"], "IPv4 or v6"]]
+  ],
+
+  ["DXL-params", "Record", [], "", [
+    [1, "channel", "String", [], "DXL channel name"]]
   ]]
 
 }

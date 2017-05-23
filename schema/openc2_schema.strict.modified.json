@@ -29,6 +29,7 @@
           "$ref": "#/definitions/modifiers"
         }
       },
+      "additionalProperties" : false,
       "required": [
         "action",
         "target"
@@ -74,6 +75,7 @@
     },
     "target": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "artifact": {
           "$ref": "#/definitions/artifact"
@@ -178,6 +180,11 @@
         },
         {
           "required": [
+            "domain_name"
+          ]
+        },
+        {
+          "required": [
             "email_addr"
           ]
         },
@@ -261,10 +268,10 @@
     "response": {
       "type": "object",
       "properties": {
-        "source": {
+        "response_src": {
           "$ref": "#/definitions/device_id"
         },
-        "command_ref": {
+        "command_id": {
           "$ref": "#/definitions/command_id"
         },
         "status": {
@@ -277,12 +284,9 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": [
-        "source",
-        "cmdref",
-        "status",
-        "statusText",
-        "results"
+        "status"
       ]
     },
     "actuator": {
@@ -291,13 +295,13 @@
         "endpoint": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "endpoint_digital-telephone-handset": {
+        "endpoint_digital_telephone_handset": {
           "$ref": "#/definitions/actuator_specifier"
         },
         "endpoint_laptop": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "endpoint_pos-terminal": {
+        "endpoint_pos_terminal": {
           "$ref": "#/definitions/actuator_specifier"
         },
         "endpoint_printer": {
@@ -309,10 +313,10 @@
         "endpoint_server": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "endpoint_smart-meter": {
+        "endpoint_smart_meter": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "endpoint_smart-phone": {
+        "endpoint_smart_phone": {
           "$ref": "#/definitions/actuator_specifier"
         },
         "endpoint_tablet": {
@@ -381,49 +385,50 @@
         "process": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_aaa-server": {
+        "process_aaa_server": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_anti-virus-scanner": {
+        "process_anti_virus_scanner": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_connection-scanner": {
+        "process_connection_scanner": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_directory-service": {
+        "process_directory_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_dns-server": {
+        "process_dns_server": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_email-service": {
+        "process_email_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_file-scanner": {
+        "process_file_scanner": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_location-service": {
+        "process_location_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_network-scanner": {
+        "process_network_scanner": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_remediation-service": {
+        "process_remediation_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_reputation-service": {
+        "process_reputation_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
         "process_sandbox": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_virtualization-service": {
+        "process_virtualization_service": {
           "$ref": "#/definitions/actuator_specifier"
         },
-        "process_vulnerability-scanner": {
+        "process_vulnerability_scanner": {
           "$ref": "#/definitions/actuator_specifier"
         }
       },
+      "additionalProperties": false,
       "oneOf": [
         {
           "required": [
@@ -432,7 +437,7 @@
         },
         {
           "required": [
-            "endpoint_digital-telephone-handset"
+            "endpoint_digital_telephone_handset"
           ]
         },
         {
@@ -442,7 +447,7 @@
         },
         {
           "required": [
-            "endpoint_pos-terminal"
+            "endpoint_pos_terminal"
           ]
         },
         {
@@ -462,12 +467,12 @@
         },
         {
           "required": [
-            "endpoint_smart-meter"
+            "endpoint_smart_meter"
           ]
         },
         {
           "required": [
-            "endpoint_smart-phone"
+            "endpoint_smart_phone"
           ]
         },
         {
@@ -582,57 +587,57 @@
         },
         {
           "required": [
-            "process_aaa-server"
+            "process_aaa_server"
           ]
         },
         {
           "required": [
-            "process_anti-virus-scanner"
+            "process_anti_virus_scanner"
           ]
         },
         {
           "required": [
-            "process_connection-scanner"
+            "process_connection_scanner"
           ]
         },
         {
           "required": [
-            "process_directory-service"
+            "process_directory_service"
           ]
         },
         {
           "required": [
-            "process_dns-server"
+            "process_dns_server"
           ]
         },
         {
           "required": [
-            "process_email-service"
+            "process_email_service"
           ]
         },
         {
           "required": [
-            "process_file-scanner"
+            "process_file_scanner"
           ]
         },
         {
           "required": [
-            "process_location-service"
+            "process_location_service"
           ]
         },
         {
           "required": [
-            "process_network-scanner"
+            "process_network_scanner"
           ]
         },
         {
           "required": [
-            "process_remediation-service"
+            "process_remediation_service"
           ]
         },
         {
           "required": [
-            "process_reputation-service"
+            "process_reputation_service"
           ]
         },
         {
@@ -642,21 +647,25 @@
         },
         {
           "required": [
-            "process_virtualization-service"
+            "process_virtualization_service"
           ]
         },
         {
           "required": [
-            "process_vulnerability-scanner"
+            "process_vulnerability_scanner"
           ]
         }
       ]
     },
     "modifiers": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "context": {
           "type": "string"
+        },
+        "command_id" : {
+          "$red" : "#/definitions/command_id"
         },
         "start_time": {
           "$ref": "#/definitions/datetime"
@@ -673,7 +682,7 @@
         "command_src": {
           "$ref": "#/definitions/device_id"
         },
-        "reponse": {
+        "response": {
           "$ref": "#/definitions/response_type"
         },
         "repond_to": {
@@ -713,6 +722,7 @@
     },
     "alert": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "message": {
           "type": "string"
@@ -736,12 +746,14 @@
           "$ref": "#/definitions/hashes_type"
         }
       },
+      "additionalProperties": false,
       "required": [
         "type"
       ]
     },
     "payload": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "payload_bin": {
           "$ref": "#/definitions/base64"
@@ -772,6 +784,7 @@
     },
     "device": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "description": {
           "type": "string"
@@ -798,6 +811,7 @@
     },
     "directory": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "path": {
           "type": "string"
@@ -830,6 +844,7 @@
     },
     "dirfile": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "d": {
           "$ref": "#/definitions/directory"
@@ -859,6 +874,7 @@
     },
     "domain_name": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "value": {
           "type": "string"
@@ -879,6 +895,7 @@
     },
     "ip_addr": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "ipv4": {
           "$ref": "#/definitions/ipv4_addr"
@@ -910,6 +927,7 @@
     },
     "email_addr": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "value": {
           "type": "string"
@@ -930,6 +948,7 @@
     },
     "file": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "extensions": {
           "$ref": "#/definitions/file_extensions"
@@ -961,7 +980,7 @@
         "accessed": {
           "$ref": "#/definitions/datetime"
         },
-        "parent-directory": {
+        "parent_directory": {
           "$ref": "#/definitions/directory"
         },
         "is_encrypted": {
@@ -989,6 +1008,7 @@
     },
     "file_extensions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "ntfs_ext": {
           "$ref": "#/definitions/ntfs_ext"
@@ -1010,9 +1030,6 @@
     "ntfs_ext": {
       "type": "object"
     },
-    "raster-image-ext": {
-      "type": "object"
-    },
     "raster_image_ext": {
       "type": "object"
     },
@@ -1027,6 +1044,7 @@
     },
     "ipv4_addr": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "value": {
           "type": "string"
@@ -1044,6 +1062,7 @@
     },
     "ipv6_addr": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "value": {
           "type": "string"
@@ -1076,6 +1095,7 @@
     },
     "autonomous_system": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "number": {
           "type": "integer"
@@ -1096,6 +1116,7 @@
     },
     "ip_connection": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "src_addr": {
           "$ref": "#/definitions/ip_addr"
@@ -1116,6 +1137,7 @@
     },
     "port": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "number": {
           "type": "integer"
@@ -1165,6 +1187,7 @@
     },
     "process": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "extension": {
           "$ref": "#/definitions/process_ext"
@@ -1224,6 +1247,7 @@
     },
     "process_ext": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "windows_process_ext": {
           "$ref": "#/definitions/windows_process_ext"
@@ -1247,6 +1271,7 @@
     },
     "software": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string"
@@ -1273,6 +1298,7 @@
     },
     "user_account": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "user_id": {
           "type": "string"
@@ -1326,6 +1352,7 @@
     },
     "windows_registry_key": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "key": {
           "type": "string"
@@ -1352,6 +1379,7 @@
     },
     "windows_registry_value": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string"
@@ -1383,6 +1411,7 @@
     },
     "x509_certificate": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "is_self_signed": {
           "type": "boolean"
@@ -1399,7 +1428,7 @@
     "actuator_specifier": {
       "type": "object",
       "properties": {
-        "device_id": {
+        "actuator_id": {
           "$ref": "#/definitions/url"
         },
         "asset_id": {
@@ -1415,6 +1444,7 @@
       ]
     },
     "method_value": {
+      "additionalProperties": false,
       "properties": {
         "deny": {
           "$ref": "#/definitions/method_deny"
@@ -1555,6 +1585,7 @@
     },
     "hashes_type": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "MD5": {
           "$ref": "#/definitions/hex"

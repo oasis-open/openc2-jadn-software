@@ -125,7 +125,7 @@ class Codec:
                 symval[S_EMAP] = {f[FNAME]: str(f[fx]) for f in t[FIELDS]}
             return symval
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
-        self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
+        self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Binary", "Boolean", "Integer", "Number", "String")})
 
 
 def _check_type(ts, val, vtype):
@@ -325,5 +325,5 @@ enctab = {  # decode, encode, min encoded type
     "Choice": [_decode_choice, _encode_choice, dict],
     "Enumerated": [_decode_enumerated, _encode_enumerated, int],
     "Map": [_decode_maprec, _encode_maprec, dict],
-    "Record": [_decode_maprec, _encode_maprec, dict],   # verbose:dict, concise:list, min:dict
+    "Record": [_decode_maprec, _encode_maprec, dict],
 }

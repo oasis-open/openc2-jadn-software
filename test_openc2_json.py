@@ -6,8 +6,12 @@ import unittest
 
 class OpenC2(unittest.TestCase):
 
+    # openc2_schema.json -- lenient
+    # openc2_schema.strict.json -- strict
+    # openc2_schema.strict.modified.json -- strict but no checks on specifiers
+
     def setUp(self):
-        with open(os.path.join("schema", "OpenC2-Concrete-JSON-schema.json")) as f:
+        with open(os.path.join("schema", "openc2_schema.strict.json")) as f:
             self.openc2_schema = json.load(f)
 
     def test1_mitigate(self):

@@ -31,7 +31,7 @@ OpenC2Response ::= RECORD {
     statusText      STRING OPTIONAL,        -- Status description
     response_src    device-id OPTIONAL,     -- ID of the responder/actuator
     command_id      command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
-    results         STRING OPTIONAL         -- Results of executing the command
+    results         results OPTIONAL        -- Results of executing the command
 }
 
 OpenC2Alert ::= RECORD {
@@ -317,10 +317,11 @@ autonomous-system ::= RECORD {
     rir          STRING OPTIONAL    -- Regional Internet Registry (RIR) that assigned the number to the AS
 }
 
-commands ::= ENUMERATED {    -- Target used to query Actuator for its supported capabilities
-    actions          (1),    -- results = JSON array of supported action verbs
-    schema           (2),    -- results = JAEN syntax of supported commands
-    actuator_groups  (3)     -- results = JSON array of actuator group names
+commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
+    actions         (1),    -- results = JSON array of supported action verbs
+    schema          (2),    -- results = JAEN syntax of supported commands
+    communication   (3),    -- results = communication protocol parameters
+    actuator_groups (4)     -- results = JSON array of actuator group names
 }
 
 device ::= MAP {
@@ -595,4 +596,40 @@ windows-registry-datatype-enum ::= ENUMERATED {
 x509-certificate ::= MAP {      -- TODO: finish
     is_self_signed      [1] BOOLEAN OPTIONAL,   -- Specifies whether the certificate is self-signed
     hashes              [2] hashes-type         -- Specifies any hashes calculated for the entire contents of the certificate
+}
+
+results ::= CHOICE {
+    string      [1] STRING,
+    strings     [2] strings,
+    comms       [3] comms
+}
+
+strings ::= ARRAY_OF(STRING)
+
+comms ::= RECORD {          -- Structure that is returned in response to a "query communication" command
+    serialization   serialization,      -- Payload serialization format
+    connection      connection          -- Connection protocol
+}
+
+serialization ::= ENUMERATED {      -- Payload serialization format
+    JSON        (1),        -- JSON (uncompressed)
+    JSON-min    (2),        -- JSON Minified
+    CBOR        (3),        -- Concise Binary Object Representation (RFC 7049)
+    proto3      (4),        -- Google Protocol Buffers v3
+    XML         (5)         -- Extensible Markup Language
+}
+
+connection ::= CHOICE {     -- Connection protocol
+    REST        [1] REST-params,        -- Representational State Transfer web service protocol
+    DXL         [2] DXL-params          -- Data Exchange Layer protocol
+}
+
+REST-params ::= RECORD {
+    port        port,                       -- TCP/UDP port number or application protocol name
+    proto       layer4-protocol,            -- IP protocol (TCP, UDP, etc)
+    ipver       layer3-protocol OPTIONAL    -- IPv4 or v6
+}
+
+DXL-params  ::= RECORD {
+    channel     STRING              -- DXL channel name
 }

@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Tue May 23 12:30:11 2017"
+"Generated from schema\openc2.jaen, Tue May 23 15:06:14 2017"
 
 {
  "meta": {
@@ -32,7 +32,7 @@
     [2, "statusText", "String", ["?"], "Status description"],
     [3, "response_src", "device-id", ["?"], "ID of the responder/actuator"],
     [4, "command_id", "command-id", ["?"], "Command unique identifier, from \"command_id\" modifier"],
-    [5, "results", "String", ["?"], "Results of executing the command"]]
+    [5, "results", "results", ["?"], "Results of executing the command"]]
   ],
 
   ["OpenC2Alert", "Record", [], "", [
@@ -601,6 +601,16 @@
   ["x509-certificate", "Map", [], "TODO: finish", [
     [1, "is_self_signed", "Boolean", ["?"], "Specifies whether the certificate is self-signed"],
     [2, "hashes", "hashes-type", [], "Specifies any hashes calculated for the entire contents of the certificate"]]
+  ],
+
+  ["results", "Choice", [], "", [
+    [1, "string", "String", [], ""],
+    [2, "strings", "strings", [], ""],
+    [3, "comms", "comms", [], ""]]
+  ],
+
+  ["strings", "Array", [], "", [
+    [0, "", "String", [], ""]]
   ],
 
   ["comms", "Record", [], "Structure that is returned in response to a \"query communication\" command", [

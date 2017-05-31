@@ -1,1 +1,1 @@
-{"results.comms.serialization": "JSON-min", "status": "OK", "results.comms.connection.REST.proto": "TCP", "results.comms.connection.REST.port.number": 1492}
+{"status": "OK", "results.comms.serialization": "JSON-min", "results.comms.connection.REST.port.number": 1492, "results.comms.connection.REST.proto": "TCP"}

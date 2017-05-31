@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Tue May 23 12:30:11 2017
+-- Generated from schema\openc2.jaen, Tue May 23 15:06:14 2017
 
 /*
 module:        openc2
@@ -33,7 +33,7 @@ OpenC2Response ::= RECORD {
     statusText    STRING OPTIONAL,    -- Status description
     response_src  device-id OPTIONAL,    -- ID of the responder/actuator
     command_id    command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
-    results       STRING OPTIONAL     -- Results of executing the command
+    results       results OPTIONAL     -- Results of executing the command
 }
 
 OpenC2Alert ::= RECORD {
@@ -617,6 +617,16 @@ windows-registry-datatype-enum ::= ENUMERATED {
 x509-certificate ::= MAP {    -- TODO: finish
     is_self_signed  [1] BOOLEAN OPTIONAL,    -- Specifies whether the certificate is self-signed
     hashes          [2] hashes-type     -- Specifies any hashes calculated for the entire contents of the certificate
+}
+
+results ::= CHOICE {
+    string       [1] STRING,
+    strings      [2] strings,
+    comms        [3] comms
+}
+
+strings ::= ARRAY_OF {
+                 [0] STRING
 }
 
 comms ::= RECORD {    -- Structure that is returned in response to a "query communication" command

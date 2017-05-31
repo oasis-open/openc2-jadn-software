@@ -1,1 +1,1 @@
-{"status": "Processing", "command_id": "5ce72...", "response_src": "dns://orch.example.org", "statusText": "Updating McAfmantec VirusBeGone ..."}
+{"statusText": "Updating McAfmantec VirusBeGone ...", "command_id": "5ce72...", "status": "Processing", "response_src": "dns://orch.example.org"}

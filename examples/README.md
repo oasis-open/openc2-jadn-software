@@ -271,8 +271,7 @@ in the actuator's list of supported options (DXL).
                 "serialization": "Protobuf",
                 "connection": {
                     "REST": {
-                        "port": {"protocol":"https"},
-                        "proto": "TCP"}}}}},
+                        "port": {"protocol":"https"}}}}}},
     "actuator": {
         "any": {"actuator_id": "https://router7319.example.org"}}
 }

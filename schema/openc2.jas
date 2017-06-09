@@ -76,7 +76,7 @@ Action ::= ENUMERATED {
 
 Target ::= CHOICE {                             -- OpenC2 Target datatypes
     artifact              [1] artifact,                 -- SCO v2
-    openc2                [2] openc2,                   -- OpenC2 - query actuator for supported capabilities, set comms
+    openc2                [2] openc2,                   -- OpenC2 - query actuator for supported capabilities, negotiate connection
     device                [3] device,                   -- CybOX 2.1
     directory             [4] directory,                -- SCO v2
     disk                  [5] disk,                     -- CybOX 2.1
@@ -101,51 +101,52 @@ Target ::= CHOICE {                             -- OpenC2 Target datatypes
 }
 
 Actuator ::= CHOICE {
-    endpoint                         [1] ActuatorSpecifiers,
+    any                             [0] ActuatorSpecifiers,
+    endpoint                        [1] ActuatorSpecifiers,
     endpoint_digital_telephone_handset [2] ActuatorSpecifiers,
-    endpoint_laptop                  [3] ActuatorSpecifiers,
-    endpoint_pos_terminal            [4] ActuatorSpecifiers,
-    endpoint_printer                 [5] ActuatorSpecifiers,
-    endpoint_sensor                  [6] ActuatorSpecifiers,
-    endpoint_server                  [7] ActuatorSpecifiers,
-    endpoint_smart_meter             [8] ActuatorSpecifiers,
-    endpoint_smart_phone             [9] ActuatorSpecifiers,
-    endpoint_tablet                  [10] ActuatorSpecifiers,
-    endpoint_workstation             [11] ActuatorSpecifiers,
-    network                          [12] ActuatorSpecifiers,
-    network_bridge                   [13] ActuatorSpecifiers,
-    network_firewall                 [14] ActuatorSpecifiers,
-    network_gateway                  [15] ActuatorSpecifiers,
-    network_guard                    [16] ActuatorSpecifiers,
-    network_hips                     [17] ActuatorSpecifiers,
-    network_hub                      [18] ActuatorSpecifiers,
-    network_ids                      [19] ActuatorSpecifiers,
-    network_ips                      [20] ActuatorSpecifiers,
-    network_modem                    [21] ActuatorSpecifiers,
-    network_nic                      [22] ActuatorSpecifiers,
-    network_proxy                    [23] ActuatorSpecifiers,
-    network_router                   [24] ActuatorSpecifiers,
-    network_security_manager         [25] ActuatorSpecifiers,
-    network_sense_making             [26] ActuatorSpecifiers,
-    network_sensor                   [27] ActuatorSpecifiers,
-    network_switch                   [28] ActuatorSpecifiers,
-    network_vpn                      [29] ActuatorSpecifiers,
-    network_wap                      [30] ActuatorSpecifiers,
-    process                          [31] ActuatorSpecifiers,
-    process_aaa_server               [32] ActuatorSpecifiers,
-    process_anti_virus_scanner       [33] ActuatorSpecifiers,
-    process_connection_scanner       [34] ActuatorSpecifiers,
-    process_directory_server         [35] ActuatorSpecifiers,
-    process_dns_server               [36] ActuatorSpecifiers,
-    process_email_service            [37] ActuatorSpecifiers,
-    process_file_scanner             [38] ActuatorSpecifiers,
-    process_location_service         [39] ActuatorSpecifiers,
-    process_network_scanner          [40] ActuatorSpecifiers,
-    process_remediation_service      [41] ActuatorSpecifiers,
-    process_reputation_service       [42] ActuatorSpecifiers,
-    process_sandbox                  [43] ActuatorSpecifiers,
-    process_virtualization_service   [44] ActuatorSpecifiers,
-    process_vulnerability_scanner    [45] ActuatorSpecifiers
+    endpoint_laptop                 [3] ActuatorSpecifiers,
+    endpoint_pos_terminal           [4] ActuatorSpecifiers,
+    endpoint_printer                [5] ActuatorSpecifiers,
+    endpoint_sensor                 [6] ActuatorSpecifiers,
+    endpoint_server                 [7] ActuatorSpecifiers,
+    endpoint_smart_meter            [8] ActuatorSpecifiers,
+    endpoint_smart_phone            [9] ActuatorSpecifiers,
+    endpoint_tablet                 [10] ActuatorSpecifiers,
+    endpoint_workstation            [11] ActuatorSpecifiers,
+    network                         [12] ActuatorSpecifiers,
+    network_bridge                  [13] ActuatorSpecifiers,
+    network_firewall                [14] ActuatorSpecifiers,
+    network_gateway                 [15] ActuatorSpecifiers,
+    network_guard                   [16] ActuatorSpecifiers,
+    network_hips                    [17] ActuatorSpecifiers,
+    network_hub                     [18] ActuatorSpecifiers,
+    network_ids                     [19] ActuatorSpecifiers,
+    network_ips                     [20] ActuatorSpecifiers,
+    network_modem                   [21] ActuatorSpecifiers,
+    network_nic                     [22] ActuatorSpecifiers,
+    network_proxy                   [23] ActuatorSpecifiers,
+    network_router                  [24] ActuatorSpecifiers,
+    network_security_manager        [25] ActuatorSpecifiers,
+    network_sense_making            [26] ActuatorSpecifiers,
+    network_sensor                  [27] ActuatorSpecifiers,
+    network_switch                  [28] ActuatorSpecifiers,
+    network_vpn                     [29] ActuatorSpecifiers,
+    network_wap                     [30] ActuatorSpecifiers,
+    process                         [31] ActuatorSpecifiers,
+    process_aaa_server              [32] ActuatorSpecifiers,
+    process_anti_virus_scanner      [33] ActuatorSpecifiers,
+    process_connection_scanner      [34] ActuatorSpecifiers,
+    process_directory_server        [35] ActuatorSpecifiers,
+    process_dns_server              [36] ActuatorSpecifiers,
+    process_email_service           [37] ActuatorSpecifiers,
+    process_file_scanner            [38] ActuatorSpecifiers,
+    process_location_service        [39] ActuatorSpecifiers,
+    process_network_scanner         [40] ActuatorSpecifiers,
+    process_remediation_service     [41] ActuatorSpecifiers,
+    process_reputation_service      [42] ActuatorSpecifiers,
+    process_sandbox                 [43] ActuatorSpecifiers,
+    process_virtualization_service  [44] ActuatorSpecifiers,
+    process_vulnerability_scanner   [45] ActuatorSpecifiers
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -591,29 +592,30 @@ x509-certificate ::= MAP {      -- TODO: finish
     hashes              [2] hashes-type         -- Specifies any hashes calculated for the entire contents of the certificate
 }
 
-openc2 ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
-    actions         (1),    -- results = JSON array of supported action verbs
-    schema          (2),    -- results = JAEN syntax of supported commands
-    communication   (3),    -- results = communication protocol parameters
-    actuator_groups (4)     -- results = JSON array of actuator group names
-}
-
-openc2-set ::= RECORD {     -- Target used to set Actuator communication protocol parameters
-    serialization   serialization,      -- Payload serialization format
-    connection      connection          -- Connection protocol
+openc2 ::= CHOICE {   -- Target used to query Actuator for its supported capabilities and negotiate connection
+    actions         [1] Null,           -- results = JSON array of supported action verbs
+    schema          [2] Null,           -- results = JAEN syntax of supported commands
+    comm_supported  [3] Null,           -- results = supported communication protocol parameters
+    comm_selected   [4] comm-selected,  -- command target = selected communication protocol parameters
+    actuator_groups [5] Null            -- results = JSON array of actuator group names
 }
 
 results ::= CHOICE {
     string      [1] STRING,
     strings     [2] strings,
-    comms       [3] comms
+    comms       [3] comm-supported
 }
 
 strings ::= ARRAY_OF(STRING)
 
-comms ::= RECORD {          -- Structure that is returned in response to a "query communication" command
+comm-supported ::= RECORD {      -- Structure that is returned in response to a "query communication" command
     serialization   serializations,     -- Payload serialization format
     connection      connections         -- Connection protocol
+}
+
+comm-selected ::= RECORD {     -- Target used to set Actuator communication protocol parameters
+    serialization   serialization,      -- Payload serialization format
+    connection      connection          -- Connection protocol
 }
 
 serializations ::= ARRAY_OF(serialization)
@@ -635,10 +637,12 @@ connection ::= CHOICE {     -- Connection protocol
 
 REST-params ::= RECORD {    -- (concept example - fix with real params)
     port        port,                       -- TCP/UDP port number or application protocol name
-    proto       layer4-protocol,            -- IP protocol (TCP, UDP, etc)
+    proto       layer4-protocol OPTIONAL,   -- IP protocol (TCP, UDP, etc)
     ipver       layer3-protocol OPTIONAL    -- IPv4 or v6
 }
 
 DXL-params  ::= RECORD {    -- (concept example - fix with real params)
     channel     STRING              -- DXL channel name
 }
+
+Null ::= STRING         -- FIX ME - (use zero-length string as null value for now)

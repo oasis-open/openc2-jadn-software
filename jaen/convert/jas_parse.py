@@ -18,12 +18,6 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__all__ = [
-    'jasParser',
-    'jasSemantics',
-    'main'
-]
-
 KEYWORDS = {}
 
 
@@ -236,7 +230,7 @@ class jasParser(Parser):
 
         def block2():
             self._field_()
-        self._closure(block2, sep=sep2)
+        self._gather(block2, sep2)
         self.name_last_node('fields')
         self._token('}')
         self.ast._define(
@@ -420,15 +414,18 @@ class jasSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = jasParser(parseinfo=False)
+    parser = jasParser()
     return parser.parse(text, startrule, filename=filename, **kwargs)
+
 
 if __name__ == '__main__':
     import json
+    from grako.util import asjson
+
     ast = generic_main(main, jasParser, name='jas')
     print('AST:')
     print(ast)
     print()
     print('JSON:')
-    print(json.dumps(ast, indent=2))
+    print(json.dumps(asjson(ast), indent=2))
     print()

@@ -53,7 +53,30 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(fluff(cmd_flat), cmd_api)
         self._write_examples("t1_mitigate", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test2_contain(self):
+    def test2_query(self):
+        cmd_api = {"action": "query", "target": {"openc2": {"schema":""}}}
+        cmd_flat = {"action": "query", "target.openc2.schema": ""}
+        cmd_noname = {"1":3, "2":{"2":{"2":""}}}
+        cmd_concise = ["query", {"openc2": {"schema":""}}]
+        cmd_min = [3,{"2":{"2":""}}]
+
+                                            # Minified (list/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
+        self.tc.set_mode(False, True)       # Concise (list/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
+        self.tc.set_mode(True, False)       # unused (dict/tag)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(flatten(cmd_api), cmd_flat)
+        self.assertEqual(fluff(cmd_flat), cmd_api)
+        self._write_examples("t2_query", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+
+    def test3_contain(self):
         cmd_api = {
             "action": "contain",
             "target": {
@@ -104,9 +127,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t2_contain", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t3_contain", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test3_deny(self):
+    def test4_deny(self):
         cmd_api = {
             "action": "deny",
             "target": {
@@ -192,30 +215,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t3_deny", [cmd_api, cmd_flat, cmd_concise, cmd_min])
-
-    def test4_query(self):
-        cmd_api = {"action": "query", "target": {"openc2":"schema"}}
-        cmd_flat = {"action": "query", "target.openc2": "schema"}
-        cmd_noname = {"1":3, "2":{"2":2}}
-        cmd_concise = ["query", {"openc2":"schema"}]
-        cmd_min = [3,{"2":2}]
-
-                                            # Minified (list/tag)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
-        self.tc.set_mode(False, True)       # Concise (list/name)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
-        self.tc.set_mode(True, False)       # unused (dict/tag)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
-        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
-        self.assertEqual(flatten(cmd_api), cmd_flat)
-        self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t4_query", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t4_deny", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
     def test5_scan(self):
         cmd_api = {           # API / Verbose (dict/name)
@@ -365,7 +365,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
         self._write_examples("t6_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
 
-    def test7_joe(self):
+    def test7_update(self):
         cmd_api = {
             "action": "update",
             "target": {
@@ -376,19 +376,21 @@ class OpenC2(unittest.TestCase):
                 }
             },
             "actuator": {
-                "network_firewall": {}
-            }
+                "network_firewall": {"actuator_id": "dns://host03274.example.org"}}
         }
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t7_update", [cmd_api, None, None, None])
 
     def test8_negotiation(self):
         cmd_api = {
             "action": "query",
             "target": {
-                "openc2": "communication"
-            }
+                "openc2": {"comm_supported":""}
+            },
+            "actuator": {
+                "any": {"actuator_id": "https://router7319.example.org"}}
         }
         rsp_api = {
             "status": "OK",
@@ -399,12 +401,28 @@ class OpenC2(unittest.TestCase):
                 }
             }
         }
+        cmd2_api = {
+            "action": "set",
+            "target": {
+                "openc2": {
+                    "comm_selected":{
+                        "serialization": "Protobuf",
+                        "connection": {
+                            "REST": {
+                                "port": {"protocol":"https"}}}}}},
+            "actuator": {
+                "any": {"actuator_id": "https://router7319.example.org"}}
+        }
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
-        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_api)
         self.assertEqual(self.tc.decode("OpenC2Response", rsp_api), rsp_api)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd2_api), cmd2_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_api), cmd2_api)
+        self._write_examples("t8_negotiation1", [cmd_api, None, None, None])
+        self._write_examples("t8_negotiation2", [rsp_api, None, None, None])
+        self._write_examples("t8_negotiation3", [cmd2_api, None, None, None])
 
     def testb1_foo(self):       # Unknown action
         cmd_api = {

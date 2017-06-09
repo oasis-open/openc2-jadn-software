@@ -75,7 +75,7 @@
 
   ["Target", "Choice", [], "OpenC2 Target datatypes", [
     [1, "artifact", "artifact", [], "SCO v2"],
-    [2, "openc2", "openc2", [], "OpenC2 - query actuator for supported capabilities, set comms"],
+    [2, "openc2", "openc2", [], "OpenC2 - query actuator for supported capabilities, negotiate connection"],
     [3, "device", "device", [], "CybOX 2.1"],
     [4, "directory", "directory", [], "SCO v2"],
     [5, "disk", "disk", [], "CybOX 2.1"],
@@ -100,6 +100,7 @@
   ],
 
   ["Actuator", "Choice", [], "", [
+    [0, "any", "ActuatorSpecifiers", [], ""],
     [1, "endpoint", "ActuatorSpecifiers", [], ""],
     [2, "endpoint_digital_telephone_handset", "ActuatorSpecifiers", [], ""],
     [3, "endpoint_laptop", "ActuatorSpecifiers", [], ""],
@@ -594,31 +595,32 @@
     [2, "hashes", "hashes-type", [], "Specifies any hashes calculated for the entire contents of the certificate"]]
   ],
 
-  ["openc2", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
-    [1, "actions", "results = JSON array of supported action verbs"],
-    [2, "schema", "results = JAEN syntax of supported commands"],
-    [3, "communication", "results = communication protocol parameters"],
-    [4, "actuator_groups", "results = JSON array of actuator group names"]]
-  ],
-
-  ["openc2-set", "Record", [], "Target used to set Actuator communication protocol parameters", [
-    [1, "serialization", "serialization", [], "Payload serialization format"],
-    [2, "connection", "connection", [], "Connection protocol"]]
+  ["openc2", "Choice", [], "Target used to query Actuator for its supported capabilities and negotiate connection", [
+    [1, "actions", "Null", [], "results = JSON array of supported action verbs"],
+    [2, "schema", "Null", [], "results = JAEN syntax of supported commands"],
+    [3, "comm_supported", "Null", [], "results = supported communication protocol parameters"],
+    [4, "comm_selected", "comm-selected", [], "command target = selected communication protocol parameters"],
+    [5, "actuator_groups", "Null", [], "results = JSON array of actuator group names"]]
   ],
 
   ["results", "Choice", [], "", [
     [1, "string", "String", [], ""],
     [2, "strings", "strings", [], ""],
-    [3, "comms", "comms", [], ""]]
+    [3, "comms", "comm-supported", [], ""]]
   ],
 
   ["strings", "Array", [], "", [
     [0, "", "String", [], ""]]
   ],
 
-  ["comms", "Record", [], "Structure that is returned in response to a \"query communication\" command", [
+  ["comm-supported", "Record", [], "Structure that is returned in response to a \"query communication\" command", [
     [1, "serialization", "serializations", [], "Payload serialization format"],
     [2, "connection", "connections", [], "Connection protocol"]]
+  ],
+
+  ["comm-selected", "Record", [], "Target used to set Actuator communication protocol parameters", [
+    [1, "serialization", "serialization", [], "Payload serialization format"],
+    [2, "connection", "connection", [], "Connection protocol"]]
   ],
 
   ["serializations", "Array", [], "", [
@@ -644,12 +646,14 @@
 
   ["REST-params", "Record", [], "(concept example - fix with real params)", [
     [1, "port", "port", [], "TCP/UDP port number or application protocol name"],
-    [2, "proto", "layer4-protocol", [], "IP protocol (TCP, UDP, etc)"],
+    [2, "proto", "layer4-protocol", ["?"], "IP protocol (TCP, UDP, etc)"],
     [3, "ipver", "layer3-protocol", ["?"], "IPv4 or v6"]]
   ],
 
   ["DXL-params", "Record", [], "(concept example - fix with real params)", [
     [1, "channel", "String", [], "DXL channel name"]]
-  ]]
+  ],
+
+  ["Null", "String", [], "FIX ME - (use zero-length string as null value for now)"]]
 
 }

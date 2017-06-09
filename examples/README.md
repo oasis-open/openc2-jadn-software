@@ -52,20 +52,20 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 #### API and JSON-verbose
 ```
 {   "action": "query",
-    "target": {"commands": "schema"}}
+    "target": {"openc2": {"schema":""}}}
 ```
 #### API Flat
 ```
 {   "action": "query",
-    "target.commands": "schema"}
+    "target.openc2.schema": ""}
 ```
 #### Concise
 ```
-["query", {"commands": "schema"}]
+["query", {"openc2": {"schema":""}}]
 ```
 #### Minified
 ```
-[3,{"2":2}]
+[3,{"2":{"2":""}}]
 ```
 ### -- CONTAIN --
 #### API and JSON-verbose
@@ -236,3 +236,45 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 [102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
 ```
+### -- Negotiation --
+Protocol negotiation is a three-message handshake sent using a default protocol
+stack.  This example assumes that JSON is the default serialization.
+Suitable defaults must also be specified for security and transport layers during negotiation.
+
+**Note**: this example shows syntactically-correct commands but an invalid negotiation
+sequence. In step 3, the selected communication option (REST) was not present
+in the actuator's list of supported options (DXL).
+#### 1. Query
+```
+{   "action": "query",
+    "target": {
+        "openc2": "comm_supported"},
+    "actuator": {
+        "any": {"actuator_id": "https://router7319.example.org"}}
+}
+```
+#### 2. Response - supported options
+```
+{   "status": "OK",
+    "results": {
+        "comms": {
+            "serialization": ["JSON", "JSON-min", "XML", "Protobuf"],
+            "connection": [{"DXL": {"channel": "c2-channel"}}]}}
+}
+```
+#### 3. Start - selected option
+```
+{   "action": "set",
+    "target": {
+        "openc2": {
+            "comm_selected":{
+                "serialization": "Protobuf",
+                "connection": {
+                    "REST": {
+                        "port": {"protocol":"https"},
+                        "proto": "TCP"}}}}},
+    "actuator": {
+        "any": {"actuator_id": "https://router7319.example.org"}}
+}
+```
+

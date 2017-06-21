@@ -29,7 +29,7 @@
     [1, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [2, "statusText", "String", ["?"], "Status description"],
     [3, "response_src", "device-id", ["?"], "ID of the responder/actuator"],
-    [4, "command_id", "command-id", ["?"], "Command unique identifier, from \"command_id\" modifier"],
+    [4, "command_ref", "command-id", ["?"], "Command unique identifier, from \"command_id\" modifier"],
     [5, "results", "results", ["?"], "Results of executing the command"]]
   ],
 
@@ -157,7 +157,7 @@
     [1, "context", "String", ["?"], "universal"],
     [2, "start_time", "date-time", ["?"], "universal"],
     [3, "end_time", "date-time", ["?"], "universal"],
-    [4, "duration", "duration", ["?"], "pause"],
+    [4, "duration", "duration", ["?"], "pause, delay"],
     [5, "frequency", "duration", ["?"], "report, notify, restart, update, sync"],
     [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
     [7, "command_src", "device-id", ["?"], "add to universal"],
@@ -169,10 +169,7 @@
     [13, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
     [14, "search", "search-type", ["?"], "scan"],
     [15, "where", "where", ["?"], "allow, deny, contain"],
-    [16, "message", "String", ["?"], "notify"],
-    [17, "command_ref", "command-id", ["?"], "cancel"],
-    [18, "network_acl", "network-acl", ["?"], "firewall profile"],
-    [19, "segmentation", "segmentation", ["?"], "firewall profile"]]
+    [16, "message", "String", ["?"], "notify"]]
   ],
 
   ["date-time", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],
@@ -240,10 +237,6 @@
     [2, "perimeter", ""],
     [3, "unspecified", "redirect, was \"where = null\""]]
   ],
-
-  ["network-acl", "Record", [], "", []],
-
-  ["segmentation", "Record", [], "", []],
 
   ["status-code", "Enumerated", [], "Adapted from HTTP Status Codes, RFC 7231", [
     [102, "Processing", "1xx: Informational"],
@@ -596,11 +589,12 @@
   ],
 
   ["openc2", "Choice", [], "Target used to query Actuator for its supported capabilities and negotiate connection", [
-    [1, "actions", "Null", [], "results = JSON array of supported action verbs"],
-    [2, "schema", "Null", [], "results = JAEN syntax of supported commands"],
-    [3, "comm_supported", "Null", [], "results = supported communication protocol parameters"],
-    [4, "comm_selected", "comm-selected", [], "command target = selected communication protocol parameters"],
-    [5, "actuator_groups", "Null", [], "results = JSON array of actuator group names"]]
+    [1, "actions", "Null", [], "query: results = JSON array of supported action verbs"],
+    [2, "schema", "Null", [], "query: results = JAEN syntax of supported commands"],
+    [3, "comm_supported", "Null", [], "query: results = supported communication protocol parameters"],
+    [4, "comm_selected", "comm-selected", [], "set:   target = selected communication protocol parameters"],
+    [5, "actuator_groups", "Null", [], "query: results = JSON array of actuator group names"],
+    [6, "command", "command-id", [], "cancel: target = command identifier"]]
   ],
 
   ["results", "Choice", [], "", [

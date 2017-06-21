@@ -1,1 +1,1 @@
-{"status": "OK", "results": {"comms": {"serialization": ["JSON", "JSON-min", "XML", "Protobuf"], "connection": [{"DXL": {"channel": "c2-channel"}}]}}}
+{"results": {"comms": {"serialization": ["JSON", "JSON-min", "XML", "Protobuf"], "connection": [{"DXL": {"channel": "c2-channel"}}]}}, "status": "OK"}

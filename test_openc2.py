@@ -424,6 +424,17 @@ class OpenC2(unittest.TestCase):
         self._write_examples("t8_negotiation2", [rsp_api, None, None, None])
         self._write_examples("t8_negotiation3", [cmd2_api, None, None, None])
 
+    def test9_cancel(self):
+        cmd_api = {
+            "action": "cancel",
+            "target": {
+                "openc2": {"command": "b33cd1d4-aeb4-43a3-bfe9-806f4a84ef79"}}}
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t9_cancel", [cmd_api, None, None, None])
+
     def testb1_foo(self):       # Unknown action
         cmd_api = {
             "action": "foo",

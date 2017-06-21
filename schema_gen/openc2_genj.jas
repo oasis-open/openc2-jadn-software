@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Fri Jun  9 15:39:29 2017
+-- Generated from schema\openc2.jaen, Wed Jun 21 16:24:36 2017
 
 /*
 module:        openc2
@@ -32,7 +32,7 @@ OpenC2Response ::= RECORD {
     status        status-code,    -- Adapted from HTTP Status Codes, RFC 7231
     statusText    STRING OPTIONAL,    -- Status description
     response_src  device-id OPTIONAL,    -- ID of the responder/actuator
-    command_id    command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
+    command_ref   command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
     results       results OPTIONAL     -- Results of executing the command
 }
 
@@ -157,25 +157,22 @@ ActuatorSpecifiers ::= RECORD {
 }
 
 Modifiers ::= MAP {
-    context       [1] STRING OPTIONAL,    -- universal
-    start_time    [2] date-time OPTIONAL,    -- universal
-    end_time      [3] date-time OPTIONAL,    -- universal
-    duration      [4] duration OPTIONAL,    -- pause
-    frequency     [5] duration OPTIONAL,    -- report, notify, restart, update, sync
-    command_id    [6] command-id OPTIONAL,    -- universal  (was "id")
-    command_src   [7] device-id OPTIONAL,    -- add to universal
-    response      [8] response-type OPTIONAL,    -- universal
-    respond_to    [9] respond-to OPTIONAL,    -- investigate/mitigate/remediate, was report_to
-    source        [10] location OPTIONAL,    -- update
-    destination   [11] location OPTIONAL,    -- copy, move, save
-    options       [12] STRING OPTIONAL,    -- add to universal? (restart, set, substitute, restore)
-    method        [13] method-value OPTIONAL,    -- deny, pause, scan, start, stop, augment
-    search        [14] search-type OPTIONAL,    -- scan
-    where         [15] where OPTIONAL,    -- allow, deny, contain
-    message       [16] STRING OPTIONAL,    -- notify
-    command_ref   [17] command-id OPTIONAL,    -- cancel
-    network_acl   [18] network-acl OPTIONAL,    -- firewall profile
-    segmentation  [19] segmentation OPTIONAL     -- firewall profile
+    context      [1] STRING OPTIONAL,    -- universal
+    start_time   [2] date-time OPTIONAL,    -- universal
+    end_time     [3] date-time OPTIONAL,    -- universal
+    duration     [4] duration OPTIONAL,    -- pause, delay
+    frequency    [5] duration OPTIONAL,    -- report, notify, restart, update, sync
+    command_id   [6] command-id OPTIONAL,    -- universal  (was "id")
+    command_src  [7] device-id OPTIONAL,    -- add to universal
+    response     [8] response-type OPTIONAL,    -- universal
+    respond_to   [9] respond-to OPTIONAL,    -- investigate/mitigate/remediate, was report_to
+    source       [10] location OPTIONAL,    -- update
+    destination  [11] location OPTIONAL,    -- copy, move, save
+    options      [12] STRING OPTIONAL,    -- add to universal? (restart, set, substitute, restore)
+    method       [13] method-value OPTIONAL,    -- deny, pause, scan, start, stop, augment
+    search       [14] search-type OPTIONAL,    -- scan
+    where        [15] where OPTIONAL,    -- allow, deny, contain
+    message      [16] STRING OPTIONAL     -- notify
 }
 
 date-time ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")    -- RFC 3339 date-time
@@ -242,12 +239,6 @@ where ::= ENUMERATED {
     internal     (1),
     perimeter    (2),
     unspecified  (3)     -- redirect, was "where = null"
-}
-
-network-acl ::= RECORD {
-}
-
-segmentation ::= RECORD {
 }
 
 status-code ::= ENUMERATED {    -- Adapted from HTTP Status Codes, RFC 7231
@@ -614,11 +605,12 @@ x509-certificate ::= MAP {    -- TODO: finish
 }
 
 openc2 ::= CHOICE {    -- Target used to query Actuator for its supported capabilities and negotiate connection
-    actions          [1] Null,    -- results = JSON array of supported action verbs
-    schema           [2] Null,    -- results = JAEN syntax of supported commands
-    comm_supported   [3] Null,    -- results = supported communication protocol parameters
-    comm_selected    [4] comm-selected,    -- command target = selected communication protocol parameters
-    actuator_groups  [5] Null     -- results = JSON array of actuator group names
+    actions          [1] Null,    -- query: results = JSON array of supported action verbs
+    schema           [2] Null,    -- query: results = JAEN syntax of supported commands
+    comm_supported   [3] Null,    -- query: results = supported communication protocol parameters
+    comm_selected    [4] comm-selected,    -- set:   target = selected communication protocol parameters
+    actuator_groups  [5] Null,    -- query: results = JSON array of actuator group names
+    command          [6] command-id     -- cancel: target = command identifier
 }
 
 results ::= CHOICE {
@@ -664,7 +656,7 @@ connection ::= CHOICE {    -- Connection protocol
 
 REST-params ::= RECORD {    -- (concept example - fix with real params)
     port         port,    -- TCP/UDP port number or application protocol name
-    proto        layer4-protocol,    -- IP protocol (TCP, UDP, etc)
+    proto        layer4-protocol OPTIONAL,    -- IP protocol (TCP, UDP, etc)
     ipver        layer3-protocol OPTIONAL     -- IPv4 or v6
 }
 

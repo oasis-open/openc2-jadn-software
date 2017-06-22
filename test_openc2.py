@@ -335,7 +335,7 @@ class OpenC2(unittest.TestCase):
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
             "response_src": "dns://orch.example.org",
-            "command_id": "5ce72..."}
+            "command_ref": "5ce72..."}
 
         rsp_min = [102,"Updating McAfmantec VirusBeGone ...","dns://orch.example.org","5ce72..."]
 
@@ -347,7 +347,7 @@ class OpenC2(unittest.TestCase):
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
             "response_src": "dns://orch.example.org",
-            "command_id": "5ce72..."}
+            "command_ref": "5ce72..."}
 
         self.tc.set_mode(False, False)  # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_min)

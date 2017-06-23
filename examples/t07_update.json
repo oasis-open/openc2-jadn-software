@@ -1,0 +1,1 @@
+{"target": {"file": {"name": "firewallconfiguration.txt", "parent_directory": {"path": "\\\\someshared-drive\\somedirectory\\configurations"}}}, "action": "update", "actuator": {"network_firewall": {"actuator_id": "dns://host03274.example.org"}}}

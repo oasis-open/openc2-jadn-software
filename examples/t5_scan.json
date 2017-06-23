@@ -1,1 +1,0 @@
-{"action": "scan", "target": {"domain_name": {"resolves_to": [{"ipv4": {"value": "198.51.100.2"}}, {"name": {"value": "ms34.example.com"}}], "value": "www.example.com"}}}

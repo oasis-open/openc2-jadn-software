@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Wed Jun 21 16:24:36 2017"
+"Generated from schema\openc2.jaen, Fri Jun 23 10:34:26 2017"
 
 {
  "meta": {
@@ -363,7 +363,36 @@
     [3, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
-  ["email-message", "Map", [], "TODO: finish", []],
+  ["email-addrs", "Array", [], "", [
+    [0, "", "email-addr", [], ""]]
+  ],
+
+  ["headers", "Array", [], "", [
+    [0, "", "String", [], ""]]
+  ],
+
+  ["mime-part-type", "Map", [], "TODO: Finish", []],
+
+  ["mime-part-types", "Array", [], "", [
+    [0, "", "mime-part-type", [], ""]]
+  ],
+
+  ["email-message", "Map", [], "", [
+    [1, "is_multipart", "Boolean", ["?"], "Indicates whether the email body contains multiple MIME parts"],
+    [2, "date", "date-time", ["?"], "specifies the date/time that the email message was sent"],
+    [3, "content_type", "String", ["?"], "Value of the Content-Type: header"],
+    [4, "from", "email-addr", ["?"], "Value of the From: header"],
+    [5, "sender", "email-addr", ["?"], "Value of the Sender: header"],
+    [6, "to", "email-addrs", ["?"], "Values of the To: recipients"],
+    [7, "cc", "email-addrs", ["?"], "Values of the CC: recipients"],
+    [8, "bcc", "email-addrs", ["?"], "Values of the BCC: recipients"],
+    [9, "subject", "String", ["?"], "Value of the Subject: header"],
+    [10, "received_lines", "strings", ["?"], "Value of Received: header fields in the order present in the email"],
+    [11, "additional_headers", "headers", ["?"], "header fields other than those listed above"],
+    [12, "body", "String", ["?"], "Body of the email. Used only if is_multipart is False."],
+    [13, "body_multipart", "mime-part-types", ["?"], "List of MIME parts. Used only if is_multipart is True."],
+    [14, "raw_email", "artifact", ["?"], "Raw binary contents of the email including headers and body"]]
+  ],
 
   ["file", "Map", [], "", [
     [1, "extensions", "file-extensions", ["?"], "Content-specific file information"],

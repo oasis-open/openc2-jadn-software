@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Wed Jun 21 16:24:36 2017
+-- Generated from schema\openc2.jaen, Fri Jun 23 10:34:26 2017
 
 /*
 module:        openc2
@@ -366,7 +366,36 @@ email-addr ::= RECORD {
     belongs_to    user-account OPTIONAL     -- User account that the email address belongs to
 }
 
-email-message ::= MAP {    -- TODO: finish
+email-addrs ::= ARRAY_OF {
+                 [0] email-addr
+}
+
+headers ::= ARRAY_OF {
+                 [0] STRING
+}
+
+mime-part-type ::= MAP {    -- TODO: Finish
+}
+
+mime-part-types ::= ARRAY_OF {
+                 [0] mime-part-type
+}
+
+email-message ::= MAP {
+    is_multipart        [1] BOOLEAN OPTIONAL,    -- Indicates whether the email body contains multiple MIME parts
+    date                [2] date-time OPTIONAL,    -- specifies the date/time that the email message was sent
+    content_type        [3] STRING OPTIONAL,    -- Value of the Content-Type: header
+    from                [4] email-addr OPTIONAL,    -- Value of the From: header
+    sender              [5] email-addr OPTIONAL,    -- Value of the Sender: header
+    to                  [6] email-addrs OPTIONAL,    -- Values of the To: recipients
+    cc                  [7] email-addrs OPTIONAL,    -- Values of the CC: recipients
+    bcc                 [8] email-addrs OPTIONAL,    -- Values of the BCC: recipients
+    subject             [9] STRING OPTIONAL,    -- Value of the Subject: header
+    received_lines      [10] strings OPTIONAL,    -- Value of Received: header fields in the order present in the email
+    additional_headers  [11] headers OPTIONAL,    -- header fields other than those listed above
+    body                [12] STRING OPTIONAL,    -- Body of the email. Used only if is_multipart is False.
+    body_multipart      [13] mime-part-types OPTIONAL,    -- List of MIME parts. Used only if is_multipart is True.
+    raw_email           [14] artifact OPTIONAL     -- Raw binary contents of the email including headers and body
 }
 
 file ::= MAP {

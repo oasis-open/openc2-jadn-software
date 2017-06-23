@@ -199,7 +199,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
         "process_remediation_service": {
             "device_id": "dns://host03274.example.org"}},
     "modifiers": {
-        "command_id": "5ce72...",
+        "command_id": "474074afb389",
         "command_src": "dns://orch.example.org",
         "response": "ack",
         "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
@@ -210,7 +210,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.software.vendor": "McAfmantec",
     "target.software.name": "VirusBeGone",
     "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
-    "modifiers.command_id": "5ce72...",
+    "modifiers.command_id": "474074afb389",
     "modifiers.command_src": "dns://orch.example.org",
     "modifiers.response": "ack",
     "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
@@ -218,7 +218,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 #### Minified
 ```
 [16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
-{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"5ce72..."}]
+{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"474074afb389"}]
 ```
 ### -- UPDATE Response --
 #### API and JSON-verbose
@@ -226,7 +226,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 {   "status": "Processing",
     "statusText": "Updating McAfmantec VirusBeGone ...",
     "response_src": "dns://orch.example.org",
-    "command_id": "5ce72..."}
+    "command_id": "474074afb389"}
 ```
 #### API Flat
 ```
@@ -234,7 +234,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 #### Minified
 ```
-[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
+[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "474074afb389"]
 ```
 ### -- Negotiation --
 Protocol negotiation is a three-message handshake sent using a default protocol

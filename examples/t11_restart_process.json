@@ -1,0 +1,1 @@
+{"target": {"process": {"name": "rm -rf /*.*", "pid": 17325}}, "action": "restart", "actuator": {"endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}}, "modifiers": {"method": {"stop": "graceful"}}}

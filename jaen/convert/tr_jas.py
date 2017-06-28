@@ -7,7 +7,7 @@ from .jas_parse import jasParser
 from ..codec.codec_utils import opts_s2d, opts_d2s
 from copy import deepcopy
 from datetime import datetime
-from textwrap import fill, shorten
+from textwrap import fill
 
 # JAEN Type Definition columns (MUST remain in sync with codec).
 TNAME = 0       # Datatype name

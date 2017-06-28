@@ -24,7 +24,7 @@ class OpenC2(unittest.TestCase):
         jaen = jaen_load(os.path.join("schema", "openc2.jaen"))
         self.tc = Codec(jaen)
 
-    def test01_mitigate(self):
+    def test01_mitigate_domain(self):
         cmd_api = {
             "action": "mitigate",
             "target": {
@@ -51,9 +51,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t01_mitigate", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t01_mitigate_domain", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test02_query(self):
+    def test02_query_openc2(self):
         cmd_api = {"action": "query", "target": {"openc2": {"schema":""}}}
         cmd_flat = {"action": "query", "target.openc2.schema": ""}
         cmd_noname = {"1":3, "2":{"2":{"2":""}}}
@@ -74,9 +74,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t02_query", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t02_query_openC2", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test03_contain(self):
+    def test03_contain_user(self):
         cmd_api = {
             "action": "contain",
             "target": {
@@ -127,9 +127,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t03_contain", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t03_contain_user", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test04_deny(self):
+    def test04_deny_ip(self):
         cmd_api = {
             "action": "deny",
             "target": {
@@ -215,9 +215,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(fluff(cmd_flat), cmd_api)
-        self._write_examples("t04_deny", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t04_deny_ip", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test05_scan(self):
+    def test05_scan_domain(self):
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {
@@ -266,9 +266,9 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)       # Convert numeric dict to list
-        self._write_examples("t05_scan", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t05_scan_domain", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
-    def test06_update_usecase(self):
+    def test06_update_software(self):
         cmd_api = {         # API / Verbose (dict/name)
             "action": "update",
             "target": {
@@ -284,25 +284,6 @@ class OpenC2(unittest.TestCase):
                 "response": "ack",
                 "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
 
-        cmd_min = [
-            16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
-            {"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7": "dns://orch.example.org","6":"474074afb389"}]
-
-        cmd_concise = [
-            "update",
-            {"software": ["VirusBeGone", None, None, "McAfmantec"]},
-            {"process_remediation_service": ["dns://host03274.example.org"]},
-            {"command_id": "474074afb389",
-             "command_src": "dns://orch.example.org",
-             "response": "ack",
-             "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}]
-
-        cmd_noname = {
-            "1":16,
-            "2":{"17":{"4":"McAfmantec","1": "VirusBeGone"}},
-            "3":{"41":{"1":"dns://host03274.example.org"}},
-            "4":{"6":"474074afb389","7": "dns://orch.example.org","8":1,"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
-
         cmd_flat = {
             "action": "update",
             "target.software.vendor": "McAfmantec",
@@ -313,21 +294,12 @@ class OpenC2(unittest.TestCase):
             "modifiers.response": "ack",
             "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
 
-                                        # Minified (list/tag)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_min), cmd_api)
-        self.tc.set_mode(False, True)   # Concise (list/name)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_concise)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_concise), cmd_api)
-        self.tc.set_mode(True, False)   # unused (dict/tag)
-        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_noname)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd_noname), cmd_api)
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)  # Convert numeric dict to list
-        self._write_examples("t06_update", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t06_update_software", [cmd_api, cmd_flat, None, None])
 
         # -- Response
 
@@ -337,35 +309,12 @@ class OpenC2(unittest.TestCase):
             "response_src": "dns://orch.example.org",
             "command_ref": "474074afb389"}
 
-        rsp_min = [102,"Updating McAfmantec VirusBeGone ...","dns://orch.example.org","474074afb389"]
-
-        rsp_concise = ["Processing", "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "474074afb389"]
-
-        rsp_noname = {"1": 102, "2": "Updating McAfmantec VirusBeGone ...", "3": "dns://orch.example.org", "4": "474074afb389"}
-
-        rsp_flat = {
-            "status": "Processing",
-            "statusText": "Updating McAfmantec VirusBeGone ...",
-            "response_src": "dns://orch.example.org",
-            "command_ref": "474074afb389"}
-
-        self.tc.set_mode(False, False)  # Minified (list/tag)
-        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_min)
-        self.assertEqual(self.tc.decode("OpenC2Response", rsp_min), rsp_api)
-        self.tc.set_mode(False, True)   # Concise (list/name)
-        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_concise)
-        self.assertEqual(self.tc.decode("OpenC2Response", rsp_concise), rsp_api)
-        self.tc.set_mode(True, False)   # unused (dict/tag)
-        self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_noname)
-        self.assertEqual(self.tc.decode("OpenC2Response", rsp_noname), rsp_api)
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_api)
         self.assertEqual(self.tc.decode("OpenC2Response", rsp_api), rsp_api)
-        self.assertEqual(flatten(rsp_api), rsp_flat)
-        self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
-        self._write_examples("t06_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
+        self._write_examples("t06_update_software_rsp", [rsp_api, None, None, None])
 
-    def test07_update(self):
+    def test07_update_file(self):
         cmd_api = {
             "action": "update",
             "target": {
@@ -381,7 +330,7 @@ class OpenC2(unittest.TestCase):
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
-        self._write_examples("t07_update", [cmd_api, None, None, None])
+        self._write_examples("t07_update_file", [cmd_api, None, None, None])
 
     def test08_negotiation(self):
         cmd_api = {
@@ -424,7 +373,7 @@ class OpenC2(unittest.TestCase):
         self._write_examples("t08_negotiation2", [rsp_api, None, None, None])
         self._write_examples("t08_negotiation3", [cmd2_api, None, None, None])
 
-    def test09_cancel(self):
+    def test09_cancel_command(self):
         cmd_api = {
             "action": "cancel",
             "target": {
@@ -433,9 +382,9 @@ class OpenC2(unittest.TestCase):
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
-        self._write_examples("t09_cancel", [cmd_api, None, None, None])
+        self._write_examples("t09_cancel_command", [cmd_api, None, None, None])
 
-    def test10_delete(self):
+    def test10_delete_email(self):
         cmd_api = {
             "action": "delete",
             "target": {
@@ -448,7 +397,121 @@ class OpenC2(unittest.TestCase):
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
-        self._write_examples("t10_delete", [cmd_api, None, None, None])
+        self._write_examples("t10_delete_email", [cmd_api, None, None, None])
+
+    def test11_restart_process(self):      # TODO: use a real actuator
+        cmd_api = {
+            "action": "restart",
+            "target": {
+                "process": {
+                    "pid": 17325,
+                    "name": "rm -rf /*.*"
+                }},
+            "actuator": {
+                "endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}
+            },
+            "modifiers": {
+                "method": {"stop": "graceful"}
+            }
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t11_restart_process", [cmd_api, None, None, None])
+
+    def test11_snapshot_process(self):      # TODO: use a real actuator
+        cmd_api = {
+            "action": "snapshot",
+            "target": {
+                "process": {
+                    "creator_user": {"user_id": "jjadmin"}}},
+            "actuator": {
+                "endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}
+            },
+            "modifiers": {
+                "method": {"stop": "graceful"}
+            }
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t11_snapshot_process", [cmd_api, None, None, None])
+
+    def test12_locate_ipaddr(self):
+        cmd_api = {
+            "action": "locate",
+            "target": {
+                "ipv4_addr": {
+                    "value": "209.59.128.0/18",
+                    "belongs_to": [{"number": 32244}, {"number": 25820}]
+                }}
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t12_locate_ipaddr", [cmd_api, None, None, None])
+
+    def test13_redirect_url(self):
+        cmd_api = {
+            "action": "redirect",
+            "target": {
+                "url": "https://www.shezuly.com/qqmusic.exe" }
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t13_redirect_url", [cmd_api, None, None, None])
+
+    def test14_stop_user_session(self):
+        cmd_api = {
+            "action": "stop",
+            "target": {
+                "user_session": {
+                    "effective-user": "john.public",
+                    "effective-user-id": "17239",
+                    "login-time": "2017-07-03T15:27:14-07:00"}}
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t14_stop_user_session", [cmd_api, None, None, None])
+
+    def test15_report_artifact(self):
+        cmd_api = {
+            "action": "report",
+            "target": {
+                "artifact": {
+                    "mime_type": "image/jpeg",
+                    "hashes": {
+                        "MD5": "79bdd30dca09def5b87c55a422382039",
+                        "SHA-256": "1cb611150cc54216470836003c503b77b6a6840afd695cb7528b1ca40b82d4e7"}}}
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t15_report_artifact", [cmd_api, None, None, None])
+
+    def test16_set_registry(self):
+        cmd_api = {
+            "action": "set",
+            "target": {
+                "windows_registry_key": {
+                    "key": "HKEY_LOCAL_MACHINE\\System\Foo\Bar",
+                    "values": [
+                        {"name": "Foo", "data": "qwerty", "data_type": "REG_SZ"}
+                    ]}}
+        }
+
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+        self._write_examples("t16_set_registry", [cmd_api, None, None, None])
 
     def testb1_foo(self):       # Unknown action
         cmd_api = {

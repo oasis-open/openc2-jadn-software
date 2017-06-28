@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
         # Convert JAEN Abstract Syntax (JAS) to JAEN
 
+        print(os.path.join(os.getcwd(), ifname + ":"))
         source = ifname + ".jas"
         dest = ofname + "_gens"
         schema = jas_load(source)

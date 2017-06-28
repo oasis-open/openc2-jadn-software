@@ -335,10 +335,10 @@ dirfile ::= CHOICE {
     f            [2] file
 }
 
-disk ::= MAP {                          -- CybOX 2.1
+disk ::= MAP {                          -- CybOX 2.1   TODO: Finish
 }
 
-disk-partition ::= MAP {                -- CybOX 2.1
+disk-partition ::= MAP {                -- CybOX 2.1    TODO: Finish
 }
 
 domain-name ::= RECORD {
@@ -431,17 +431,16 @@ archive-ext ::= MAP {           -- TODO
 windows-pebinary-ext ::= MAP {  -- TODO
 }
 
-
 ipv4-addr ::= RECORD {
-    value             STRING,                   -- IPv4 address or range in CIDR notation
-    resolves_to_refs  mac-addrs OPTIONAL,       -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
-    belongs_to_refs   asystems OPTIONAL         -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+    value           STRING,                   -- IPv4 address or range in CIDR notation
+    resolves_to     mac-addrs OPTIONAL,       -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to      asystems OPTIONAL         -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
 ipv6-addr ::= RECORD {
-    value             STRING,                   -- IPv6 address or range
-    resolves_to_refs  mac-addrs OPTIONAL,       -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
-    belongs_to_refs   asystems OPTIONAL         -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+    value           STRING,                   -- IPv6 address or range
+    resolves_to     mac-addrs OPTIONAL,       -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to      asystems OPTIONAL         -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
 mac-addrs ::= ARRAY_OF(mac-addr)
@@ -565,6 +564,12 @@ account-type ::= ENUMERATED {
 }
 
 user-session ::= MAP {      -- CybOX 2.1
+    effective-group         [1] STRING OPTIONAL,
+    effective-group-id      [2] STRING OPTIONAL,
+    effective-user          [3] STRING OPTIONAL,
+    effective-user-id       [4] STRING OPTIONAL,
+    login-time              [5] date-time OPTIONAL,
+    logout-time             [6] date-time OPTIONAL
 }
 
 volume ::= MAP {            -- CybOX 2.1

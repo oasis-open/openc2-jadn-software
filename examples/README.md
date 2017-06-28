@@ -276,4 +276,20 @@ in the actuator's list of supported options (DXL).
         "any": {"actuator_id": "https://router7319.example.org"}}
 }
 ```
-
+### -- CANCEL --
+```
+{   "action": "cancel",
+    "target": {
+        "openc2": {"command": "b33cd1d4-aeb4-43a3-bfe9-806f4a84ef79"}}
+}
+```
+### -- DELETE --
+```
+{   "action": "delete",
+    "target": {
+        "email_message": {
+            "subject": "Special Offer!",
+            "date": "2017-06-07T14:30:31-04:00",
+            "from": {"value": "ginsu@spamco.org"}}}
+}
+```

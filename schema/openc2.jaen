@@ -336,9 +336,9 @@
     [2, "f", "file", [], ""]]
   ],
 
-  ["disk", "Map", [], "CybOX 2.1", []],
+  ["disk", "Map", [], "CybOX 2.1   TODO: Finish", []],
 
-  ["disk-partition", "Map", [], "CybOX 2.1", []],
+  ["disk-partition", "Map", [], "CybOX 2.1    TODO: Finish", []],
 
   ["domain-name", "Record", [], "", [
     [1, "value", "String", [], "Value of the domain name"],
@@ -435,14 +435,14 @@
 
   ["ipv4-addr", "Record", [], "", [
     [1, "value", "String", [], "IPv4 address or range in CIDR notation"],
-    [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
-    [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
+    [2, "resolves_to", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
+    [3, "belongs_to", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
 
   ["ipv6-addr", "Record", [], "", [
     [1, "value", "String", [], "IPv6 address or range"],
-    [2, "resolves_to_refs", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
-    [3, "belongs_to_refs", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
+    [2, "resolves_to", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
+    [3, "belongs_to", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
 
   ["mac-addrs", "Array", [], "", [
@@ -574,7 +574,14 @@
     [11, "twitter", "Twitter account"]]
   ],
 
-  ["user-session", "Map", [], "CybOX 2.1", []],
+  ["user-session", "Map", [], "CybOX 2.1", [
+    [1, "effective-group", "String", ["?"], ""],
+    [2, "effective-group-id", "String", ["?"], ""],
+    [3, "effective-user", "String", ["?"], ""],
+    [4, "effective-user-id", "String", ["?"], ""],
+    [5, "login-time", "date-time", ["?"], ""],
+    [6, "logout-time", "date-time", ["?"], ""]]
+  ],
 
   ["volume", "Map", [], "CybOX 2.1", []],
 

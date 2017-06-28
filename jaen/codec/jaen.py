@@ -151,7 +151,7 @@ def jaen_analyze(schema):
     items = build_jaen_deps(schema)
     types = {i[0] for i in items}
     refs = set().union(*[i[1] for i in items])
-    print(schema["meta"]["module"])
+    print("  module:", schema["meta"]["module"])
     print("  unreferenced:", types - refs)
     print("  undefined:", refs - types)
     print("  cycles:", [])

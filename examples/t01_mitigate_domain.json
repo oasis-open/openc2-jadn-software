@@ -1,1 +1,1 @@
-{"target": {"domain_name": {"value": "cdn.badco.org"}}, "action": "mitigate"}
+{"action": "mitigate", "target": {"domain_name": {"value": "cdn.badco.org"}}}

@@ -49,23 +49,31 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 [32,{"7":["cdn.badco.org"]}]
 ```
 ### -- QUERY --
-#### API and JSON-verbose
+#### Actions
+**Command:**
+```
+{   "action": "query",
+    "target": {"openc2": {"actions":""}}}
+```
+**Response**
+```
+{   "status": "OK",
+    "results": {
+        "strings":
+            ["query", "report", "notify", "start", "stop", "set", "delete", "update",
+             "investigate", "mitigate", "remediate"]}}
+```
+#### Schema
+**Command:**
 ```
 {   "action": "query",
     "target": {"openc2": {"schema":""}}}
 ```
-#### API Flat
+**Response**
 ```
-{   "action": "query",
-    "target.openc2.schema": ""}
-```
-#### Concise
-```
-["query", {"openc2": {"schema":""}}]
-```
-#### Minified
-```
-[3,{"2":{"2":""}}]
+{   "status": "OK",
+    "results": {
+        "string": "{\"meta\": {\"module\": \"openc2\"}, \"types\": [[\"OpenC2Command\", \"Record\", [], \"\", [[1, \"action\", \"Action\", [], \"\"], [2, \"target\", \"Target\", [], \"\"], [3, \"actuator\", \"Actuator\", [\"?\"], \"\"], [4, \"modifiers\", \"Modifiers\", [\"?\"], \"\"]]]]}"}}
 ```
 ### -- CONTAIN --
 #### API and JSON-verbose

@@ -1,1 +1,1 @@
-["deny", {"ip_connection": [{"name": ["www.badco.com"]}, {"protocol": "https"}, {"ipv4": ["192.168.1.1"]}, null, "TCP"]}, {"network_firewall": [null, "30"]}, {"command_id": "pf17_8675309", "context": "91", "start_time": "2016-11-25T08:10:31-04:00", "duration": "PT2M30S"}]
+["deny", {"ip_connection": [{"name": ["www.badco.com"]}, {"protocol": "https"}, {"ipv4": ["192.168.1.1"]}, null, "TCP"]}, {"network_firewall": [null, "30"]}, {"duration": "PT2M30S", "command_id": "pf17_8675309", "context": "91", "start_time": "2016-11-25T08:10:31-04:00"}]

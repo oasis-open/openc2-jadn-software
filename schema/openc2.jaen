@@ -621,7 +621,26 @@
 
   ["x509-certificate", "Map", [], "TODO: finish", [
     [1, "is_self_signed", "Boolean", ["?"], "Specifies whether the certificate is self-signed"],
-    [2, "hashes", "hashes-type", [], "Specifies any hashes calculated for the entire contents of the certificate"]]
+    [2, "hashes", "hashes-type", ["?"], "Specifies any hashes calculated for the entire contents of the certificate"],
+    [3, "version", "String", ["?"], "Version of the encoded certificate"],
+    [4, "serial_number", "String", ["?"], "Unique identifier for the certificate"],
+    [5, "signature_algorithm", "String", ["?"], "Name of the algorithm used to sign the certificate"],
+    [6, "issuer", "String", ["?"], "Distinguished Name of the Certification Authority that issued the certificate"],
+    [7, "validity_not_before", "date-time", ["?"], "Date on which the validity period begins"],
+    [8, "validity_not_after", "date-time", ["?"], "Date on which the validity period ends"],
+    [9, "subject", "String", ["?"], "Distinguished Name of the entity associated with the public key"],
+    [10, "subject_public_key_algorithm", "String", ["?"], "Algorithm that uses the subject's public key"],
+    [11, "subject_public_key_modulus", "String", ["?"], "Modulus of an RSA public key"],
+    [12, "subject_public_key_exponent", "Integer", ["?"], "Exponent of an RSA public key"],
+    [13, "x509_v3_extensions", "x509-v3-extensions", ["?"], "X.509 v3 extensions"]]
+  ],
+
+  ["x509-v3-extensions", "Array", [], "", [
+    [0, "", "x509-v3-extension", [], ""]]
+  ],
+
+  ["x509-v3-extension", "Map", [], "", [
+    [1, "basic_constraints", "String", ["?"], "TODO: fill in extensions"]]
   ],
 
   ["openc2", "Choice", [], "Target used to query Actuator for its supported capabilities and negotiate connection", [

@@ -309,7 +309,7 @@ autonomous-system ::= RECORD {
     rir          STRING OPTIONAL    -- Regional Internet Registry (RIR) that assigned the number to the AS
 }
 
-device ::= MAP {
+device ::= MAP {                    -- TODO: Add inventory device-id?
     description       [1] STRING OPTIONAL,
     device_type       [2] STRING OPTIONAL,
     manufacturer      [3] STRING OPTIONAL,
@@ -608,8 +608,25 @@ windows-registry-datatype-enum ::= ENUMERATED {
 }
 
 x509-certificate ::= MAP {      -- TODO: finish
-    is_self_signed      [1] BOOLEAN OPTIONAL,   -- Specifies whether the certificate is self-signed
-    hashes              [2] hashes-type         -- Specifies any hashes calculated for the entire contents of the certificate
+    is_self_signed      [1] BOOLEAN OPTIONAL,       -- Specifies whether the certificate is self-signed
+    hashes              [2] hashes-type OPTIONAL,   -- Specifies any hashes calculated for the entire contents of the certificate
+    version             [3] STRING OPTIONAL,        -- Version of the encoded certificate
+    serial_number       [4] STRING OPTIONAL,        -- Unique identifier for the certificate
+    signature_algorithm [5] STRING OPTIONAL,        -- Name of the algorithm used to sign the certificate
+    issuer              [6] STRING OPTIONAL,        -- Distinguished Name of the Certification Authority that issued the certificate
+    validity_not_before [7] date-time OPTIONAL,     -- Date on which the validity period begins
+    validity_not_after  [8] date-time OPTIONAL,     -- Date on which the validity period ends
+    subject             [9] STRING OPTIONAL,        -- Distinguished Name of the entity associated with the public key
+    subject_public_key_algorithm    [10] STRING OPTIONAL,   -- Algorithm that uses the subject's public key
+    subject_public_key_modulus      [11] STRING OPTIONAL,   -- Modulus of an RSA public key
+    subject_public_key_exponent     [12] INTEGER OPTIONAL,  -- Exponent of an RSA public key
+    x509_v3_extensions  [13] x509-v3-extensions OPTIONAL    -- X.509 v3 extensions
+}
+
+x509-v3-extensions ::= ARRAY_OF(x509-v3-extension)
+
+x509-v3-extension ::= MAP {
+    basic_constraints   [1] STRING OPTIONAL     -- TODO: fill in extensions
 }
 
 openc2 ::= CHOICE {   -- Target used to query Actuator for its supported capabilities and negotiate connection

@@ -1,10 +1,10 @@
 import binascii
 import unittest
 
-from jaen.codec.codec import Codec
-from jaen.codec.jaen import jaen_check
+from libs.codec.codec import Codec
+from libs.codec.jadn import jadn_check
 
-schema_basic = {                # JAEN schema for datatypes used in Basic Types tests
+schema_basic = {                # JADN schema for datatypes used in Basic Types tests
     "meta": {"module": "unittests-BasicTypes"},
     "types": [
         ["t_bool", "Boolean", [], ""],
@@ -48,7 +48,7 @@ schema_basic = {                # JAEN schema for datatypes used in Basic Types 
 class BasicTypes(unittest.TestCase):
 
     def setUp(self):
-        jaen_check(schema_basic)
+        jadn_check(schema_basic)
         self.tc = Codec(schema_basic)
 
     def test_primitive(self):   # Non-composed types (bool, int, num, str)
@@ -546,7 +546,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_map", self.RGB_bad7a)
 
 
-schema_selectors = {                # JAEN schema for selector tests
+schema_selectors = {                # JADN schema for selector tests
     "meta": {"module": "unittests-Selectors"},
     "types": [
         ["t_attribute", "Record", [], "", [
@@ -599,7 +599,7 @@ schema_selectors = {                # JAEN schema for selector tests
 class Selectors(unittest.TestCase):
 
     def setUp(self):
-        jaen_check(schema_selectors)
+        jadn_check(schema_selectors)
         self.tc = Codec(schema_selectors)
 
     attr1_api = {"type": "Integer", "value": 17}

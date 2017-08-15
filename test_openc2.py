@@ -2,9 +2,9 @@ import json
 import os
 import unittest
 
-from jaen.codec.codec import Codec
-from jaen.codec.jaen import jaen_load
-from jaen.codec.codec_utils import flatten, fluff, dlist
+from libs.codec.codec import Codec
+from libs.codec.jadn import jadn_load
+from libs.codec.codec_utils import flatten, fluff, dlist
 
 
 class OpenC2(unittest.TestCase):
@@ -21,8 +21,8 @@ class OpenC2(unittest.TestCase):
                         f.write(json.dumps(cmds[n]))
 
     def setUp(self):
-        jaen = jaen_load(os.path.join("schema", "openc2.jaen"))
-        self.tc = Codec(jaen)
+        schema = jadn_load(os.path.join("schema", "openc2.jadn"))
+        self.tc = Codec(schema)
 
     def test01_mitigate_domain(self):
         cmd_api = {

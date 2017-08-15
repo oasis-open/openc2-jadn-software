@@ -1,8 +1,8 @@
 import os
 import json
-from jaen.codec.codec import Codec
-from jaen.codec.codec_utils import flatten
-from jaen.codec.jaen import jaen_load
+from libs.codec.codec import Codec
+from libs.codec.codec_utils import flatten
+from libs.codec.jadn import jadn_load
 
 # OpenC2 producer application:
 
@@ -12,7 +12,7 @@ command1 = {                     # Python literals use either single or double q
         "domain_name": {
             "value": 'cdn.badco.org'}}}
 
-schema = jaen_load(os.path.join("schema", "openc2.jaen"))   # Load and validate the OpenC2 schema
+schema = jadn_load(os.path.join("schema", "openc2.jadn"))   # Load and validate the OpenC2 schema
 codec = Codec(schema, verbose_rec=True, verbose_str=True)   # Create an OpenC2 encoder/decoder (JSON-Verbose encoding)
 message1 = codec.encode("OpenC2Command", command1)          # Validate and encode the command
 print("Command to be sent (API)         =", command1)

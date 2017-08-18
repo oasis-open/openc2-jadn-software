@@ -12,9 +12,7 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
         ["t_num", "Number", [], ""],
         ["t_str", "String", [], ""],
         ["t_bin", "Binary", [], ""],
-        ["t_array", "Array", [], "", [
-            [0, "", "Integer", [], ""]]
-         ],
+        ["t_array", "Array", ["#Integer"], ""],
         ["t_choice", "Choice", [], "", [
             [1, "type1", "String", [], ""],
             [4, "type2", "Boolean", [], ""],

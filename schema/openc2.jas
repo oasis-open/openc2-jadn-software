@@ -504,11 +504,11 @@ process ::= MAP {
     children                [13] process-children OPTIONAL  -- Processes that were spawned by this one
 }
 
-arguments ::= ARRAY_OF(string)
+arguments ::= ARRAY_OF(STRING)
 
-envars ::= ARRAY_OF(string)
+envars ::= ARRAY_OF(String)         -- Test JAS conversion bad type detection
 
-opened-connections ::= ARRAY_OF(string)
+opened-connections ::= ARRAY_OF(STRING)
 
 process-ext ::= MAP {
     windows_process_ext     [1] windows-process-ext OPTIONAL,

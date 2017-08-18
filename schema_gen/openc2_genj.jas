@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jadn, Tue Aug 15 11:48:42 2017
+-- Generated from schema\openc2.jadn, Fri Aug 18 15:40:33 2017
 
 /*
 module:        openc2
@@ -311,7 +311,7 @@ autonomous-system ::= RECORD {
     rir          STRING OPTIONAL     -- Regional Internet Registry (RIR) that assigned the number to the AS
 }
 
-device ::= MAP {
+device ::= MAP {    -- TODO: Add inventory device-id?
     description       [1] STRING OPTIONAL,
     device_type       [2] STRING OPTIONAL,
     manufacturer      [3] STRING OPTIONAL,
@@ -330,9 +330,7 @@ directory ::= MAP {
     contains     [6] dir-contents OPTIONAL     -- List of files/directories contained within the directory
 }
 
-dir-contents ::= ARRAY_OF {
-                 [0] dirfile
-}
+dir-contents ::= ARRAY_OF(dirfile)
 
 dirfile ::= CHOICE {
     d            [1] directory,
@@ -350,9 +348,7 @@ domain-name ::= RECORD {
     resolves_to  ip-addrs OPTIONAL     -- List of IP addresses or domain names
 }
 
-ip-addrs ::= ARRAY_OF {
-                 [0] ip-addr
-}
+ip-addrs ::= ARRAY_OF(ip-addr)
 
 ip-addr ::= CHOICE {
     ipv4         [1] ipv4-addr,
@@ -366,20 +362,14 @@ email-addr ::= RECORD {
     belongs_to    user-account OPTIONAL     -- User account that the email address belongs to
 }
 
-email-addrs ::= ARRAY_OF {
-                 [0] email-addr
-}
+email-addrs ::= ARRAY_OF(email-addr)
 
-headers ::= ARRAY_OF {
-                 [0] STRING
-}
+headers ::= ARRAY_OF(STRING)
 
 mime-part-type ::= MAP {    -- TODO: Finish
 }
 
-mime-part-types ::= ARRAY_OF {
-                 [0] mime-part-type
-}
+mime-part-types ::= ARRAY_OF(mime-part-type)
 
 email-message ::= MAP {
     is_multipart        [1] BOOLEAN OPTIONAL,    -- Indicates whether the email body contains multiple MIME parts
@@ -417,9 +407,7 @@ file ::= MAP {
     content               [16] artifact OPTIONAL     -- Content of the file.
 }
 
-file-contents ::= ARRAY_OF {
-                 [0] Target
-}
+file-contents ::= ARRAY_OF(Target)
 
 file-extensions ::= MAP {
     ntfs_ext              [1] ntfs-ext OPTIONAL,
@@ -456,15 +444,11 @@ ipv6-addr ::= RECORD {
     belongs_to   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
 }
 
-mac-addrs ::= ARRAY_OF {
-                 [0] mac-addr
-}
+mac-addrs ::= ARRAY_OF(mac-addr)
 
 mac-addr ::= STRING    -- Colon-delimited MAC-48 address with leading zeros for each octet
 
-asystems ::= ARRAY_OF {
-                 [0] autonomous-system
-}
+asystems ::= ARRAY_OF(autonomous-system)
 
 ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
     src_addr         ip-addr OPTIONAL,    -- source address
@@ -521,26 +505,18 @@ process ::= MAP {
     children               [13] process-children OPTIONAL     -- Processes that were spawned by this one
 }
 
-arguments ::= ARRAY_OF {
-                 [0] STRING
-}
+arguments ::= ARRAY_OF(STRING)
 
-envars ::= ARRAY_OF {
-                 [0] STRING
-}
+envars ::= ARRAY_OF(STRING)    -- Test JAS conversion bad type detection
 
-opened-connections ::= ARRAY_OF {
-                 [0] STRING
-}
+opened-connections ::= ARRAY_OF(STRING)
 
 process-ext ::= MAP {
     windows_process_ext  [1] windows-process-ext OPTIONAL,
     windows_service_ext  [2] windows-service-ext OPTIONAL
 }
 
-process-children ::= ARRAY_OF {
-                 [0] process
-}
+process-children ::= ARRAY_OF(process)
 
 windows-process-ext ::= MAP {    -- TODO
 }
@@ -608,9 +584,7 @@ windows-registry-key ::= RECORD {
     number_of_subkeys  INTEGER OPTIONAL     -- Number of subkeys contained under the registry key
 }
 
-windows-registry-values ::= ARRAY_OF {
-                 [0] windows-registry-value
-}
+windows-registry-values ::= ARRAY_OF(windows-registry-value)
 
 windows-registry-value ::= RECORD {
     name         STRING,    -- Name of the registry value.  Empty string specifies the default value.
@@ -650,9 +624,7 @@ x509-certificate ::= MAP {    -- TODO: finish
     x509_v3_extensions            [13] x509-v3-extensions OPTIONAL     -- X.509 v3 extensions
 }
 
-x509-v3-extensions ::= ARRAY_OF {
-                 [0] x509-v3-extension
-}
+x509-v3-extensions ::= ARRAY_OF(x509-v3-extension)
 
 x509-v3-extension ::= MAP {
     basic_constraints  [1] STRING OPTIONAL     -- TODO: fill in extensions
@@ -673,9 +645,7 @@ results ::= CHOICE {
     comms        [3] comm-supported
 }
 
-strings ::= ARRAY_OF {
-                 [0] STRING
-}
+strings ::= ARRAY_OF(STRING)
 
 comm-supported ::= RECORD {    -- Structure that is returned in response to a "query communication" command
     serialization  serializations,    -- Payload serialization format
@@ -687,9 +657,7 @@ comm-selected ::= RECORD {    -- Target used to set Actuator communication proto
     connection     connection     -- Connection protocol
 }
 
-serializations ::= ARRAY_OF {
-                 [0] serialization
-}
+serializations ::= ARRAY_OF(serialization)
 
 serialization ::= ENUMERATED {    -- Payload serialization format
     JSON         (1),    -- JSON (uncompressed)
@@ -699,9 +667,7 @@ serialization ::= ENUMERATED {    -- Payload serialization format
     XML          (5)     -- Extensible Markup Language
 }
 
-connections ::= ARRAY_OF {
-                 [0] connection
-}
+connections ::= ARRAY_OF(connection)
 
 connection ::= CHOICE {    -- Connection protocol
     REST         [1] REST-params,    -- Representational State Transfer web service protocol

@@ -1,22 +1,23 @@
 """
-Translate JAEN to and from JAS (JAEN Abstract Syntax)
+Translate JADN to and from JAS (JADN Abstract Syntax)
 """
 
 import re
 from .jas_parse import jasParser
+from ..codec.codec import is_primitive
 from ..codec.codec_utils import opts_s2d, opts_d2s
 from copy import deepcopy
 from datetime import datetime
 from textwrap import fill
 
-# JAEN Type Definition columns (MUST remain in sync with codec).
+# JADN Type Definition columns (MUST remain in sync with codec).
 TNAME = 0       # Datatype name
 TTYPE = 1       # Base type
 TOPTS = 2       # Type options
 TDESC = 3       # Type description
 FIELDS = 4      # List of fields
 
-# JAEN Field Definition columns
+# JADN Field Definition columns
 TAG = 0         # Element ID
 NAME = 1        # Element name
 EDESC = 2       # Description (for enumerated types)
@@ -39,16 +40,14 @@ class Jastype:
             ("Map", "MAP"),                 # SET
             ("Record", "RECORD")            # SEQUENCE
         ]
-        self._ptype = {t[0].lower(): t[1] for t in types}
-        self._jtype = {t[1].lower(): t[0] for t in types}
+        self._ptype = {t[0]: t[1] for t in types}
+        self._jtype = {t[1]: t[0] for t in types}
 
-    def ptype(self, jt):
-        t = jt.lower()
-        return self._ptype[t] if t in self._ptype else jt
+    def ptype(self, jt):            # Convert to source (JAS) type
+        return self._ptype[jt] if jt in self._ptype else jt
 
-    def jtype(self, pt):
-        t = pt.lower()
-        return self._jtype[t] if t in self._jtype else pt
+    def jtype(self, pt):            # Convert to JADN type
+        return self._jtype[pt] if pt in self._jtype else pt
 
 
 def _parse_import(import_str):
@@ -59,6 +58,17 @@ def _parse_import(import_str):
 def _nstr(v):       # Return empty string if None
     return v if v else ""
 
+def _topts(v):
+    pt = Jastype()
+    opts = {}
+    for o in v if v else []:
+        if isinstance(o, list) and o[0] == "PATTERN":
+            opts.update({"pattern": "".join(o[1])})
+        elif isinstance(o, str):              # TODO: do better checking that type=Array goes with topts=#aetype
+            opts.update({"aetype": pt.jtype(o)})
+        else:
+            print("Unknown type option", o, v)
+    return opts_d2s(opts)
 
 def _fopts(v):      # TODO: process min/max/range option
     opts = {}
@@ -67,10 +77,8 @@ def _fopts(v):      # TODO: process min/max/range option
             opts.update({"optional": True})
         elif isinstance(o, list) and o[0] == ".&":
             opts.update({"atfield": o[1]})
-        elif isinstance(o, list) and o[0].lower() == "pattern":
-            opts.update({"pattern": "".join(o[1])})
         else:
-            print("Unknown option", o, v)
+            print("Unknown field option", o, v)
     return opts_d2s(opts)
 
 
@@ -115,13 +123,10 @@ def jas_loads(jas_str):
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
                         fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
-        elif t["type"] == "ARRAY_OF":           # TODO: FIX hack that parses element type into type opts
-            fields.append([0, "", pt.jtype(topts[0]), [], ""])
-            topts = []
-        tdef = [t["name"], pt.jtype(t["type"]), _fopts(topts), _nstr(tdesc)]
-        types.append(tdef + [fields] if tdef[1] not in ["String", "Integer", "Number", "Boolean"] else tdef)
-    jaen = {"meta": meta, "types": types}
-    return jaen
+        tdef = [t["name"], pt.jtype(t["type"]), _topts(topts), _nstr(tdesc)]
+        types.append(tdef if is_primitive(tdef[1]) else tdef + [fields] )
+    jadn = {"meta": meta, "types": types}
+    return jadn
 
 
 def jas_load(fname):
@@ -129,19 +134,19 @@ def jas_load(fname):
         return jas_loads(f.read())
 
 
-def jas_dumps(jaen):
+def jas_dumps(jadn):
     """
-    Produce JAS module from JAEN structure
+    Produce JAS module from JADN structure
 
-    JAS represents features available in both jaen and ASN.1 using ASN.1 syntax, but creates
-    extended datatypes (Record, Map, Attribute) for JAEN types not directly representable in ASN.1.
+    JAS represents features available in both jadn and ASN.1 using ASN.1 syntax, but creates
+    extended datatypes (Record, Map, Attribute) for JADN types not directly representable in ASN.1.
     With appropriate encoding rules (which do not yet exist), SEQUENCE could replace Record.  Map and
     Attribute could be implemented using ASN.1 table constraints, but for the purpose of representing
     JSON objects, the Map and Attribute first-class types in JAS are easier to use.
     """
 
     jas = "/*\n"
-    hdrs = jaen["meta"]
+    hdrs = jadn["meta"]
     hdr_list = ["module", "title", "version", "description", "namespace", "root", "import"]
     for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
@@ -157,16 +162,21 @@ def jas_dumps(jaen):
     jas += "*/\n"
 
     pt = Jastype()
-    for td in jaen["types"]:                    # 0:name, 1:type, 2:topts, 3:tdesc, 4:fields
+    for td in jadn["types"]:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
         tname, ttype = td[TNAME:TTYPE+1]
         topts = opts_s2d(td[TOPTS])
-        tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
+        if "pattern" in topts:
+            tostr = '(PATTERN "' + topts["pattern"] + '")'
+        elif "aetype" in topts:
+            tostr = '(' + pt.ptype(topts["aetype"]) + ')'
+        else:
+            tostr = ""
         tdesc = "    -- " + td[TDESC] if td[TDESC] else ""
         jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
         if len(td) > FIELDS:
             titems = deepcopy(td[FIELDS])
-            for n, i in enumerate(titems):      # 0:tag, 1:name, 2:edesc  (enumerated), or
-                if len(i) > FOPTS:              # 0:tag, 1:name, 2:type, 3: fopts, 4:fdesc
+            for n, i in enumerate(titems):      # 0:tag, 1:enum item name, 2:enum item desc  (enumerated), or
+                if len(i) > FOPTS:              # 0:tag, 1:field name, 2:field type, 3: field opts, 4:field desc
                     desc = i[FDESC]
                     i[FTYPE] = pt.ptype(i[FTYPE])
                 else:
@@ -186,6 +196,8 @@ def jas_dumps(jaen):
                 for n, i in enumerate(titems):
                     ostr = ""
                     opts = opts_s2d(i[FOPTS])
+                    if len(opts) > 1:
+                        pass        # debugging multiple opts
                     if "atfield" in opts:
                         ostr += ".&" + opts["atfield"]
                         del opts["atfield"]
@@ -200,8 +212,8 @@ def jas_dumps(jaen):
     return jas
 
 
-def jas_dump(jaen, fname, source=""):
+def jas_dump(jadn, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(jas_dumps(jaen))
+        f.write(jas_dumps(jadn))

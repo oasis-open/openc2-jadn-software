@@ -5,8 +5,8 @@ Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JADN) sch
 import json
 import jsonschema
 from datetime import datetime
+from .codec import is_builtin, is_primitive
 from .codec_utils import opts_s2d
-from .codec import is_builtin
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: convert prints to ValidationError exception
@@ -101,20 +101,14 @@ def jadn_check(schema):
     jsonschema.Draft4Validator(jadn_schema).validate(schema)
 
     for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
-        if t[TTYPE] not in ("Binary", "Boolean", "Integer", "Number", "String",
-                            "Array", "Choice", "Enumerated", "Map", "Record"):
+        if not is_builtin(t[TTYPE]):
             print("Type error: Unknown type", t[TTYPE])
-        if t[TTYPE] in ("Binary", "Boolean", "Integer", "Number", "String"):
+        if is_primitive(t[TTYPE]):
             if len(t) != 4:    # TODO: trace back to base type
-                print("Type format error:", t[TNAME], "- primitive type", t[TTYPE], "cannot have items")
+                print("Type format error:", t[TNAME], "- type", t[TTYPE], "cannot have items")
         else:
             if len(t) != 5:
                 print("Type format error:", t[TNAME], "- missing items from compound type", t[TTYPE])
-        if t[1] == "Array":
-            if len(t[FIELDS]) != 1:
-                print("Type format error:", t[TNAME], "- array must have one type element, not", len(t[FIELDS]))
-            if t[FIELDS][0][FTAG] != 0:
-                print("Type format error:", t[TNAME], "- array type must not have tag", t[FIELDS][0][FTAG])
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
@@ -139,6 +133,10 @@ def build_jadn_deps(schema):
     items = []
     for tdef in schema["types"]:
         deps = []
+        if tdef[TTYPE] == "Array":
+            aetype = opts_s2d(tdef[TOPTS])["aetype"]
+            if not is_builtin(aetype):
+                deps.append(aetype)
         if len(tdef) > FIELDS and tdef[TTYPE] != "Enumerated":
             for f in tdef[FIELDS]:
                 if not is_builtin(f[FTYPE]):
@@ -158,46 +156,46 @@ def jadn_analyze(schema):
 
 
 def jadn_loads(jadn_str):
-    jadn = json.loads(jadn_str)
-    jadn_check(jadn)
-    return jadn
+    schema = json.loads(jadn_str)
+    jadn_check(schema)
+    return schema
 
 
 def jadn_load(fname):
     with open(fname) as f:
-        jadn = json.load(f)
-    jadn_check(jadn)
-    return jadn
+        schema = json.load(f)
+    jadn_check(schema)
+    return schema
 
 
-def jadn_dumps(jadn, level=0, indent=1):
+def jadn_dumps(schema, level=0, indent=1):
     sp = level * indent * " "
     sp2 = (level + 1) * indent * " "
-    if isinstance(jadn, dict):
+    if isinstance(schema, dict):
         sep = ",\n" if level > 0 else ",\n\n"
         lines = []
-        for k in sorted(jadn):
-            lines.append(sp2 + "\"" + k + "\": " + jadn_dumps(jadn[k], level + 1, indent))
+        for k in sorted(schema):
+            lines.append(sp2 + "\"" + k + "\": " + jadn_dumps(schema[k], level + 1, indent))
         return "{\n" + sep.join(lines) + "\n" + sp + "}"
-    elif isinstance(jadn, list):
+    elif isinstance(schema, list):
         sep = ",\n" if level > 1 else ",\n\n"
         vals = []
-        nest = jadn and isinstance(jadn[0], list)
+        nest = schema and isinstance(schema[0], list)
         sp4 = ""
-        for v in jadn:
+        for v in schema:
             sp3 = sp2 if nest else ""
             sp4 = sp if v and isinstance(v, list) else ""
             vals.append(sp3 + jadn_dumps(v, level + 1, indent))
         if nest:
             return "[\n" + sep.join(vals) + "]\n"
         return "[" + ", ".join(vals) + sp4 + "]"
-    elif isinstance(jadn, (bool, int, str)):
-        return json.dumps(jadn)
+    elif isinstance(schema, (bool, int, str)):
+        return json.dumps(schema)
     return "???"
 
 
-def jadn_dump(jadn, fname, source=""):
+def jadn_dump(schema, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("\"Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\"\n\n")
-        f.write(jadn_dumps(jadn) + "\n")
+        f.write(jadn_dumps(schema) + "\n")

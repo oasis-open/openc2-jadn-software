@@ -153,13 +153,13 @@ def _extra_value(ts, val, fld):
 
 def _decode_array(ts, val, codec):
     _check_type(ts, val, list)                  # TODO: check min/max array length
-    vtype = ts[S_TDEF][FIELDS][0][FTYPE]
+    vtype = ts[S_TOPT]["aetype"]
     return [codec.decode(vtype, v) for v in val]
 
 
 def _encode_array(ts, val, codec):
     _check_type(ts, val, list)
-    vtype = ts[S_TDEF][FIELDS][0][FTYPE]
+    vtype = ts[S_TOPT]["aetype"]
     return [codec.encode(vtype, v) for v in val]
 
 
@@ -309,11 +309,14 @@ def _encode_string(ts, val, codec):
 
 
 def is_primitive(vtype):
-    return vtype in "Binary", "Boolean", "Integer", "Number", "String"
+    if is_builtin(vtype):
+        return vtype in ["Array", "Binary", "Boolean", "Integer", "Number", "String"]
+    return False
 
 
 def is_builtin(vtype):
     return vtype in enctab
+
 
 enctab = {  # decode, encode, min encoded type
     "Binary": [_decode_binary, _encode_binary, str],

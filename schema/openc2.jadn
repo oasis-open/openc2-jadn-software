@@ -308,7 +308,7 @@
     [3, "rir", "String", ["?"], "Regional Internet Registry (RIR) that assigned the number to the AS"]]
   ],
 
-  ["device", "Map", [], "", [
+  ["device", "Map", [], "TODO: Add inventory device-id?", [
     [1, "description", "String", ["?"], ""],
     [2, "device_type", "String", ["?"], ""],
     [3, "manufacturer", "String", ["?"], ""],
@@ -327,9 +327,7 @@
     [6, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
-  ["dir-contents", "Array", [], "", [
-    [0, "", "dirfile", [], ""]]
-  ],
+  ["dir-contents", "Array", ["#dirfile"], ""],
 
   ["dirfile", "Choice", [], "", [
     [1, "d", "directory", [], ""],
@@ -345,9 +343,7 @@
     [2, "resolves_to", "ip-addrs", ["?"], "List of IP addresses or domain names"]]
   ],
 
-  ["ip-addrs", "Array", [], "", [
-    [0, "", "ip-addr", [], ""]]
-  ],
+  ["ip-addrs", "Array", ["#ip-addr"], ""],
 
   ["ip-addr", "Choice", [], "", [
     [1, "ipv4", "ipv4-addr", [], ""],
@@ -361,19 +357,13 @@
     [3, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
-  ["email-addrs", "Array", [], "", [
-    [0, "", "email-addr", [], ""]]
-  ],
+  ["email-addrs", "Array", ["#email-addr"], ""],
 
-  ["headers", "Array", [], "", [
-    [0, "", "String", [], ""]]
-  ],
+  ["headers", "Array", ["#String"], ""],
 
   ["mime-part-type", "Map", [], "TODO: Finish", []],
 
-  ["mime-part-types", "Array", [], "", [
-    [0, "", "mime-part-type", [], ""]]
-  ],
+  ["mime-part-types", "Array", ["#mime-part-type"], ""],
 
   ["email-message", "Map", [], "", [
     [1, "is_multipart", "Boolean", ["?"], "Indicates whether the email body contains multiple MIME parts"],
@@ -411,9 +401,7 @@
     [16, "content", "artifact", ["?"], "Content of the file."]]
   ],
 
-  ["file-contents", "Array", [], "", [
-    [0, "", "Target", [], ""]]
-  ],
+  ["file-contents", "Array", ["#Target"], ""],
 
   ["file-extensions", "Map", [], "", [
     [1, "ntfs_ext", "ntfs-ext", ["?"], ""],
@@ -445,15 +433,11 @@
     [3, "belongs_to", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
   ],
 
-  ["mac-addrs", "Array", [], "", [
-    [0, "", "mac-addr", [], ""]]
-  ],
+  ["mac-addrs", "Array", ["#mac-addr"], ""],
 
   ["mac-addr", "String", [], "Colon-delimited MAC-48 address with leading zeros for each octet"],
 
-  ["asystems", "Array", [], "", [
-    [0, "", "autonomous-system", [], ""]]
-  ],
+  ["asystems", "Array", ["#autonomous-system"], ""],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
     [1, "src_addr", "ip-addr", ["?"], "source address"],
@@ -509,26 +493,18 @@
     [13, "children", "process-children", ["?"], "Processes that were spawned by this one"]]
   ],
 
-  ["arguments", "Array", [], "", [
-    [0, "", "String", [], ""]]
-  ],
+  ["arguments", "Array", ["#String"], ""],
 
-  ["envars", "Array", [], "", [
-    [0, "", "String", [], ""]]
-  ],
+  ["envars", "Array", ["#String"], "Test JAS conversion bad type detection"],
 
-  ["opened-connections", "Array", [], "", [
-    [0, "", "String", [], ""]]
-  ],
+  ["opened-connections", "Array", ["#String"], ""],
 
   ["process-ext", "Map", [], "", [
     [1, "windows_process_ext", "windows-process-ext", ["?"], ""],
     [2, "windows_service_ext", "windows-service-ext", ["?"], ""]]
   ],
 
-  ["process-children", "Array", [], "", [
-    [0, "", "process", [], ""]]
-  ],
+  ["process-children", "Array", ["#process"], ""],
 
   ["windows-process-ext", "Map", [], "TODO", []],
 
@@ -593,9 +569,7 @@
     [5, "number_of_subkeys", "Integer", ["?"], "Number of subkeys contained under the registry key"]]
   ],
 
-  ["windows-registry-values", "Array", [], "", [
-    [0, "", "windows-registry-value", [], ""]]
-  ],
+  ["windows-registry-values", "Array", ["#windows-registry-value"], ""],
 
   ["windows-registry-value", "Record", [], "", [
     [1, "name", "String", [], "Name of the registry value.  Empty string specifies the default value."],
@@ -635,9 +609,7 @@
     [13, "x509_v3_extensions", "x509-v3-extensions", ["?"], "X.509 v3 extensions"]]
   ],
 
-  ["x509-v3-extensions", "Array", [], "", [
-    [0, "", "x509-v3-extension", [], ""]]
-  ],
+  ["x509-v3-extensions", "Array", ["#x509-v3-extension"], ""],
 
   ["x509-v3-extension", "Map", [], "", [
     [1, "basic_constraints", "String", ["?"], "TODO: fill in extensions"]]
@@ -658,9 +630,7 @@
     [3, "comms", "comm-supported", [], ""]]
   ],
 
-  ["strings", "Array", [], "", [
-    [0, "", "String", [], ""]]
-  ],
+  ["strings", "Array", ["#String"], ""],
 
   ["comm-supported", "Record", [], "Structure that is returned in response to a \"query communication\" command", [
     [1, "serialization", "serializations", [], "Payload serialization format"],
@@ -672,9 +642,7 @@
     [2, "connection", "connection", [], "Connection protocol"]]
   ],
 
-  ["serializations", "Array", [], "", [
-    [0, "", "serialization", [], ""]]
-  ],
+  ["serializations", "Array", ["#serialization"], ""],
 
   ["serialization", "Enumerated", [], "Payload serialization format", [
     [1, "JSON", "JSON (uncompressed)"],
@@ -684,9 +652,7 @@
     [5, "XML", "Extensible Markup Language"]]
   ],
 
-  ["connections", "Array", [], "", [
-    [0, "", "connection", [], ""]]
-  ],
+  ["connections", "Array", ["#connection"], ""],
 
   ["connection", "Choice", [], "Connection protocol", [
     [1, "REST", "REST-params", [], "Representational State Transfer web service protocol"],

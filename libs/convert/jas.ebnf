@@ -1,4 +1,4 @@
-# EBNF Grammar for JAEN Abstract Syntax (JAS) files
+# EBNF Grammar for JADN Abstract Syntax (JAS) files
 # Compile grammar into parser using:  $ python -m grako jas.ebnf -o jas_parse.py
 
 @@grammar :: jas

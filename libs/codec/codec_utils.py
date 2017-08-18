@@ -1,5 +1,5 @@
 """
-Support functions for JAEN codec
+Support functions for JADN codec
   Convert dict between nested and flat
   Convert typedef options between dict and strings
 """

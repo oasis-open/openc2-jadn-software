@@ -1,1 +1,1 @@
-{"action": "start", "target": {"device": {"model": "E3500", "serial_number": "12345CX678", "manufacturer": "Dell"}}}
+{"target": {"device": {"manufacturer": "Dell", "serial_number": "12345CX678", "model": "E3500"}}, "action": "start"}

@@ -1,1 +1,1 @@
-{"action": "delete", "target": {"email_message": {"date": "2017-06-07T14:30:31-04:00", "from": {"value": "ginsu@spamco.org"}, "subject": "Special Offer!"}}}
+{"target": {"email_message": {"subject": "Special Offer!", "from": {"value": "ginsu@spamco.org"}, "date": "2017-06-07T14:30:31-04:00"}}, "action": "delete"}

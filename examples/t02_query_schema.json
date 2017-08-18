@@ -1,1 +1,1 @@
-{"action": "query", "target": {"openc2": {"schema": ""}}}
+{"target": {"openc2": {"schema": ""}}, "action": "query"}

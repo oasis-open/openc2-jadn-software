@@ -631,7 +631,7 @@ x509-v3-extension ::= MAP {
 
 openc2 ::= CHOICE {   -- Target used to query Actuator for its supported capabilities and negotiate connection
     actions         [1] Null,           -- query: results = JSON array of supported action verbs
-    schema          [2] Null,           -- query: results = JAEN syntax of supported commands
+    schema          [2] Null,           -- query: results = JADN syntax of supported commands
     comm_supported  [3] Null,           -- query: results = supported communication protocol parameters
     comm_selected   [4] comm-selected,  -- set:   target = selected communication protocol parameters
     actuator_groups [5] Null,           -- query: results = JSON array of actuator group names

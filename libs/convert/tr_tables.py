@@ -1,5 +1,5 @@
 """
-Translate JAEN to property tables (xlsx format)
+Translate JADN to property tables (xlsx format)
 """
 
 import xlsxwriter
@@ -33,7 +33,7 @@ def _write_field(sheet, row, col, f, fmt, tname = "", btype = ""):
         sheet.write(row, col + 3, f[4], fmt)
     return 1
 
-def table_dump(jaen, fname, source=""):
+def table_dump(schema, fname, source=""):
     wkbook = xlsxwriter.Workbook(fname)
     sheet_meta = wkbook.add_worksheet("Meta")
     sheet_types = wkbook.add_worksheet("Types")
@@ -55,7 +55,7 @@ def table_dump(jaen, fname, source=""):
     row, col = 3, 1
     sheet_meta.set_column(1, 1, 15)
     sheet_meta.set_column(2, 2, 60)
-    hdrs = jaen["meta"]
+    hdrs = schema["meta"]
     hdr_list = ["module", "title", "version", "description", "namespace", "root", "import"]
     for n, h in enumerate(hdr_list + list(set(hdrs) - set(hdr_list))):
         if h in hdrs:
@@ -76,8 +76,8 @@ def table_dump(jaen, fname, source=""):
     _set_col_widths(sheet_vocab, 0, [12, 4, 20, 70])
     fmt = [tdname, tdval]
     fmt1 = [tdname, tdval1]
-    symtab = {t[0]:t[1] for t in jaen["types"]}
-    for n, t in enumerate(jaen["types"]):   # 0: type name, 1: base type, 2:opts, 3: desc, 4:fields
+    symtab = {t[0]:t[1] for t in schema["types"]}
+    for n, t in enumerate(schema["types"]):   # 0: type name, 1: base type, 2:opts, 3: desc, 4:fields
         if t[1] == "Enumerated":
             vrow += _write_type(sheet_vocab, vrow, 0, 3, "Vocabulary:", t[0], fmt1)
             if t[2]:

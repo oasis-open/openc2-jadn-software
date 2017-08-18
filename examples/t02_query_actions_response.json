@@ -1,1 +1,1 @@
-{"status": "OK", "results": {"strings": ["query", "report", "notify", "start", "stop", "set", "delete", "update", "investigate", "mitigate", "remediate"]}}
+{"results": {"strings": ["query", "report", "notify", "start", "stop", "set", "delete", "update", "investigate", "mitigate", "remediate"]}, "status": "OK"}

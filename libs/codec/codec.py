@@ -1,7 +1,7 @@
 """
 Abstract Object Encoder/Decoder
 
-Object schema is specified in JSON Abstract Encoding Notation (JAEN) format.
+Object schema is specified in JSON Abstract Data Notation (JADN) format.
 
 Codec currently supports three JSON concrete message formats (verbose,
 concise, and minified) but can be extended to support XML or binary formats.
@@ -19,14 +19,14 @@ __version__ = "0.2"
 # TODO: add DEFAULT
 # TODO: use CHOICE with both explicit (attribute) and implicit (wildcard field) type
 
-# JAEN Type Definition columns
+# JADN Type Definition columns
 TNAME = 0       # Datatype name
 TTYPE = 1       # Base type
 TOPTS = 2       # Type options
 TDESC = 3       # Type description
 FIELDS = 4      # List of fields
 
-# JAEN Field Definition columns
+# JADN Field Definition columns
 FTAG = 0        # Element ID
 FNAME = 1       # Element name
 EDESC = 2       # Description (for enumerated types)
@@ -40,7 +40,7 @@ C_ENC = 1       # Encode function
 C_ETYPE = 2     # Encoded type (for min encoding)
 
 # Symbol Table fields
-S_TDEF = 0      # JAEN type definition
+S_TDEF = 0      # JADN type definition
 S_CODEC = 1     # CODEC table entry for this type
 S_ETYPE = 2     # Encoded type (current encoding mode)
 S_STYPE = 3     # Encoded identifier type (string or tag)
@@ -51,13 +51,13 @@ S_DMAP = 6      # Enum Encoded Val to Name
 S_EMAP = 7      # Enum Name to Encoded Val
 
 # Symbol Table Field Definition fields
-S_FDEF = 0      # JAEN field definition
+S_FDEF = 0      # JADN field definition
 S_FOPT = 1      # Field Options (dict format)
 
 
 class Codec:
     """
-    Serialize (encode) and De-serialize (decode) values based on JAEN syntax.
+    Serialize (encode) and De-serialize (decode) values based on JADN syntax.
 
     verbose_rec - True: Record types encoded as JSON objects
                  False: Record types encoded as JSON arrays
@@ -72,8 +72,8 @@ class Codec:
          not used = True,  False   Dict, Tag
     """
 
-    def __init__(self, jaen, verbose_rec=False, verbose_str=False):
-        self.jaen = jaen
+    def __init__(self, schema, verbose_rec=False, verbose_str=False):
+        self.schema = schema
         self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
@@ -93,14 +93,14 @@ class Codec:
     def set_mode(self, verbose_rec=False, verbose_str=False):
         def symf(f):        # Field entries
             fs = [
-                f,          # S_FDEF:  JAEN field definition
+                f,          # S_FDEF:  JADN field definition
                 opts_s2d(f[FOPTS]) if len(f) > FOPTS else None  # S_FOPT: Field options (dict)
             ]
             return fs
 
         def sym(t):         # Build symbol table based on encoding modes
             symval = [
-                t,                          # 0: S_TDEF:  JAEN type definition
+                t,                          # 0: S_TDEF:  JADN type definition
                 enctab[t[TTYPE]],           # 1: S_CODEC: Type decode function
                 enctab[t[TTYPE]][C_ETYPE],  # 2: S_ETYPE: Encoded type
                 int,                        # 3: S_STYPE: Encoded string type (str or tag)
@@ -124,7 +124,7 @@ class Codec:
                 symval[S_FLD] = {str(f[fx]): symf(f) for f in t[FIELDS]}
                 symval[S_EMAP] = {f[FNAME]: str(f[fx]) for f in t[FIELDS]}
             return symval
-        self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
+        self.symtab = {t[TNAME]: sym(t) for t in self.schema["types"]}
         self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Binary", "Boolean", "Integer", "Number", "String")})
 
 

@@ -1,1 +1,1 @@
-{"modifiers": {"method": {"stop": "graceful"}}, "action": "snapshot", "actuator": {"endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}}, "target": {"process": {"creator_user": {"user_id": "jjadmin"}}}}
+{"modifiers": {"method": {"stop": "graceful"}}, "target": {"process": {"creator_user": {"user_id": "jjadmin"}}}, "actuator": {"endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}}, "action": "snapshot"}

@@ -16,7 +16,7 @@ as Python literals if they contain boolean or null values.
 
 **API Flat:** Some developers may find it more convenient to work with flattened data values, e.g.
 a dictionary containing only primitive data values instead of a dictionary containing nested complex data.
-The JAEN package includes routines `flatten` and `fluff` to convert between structured and flat Python API values.
+The JADN package includes routines `flatten` and `fluff` to convert between structured and flat Python API values.
 
 **JSON-concise:** A message format shown primarily to illustrate how positional encoding eliminates
 the need to transmit dictionary keys with every message.  This format produces messages intermediate

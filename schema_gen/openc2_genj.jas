@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jadn, Fri Aug 18 16:12:24 2017
+-- Generated from schema\openc2.jadn, Mon Sep 18 15:44:51 2017
 
 /*
 module:        openc2
@@ -343,18 +343,7 @@ disk ::= MAP {    -- CybOX 2.1   TODO: Finish
 disk-partition ::= MAP {    -- CybOX 2.1    TODO: Finish
 }
 
-domain-name ::= RECORD {
-    value        STRING,    -- Value of the domain name
-    resolves_to  ip-addrs OPTIONAL     -- List of IP addresses or domain names
-}
-
-ip-addrs ::= ARRAY_OF(ip-addr)
-
-ip-addr ::= CHOICE {
-    ipv4         [1] ipv4-addr,
-    ipv6         [2] ipv6-addr,
-    name         [3] domain-name
-}
+domain-name ::= STRING    -- Value of the domain name
 
 email-addr ::= RECORD {
     value         STRING,    -- Email address (addr-spec in RFC 5322 Section 3.4)
@@ -432,23 +421,20 @@ archive-ext ::= MAP {    -- TODO
 windows-pebinary-ext ::= MAP {    -- TODO
 }
 
-ipv4-addr ::= RECORD {
-    value        STRING,    -- IPv4 address or range in CIDR notation
-    resolves_to  mac-addrs OPTIONAL,    -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
-    belongs_to   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+ip-addrs ::= ARRAY_OF(ip-addr)
+
+ip-addr ::= CHOICE {
+    ipv4         [1] ipv4-addr,
+    ipv6         [2] ipv6-addr
 }
 
-ipv6-addr ::= RECORD {
-    value        STRING,    -- IPv6 address or range
-    resolves_to  mac-addrs OPTIONAL,    -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
-    belongs_to   asystems OPTIONAL     -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
-}
+ipv4-addr ::= STRING    -- IPv4 address or range in CIDR notation
+
+ipv6-addr ::= STRING    -- IPv6 address or range
 
 mac-addrs ::= ARRAY_OF(mac-addr)
 
 mac-addr ::= STRING    -- Colon-delimited MAC-48 address with leading zeros for each octet
-
-asystems ::= ARRAY_OF(autonomous-system)
 
 ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
     src_addr         ip-addr OPTIONAL,    -- source address

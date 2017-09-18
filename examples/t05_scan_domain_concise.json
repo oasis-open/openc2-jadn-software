@@ -1,1 +1,1 @@
-["scan", {"domain_name": ["www.example.com", [{"ipv4": ["198.51.100.2"]}, {"name": ["ms34.example.com"]}]]}]
+["scan", {"domain_name": "www.example.com"}]

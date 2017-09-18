@@ -28,14 +28,14 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "mitigate",
             "target": {
-                "domain_name": {"value": "cdn.badco.org"}}}
+                "domain_name": "cdn.badco.org"}}
         cmd_flat = {
             "action": "mitigate",
-            "target.domain_name.value": "cdn.badco.org"
+            "target.domain_name": "cdn.badco.org"
         }
-        cmd_noname = {"1": 32, "2": {"7": {"1": "cdn.badco.org"}}}
-        cmd_concise = ["mitigate",{"domain_name": ["cdn.badco.org"]}]
-        cmd_min = [32, {"7": ["cdn.badco.org"]}]
+        cmd_noname = {"1": 32, "2": {"7": "cdn.badco.org"}}
+        cmd_concise = ["mitigate",{"domain_name": "cdn.badco.org"}]
+        cmd_min = [32, {"7": "cdn.badco.org"}]
 
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
@@ -166,10 +166,11 @@ class OpenC2(unittest.TestCase):
             "action": "deny",
             "target": {
                 "ip_connection": {
-                    "src_addr": {"name": {"value": "www.badco.com"}},
-                    "src_port": {"protocol": "https"},
-                    "dst_addr": {"ipv4": {"value": "192.168.1.1"}},
-                    "layer4_protocol": "TCP"
+                    "layer4_protocol": "TCP",
+                    "src_addr": {"ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"},
+                    "src_port": {"number": 10996},
+                    "dst_addr": {"ipv4": "1.2.3.5"},
+                    "dst_port": {"protocol": "https"}
                 }},
             "actuator": {
                 "network_firewall": {"asset_id": "30"}},
@@ -181,10 +182,11 @@ class OpenC2(unittest.TestCase):
 
         cmd_flat = {
             "action": "deny",
-            "target.ip_connection.src_addr.name.value": "www.badco.com",
-            "target.ip_connection.src_port.protocol": "https",
-            "target.ip_connection.dst_addr.ipv4.value": "192.168.1.1",
             "target.ip_connection.layer4_protocol": "TCP",
+            "target.ip_connection.src_addr.ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+            "target.ip_connection.src_port.number": 10996,
+            "target.ip_connection.dst_addr.ipv4": "1.2.3.5",
+            "target.ip_connection.dst_port.protocol": "https",
             "actuator.network_firewall.asset_id": "30",
             "modifiers.command_id": "pf17_8675309",
             "modifiers.context": "91",
@@ -195,9 +197,10 @@ class OpenC2(unittest.TestCase):
         cmd_noname = {
             "1": 6,
             "2": {"15": {
-                "1": {"3": {"1": "www.badco.com"}},
-                "2": {"2": 443},
-                "3": {"1": {"1": "192.168.1.1"}},
+                "1": {"2": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"},
+                "2": {"1": 10996},
+                "3": {"1": "1.2.3.5"},
+                "4": {"2": 443},
                 "5": 6}},
             "3": {"14": {"2": "30"}},
             "4": {
@@ -209,10 +212,10 @@ class OpenC2(unittest.TestCase):
         cmd_concise = [
             "deny",
             {"ip_connection": [
-                {"name": ["www.badco.com"]},
+                {"ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"},
+                {"number": 10996},
+                {"ipv4": "1.2.3.5"},
                 {"protocol": "https"},
-                {"ipv4": ["192.168.1.1"]},
-                None,
                 "TCP"]},
             {"network_firewall": [None, "30"]},
             {"context": "91",
@@ -222,10 +225,10 @@ class OpenC2(unittest.TestCase):
 
         cmd_min = [6,
             {"15": [
-                {"3": ["www.badco.com"]},
+                {"2": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"},
+                {"1": 10996},
+                {"1": "1.2.3.5"},
                 {"2": 443},
-                {"1": ["192.168.1.1"]},
-                None,
                 6]},
             {"14": [None, "30"]},
             {"1": "91",
@@ -253,36 +256,22 @@ class OpenC2(unittest.TestCase):
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {
-                "domain_name": {
-                    "value": "www.example.com",
-                    "resolves_to": [
-                        {"ipv4": {"value": "198.51.100.2"}},
-                        {"name": {"value": "ms34.example.com"}}]}}}
+                "domain_name": "www.example.com"}}
 
         cmd_flat = {
             "action": "scan",
-            "target.domain_name.value": "www.example.com",
-            "target.domain_name.resolves_to.0.ipv4.value": "198.51.100.2",
-            "target.domain_name.resolves_to.1.name.value": "ms34.example.com"
-        }
+            "target.domain_name": "www.example.com"}
 
         cmd_noname = {         # unused (dict/tag)
             "1": 1,
             "2": {
-                "7": {
-                    "1": "www.example.com",
-                    "2": [
-                        {"1":{"1": "198.51.100.2"}},
-                        {"3":{"1": "ms34.example.com"}}]}}}
+                "7": "www.example.com"}}
 
         cmd_concise = [        # Concise (list/name)
             "scan", {
-                "domain_name": [
-                    "www.example.com", [
-                        {"ipv4": ["198.51.100.2"]},
-                        {"name": ["ms34.example.com"]}]]}]
+                "domain_name": "www.example.com"}]
 
-        cmd_min = [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
+        cmd_min = [1,{"7":"www.example.com"}]
 
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
@@ -475,11 +464,7 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "locate",
             "target": {
-                "ipv4_addr": {
-                    "value": "209.59.128.0/18",
-                    "belongs_to": [{"number": 32244}, {"number": 25820}]
-                }}
-        }
+                "ipv4_addr": "209.59.128.0/18"}}
 
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)

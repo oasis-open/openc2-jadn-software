@@ -102,7 +102,7 @@ def jadn_check(schema):
 
     for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if not is_builtin(t[TTYPE]):
-            print("Type error: Unknown type", t[TTYPE])
+            print("Type error: Unknown type", t[TTYPE], "(" + t[TNAME] + ")")       # TODO: handle if t[TNAME] doesn't exist
         if is_primitive(t[TTYPE]):
             if len(t) != 4:    # TODO: trace back to base type
                 print("Type format error:", t[TNAME], "- type", t[TTYPE], "cannot have items")
@@ -124,6 +124,7 @@ def jadn_check(schema):
                 for o in opts_s2d(i[3]) if n > 3 else []:
                     if o not in ["atfield", "optional", "range"]:
                         print("Invalid field option:", t[TNAME], i[FNAME], o)
+# TODO: add check that wildcard name MUST be Choice type, and that only one wildcard is permitted per map/record.
             if len(t[FIELDS]) != len(tags):
                 print("Tag collision", t[TNAME], len(t[FIELDS]), "items,", len(tags), "unique tags")
     return schema

@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jas, Fri Aug 18 16:12:24 2017"
+"Generated from schema\openc2.jas, Mon Sep 18 15:44:51 2017"
 
 {
  "meta": {
@@ -340,18 +340,7 @@
 
   ["disk-partition", "Map", [], "CybOX 2.1    TODO: Finish", []],
 
-  ["domain-name", "Record", [], "", [
-    [1, "value", "String", [], "Value of the domain name"],
-    [2, "resolves_to", "ip-addrs", ["?"], "List of IP addresses or domain names"]]
-  ],
-
-  ["ip-addrs", "Array", ["#ip-addr"], ""],
-
-  ["ip-addr", "Choice", [], "", [
-    [1, "ipv4", "ipv4-addr", [], ""],
-    [2, "ipv6", "ipv6-addr", [], ""],
-    [3, "name", "domain-name", [], ""]]
-  ],
+  ["domain-name", "String", [], "Value of the domain name"],
 
   ["email-addr", "Record", [], "", [
     [1, "value", "String", [], "Email address (addr-spec in RFC 5322 Section 3.4)"],
@@ -423,23 +412,20 @@
 
   ["windows-pebinary-ext", "Map", [], "TODO", []],
 
-  ["ipv4-addr", "Record", [], "", [
-    [1, "value", "String", [], "IPv4 address or range in CIDR notation"],
-    [2, "resolves_to", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
-    [3, "belongs_to", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
+  ["ip-addrs", "Array", ["#ip-addr"], ""],
+
+  ["ip-addr", "Choice", [], "", [
+    [1, "ipv4", "ipv4-addr", [], ""],
+    [2, "ipv6", "ipv6-addr", [], ""]]
   ],
 
-  ["ipv6-addr", "Record", [], "", [
-    [1, "value", "String", [], "IPv6 address or range"],
-    [2, "resolves_to", "mac-addrs", ["?"], "Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to."],
-    [3, "belongs_to", "asystems", ["?"], "Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to."]]
-  ],
+  ["ipv4-addr", "String", [], "IPv4 address or range in CIDR notation"],
+
+  ["ipv6-addr", "String", [], "IPv6 address or range"],
 
   ["mac-addrs", "Array", ["#mac-addr"], ""],
 
   ["mac-addr", "String", [], "Colon-delimited MAC-48 address with leading zeros for each octet"],
-
-  ["asystems", "Array", ["#autonomous-system"], ""],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
     [1, "src_addr", "ip-addr", ["?"], "source address"],

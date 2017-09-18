@@ -1,1 +1,1 @@
-{"target": {"openc2": {"comm_supported": ""}}, "actuator": {"any": {"actuator_id": "https://router7319.example.org"}}, "action": "query"}
+{"actuator": {"any": {"actuator_id": "https://router7319.example.org"}}, "target": {"openc2": {"comm_supported": ""}}, "action": "query"}

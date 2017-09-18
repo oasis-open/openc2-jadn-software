@@ -1,1 +1,1 @@
-{"target": {"ipv4_addr": {"belongs_to": [{"number": 32244}, {"number": 25820}], "value": "209.59.128.0/18"}}, "action": "locate"}
+{"target": {"ipv4_addr": "209.59.128.0/18"}, "action": "locate"}

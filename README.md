@@ -23,7 +23,7 @@
 
 <p>Unlike concrete schema languages such as XSD and JSON Schema, JADN defines the structure of datatypes independently of the serialization used to communicate and store data objects. An encoder/decoder (codec) validates the structure of data objects against the JADN schema and serializes/deserializes objects using a specified message format.</p>
 
-<p>The initial codebase for this repository is imported from the OpenC2 Forum's Github repository.</p>
+<p>The initial codebase for this repository is imported from the <a href="https://github.com/OpenC2-org/jadn">OpenC2 Forum's Github repository</a>.</p>
 
 </div>
 

@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 import binascii
 import unittest
 
@@ -12,16 +13,11 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
         ["t_num", "Number", [], ""],
         ["t_str", "String", [], ""],
         ["t_bin", "Binary", [], ""],
-        ["t_array", "Array", ["#Integer"], ""],
+        ["t_array_of", "ArrayOf", ["#Integer"], ""],
         ["t_choice", "Choice", [], "", [
             [1, "type1", "String", [], ""],
             [4, "type2", "Boolean", [], ""],
-            [7, "type3", "Integer", [], ""],
-            [9, "type4", "t_crec", [], ""]]
-         ],
-        ["t_crec", "Record", [], "", [
-            [1, "a", "Integer", [], ""],
-            [2, "b", "String", [], ""]]
+            [7, "type3", "Integer", [], ""]]
          ],
         ["t_enum", "Enumerated", [], "", [
             [1, "first", ""],
@@ -102,17 +98,17 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.tc.encode("t_str", 1)
 
-    def test_array(self):
-        self.assertEqual(self.tc.decode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
-        self.assertEqual(self.tc.encode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
+    def test_array_of(self):
+        self.assertEqual(self.tc.decode("t_array_of", [1, 4, 9, 16]), [1, 4, 9, 16])
+        self.assertEqual(self.tc.encode("t_array_of", [1, 4, 9, 16]), [1, 4, 9, 16])
         with self.assertRaises(TypeError):
-            self.tc.decode("t_array", [1, "4", 9, 16])
+            self.tc.decode("t_array_of", [1, "4", 9, 16])
         with self.assertRaises(TypeError):
-            self.tc.decode("t_array", 9)
+            self.tc.decode("t_array_of", 9)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_array", [1, "4", 9, 16])
+            self.tc.encode("t_array_of", [1, "4", 9, 16])
         with self.assertRaises(TypeError):
-            self.tc.decode("t_array", 9)
+            self.tc.decode("t_array_of", 9)
 
     B1b = b"data to be encoded"
     B1s = "ZGF0YSB0byBiZSBlbmNvZGVk"
@@ -144,11 +140,9 @@ class BasicTypes(unittest.TestCase):
     C1a = {"type1": "foo"}
     C2a = {"type2": False}
     C3a = {"type3": 42}
-    C4a = {"type4": {"a": 1, "b": "c"}}
     C1m = {"1": "foo"}
     C2m = {"4": False}
     C3m = {"7": 42}
-    C4m = {"9":[1,"c"]}
     C1_bad1a = {"type1": 15}
     C1_bad2a = {"type5": "foo"}
     C1_bad3a = {"type1": "foo", "type2": False}
@@ -161,11 +155,9 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1m), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2m), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3m), self.C3a)
-        self.assertEqual(self.tc.decode("t_choice", self.C4m), self.C4a)
         self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1m)
         self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2m)
         self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3m)
-        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4m)
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1m)
         with self.assertRaises(ValueError):
@@ -187,11 +179,10 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2a), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3a), self.C3a)
-        self.assertEqual(self.tc.decode("t_choice", self.C4a), self.C4a)
         self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1a)
         self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2a)
         self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3a)
-        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4a)
+
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1a)
         with self.assertRaises(ValueError):
@@ -543,6 +534,55 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB_bad7a)
 
+    def test_array(self):     # TODO: verbose and min, vector of unnamed fields
+        pass
+
+schema_compound = {
+    "meta": {"module": "unittests-Compound"},
+    "types": [
+        ["t_choice", "Choice", [], "", [
+            [10, "rec", "t_crec", [], ""],
+            [11, "map", "t_cmap", [], ""],
+            [12, "array", "t_carray", [], ""],
+            [13, "choice", "t_cchoice", [], ""]]
+        ],
+        ["t_crec", "Record", [], "", [
+            [1, "a", "Integer", [], ""],
+            [2, "b", "String", [], ""]]
+        ],
+        ["t_cmap", "Map", [], "", [
+            [4, "c", "Integer", [], ""],
+            [6, "d", "String", [], ""]]
+        ],
+        ["t_carray", "Array", [], "", [
+            [3, "e", "Integer", [], ""],
+            [5, "f", "String", [], ""]]
+        ],
+        ["t_cchoice", "Choice", [], "", [
+            [7, "g", "Integer", [], ""],
+            [8, "h", "String", [], ""]]
+        ],
+    ]}
+
+class Compound(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,choice), array(), map(), rec()
+
+    def setUp(self):
+        jadn_check(schema_compound)
+        self.tc = Codec(schema_compound)
+
+    C4a = {"rec": {"a": 1, "b": "c"}}
+    C4m = {"10":[1,"c"]}
+
+    def test_choice_rec_verbose(self):
+        self.tc.set_mode(True, True)
+        self.assertEqual(self.tc.decode("t_choice", self.C4a), self.C4a)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4a)
+
+    def test_choice_rec_min(self):
+        self.tc.set_mode(False, False)
+        self.assertEqual(self.tc.decode("t_choice", self.C4m), self.C4a)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4m)
+
 
 schema_selectors = {                # JADN schema for selector tests
     "meta": {"module": "unittests-Selectors"},
@@ -575,7 +615,7 @@ schema_selectors = {                # JADN schema for selector tests
         ],
         ["Category", "Choice", [], "", [
             [2, "animal", "Animals", [], ""],
-            [5, "color", "Colors", [], ""]]
+            [6, "color", "Colors", [], ""]]
         ],
         ["Animals", "Map", [], "", [
             [3, "cat", "String", ["?"], ""],
@@ -594,7 +634,7 @@ schema_selectors = {                # JADN schema for selector tests
     ]}
 
 
-class Selectors(unittest.TestCase):
+class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field has only Choice type
 
     def setUp(self):
         jadn_check(schema_selectors)
@@ -603,10 +643,10 @@ class Selectors(unittest.TestCase):
     attr1_api = {"type": "Integer", "value": 17}
     attr2_api = {"type": "Primitive", "value": {"count": 17}}
     attr3_api = {"type": "Category", "value": {"animal": {"rat": {"length": 21, "weight": .342}}}}
-    attr4_bad_api = {"type": "vegetable", "value": "turnip"}
-    attr5_bad_api = {"type": "vegetable", "value": {"turnip": ""}}
+    attr4_bad_api = {"type": "Vegetable", "value": "turnip"}
+    attr5_bad_api = {"type": "Category", "value": {"animal": {"fish": 10}}}
 
-    def test_attribute(self):
+    def test_attribute_verbose(self):
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.encode("t_attribute", self.attr1_api), self.attr1_api)
         self.assertDictEqual(self.tc.decode("t_attribute", self.attr1_api), self.attr1_api)
@@ -623,11 +663,34 @@ class Selectors(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.decode("t_attribute", self.attr5_bad_api)
 
+    attr1_min = ["Integer", 17]
+    attr2_min = ["Primitive", {"7": 17}]
+    attr3_min = ["Category", {'2': {'5': [21, 0.342]}}]
+    attr4_bad_min = ["Vegetable", {"7": 17}]
+    attr5_bad_min = ["Category", {'2': {'9': 10}}]
+
+    def test_attribute_min(self):
+        self.tc.set_mode(False, False)
+        self.assertListEqual(self.tc.encode("t_attribute", self.attr1_api), self.attr1_min)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr1_min), self.attr1_api)
+        self.assertListEqual(self.tc.encode("t_attribute", self.attr2_api), self.attr2_min)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr2_min), self.attr2_api)
+        self.assertListEqual(self.tc.encode("t_attribute", self.attr3_api), self.attr3_min)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr3_min), self.attr3_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr4_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr4_bad_min)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr5_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr5_bad_min)
+
     pep_api = {"foo": "bar", "data": {"count": 17}}
     pec_api = {"foo": "bar", "data": {"animal": {"rat": {"length": 21, "weight": .342}}}}
     pep_bad_api = {"foo": "bar", "data": {"turnip": ""}}
 
-    def test_property_explicit(self):
+    def test_property_explicit_verbose(self):
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.encode("t_property_explicit_primitive", self.pep_api), self.pep_api)
         self.assertDictEqual(self.tc.decode("t_property_explicit_primitive", self.pep_api), self.pep_api)
@@ -638,12 +701,27 @@ class Selectors(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.decode("t_property_explicit_primitive", self.pep_bad_api)
 
+    pep_min = ['bar', {'7': 17}]
+    pec_min = ['bar', {'2': {'5': [21, 0.342]}}]
+    pep_bad_min = ['bar', {'6': 17}]
+
+    def test_property_explicit_min(self):
+        self.tc.set_mode(False, False)
+        self.assertListEqual(self.tc.encode("t_property_explicit_primitive", self.pep_api), self.pep_min)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_primitive", self.pep_min), self.pep_api)
+        self.assertListEqual(self.tc.encode("t_property_explicit_category", self.pec_api), self.pec_min)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_category", self.pec_min), self.pec_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_explicit_primitive", self.pep_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_explicit_primitive", self.pep_bad_min)
+
     pip_api = {"foo": "bar", "count": 17}
     pic_api = {"foo": "bar", "animal": {"rat": {"length": 21, "weight": .342}}}
     pip_bad1_api = {"foo": "bar", "value": "turnip"}
     pip_bad2_api = {"foo": "bar", "value": {"turnip": ""}}
 
-    def test_property_implicit(self):
+    def test_property_implicit_verbose(self):
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.encode("t_property_implicit_primitive", self.pip_api), self.pip_api)
         self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_api), self.pip_api)
@@ -657,6 +735,34 @@ class Selectors(unittest.TestCase):
             self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)
         with self.assertRaises(ValueError):
             self.tc.decode("t_property_implicit_primitive", self.pip_bad2_api)
+
+    pip_min = ["bar", 17]
+    pic_min = ["bar", {"2": {"5": [21, .342]}}]
+    pip_bad1_min = []
+    pip_bad2_min = []
+
+    def test_property_implicit_min(self):
+        self.tc.set_mode(False, False)
+        self.assertListEqual(self.tc.encode("t_property_implicit_primitive", self.pip_api), self.pip_min)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_min), self.pip_api)
+        self.assertListEqual(self.tc.encode("t_property_implicit_category", self.pic_api), self.pic_min)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_category", self.pic_min), self.pic_api)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad1_api)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad1_min)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad2_min)
+
+
+class Bounds(unittest.TestCase):        # TODO: check max and min string length, integer values, array sizes
+                                        # TODO: Schema default and options
+    def setUp(self):
+        jadn_check(schema_bounds)
+        self.tc = Codec(schema_bounds)
+
 
 if __name__ == "__main__":
     unittest.main()

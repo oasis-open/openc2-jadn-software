@@ -1,1 +1,1 @@
-{"target": {"email_addr": {"display_name": "Bruce Wayne", "value": "bruce@example.com"}}, "action": "notify"}
+{"action": "notify", "target": {"email_addr": {"value": "bruce@example.com", "display_name": "Bruce Wayne"}}}

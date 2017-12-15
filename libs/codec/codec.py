@@ -52,6 +52,7 @@ S_EMAP = 6      # Enum Name to Encoded Val
 # Symbol Table Field Definition fields
 S_FDEF = 0      # JADN field definition
 S_FOPT = 1      # Field Options (dict format)
+S_FNAMES = 2    # Possible field names returned from Choice type
 
 
 class Codec:
@@ -92,8 +93,9 @@ class Codec:
     def set_mode(self, verbose_rec=False, verbose_str=False):
         def symf(f):        # Field entries
             fs = [
-                f,          # S_FDEF:  JADN field definition
-                opts_s2d(f[FOPTS]) if len(f) > FOPTS else None  # S_FOPT: Field options (dict)
+                f,          # S_FDEF: JADN field definition
+                opts_s2d(f[FOPTS]) if len(f) > FOPTS else None,  # S_FOPT: Field options (dict)
+                []          # S_FNAMES: Possible field names returned from Choice type
             ]
             return fs
 
@@ -125,6 +127,14 @@ class Codec:
             return symval
 
         self.symtab = {t[TNAME]: sym(t) for t in self.schema["types"]}
+        for n, t in self.symtab.items():
+            if t[S_TDEF][TTYPE] in ["Map", "Record"]:
+                for n, f in t[S_FLD].items():
+                    if f[S_FDEF][FNAME] == '*':
+                        t = self.symtab[f[S_FDEF][FTYPE]][S_TDEF]
+                        assert(t[TTYPE] == 'Choice')
+                        f[S_FNAMES] = [c[FNAME] for c in t[FIELDS]]
+
         self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Binary", "Boolean", "Integer", "Number", "String")})
 
 
@@ -273,27 +283,28 @@ def _decode_maprec(ts, val, codec):
 def _encode_maprec(ts, val, codec):
     _check_type(ts, val, dict)
     encval = ts[S_CODEC][C_ETYPE]()
-    fnames = [f[S_FDEF][FNAME] for k, f in ts[S_FLD].items()]
-    extra = set(val) - set(fnames)
-    if extra:
-        _extra_value(ts, val, fnames)
     fx = FNAME if ts[S_VSTR] else FTAG    # Verbose or minified identifier strings
     if type(encval) == list:
         fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][FTAG] for f in val])
     for f in ts[S_TDEF][FIELDS]:
         fopts = ts[S_FLD][str(f[fx])][S_FOPT]
         ftype = val[fopts["atfield"]] if "atfield" in fopts else f[FTYPE]
+        if f[FNAME] == '*':
+            fnames = ts[S_CNAMES]
         fv = codec.encode(ftype, val[f[FNAME]]) if f[FNAME] in val else None
         if fv is None and not fopts["optional"]:     # Missing required field
             _bad_value(ts, val, f)
-        if type(encval) == list:         # Concise Record
+        if type(encval) == list:            # Concise Record
             if f[FTAG] <= fmax:
                 encval.append(fv)
-        elif type(encval) == dict:                           # Map or Verbose Record
+        elif type(encval) == dict:          # Map or Verbose Record
             if fv is not None:
                 encval[str(f[fx])] = fv
         else:
             _abort(ts, val, 'Internal error, bad type')
+    fnames = [f[S_FDEF][FNAME] for k, f in ts[S_FLD].items()]
+    if set(val) - set(fnames):
+        _extra_value(ts, val, fnames)
     return encval
 
 

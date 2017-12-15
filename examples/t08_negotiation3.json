@@ -1,1 +1,1 @@
-{"actuator": {"any": {"actuator_id": "https://router7319.example.org"}}, "target": {"openc2": {"comm_selected": {"connection": {"REST": {"port": {"protocol": "https"}}}, "serialization": "Protobuf"}}}, "action": "set"}
+{"action": "set", "target": {"openc2": {"comm_selected": {"serialization": "Protobuf", "connection": {"REST": {"port": {"protocol": "https"}}}}}}, "actuator": {"any": {"actuator_id": "https://router7319.example.org"}}}

@@ -1,1 +1,1 @@
-{"target": {"domain_name": "www.example.com"}, "action": "scan"}
+{"action": "scan", "target": {"domain_name": "www.example.com"}}

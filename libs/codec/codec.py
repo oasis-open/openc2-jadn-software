@@ -127,7 +127,7 @@ class Codec:
             return symval
 
         self.symtab = {t[TNAME]: sym(t) for t in self.schema["types"]}
-        for n, t in self.symtab.items():
+        for n, t in self.symtab.items():        # TODO: Check for wildcard name collisions
             if t[S_TDEF][TTYPE] in ["Map", "Record"]:
                 for n, f in t[S_FLD].items():
                     if f[S_FDEF][FNAME] == '*':
@@ -259,52 +259,71 @@ def _encode_number(ts, val, codec):
 def _decode_maprec(ts, val, codec):
     _check_type(ts, val, ts[S_CODEC][C_ETYPE])
     apival = dict()
-    extra = set(val) - set(ts[S_FLD]) if type(val) == dict else len(val) > len(ts[S_FLD])
-    if extra:
-        _extra_value(ts, val, extra)
+    fx = FNAME if ts[S_VSTR] else FTAG    # Verbose or minified identifier strings
+    fnames = [k for k in ts[S_FLD]]
     for f in ts[S_TDEF][FIELDS]:
-        fs = f[FNAME] if ts[S_VSTR] else str(f[FTAG])  # Verbose or Minified identifier strings
-        fopts = ts[S_FLD][fs][S_FOPT]
+        ft = str(f[fx])
+        fs = ts[S_FLD][ft]
+        fopts = fs[S_FOPT]
         if type(val) == dict:
-            fx = fs
-            exists = fx in val and val[fx] is not None
+            fn = next(iter(set(val) & set(fs[S_FNAMES])), None) if f[FNAME] == '*' else ft
+            fv = val[fn] if fn in val else None
         else:
-            fx = f[FTAG] - 1
-            exists = len(val) > fx and val[fx] is not None
-        if exists:
+            fn = f[FTAG] - 1
+            fv = val[fn] if len(val) > fn else None
+        if fv:
             ftype = apival[fopts["atfield"]] if "atfield" in fopts else f[FTYPE]
-            apival[f[FNAME]] = codec.decode(ftype, val[fx])
+            if f[FNAME] == '*':
+                if type(val) == dict:
+                    apival.update(codec.decode(ftype, {fn: fv}))
+                    fnames.append(fn)
+                else:
+                    apival.update(codec.decode(ftype, fv))
+            else:
+                apival[f[FNAME]] = codec.decode(ftype, fv)
         else:
             if not fopts["optional"]:
                 _bad_value(ts, val, f)
+    extra = set(val) - set(fnames) if type(val) == dict else len(val) > len(ts[S_FLD])
+    if extra:
+        _extra_value(ts, val, extra)
     return apival
 
 
 def _encode_maprec(ts, val, codec):
     _check_type(ts, val, dict)
     encval = ts[S_CODEC][C_ETYPE]()
+    if type(encval) not in (list, dict):
+        _abort(ts, val, 'Internal error, bad type')
     fx = FNAME if ts[S_VSTR] else FTAG    # Verbose or minified identifier strings
-    if type(encval) == list:
-        fmax = max([ts[S_FLD][ts[S_EMAP][f]][S_FDEF][FTAG] for f in val])
+    fnames = [f[S_FDEF][FNAME] for f in ts[S_FLD].values()]
     for f in ts[S_TDEF][FIELDS]:
-        fopts = ts[S_FLD][str(f[fx])][S_FOPT]
+        fs = ts[S_FLD][str(f[fx])]
+        fopts = fs[S_FOPT]
         ftype = val[fopts["atfield"]] if "atfield" in fopts else f[FTYPE]
-        if f[FNAME] == '*':
-            fnames = ts[S_CNAMES]
-        fv = codec.encode(ftype, val[f[FNAME]]) if f[FNAME] in val else None
+        if f[FNAME] == '*':                 # Implicit selector - pull Choice value up to this level
+            vn = next(iter(set(val) & set(fs[S_FNAMES])), None)
+            fnames.append(vn)
+            fv = codec.encode(ftype, {vn: val[vn]}) if vn in val else None
+        else:
+            vn = f[FNAME]
+            fv = codec.encode(ftype, val[vn]) if vn in val else None
         if fv is None and not fopts["optional"]:     # Missing required field
             _bad_value(ts, val, f)
         if type(encval) == list:            # Concise Record
-            if f[FTAG] <= fmax:
-                encval.append(fv)
-        elif type(encval) == dict:          # Map or Verbose Record
+            encval.append(fv)
+        else:                               # Map or Verbose Record
             if fv is not None:
-                encval[str(f[fx])] = fv
-        else:
-            _abort(ts, val, 'Internal error, bad type')
-    fnames = [f[S_FDEF][FNAME] for k, f in ts[S_FLD].items()]
+                if f[FNAME] == '*':
+                    encval.update(fv)
+                else:
+                    encval[str(f[fx])] = fv
+
     if set(val) - set(fnames):
         _extra_value(ts, val, fnames)
+    if type(encval) == list:
+        while encval and encval[-1] is None:    # Strip non-populated trailing optional values
+            encval.pop()
     return encval
 
 

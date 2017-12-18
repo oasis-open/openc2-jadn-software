@@ -635,6 +635,7 @@ schema_selectors = {                # JADN schema for selector tests
 
 
 class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field has only Choice type
+                                            # TODO: add test cases to decode multiple values for Choice (bad)
 
     def setUp(self):
         jadn_check(schema_selectors)
@@ -727,16 +728,16 @@ class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field 
         self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_api), self.pip_api)
         self.assertDictEqual(self.tc.encode("t_property_implicit_category", self.pic_api), self.pic_api)
         self.assertDictEqual(self.tc.decode("t_property_implicit_category", self.pic_api), self.pic_api)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_property_implicit_primitive", self.pip_bad1_api)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_property_implicit_primitive", self.pip_bad1_api)
         with self.assertRaises(ValueError):
             self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)
         with self.assertRaises(ValueError):
             self.tc.decode("t_property_implicit_primitive", self.pip_bad2_api)
 
-    pip_min = ["bar", 17]
+    pip_min = ["bar", {"7": 17}]
     pic_min = ["bar", {"2": {"5": [21, .342]}}]
     pip_bad1_min = []
     pip_bad2_min = []
@@ -747,9 +748,9 @@ class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field 
         self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_min), self.pip_api)
         self.assertListEqual(self.tc.encode("t_property_implicit_category", self.pic_api), self.pic_min)
         self.assertDictEqual(self.tc.decode("t_property_implicit_category", self.pic_min), self.pic_api)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_property_implicit_primitive", self.pip_bad1_api)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_property_implicit_primitive", self.pip_bad1_min)
         with self.assertRaises(ValueError):
             self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)

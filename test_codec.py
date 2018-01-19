@@ -1,4 +1,6 @@
 # This Python file uses the following encoding: utf-8
+from __future__ import unicode_literals
+
 import binascii
 import unittest
 
@@ -128,7 +130,7 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.encode("t_bin", self.B1b), self.B1s)
         self.assertEqual(self.tc.encode("t_bin", self.B2b), self.B2s)
         self.assertEqual(self.tc.encode("t_bin", self.B3b), self.B3s)
-        with self.assertRaises(binascii.Error):
+        with self.assertRaises((TypeError, binascii.Error)):
             self.tc.decode("t_bin", self.B_bad1s)
         with self.assertRaises(TypeError):
             self.tc.encode("t_bin", self.B_bad1b)

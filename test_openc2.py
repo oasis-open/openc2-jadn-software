@@ -1,3 +1,7 @@
+# This Python file uses the following encoding: utf-8
+from __future__ import unicode_literals
+
+import six
 import json
 import os
 import unittest
@@ -84,7 +88,7 @@ class OpenC2(unittest.TestCase):
                     [4, "modifiers", "Modifiers", ["?"], ""]]]]}
         rsp_api = {
             "status": "OK",
-            "results": {"string": json.dumps(schema)}}
+            "results": {"string": six.text_type(json.dumps(schema))}}
 
         self.tc.set_mode(True, True)        # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
@@ -271,7 +275,7 @@ class OpenC2(unittest.TestCase):
             "scan", {
                 "domain_name": "www.example.com"}]
 
-        cmd_min = [1,{"7":"www.example.com"}]
+        cmd_min = [1, {"7": "www.example.com"}]
 
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
@@ -341,7 +345,7 @@ class OpenC2(unittest.TestCase):
             "target": {
                 "file": {
                     "parent_directory": {
-                        "path":"\\\\someshared-drive\\somedirectory\\configurations"},
+                        "path": "\\\\someshared-drive\\somedirectory\\configurations"},
                     "name": "firewallconfiguration.txt"
                 }
             },
@@ -357,7 +361,7 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "query",
             "target": {
-                "openc2": {"comm_supported":""}
+                "openc2": {"comm_supported": ""}
             },
             "actuator": {
                 "any": {"actuator_id": "https://router7319.example.org"}}
@@ -375,11 +379,11 @@ class OpenC2(unittest.TestCase):
             "action": "set",
             "target": {
                 "openc2": {
-                    "comm_selected":{
+                    "comm_selected": {
                         "serialization": "Protobuf",
                         "connection": {
                             "REST": {
-                                "port": {"protocol":"https"}}}}}},
+                                "port": {"protocol": "https"}}}}}},
             "actuator": {
                 "any": {"actuator_id": "https://router7319.example.org"}}
         }
@@ -475,7 +479,7 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "redirect",
             "target": {
-                "url": "https://www.shezuly.com/qqmusic.exe" }
+                "url": "https://www.shezuly.com/qqmusic.exe"}
         }
 
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
@@ -599,7 +603,6 @@ class OpenC2(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.decode("OpenC2Command", cmd_api)
 
-
     def testb3_scan(self):      # Extra targets
         cmd_api = {
             "action": "scan",
@@ -607,16 +610,17 @@ class OpenC2(unittest.TestCase):
                 "device": {"model": "bar"},
                 "author": "Charles Dickens",
                 "title": "A Tale of Two Cities",
-                "quote": "We had everything before us, we had nothing before us, we were all going direct to Heaven, "
-                    "we were all going direct the other way— in short, the period was so far like the present period, "
-                    "that some of its noisiest authorities insisted on its being received, for good or for evil, in the "
-                    "superlative degree of comparison only."
+                "quote": "We had everything before us, we had nothing before us, we were all going direct to "
+                         "Heaven, we were all going direct the other way - in short, the period was so far like "
+                         "the present period, that some of its noisiest authorities insisted on its being received, "
+                         "for good or for evil, in the superlative degree of comparison only."
                 }}
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         with self.assertRaises(ValueError):
             self.tc.encode("OpenC2Command", cmd_api)
         with self.assertRaises(ValueError):
             self.tc.decode("OpenC2Command", cmd_api)
+
 
 if __name__ == "__main__":
     unittest.main()

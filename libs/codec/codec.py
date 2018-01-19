@@ -11,6 +11,7 @@ Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
+from __future__ import unicode_literals
 import base64
 from .codec_utils import opts_s2d
 
@@ -74,6 +75,7 @@ class Codec:
 
     def __init__(self, schema, verbose_rec=False, verbose_str=False):
         self.schema = schema
+        self.symtab = {}
         self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
@@ -91,15 +93,15 @@ class Codec:
         return symtype[S_CODEC][C_ENC](symtype, message, self)
 
     def set_mode(self, verbose_rec=False, verbose_str=False):
-        def symf(f):        # Field entries
+        def symf(fld):               # Field entries
             fs = [
-                f,          # S_FDEF: JADN field definition
-                opts_s2d(f[FOPTS]) if len(f) > FOPTS else None,  # S_FOPT: Field options (dict)
-                []          # S_FNAMES: Possible field names returned from Choice type
+                fld,                 # S_FDEF: JADN field definition
+                opts_s2d(fld[FOPTS]) if len(fld) > FOPTS else None,  # S_FOPT: Field options (dict)
+                []                  # S_FNAMES: Possible field names returned from Choice type
             ]
             return fs
 
-        def sym(t):         # Build symbol table based on encoding modes
+        def sym(t):                 # Build symbol table based on encoding modes
             symval = [
                 t,                          # 0: S_TDEF:  JADN type definition
                 enctab[t[TTYPE]],           # 1: S_CODEC: Decoder, Encoder, Encoded type
@@ -116,7 +118,7 @@ class Codec:
                     if verbose_rec else ([_decode_maprec, _encode_maprec, list], FTAG)
             if verbose_str and t[TTYPE] in ["Choice", "Enumerated", "Map"]:
                 fx = FNAME
-                symval[S_STYPE] = str
+                symval[S_STYPE] = type('')
             if t[TTYPE] == "Enumerated":
                 symval[S_DMAP] = {f[fx]: f[FNAME] for f in t[FIELDS]}
                 symval[S_EMAP] = {f[FNAME]: f[fx] for f in t[FIELDS]}
@@ -127,25 +129,24 @@ class Codec:
             return symval
 
         self.symtab = {t[TNAME]: sym(t) for t in self.schema["types"]}
-        for n, t in self.symtab.items():        # TODO: Check for wildcard name collisions
+        for t in self.symtab.values():        # TODO: Check for wildcard name collisions
             if t[S_TDEF][TTYPE] in ["Map", "Record"]:
-                for n, f in t[S_FLD].items():
+                for f in t[S_FLD].values():
                     if f[S_FDEF][FNAME] == '*':
                         t = self.symtab[f[S_FDEF][FTYPE]][S_TDEF]
                         assert(t[TTYPE] == 'Choice')
                         f[S_FNAMES] = [c[FNAME] for c in t[FIELDS]]
 
-        self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in ("Binary", "Boolean", "Integer", "Number", "String")})
+        self.symtab.update({t: [None, enctab[t], enctab[t][C_ETYPE]] for t in
+                            ("Binary", "Boolean", "Integer", "Number", "String")})
 
 
 def _check_type(ts, val, vtype):
-    td = ts[S_TDEF]
     if vtype is not None:
         if type(val) != vtype:
-            if td:
-                raise TypeError("%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype))
-            else:
-                raise TypeError("Primitive: %r is not %s" % (val, vtype))
+            td = ts[S_TDEF]
+            tn = "%s(%s)" % (td[TNAME], td[TTYPE]) if td else "Primitive"
+            raise TypeError("%s: %r is not %s" % (tn, val, vtype))
 
 
 def _bad_value(ts, val, fld=None):
@@ -161,12 +162,8 @@ def _extra_value(ts, val, fld):
     raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], val, fld))
 
 
-def _abort(ts, val, msg):
-    raise Error(msg)
-
-
-def _decode_array_of(ts, val, codec):              # TODO: refactor into array and array_of
-    _check_type(ts, val, list)                  # TODO: check min/max array length
+def _decode_array_of(ts, val, codec):               # TODO: refactor into array and array_of
+    _check_type(ts, val, list)                      # TODO: check min/max array length
     vtype = ts[S_TOPT]["aetype"]
     return [codec.decode(vtype, v) for v in val]
 
@@ -178,13 +175,13 @@ def _encode_array_of(ts, val, codec):
 
 
 def _decode_binary(ts, val, codec):
-    _check_type(ts, val, str)
-    return base64.b64decode(val.encode(encoding="UTF-8"), validate=True)
+    _check_type(ts, val, type(''))
+    return base64.standard_b64decode(val.encode(encoding="UTF-8"))
 
 
 def _encode_binary(ts, val, codec):
     _check_type(ts, val, bytes)
-    return base64.b64encode(val).decode(encoding="UTF-8")
+    return base64.standard_b64encode(val).decode(encoding="UTF-8")
 
 
 def _decode_boolean(ts, val, codec):
@@ -226,7 +223,7 @@ def _decode_enumerated(ts, val, codec):
 
 
 def _encode_enumerated(ts, val, codec):
-    _check_type(ts, val, str)
+    _check_type(ts, val, type(''))
     if val in ts[S_EMAP]:
         return ts[S_EMAP][val]
     else:
@@ -293,8 +290,7 @@ def _decode_maprec(ts, val, codec):
 def _encode_maprec(ts, val, codec):
     _check_type(ts, val, dict)
     encval = ts[S_CODEC][C_ETYPE]()
-    if type(encval) not in (list, dict):
-        _abort(ts, val, 'Internal error, bad type')
+    assert type(encval) in (list, dict)
     fx = FNAME if ts[S_VSTR] else FTAG    # Verbose or minified identifier strings
     fnames = [f[S_FDEF][FNAME] for f in ts[S_FLD].values()]
     for f in ts[S_TDEF][FIELDS]:
@@ -359,19 +355,17 @@ def _encode_array(ts, val, codec):
 
 
 def _decode_string(ts, val, codec):
-    _check_type(ts, val, str)
+    _check_type(ts, val, type(''))
     return val
 
 
 def _encode_string(ts, val, codec):
-    _check_type(ts, val, str)
+    _check_type(ts, val, type(''))
     return val
 
 
 def is_primitive(vtype):
-    if is_builtin(vtype):
-        return vtype in ["ArrayOf", "Binary", "Boolean", "Integer", "Number", "String"]
-    return False
+    return vtype in ["ArrayOf", "Binary", "Boolean", "Integer", "Number", "String"]
 
 
 def is_builtin(vtype):

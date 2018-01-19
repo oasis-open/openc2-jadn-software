@@ -1,1 +1,1 @@
-{"action": "restart", "target": {"process": {"pid": 17325, "name": "rm -rf /*.*"}}, "actuator": {"endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}}, "modifiers": {"method": {"stop": "graceful"}}}
+{"action": "restart", "actuator": {"endpoint": {"actuator_id": "dns://i3494.hosts.example.com"}}, "modifiers": {"method": {"stop": "graceful"}}, "target": {"process": {"pid": 17325, "name": "rm -rf /*.*"}}}

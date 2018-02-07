@@ -138,11 +138,11 @@ def jas_dumps(jadn):
     """
     Produce JAS module from JADN structure
 
-    JAS represents features available in both jadn and ASN.1 using ASN.1 syntax, but creates
-    extended datatypes (Record, Map, Attribute) for JADN types not directly representable in ASN.1.
-    With appropriate encoding rules (which do not yet exist), SEQUENCE could replace Record.  Map and
-    Attribute could be implemented using ASN.1 table constraints, but for the purpose of representing
-    JSON objects, the Map and Attribute first-class types in JAS are easier to use.
+    JAS represents features available in both JADN and ASN.1 using ASN.1 syntax, but adds
+    extended datatypes (Record, Map) for JADN types not directly representable in ASN.1.
+    With appropriate encoding rules (which do not yet exist), SEQUENCE could replace Record.
+    Map could be implemented using ASN.1 table constraints, but for the purpose of representing
+    JSON objects, the Map first-class type in JAS is easier to use.
     """
 
     jas = "/*\n"

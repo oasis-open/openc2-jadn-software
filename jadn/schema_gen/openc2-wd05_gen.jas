@@ -1,0 +1,241 @@
+-- Generated from schema\openc2-wd05.jadn, Fri Mar 16 14:33:52 2018
+
+/*
+module:        openc2
+title:         OpenC2 Command Definitions
+version:       wd05
+description:   Datatypes that define the content of OpenC2 commands and
+               responses.
+*/
+
+OpenC2-Command ::= RECORD {    -- Communicates an action to be performed on a target and may include information identifying the actuator(s) to execute the command.
+    id           Command-ID,    -- Identifier used to link responses to a command
+    action       Action,    -- The task or activity to be performed (i.e., the 'verb')
+    target       Target,    -- The object of the action. The action is performed on the target
+    actuator     Actuator OPTIONAL,    -- The subject of the action. The actuator executes the action on the target
+    options      Command-Options OPTIONAL     -- Additional information that applies to the command
+}
+
+OpenC2Response ::= RECORD {
+    id           Command-ID,    -- Command that induced this response
+    status       Status-Code,    -- Adapted from HTTP Status Codes, RFC 7231
+    status_text  STRING OPTIONAL,    -- Status description
+    *            Results     -- Results of executing the command
+}
+
+Results ::= CHOICE {
+    string       [1] STRING OPTIONAL,    -- List of strings ***{'max': 0}
+    media        [2] Media     -- Media type and data
+}
+
+Media ::= RECORD {
+    media-type   STRING,    -- Media Type (formerly MIME Type), RFC 6838
+    data         Payload     -- Content or URI
+}
+
+Action ::= ENUMERATED {
+    scan         (1),    -- Systematic examination of some aspect of the target entity or its environment in order to obtain information.
+    locate       (2),    -- Find the target object physically, logically, functionally, or by organization.
+    query        (3),    -- Initiate a request for information.
+    report       (4),    -- Task an entity to provide information to a designated recipient.
+    notify       (5),    -- Set an entity's alerting preferences.
+    deny         (6),    -- Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access.
+    contain      (7),    -- Isolate a file, process, or entity so that it cannot modify or access other assets or processes.
+    allow        (8),    -- Permit access to or execution of a target.
+    start        (9),    -- Initiate a process, application, system, or activity.
+    stop         (10),    -- Halt a system or end an activity.
+    restart      (11),    -- Stop then start a system or activity.
+    pause        (12),    -- Cease a system or activity while maintaining state.
+    resume       (13),    -- Start a system or activity from a paused state.
+    cancel       (14),    -- Invalidate a previous action.
+    set          (15),    -- Change a value, configuration, or state of a managed entity.
+    update       (16),    -- Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
+    move         (17),    -- Change the location of a file, subnet, network, or process.
+    redirect     (18),    -- Change the flow of traffic to a destination other than its original destination.
+    create       (19),    -- Add a new entity of a known type (e.g., data, files, directories).
+    delete       (20),    -- Remove an entity (e.g., data, files, flows.
+    snapshot     (21),    -- Record and store the state of a target at an instant in time.
+    detonate     (22),    -- Execute and observe the behavior of a target (e.g., file, hyperlink) in an isolated environment.
+    restore      (23),    -- Return the system to a previously known state.
+    save         (24),    -- Commit data or system state to memory.
+    throttle     (25),    -- Adjust the rate of a process, function, or activity.
+    delay        (26),    -- Stop or hold up an activity or data transmittal.
+    substitute   (27),    -- Replace all or part of the data, content or payload.
+    copy         (28),    -- Duplicate a file or data flow.
+    sync         (29),    -- Synchronize a sensor or actuator with other system components.
+    investigate  (30),    -- Task the recipient to aggregate and report information as it pertains to a security event or incident.
+    mitigate     (31),    -- Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point.
+    remediate    (32)     -- Task the recipient to eliminate a vulnerability or attack point.
+}
+
+Target ::= CHOICE {    -- OpenC2 Target datatypes
+    artifact              [1] artifact,    -- An array of bytes representing a file-like object or a link to that object.
+    command               [2] command-id,    -- A reference to a previously issued OpenC2 command
+    device                [3] device,
+    directory             [4] directory,
+    disk                  [5] disk,
+    disk_partition        [6] disk-partition,
+    domain_name           [7] domain-name,
+    email_addr            [8] email-addr,
+    email_message         [9] email-message,
+    file                  [10] file,
+    ipv4_addr             [11] ipv4-addr,
+    ipv6_addr             [12] ipv6-addr,
+    mac_addr              [13] mac-addr,
+    memory                [14] memory,
+    ip_connection         [15] ip-connection,
+    openc2                [16] openc2,    -- OpenC2 - query actuator for supported capabilities, negotiate connection
+    process               [17] process,
+    software              [18] software,
+    uri                   [19] uri,
+    user_account          [20] user-account,
+    user_session          [21] user-session,
+    volume                [22] volume,
+    windows_registry_key  [23] windows-registry-key,
+    x509_certificate      [24] x509-certificate
+}
+
+Actuator ::= CHOICE {
+    any          [1] ActuatorSpecifiers,
+    firewall     [2] ActuatorSpecifiers
+}
+
+ActuatorSpecifiers ::= RECORD {
+    actuator_id  uri OPTIONAL,
+    asset_id     STRING OPTIONAL
+}
+
+Command-Options ::= MAP {
+    start_time          [1] date-time OPTIONAL,    -- universal
+    end_time            [2] date-time OPTIONAL,    -- universal
+    duration            [3] duration OPTIONAL,    -- pause, delay
+    response_requested  [4] response-type OPTIONAL,    -- Type of response required for the action
+    command_id          [5] command-id OPTIONAL     -- universal  (was "id")
+}
+
+response-type ::= ENUMERATED {
+    ack          (1),
+    status       (2)
+}
+
+Status-Code ::= ENUMERATED {
+                 (102),    -- Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
+                 (200),    -- OK - the request has succeeded.
+                 (301),    -- Moved Permanently - the target resource has been assigned a new permanent URI
+                 (400),    -- Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+                 (401),    -- Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+                 (403),    -- Forbidden - the server understood the request but refuses to authorize it.
+                 (500),    -- Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
+                 (501)     -- Not Implemented - the server does not support the functionality required to fulfill the request.
+}
+
+hashes ::= MAP {    -- Hash values
+    MD5          [1] BINARY OPTIONAL,    -- MD5 message digest as defined in RFC3121
+    MD6          [2] BINARY OPTIONAL,    -- MD6 message digest as defined in MD6 proposal
+    RIPEMD-160   [3] BINARY OPTIONAL,    -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
+    SHA-1        [4] BINARY OPTIONAL,    -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
+    SHA-224      [5] BINARY OPTIONAL,    -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
+    SHA-256      [6] BINARY OPTIONAL,    -- SHA-256 as defined in RFC6234
+    SHA-384      [7] BINARY OPTIONAL,    -- SHA-384 as defined in RFC6234
+    SHA-512      [8] BINARY OPTIONAL,    -- SHA-512 as defined in RFC6234
+    SHA3-224     [9] BINARY OPTIONAL,    -- SHA3-224 as defined in FIPS PUP 202
+    SHA3-256     [10] BINARY OPTIONAL,    -- SHA3-256 as defined in FIPS PUP 202
+    SHA3-384     [11] BINARY OPTIONAL,    -- SHA3-384 as defined in FIPS PUP 202
+    SHA3-512     [12] BINARY OPTIONAL,    -- SHA3-512 as defined in FIPS PUP 202
+    ssdeep       [13] BINARY OPTIONAL,    -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
+    WHIRLPOOL    [14] BINARY OPTIONAL     -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
+}
+
+artifact ::= RECORD {
+    mime_type    STRING OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
+    *            payload OPTIONAL,    -- choice of literal content or URL to obtain content
+    hashes       hashes OPTIONAL     -- Specifies a dictionary of hashes for the contents of the payload
+}
+
+payload ::= CHOICE {
+    payload_bin  [1] BINARY,    -- Specifies the data contained in the artifact.
+    url          [2] uri     -- MUST be a valid URL that resolves to the un-encoded content
+}
+
+device ::= MAP {    -- TODO: Add inventory device-id?
+    description       [1] STRING OPTIONAL,
+    device_type       [2] STRING OPTIONAL,
+    manufacturer      [3] STRING OPTIONAL,
+    model             [4] STRING OPTIONAL,
+    serial_number     [5] STRING OPTIONAL,
+    firmware_version  [6] STRING OPTIONAL,
+    system_details    [7] STRING OPTIONAL
+}
+
+file ::= MAP {
+    name         [1] STRING OPTIONAL,
+    path         [2] STRING OPTIONAL,
+    hash         [3] hashes OPTIONAL,
+    reputation   [4] reputation OPTIONAL
+}
+
+reputation ::= ENUMERATED {
+                 (0),    -- Not Set
+                 (1),    -- Benign
+                 (2),    -- Likely Benign
+                 (3),    -- Possibly Benign
+                 (4),    -- Indeterminate
+                 (5),    -- Possibly Malicious
+                 (6),    -- Likely Malicious
+                 (7)     -- Known Malicious
+}
+
+ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
+    src_addr         ip-addr OPTIONAL,    -- source address
+    src_port         port OPTIONAL,    -- source TCP/UDP port number
+    dst_addr         ip-addr OPTIONAL,    -- destination address
+    dst_port         port OPTIONAL,    -- destination TCP/UDP port number
+    layer4_protocol  layer4-protocol OPTIONAL     -- Protocol (IPv4) / Next Header (IPv6)
+}
+
+layer4-protocol ::= ENUMERATED {    -- protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
+    icmp         (1),    -- Internet Control Message Protocol - RFC 792
+    tcp          (6),    -- Transmission Control Protocol - RFC 793
+    udp          (17),    -- User Datagram Protocol - RFC 768
+    sctp         (132)     -- Stream Control Transmission Protocol - RFC 4960
+}
+
+layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port - any IANA value, RFC 6335
+    ftp-data     (20),    -- File Transfer Protocol (data)
+    ftp          (21),    -- File Transfer Protocol (control)
+    ssh          (22),    -- Secure Shell Protocol
+    telnet       (23),    -- Telnet
+    smtp         (25),    -- Simple Mail Transfer Protocol
+    http         (80),    -- Hypertext Transport Protocol
+    https        (443)     -- HTTP over TLS
+}
+
+openc2 ::= CHOICE {    -- A target used to query Actuator for its supported capabilities
+    actions          [1] NULL,    -- query: Results = JSON array of supported action verbs
+    schema           [2] NULL,    -- query: Results = JADN syntax of supported commands
+    actuator_groups  [3] NULL     -- query: Results = JSON array of actuator group names
+}
+
+command-id ::= STRING    -- Uniquely identifies a particular command - TBD syntax
+
+date-time ::= STRING    -- RFC 3339 date-time
+
+duration ::= STRING    -- RFC 3339 / ISO 8601 duration
+
+domain-name ::= STRING    -- Domain name, RFC 1034, section 3.5
+
+email-addr ::= STRING    -- Email address, RFC 5322, section 3.4.1
+
+ip-addr ::= STRING    -- IPv4 or IPv6 address
+
+ipv4-addr ::= STRING    -- IPv4 address or range in CIDR notation, RFC 2673, section 3.2
+
+ipv6-addr ::= STRING    -- IPv6 address or range, RFC 4291, section 2.2
+
+mac-addr ::= STRING    -- 48 bit Media Access Code address
+
+port ::= STRING    -- Service Name or Transport Protocol Port Number, RFC 6335
+
+version ::= STRING    -- Version string - TBD syntax
+
+uri ::= STRING    -- Uniform Resource Identifier

@@ -1,10 +1,19 @@
 # JADN Overview
 
 JSON Abstract Data Notation (JADN) is a language-neutral, platform-neutral,
-and format-neutral mechanism for serializing structured data.
-JADN data structures are defined using the JSON document format described here.
+and format-neutral language for representing information models and for serializing
+structured data. [RFC 3444](https://tools.ietf.org/html/rfc3444) discusses information
+models (IMs) and data models (DMs):
+* An IM models data objects at a conceptual level independently of any specific implementations or protocols used
+to transport the data.
+* DMs are intended for implementors and include protocol-specific constructs.
 
-An example data structure is shown below in various formats.  This example,
+Since conceptual models can be implemented in different ways, multiple DMs can be derived
+from a single IM.  An IM can be combined with a set of encoding rules to algorithmically
+perform data validation and serialization.  Encoding rules supply format-specific
+implementation details, reducing or eliminating the need for explicit data models.
+
+An example data structure is shown below in several formats.  This example,
 from the Protocol Buffers documentation, defines a message containing
 information about a person:
 
@@ -14,7 +23,7 @@ information about a person:
         optional string email = 3;
     }
 
-The Thrift equivalent is:
+The Apache Thrift equivalent is:
 
     struct Person {
         1: string name,
@@ -22,16 +31,17 @@ The Thrift equivalent is:
         3: optional string email
     }
 
-The table represenation is:
+A table represenation might look like:
 ### Person
-|    |**Record**|        |     |   |
+#### Type: Record
+
+|  ID  |  Name  |  Type  |  #  |Description|
 |-----:|--------|--------|----:|---|
-|**ID**|**Name**|**Type**|**#**|**Description**|
 |    1 | name   | String |   1 |   |
 |    2 | id     | Integer|   1 |   |
 |    3 | email  | String | 0..1|   |
 
-And the JADN version is:
+And the JADN representation is:
 
     {   "meta": {
             "module": "protobuf-example1"},
@@ -45,10 +55,10 @@ And the JADN version is:
 Although JADN can be edited directly, it is also possible to document
 data structures using an interface definition language (IDL) such as Thrift
 [[1](#ref1)] or Protobuf [[2](#ref2)], or tables, and translate the
-definitions into JADN format. One advantage of JADN is that an IDL parser is
-not needed in order to use it.
-JADN is designed for machine consumption, and applications can read a JADN schema
-using nothing but the standard JSON loader present in most programming languages.
+definitions to and from JADN format. One advantage of JADN is that an IDL parser is
+not needed in order to use it.  JADN is designed for machine consumption,
+and applications can read a JADN schema using nothing but the standard
+JSON loader present in most programming languages.
 
 A JADN file consists of meta-information and a list of datatype definitions in a fixed
 format.  As shown in the example, each type definition is a list containing
@@ -112,23 +122,23 @@ and the Value has the type shown in the tables.
 
 ### Type Options
 
-|  ID  | Name    | ID Char | Type | Description |
-|------|---------|:---:|---------|--------------|
-  0x3d | etag    |  =  | boolean | enumerated type is serialized as tag, default=false, field name is ignored if present)
-  0x5b | min     |  [  | integer | minimum string length, integer value, array length, or property count
-  0x5d | max     |  ]  | integer | maximum string length, integer value, array length, or property count
-  0x23 | aetype  |  #  | string  | ArrayOf element type
-  0x24 | pattern |  $  | string  | regular expression that a string type must match
-  0x40 | format  |  @  | string  | name of validation function, e.g., date-time, email, ipaddr, ...
+|  ID  | ID Char | Name |  Type  |  Description |
+|------|:---:|---------|---------|--------------|
+  0x3d |  =  | etag    | boolean | enumerated type is serialized as tag, default=false, field name is ignored if present)
+  0x5b |  [  | min     | integer | minimum string length, integer value, array length, or property count
+  0x5d |  ]  | max     | integer | maximum string length, integer value, array length, or property count
+  0x23 |  #  | aetype  | string  | ArrayOf element type
+  0x24 |  $  | pattern | string  | regular expression that a string type must match
+  0x40 |  @  | format  | string  | name of validation function, e.g., date-time, email, ipaddr, ...
 
 ### Field Options
-|  ID  | Name    | ID Char | Type | Description |
-|------|---------|:---:|---------|--------------|
-  0x5b | min     |  [  | integer | minimum cardinality of field, default = 1, 0 = field is optional
-  0x5d | max     |  ]  | integer | maximum cardinality of field, default = 1, 0 = inherited max. If max != 1, field is an array.
-  0x26 | atfield |  &  | string  | name of a field that specifies the type of this field
-  0x2f | etype   |  /  | string  | serializer-specific encoding type, e.g., u8, i32, hex, base64
-  0x21 | default |  !  | string  | default value for this field (coerced to field type)
+|  ID  | ID Char | Name |  Type  | Description |
+|------|:---:|---------|---------|--------------|
+  0x5b |  [  | min     | integer | minimum cardinality of field, default = 1, 0 = field is optional
+  0x5d |  ]  | max     | integer | maximum cardinality of field, default = 1, 0 = inherited max. If max != 1, field is an array.
+  0x26 |  &  | atfield | string  | name of a field that specifies the type of this field
+  0x2f |  /  | etype   | string  | serializer-specific encoding type, e.g., u8, i32, hex, base64
+  0x21 |  !  | default | string  | default value for this field (coerced to field type)
 
 In the example above, the field options list for the email field [ "[0" ] contains one option.
 The option ID is "[" (min) and value is "0", indicating that the minimum cardinality of the

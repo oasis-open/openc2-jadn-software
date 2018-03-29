@@ -2,16 +2,17 @@
 
 JSON Abstract Data Notation (JADN) is a language-neutral, platform-neutral,
 and format-neutral language for representing information models and for serializing
-structured data. [RFC 3444](https://tools.ietf.org/html/rfc3444) discusses information
-models (IMs) and data models (DMs):
+structured data. [RFC 3444](https://tools.ietf.org/html/rfc3444) discusses the difference
+between information models (IMs) and data models (DMs):
 * An IM models data objects at a conceptual level independently of any specific implementations or protocols used
 to transport the data.
 * DMs are intended for implementors and include protocol-specific constructs.
 
 Since conceptual models can be implemented in different ways, multiple DMs can be derived
 from a single IM.  An IM can be combined with a set of encoding rules to algorithmically
-perform data validation and serialization.  Encoding rules supply format-specific
-implementation details, reducing or eliminating the need for explicit data models.
+perform data validation and serialization.  The encoding rules incorporate format-specific
+implementation details, reducing or eliminating the need for explicit data models and
+freeing implememntors to focus on business logic rather than data handling.
 
 An example data structure is shown below in several formats.  This example,
 from the Protocol Buffers documentation, defines a message containing
@@ -41,7 +42,7 @@ A table represenation might look like:
 |    2 | id     | Integer|   1 |   |
 |    3 | email  | String | 0..1|   |
 
-And the JADN representation is:
+This object is represented in JADN as:
 
     {   "meta": {
             "module": "protobuf-example1"},
@@ -52,16 +53,16 @@ And the JADN representation is:
                 [3, "email", "String", ["[0"], ""]]
     ]]}
 
-Although JADN can be edited directly, it is also possible to document
-data structures using an interface definition language (IDL) such as Thrift
-[[1](#ref1)] or Protobuf [[2](#ref2)], or tables, and translate the
-definitions to and from JADN format. One advantage of JADN is that an IDL parser is
-not needed in order to use it.  JADN is designed for machine consumption,
-and applications can read a JADN schema using nothing but the standard
-JSON loader present in most programming languages.
+Although JADN can be edited directly, it is clearer to document data structures
+using an interface definition language (IDL) such as Thrift [[1](#ref1)]
+or Protobuf [[2](#ref2)].  The IDL or table definitions can be translated
+bidirectionally to and from JADN format. One advantage of JADN is that an
+IDL parser is not needed in order to use it.  JADN is designed for machine
+consumption, and applications can read a JADN schema using nothing but the
+standard JSON loader present in most programming languages.
 
-A JADN file consists of meta-information and a list of datatype definitions in a fixed
-format.  As shown in the example, each type definition is a list containing
+A JADN file consists of meta-information and a list of datatype definitions in
+a fixed format.  As shown in the example, each type definition is a list containing
 four elements, plus for structured types, a list of field definitions.
 
 ### Type definitions

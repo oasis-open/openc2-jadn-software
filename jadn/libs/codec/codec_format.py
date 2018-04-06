@@ -22,7 +22,7 @@ FORMAT_FUNCTIONS = (
     'regex',
 
 # Additional validation functions
-    'duration',
+    'duration',         # RFC 3339 Appendix A "duration"
     'ip-addr',          # Either an IPv4 or IPv6 address
     'port',             # Service Name or Transport Protocol Port Number, per IANA registry
     'mac-addr',         # 48 bit Media Access Code address

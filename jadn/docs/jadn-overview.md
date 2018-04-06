@@ -8,15 +8,20 @@ between information models (IMs) and data models (DMs):
 to transport the data.
 * DMs are intended for implementors and include protocol-specific constructs.
 
-Since conceptual models can be implemented in different ways, multiple DMs can be derived
-from a single IM.  An IM can be combined with a set of encoding rules to algorithmically
-perform data validation and serialization.  The encoding rules incorporate format-specific
-implementation details, reducing or eliminating the need for explicit data models and
-freeing implememntors to focus on business logic rather than data handling.
+Since conceptual models can be implemented in different ways, multiple DMs can be
+derived from a single IM.  An IM can be combined with a set of encoding rules that
+supply the format-specific implementation details, reducing or eliminating the need
+for explicit data models and freeing implementors to develop code for business logic
+rather than data handling.  JADN represents data objects at an abstract (IM) level
+and is used with format-specific codecs to automatically perform data validation and
+serialization.
 
+## Examples
 An example data structure is shown below in several formats.  This example,
 from the Protocol Buffers documentation, defines a message containing
 information about a person:
+
+**Protobuf:**
 
     message Person {
         required string name = 1;
@@ -24,7 +29,7 @@ information about a person:
         optional string email = 3;
     }
 
-The Apache Thrift equivalent is:
+**Apache Thrift:**
 
     struct Person {
         1: string name,
@@ -32,9 +37,13 @@ The Apache Thrift equivalent is:
         3: optional string email
     }
 
-A table represenation might look like:
-### Person
-#### Type: Record
+**Table:**
+
+The Person object can be represented in table format, for example:
+
+**Person**
+
+**Type: Record**
 
 |  ID  |  Name  |  Type  |  #  |Description|
 |-----:|--------|--------|----:|---|
@@ -42,26 +51,28 @@ A table represenation might look like:
 |    2 | id     | Integer|   1 |   |
 |    3 | email  | String | 0..1|   |
 
-This object is represented in JADN as:
+### JADN
+The JADN definition of the Person object is:
 
     {   "meta": {
             "module": "protobuf-example1"},
         "types": [
             ["Person", "Record", [], "", [
                 [1, "name", "String", [], ""],
-                [2, "id", "Integer", [], ""],
+                [2, "id", "Integer", ["/i32"], ""],
                 [3, "email", "String", ["[0"], ""]]
     ]]}
 
 Although JADN can be edited directly, it is clearer to document data structures
-using an interface definition language (IDL) such as Thrift [[1](#ref1)]
-or Protobuf [[2](#ref2)].  The IDL or table definitions can be translated
-bidirectionally to and from JADN format. One advantage of JADN is that an
-IDL parser is not needed in order to use it.  JADN is designed for machine
-consumption, and applications can read a JADN schema using nothing but the
-standard JSON loader present in most programming languages.
+using tables or an interface definition language (IDL) such as Thrift [[1](#ref1)]
+or Protobuf [[2](#ref2)].  The table or IDL definitions can then be translated
+bidirectionally to and from JADN format. An advantage of using JADN as an intermediate
+representation is that applications do not need an IDL parser.
+JADN is designed for machine consumption, and applications can read a JADN schema
+using nothing but the standard JSON loader present in most programming languages.
 
-A JADN file consists of meta-information and a list of datatype definitions in
+## File Format
+A JADN file consists of meta-information fields and a list of datatype definitions in
 a fixed format.  As shown in the example, each type definition is a list containing
 four elements, plus for structured types, a list of field definitions.
 
@@ -98,10 +109,10 @@ A JADN syntax is defined using the following data types:
 |---------:|-------------|
 Binary     | A sequence of octets or bytes. Serialized either as binary data or as a string using an encoding such as hex or base64.
 Boolean    | A logical entity that can have two values: true, and false.  Serialized as either integer or keyword.
-Integer    | A number that can be written without a fractional component.  Serialized either as binary data or a text string.
-Number     | A real number.  Valid values include integers, rational numbers, and irrational numbers.  Serialized as either binary data or a text string.
-Null       | Nothing, used to designate fields with no value.  Serialized as an empty string.
-String     | A sequence of characters.  Each character must have a valid Unicode codepoint.
+Integer    | A number that can be written without a fractional component.  Serialized either as binary data or a string.
+Number     | A real number.  Valid values include integers, rational numbers, and irrational numbers.  Serialized as either binary data or a string.
+Null       | Nothing, used to designate fields with no value.  Serialized as a keyword or an empty string.
+String     | A sequence of characters.  Each character must have a valid Unicode codepoint.  Serialized as a string.
 
 ### Structure Types
 
@@ -111,7 +122,7 @@ Array      | An ordered list of unnamed fields.  Each field has an ordinal posit
 ArraryOf   | An ordered list of unnamed fields of the same type.  Each field has an ordinal position and must be the specified type.  Serialized as a list.
 Choice     | One field selected from a set of named fields.  The value has a name and a type. Serialized as a one-element map.
 Enumerated | A set of id:name pairs.  Serialized as either the integer id or the name string.
-Map        | An unordered set of named fields.  Each field has a name and a type.  Serialized as a mapping type (referred to in various programming languages as: associative array, dict, dictionary, hash, map, object).
+Map        | An unordered set of named fields.  Each field has a name and a type (referred to in various programming languages as: associative array, dict, hash, map, object).  Serialized as a map.
 Record     | An ordered list of named fields, e.g. a message, record, structure, or row in a table.  Each field has an ordinal position, a name, and a type. Serialized as either a list or a map.
 
 ## Options

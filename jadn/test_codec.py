@@ -791,15 +791,20 @@ class ListField(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,c
         self.tc = Codec(schema_listfield)
 
     Lna = {"string": "cat"}                     # Cardinality 0..n field doesn't omit empty list.  Use ArrayOf type.
+    Lsa = {"string": "cat", "list": "red"}      # Always invalid, value is a string, not a list of one string.
     L0a = {"string": "cat", "list": []}         # List fields SHOULD have minimum cardinality 1 to prevent this ambiguity.
     L1a = {"string": "cat", "list": ["red"]}
     L2a = {"string": "cat", "list": ["red", "green"]}
     L3a = {"string": "cat", "list": ["red", "green", "blue"]}
 
-    def test_opt_list_verbose(self):        # n-P, 0-F, 1-P, 2-P, 3-F
+    def test_opt_list_verbose(self):        # n-P, s-F, 0-F, 1-P, 2-P, 3-F
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.encode("t_opt_list", self.Lna), self.Lna)
         self.assertDictEqual(self.tc.decode("t_opt_list", self.Lna), self.Lna)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_opt_list", self.Lsa)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_opt_list", self.Lsa)
         with self.assertRaises(ValueError):
             self.tc.encode("t_opt_list", self.L0a)
         with self.assertRaises(ValueError):
@@ -813,12 +818,16 @@ class ListField(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,c
         with self.assertRaises(ValueError):
             self.tc.decode("t_opt_list", self.L3a)
 
-    def test_list_1_2_verbose(self):        # n-F, 0-F, 1-P, 2-P, 3-F
+    def test_list_1_2_verbose(self):        # n-F, s-f, 0-F, 1-P, 2-P, 3-F
         self.tc.set_mode(True, True)
         with self.assertRaises(ValueError):
             self.tc.encode("t_list_1_2", self.Lna)
         with self.assertRaises(ValueError):
             self.tc.decode("t_list_1_2", self.Lna)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_list_1_2", self.Lsa)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_list_1_2", self.Lsa)
         with self.assertRaises(ValueError):
             self.tc.encode("t_list_1_2", self.L0a)
         with self.assertRaises(ValueError):
@@ -832,14 +841,18 @@ class ListField(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,c
         with self.assertRaises(ValueError):
             self.tc.decode("t_list_1_2", self.L3a)
 
-    def test_list_0_2_verbose(self):        # n-F, 0-P, 1-P, 2-P, 3-F
+    def test_list_0_2_verbose(self):        # n-P, s-F, 0-F, 1-P, 2-P, 3-F
         self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_list_0_2", self.Lna), self.Lna)
+        self.assertDictEqual(self.tc.decode("t_list_0_2", self.Lna), self.Lna)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_list_0_2", self.Lsa)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_list_0_2", self.Lsa)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_list_0_2", self.Lna)
+            self.tc.encode("t_list_0_2", self.L0a)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_list_0_2", self.Lna)
-        self.assertDictEqual(self.tc.encode("t_list_0_2", self.L0a), self.L0a)
-        self.assertDictEqual(self.tc.decode("t_list_0_2", self.L0a), self.L0a)
+            self.tc.decode("t_list_0_2", self.L0a)
         self.assertDictEqual(self.tc.encode("t_list_0_2", self.L1a), self.L1a)
         self.assertDictEqual(self.tc.decode("t_list_0_2", self.L1a), self.L1a)
         self.assertDictEqual(self.tc.encode("t_list_0_2", self.L2a), self.L2a)

@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd05.jadn, Fri Mar 30 09:36:44 2018-->
+<!-- Generated from schema\openc2-wd05.jadn, Mon Apr 30 15:39:12 2018-->
 <!--
 -->
 
@@ -161,7 +161,7 @@ OpenC2 Target datatypes
 
 **Type: Enumerated**
 
-{'etag': True}
+{u'compact': True}
 
 |Value|Description|
 |---|---|
@@ -243,7 +243,7 @@ TODO: Add inventory device-id?
 
 **Type: Enumerated**
 
-{'etag': True}
+{u'compact': True}
 
 |Value|Description|
 |---|---|

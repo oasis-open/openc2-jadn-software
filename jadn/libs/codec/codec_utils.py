@@ -76,7 +76,7 @@ def topts_s2d(ostr):
     """
 
     tval = {
-        "etag": lambda x: True,
+        "compact": lambda x: True,
         "min": lambda x: int(x),
         "max": lambda x: int(x),
         "aetype": lambda x: x,

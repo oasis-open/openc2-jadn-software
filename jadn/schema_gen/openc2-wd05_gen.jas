@@ -1,4 +1,4 @@
--- Generated from schema\openc2-wd05.jadn, Fri Mar 30 09:36:44 2018
+-- Generated from schema\openc2-wd05.jadn, Mon Apr 30 15:39:12 2018
 
 /*
 module:        openc2
@@ -24,7 +24,7 @@ OpenC2Response ::= RECORD {
 }
 
 Results ::= CHOICE {
-    string       [1] STRING OPTIONAL,    -- List of strings ***{'max': 0}
+    string       [1] STRING OPTIONAL,    -- List of strings ***{u'max': 0}
     media        [2] Media     -- Media type and data
 }
 

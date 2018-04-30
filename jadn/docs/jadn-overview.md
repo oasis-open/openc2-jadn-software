@@ -12,9 +12,21 @@ Since conceptual models can be implemented in different ways, multiple DMs can b
 derived from a single IM.  An IM can be combined with a set of encoding rules that
 supply the format-specific implementation details, reducing or eliminating the need
 for explicit data models and freeing implementors to develop code for business logic
-rather than data handling.  JADN represents data objects at an abstract (IM) level
-and is used with format-specific codecs to automatically perform data validation and
-serialization.
+rather than data handling.  A JADN schema represents data objects at an abstract (IM)
+level.  A codec embodies the encoding rules applicable to a specific message format
+and interprets the schema to automatically perform data validation and serialization.
+Using a schema-driven codec ensures that encoding conventions are applied
+consistently across an application.
+
+## Purpose
+JADN was created to allow a standard that was being developed using JSON to
+make use of data objects that had previously been defined in XML.  Expressing
+both the new standard and the imported data objects in a common information
+modeling language allows them to be combined.
+
+* Translate schemas from one language to another
+* Combine data objects that are defined in different schema languages
+* Serialize data objects using different formats
 
 ## Examples
 An example data structure is shown below in several formats.  This example,
@@ -136,7 +148,7 @@ and the Value has the type shown in the tables.
 
 |  ID  | ID Char | Name |  Type  |  Description |
 |------|:---:|---------|---------|--------------|
-  0x3d |  =  | etag    | boolean | enumerated type is serialized as tag, default=false, field name is ignored if present)
+  0x3d |  =  | compact | boolean | enumerated type is serialized as tag, record type is serialized as array
   0x5b |  [  | min     | integer | minimum string length, integer value, array length, or property count
   0x5d |  ]  | max     | integer | maximum string length, integer value, array length, or property count
   0x23 |  #  | aetype  | string  | ArrayOf element type

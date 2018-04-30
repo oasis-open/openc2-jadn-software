@@ -133,7 +133,7 @@ class Codec:
                 symval[S_CODEC] = [_decode_maprec, _encode_maprec, rtype]
             fx = FNAME if verbose_str else FTAG
             if t[TTYPE] == "Enumerated":
-                fa = FTAG if "etag" in symval[S_TOPT] else FNAME
+                fx, fa = (FTAG, FTAG) if "compact" in symval[S_TOPT] else (fx, FNAME)
                 symval[S_DMAP] = {f[fx]: f[fa] for f in t[FIELDS]}
                 symval[S_EMAP] = {f[fa]: f[fx] for f in t[FIELDS]}
             elif t[TTYPE] in ["Choice", "Map", "Record"]:
@@ -228,7 +228,8 @@ def _encode_choice(ts, val, codec):         # TODO: bad schema - verify * field 
 
 
 def _decode_enumerated(ts, val, codec):
-    codec._check_type(ts, val, ts[S_STYPE])
+    etype = int if 'compact' in ts[S_TOPT] else ts[S_STYPE]
+    codec._check_type(ts, val, etype)
     if val in ts[S_DMAP]:
         return ts[S_DMAP][val]
     else:
@@ -237,7 +238,7 @@ def _decode_enumerated(ts, val, codec):
 
 
 def _encode_enumerated(ts, val, codec):
-    etype = int if 'etag' in ts[S_TOPT] else type('')
+    etype = int if 'compact' in ts[S_TOPT] else type('')
     codec._check_type(ts, val, etype)
     if val in ts[S_EMAP]:
         return ts[S_EMAP][val]

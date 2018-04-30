@@ -56,7 +56,7 @@ STRUCTURE_TYPES = (
 #   The tables list the unicode codepoint of the ID and the corresponding Name.
 
 TYPE_OPTIONS = {        # ID, value type, description
-    0x3d: 'etag',       # '=', boolean, enumerated type is serialized as tag (name is ignored if present)
+    0x3d: 'compact',    # '=', boolean, enumerated type is serialized as tag, record type is serialized as array
     0x5b: 'min',        # '[', integer, minimum string length, integer value, array length, property count
     0x5d: 'max',        # ']', integer, maximum string length, integer value, array length, property count
     0x23: 'aetype',     # '#', string, ArrayOf element type

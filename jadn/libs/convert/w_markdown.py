@@ -62,7 +62,7 @@ def markdown_dumps(jadn):
             mdown += '(arrayof definition)\n'
             n += 1
         elif td[TTYPE] == 'Enumerated':
-            if 'etag' in topts_s2d(td[TOPTS]):
+            if 'compact' in topts_s2d(td[TOPTS]):
                 mdown += '|Value|Description|\n'
                 mdown += '|---|---|\n'
                 for fd in td[FIELDS]:

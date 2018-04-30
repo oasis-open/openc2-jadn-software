@@ -26,6 +26,11 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
             [15, "extra", ""],
             [8, "Chunk", ""]]
         ],
+        ["t_enum_c", "Enumerated", ["="], "", [
+            [1, "first", ""],
+            [15, "extra", ""],
+            [8, "Chunk", ""]]
+         ],
         ["t_map", "Map", [], "", [
             [2, "red", "Integer", [], ""],
             [4, "green", "Integer", ["[0"], ""],
@@ -231,6 +236,23 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_enum", 42)
         with self.assertRaises(TypeError):
             self.tc.encode("t_enum", ["first"])
+
+    def test_enumerated_comp_min(self):
+        self.assertEqual(self.tc.decode("t_enum_c", 15), 15)
+        self.assertEqual(self.tc.encode("t_enum_c", 15), 15)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_enum_c", "extra")
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_enum_c", "extra")
+
+    def test_enumerated_comp_verbose(self):
+        self.tc.set_mode(True, True)
+        self.assertEqual(self.tc.decode("t_enum_c", 15), 15)
+        self.assertEqual(self.tc.encode("t_enum_c", 15), 15)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_enum_c", "extra")
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_enum_c", "extra")
 
     RGB1 = {"red": 24, "green": 120, "blue": 240}    # API (decoded) and verbose values Map and Record
     RGB2 = {"red": 50, "blue": 100}
@@ -762,26 +784,26 @@ class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field 
 schema_listfield = {                # JADN schema for fields with cardinality > 1 (e.g., list of x)
     "meta": {"module": "unittests-ListField"},
     "types": [
-        ["t_array", "ArrayOf", ["#String", "]2"], ""],
+        ["t_array", "ArrayOf", ["#String", "]2"], ""],  # Min array length default = 1, Max = 2
         ["t_opt_list", "Record", [], "", [
             [1, "string", "String", [], ""],
-            [2, "list", "t_array", ["[0"], ""]]
+            [2, "list", "t_array", ["[0"], ""]]         # Min = 0, Max default = 1  (Array is optional)
         ],
         ["t_list_1_2", "Record", [], "", [
             [1, "string", "String", [], ""],
-            [2, "list", "String", ["]2"], ""]]
+            [2, "list", "String", ["]2"], ""]]          # Min default = 1, Max = 2
         ],
         ["t_list_0_2", "Record", [], "", [
             [1, "string", "String", [], ""],
-            [2, "list", "String", ["[0", "]2"], ""]]
+            [2, "list", "String", ["[0", "]2"], ""]]    # Min = 0, Max = 2
         ],
         ["t_list_2_3", "Record", [], "", [
             [1, "string", "String", [], ""],
-            [2, "list", "String", ["[2","]3"], ""]]
+            [2, "list", "String", ["[2","]3"], ""]]     # Min = 2, Max = 3
         ],
         ["t_list_1_n", "Record", [], "", [
             [1, "string", "String", [], ""],
-            [2, "list", "String", ["]0"], ""]]
+            [2, "list", "String", ["]0"], ""]]          # Min default = 1, Max = 0 -> n
         ]]}
 
 class ListField(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,choice), array(), map(), rec()
@@ -818,7 +840,7 @@ class ListField(unittest.TestCase):      # TODO: arrayOf(rec,map,array,arrayof,c
         with self.assertRaises(ValueError):
             self.tc.decode("t_opt_list", self.L3a)
 
-    def test_list_1_2_verbose(self):        # n-F, s-f, 0-F, 1-P, 2-P, 3-F
+    def test_list_1_2_verbose(self):        # n-F, s-F, 0-F, 1-P, 2-P, 3-F
         self.tc.set_mode(True, True)
         with self.assertRaises(ValueError):
             self.tc.encode("t_list_1_2", self.Lna)

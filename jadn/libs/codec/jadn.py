@@ -95,9 +95,9 @@ def jadn_check(schema):
         'Array': ['min', 'max'],
         'ArrayOf': ['min', 'max', 'aetype'],
         'Choice': [],
-        'Enumerated': ['etag'],
+        'Enumerated': ['compact'],
         'Map': [],
-        'Record': [],
+        'Record': ['compact'],
     }
     valid_fopts = {
         "Array": ['min', 'max', 'etype'],

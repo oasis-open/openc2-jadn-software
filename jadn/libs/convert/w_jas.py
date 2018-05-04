@@ -8,7 +8,7 @@ from copy import deepcopy
 from datetime import datetime
 from textwrap import fill
 
-stype_map = {                   # Map JADN built-in types to JAS type names
+stype_map = {                   # Map JADN built-in types to JAS type names (Equivalent ASN.1 types in comments)
     "Binary": "BINARY",           # OCTET STRING
     "Boolean": "BOOLEAN",         # BOOLEAN
     "Integer": "INTEGER",         # INTEGER
@@ -62,7 +62,7 @@ def jas_dumps(jadn):
         elif "aetype" in topts:
             tostr = '(' + stype(topts["aetype"]) + ')'
         else:
-            tostr = ""
+            tostr = ""                          # TODO: add handling for all type options
         tdesc = "    -- " + td[TDESC] if td[TDESC] else ""
         jas += "\n" + tname + " ::= " + stype(ttype) + tostr
         if len(td) > FIELDS:

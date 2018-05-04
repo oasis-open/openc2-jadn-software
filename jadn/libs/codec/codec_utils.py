@@ -36,10 +36,12 @@ def fluff(src, sep="."):
     return reduce(lambda x, y: _dmerge(x, y), [hdict(k, v, sep) for k, v in src.items()], {})
 
 
-def flatten(cmd, path="", fc={}, sep="."):
+def flatten(cmd, path="", fc=None, sep="."):
     """
     Convert a nested dict to a flat dict with hierarchical keys
     """
+    if fc is None:
+        fc = {}
     fcmd = fc.copy()
     if isinstance(cmd, dict):
         for k, v in cmd.items():

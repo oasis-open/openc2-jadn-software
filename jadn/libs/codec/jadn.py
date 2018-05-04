@@ -125,7 +125,7 @@ def jadn_check(schema):
                 tags = set()
                 n = 3 if t[1] == "Enumerated" else 5
                 for k, i in enumerate(t[FIELDS]):       # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
-                    tags.update(set([i[FTAG]]))         # or (enumerated): 0-tag, 1-name, 2-description
+                    tags.update({i[FTAG]})         # or (enumerated): 0-tag, 1-name, 2-description
                     if t[TTYPE] == "Record" and i[FTAG] != k + 1:
                         print("Item tag error:", t[TTYPE], i[FNAME], i[FTAG], "should be", k + 1)
                     if len(i) != n:

@@ -46,7 +46,7 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
     ]}
 
 
-class BasicTypes(unittest.TestCase):
+class BasicTypes(unittest.TestCase):            # TODO: Test Array
 
     def setUp(self):
         jadn_check(schema_basic)

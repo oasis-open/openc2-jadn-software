@@ -1,0 +1,13 @@
+/* Styles for JADN Tables */
+
+table {
+    font-family: "Lucida Sans Unicode", SansSerif;
+    font-size: 12px;
+    border-collapse: collapse;
+    text-align: left;
+    margin: 20px;
+}
+
+thead {
+    background: #cef;
+}

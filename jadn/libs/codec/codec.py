@@ -65,6 +65,9 @@ class Codec:
         self.max_array = 100        # Conservative default upper bounds that can be overridden
         self.max_string = 255       # Codec defaults (these) -> Schema defaults -> Datatype options
         self.max_binary = 3276
+
+        self.arrays = None          # Declare here, populate in set_mode.
+        self.symtab = None
         self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
@@ -368,7 +371,7 @@ def _encode_array(ts, val, codec):
     if extra:
         _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
-        pass
+        pass        # TODO: Write encoder, Write unit tests for Array
     return apival
 
 

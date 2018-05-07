@@ -7,11 +7,16 @@ from ..codec.jadn_defs import *
 from ..codec.codec_utils import topts_s2d, fopts_s2d, cardinality
 from datetime import datetime
 
-def thead(headers):
-    return '<table><thead><tr><th>' + '</th><th>'.join(headers) + '</th></tr></thead>\n'
+def thead(td, headers, cls):
+    assert len(headers) == len(cls)
+    tc = '<caption>' + (td[TNAME] + ' (' + td[TTYPE]) + ')</caption>' if td else ''
+    rc = zip(headers, cls)
+    return  '<table>' + tc + '<thead>' + ''.join(['<th class="' + c[1] + '">' + c[0] + '</th>' for c in rc]) + '</thead>\n'
 
-# def trow(row, cls):
-#    return '<tr><td class="tag">' + str(fd[FTAG]) + '</td><td>' + fd[FNAME] + '</td><td class="desc">' + fd[EDESC] + '</td></tr>\n'
+def trow(row, cls):
+    assert len(row) == len(cls)
+    rc = zip(row, cls)
+    return '<tr>' + ''.join(['<td class="' + c[1] + '">' + c[0] + '</td>' for c in rc]) + '</tr>\n'
 
 def html_dumps(jadn):
     """
@@ -42,59 +47,56 @@ def html_dumps(jadn):
         text += '<br>Namespace: ' + hdrs['namespace'] + '\n'
 
     n = 1
-    text += '<h2>3.2 Structure Types</h2>\n'
+    sec = '3.2'
+    sec2 = '3.3'
+    text += '<h2>' + sec + ' Structure Types</h2>\n'
     for td in jadn['types']:
         if td[TTYPE] in STRUCTURE_TYPES:
-            text += '<h3>3.2.' + str(n) + ' ' + td[TNAME] + '</h3>\n'
+            text += '<h3>' + sec + '.' + str(n) + ' ' + td[TNAME] + '</h3>\n'
             text += td[TDESC] + '\n'
-            text += '<div class="type">Type: ' + td[TTYPE] + '</div>\n'
             to = topts_s2d(td[TOPTS])
             if to:
                 text += '<div class="topts">' + str(to) + '</div>\n'  # have a look
-        if td[TTYPE] in {k for k in STRUCTURE_TYPES} - {'ArrayOf', 'Choice', 'Enumerated'}:
-            text += thead(['ID', 'Name', 'Type', '#', 'Description'])
-            for fd in td[FIELDS]:
-                text += '<tr><td class="tag">' + str(fd[FTAG]) + '</td><td>' + fd[FNAME] + '</td><td>' + fd[FTYPE] + '</td>\n'
-                fo = {'min': 1, 'max': 1}
-                fo.update(fopts_s2d(fd[FOPTS]))
-                text += '<td>' + cardinality(fo['min'], fo['max'])
-                text += '</td><td class="desc">' + fd[FDESC] + '</td></tr>\n'
-            n += 1
-            text += '</table>\n'
-        elif td[TTYPE] == 'Choice':            # same as above but without cardinality column
-            text += thead(['ID', 'Name', 'Type', 'Description'])
-            for fd in td[FIELDS]:
-                text += '<tr><td class="tag">' + str(fd[FTAG]) + '</td><td>' + fd[FNAME] + '</td><td>' + fd[FTYPE]
-                text += '</td><td class="desc">' + fd[FDESC] + '</td></tr>\n'
-            n += 1
-            text += '</table>\n'
-        elif td[TTYPE] == 'ArraryOf':
-            text += '(arrayof definition)\n'
-            n += 1
-        elif td[TTYPE] == 'Enumerated':
-            if 'compact' in topts_s2d(td[TOPTS]):
-                text += thead(['Value', 'Description'])
+            if td[TTYPE] == 'ArraryOf':
+                text += '(arrayof definition)\n'
+                text += '<table>'       # TODO: fix
+            elif td[TTYPE] == 'Enumerated':
+                if 'compact' in topts_s2d(td[TOPTS]):
+                    cls = ['n', 's']
+                    text += thead(td, ['Value', 'Description'], cls)
+                    for fd in td[FIELDS]:
+                        name = fd[FNAME] + ' / ' if fd[FNAME] else ''
+                        text += trow([str(fd[FTAG]), name + fd[EDESC]], cls)
+                else:
+                    cls = ['n', 's', 's']
+                    text += thead(td, ['ID', 'Name', 'Description'], cls)
+                    for fd in td[FIELDS]:
+                        text += trow([str(fd[FTAG]), fd[FNAME], fd[EDESC]], cls)
+            elif td[TTYPE] == 'Choice':            # same as above but without cardinality column
+                cls = ['n', 's', 's', 's']
+                text += thead(td, ['ID', 'Name', 'Type', 'Description'], cls)
                 for fd in td[FIELDS]:
-                    name = fd[FNAME] + ' / ' if fd[FNAME] else ''
-                    text += '<tr><td class="tag">' + str(fd[FTAG]) + '</td><td class="desc">' + name + fd[EDESC] + '</td></tr>\n'
+                    text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], fd[FDESC]], cls)
             else:
-                text += thead(['ID', 'Name', 'Description'])
+                cls = ['n', 's', 's', 'n', 's']
+                text += thead(td, ['ID', 'Name', 'Type', '#', 'Description'], cls)
                 for fd in td[FIELDS]:
-                    text += '<tr><td class="tag">' + str(fd[FTAG]) + '</td><td>' + fd[FNAME] + '</td><td class="desc">' + fd[EDESC] + '</td></tr>\n'
-#                    text += trow([str(fd[FTAG]), fd[FNAME], fd[EDESC]])
+                    fo = {'min': 1, 'max': 1}
+                    fo.update(fopts_s2d(fd[FOPTS]))
+                    text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], cardinality(fo['min'], fo['max']), fd[FDESC]], cls)
             n += 1
             text += '</table>\n'
 
-    text += '<h2>3.3 Primitive Types</h2>\n'
-    text += thead(['Name', 'Type', 'Description'])
-    text += '<table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>\n'
+    text += '<h2>' + sec2 + ' Primitive Types</h2>\n'
+    cls = ['s', 's', 's']
+    text += thead(None, ['Name', 'Type', 'Description'], cls)
     for td in jadn['types']:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
         if td[TTYPE] in PRIMITIVE_TYPES:
             to = topts_s2d(td[TOPTS])
             rng = ''            # TODO: format min-max into string length or number range
             fmt = ' (' + to['format'] + ')' if 'format' in to else ''
-            text += '<tr><td>' + td[TNAME] + '</td><td>' + td[TTYPE] + rng + fmt + '</td><td class="desc">' + td[TDESC] + '</td></tr>\n'
-    text += '</table><\body>\n'
+            text += trow([td[TNAME], td[TTYPE] + rng + fmt, td[TDESC]], cls)
+    text += '</table></body>\n'
 
     return text
 

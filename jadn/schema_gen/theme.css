@@ -1,7 +1,15 @@
 /* Styles for JADN Tables */
 
+body {
+    font-family: Cambria, serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Calibri, sans-serif;
+}
+
 table {
-    font-family: "Lucida Sans Unicode", SansSerif;
+    font-family: "Lucida Sans Unicode", sans-serif;
     font-size: 12px;
     border-collapse: collapse;
     text-align: left;
@@ -9,5 +17,28 @@ table {
 }
 
 thead {
-    background: #cef;
+/*    background: #cef;  */
+}
+
+td, th {
+    padding: 0.125em 1em 0.25em 1em;
+    line-height: 1.15;
+}
+
+caption {
+    text-align: left;
+    font-weight: bold;
+    color: #c32;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+    padding: 4px 2em;
+    margin-bottom: 12px;
+}
+
+.n {
+    text-align: right;
+}
+
+.s {
+    text-align: left;
 }

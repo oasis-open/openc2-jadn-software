@@ -23,28 +23,19 @@ def html_dumps(jadn):
     Produce property tables in Markdown format from JADN structure
     """
 
-    text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
-    text += '<title>Title</title>\n'
-    text += '<link rel="stylesheet" type="text/css" href="theme.css">\n'
-    text += '</head>\n<body>\n'
-
     hdrs = jadn['meta']
-    hdr_list = ['module', 'title', 'version', 'description', 'namespace']
-    text += '<!--\n'
-    for h in list(set(hdrs) - set(hdr_list)):
-        text += h + ': ' + str(hdrs[h]) + '\n'
-    text += '-->\n\n'
-    if 'title' in hdrs:
-        text += '<h1>' + hdrs['title'] + '</h1>\n'
-    if 'module' in hdrs:
-        text += '<h2>Module ' + hdrs['module']
-        if 'version' in hdrs:
-            text += ', version ' + hdrs['version']
-        text += '</h2>\n'
-    if 'description' in hdrs:
-        text += '<br>' + hdrs['description'] + '\n'
-    if 'namespace' in hdrs:
-        text += '<br>Namespace: ' + hdrs['namespace'] + '\n'
+    title = hdrs['module'] + (' v.' + hdrs['version']) if 'version' in hdrs else ''
+    text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
+    text += '<link rel="stylesheet" type="text/css" href="theme.css">\n'
+    text += '<title>' + title + '</title>\n</head>\n'
+
+    text += '<body>\n<h2>Schema</h2>\n<table>\n'
+    cls = ['h', 's']
+    hdr_list = ['title', 'module', 'version', 'description', 'namespace']
+    for h in hdr_list + list(set(hdrs) - set(hdr_list)):
+        if h in hdrs:
+            text += trow([h + ': ', hdrs[h]], cls)
+    text += '</table>'
 
     n = 1
     sec = '3.2'

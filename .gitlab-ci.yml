@@ -1,32 +1,29 @@
 variables:
   JQ_LINUX64: https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
-  PKG_DIR: ./jadn
+  PKG_DIR: package
+  PKG_NAME: oc2
   PYTHON_ENV: bunnybuilder
   VERSION_FILE: $PKG_DIR/version.json
 
 before_script:
   - if [ ! -f /tmp/jq ]; then wget $JQ_LINUX64 -qO /tmp/jq; chmod 755 /tmp/jq; fi
+  # Configure Version file
+  - echo "$(/tmp/jq --arg NUM ${CI_PIPELINE_ID} '.version.pipe_number=$NUM' $VERSION_FILE)" > $VERSION_FILE
+  - echo "$(/tmp/jq --arg SHA_HASH ${CI_COMMIT_SHA:0:8} '.version.hash=$SHA_HASH' $VERSION_FILE)" > $VERSION_FILE
+  - echo "$(/tmp/jq --arg DATE $(date +%Y-%m-%d) '.version.date=$DATE' $VERSION_FILE)" > $VERSION_FILE
+  - echo "$(/tmp/jq --arg PKG ${PKG_NAME} '.pkg_name=$PKG' $VERSION_FILE)" > $VERSION_FILE
+  # Configure Python Env
   - workon $PYTHON_ENV || mkvirtualenv $PYTHON_ENV
   - pip install -r $PKG_DIR/requirements.txt
-
-stages:
-  - version_prep
-  - build
-
-Prep-Version:
-  stage: version_prep
-
-  script:
-    - echo "$(/tmp/jq --arg NUM ${CI_PIPELINE_ID} '.version.build.pipe_number=$NUM' $VERSION_FILE)" > $VERSION_FILE
-    - echo "$(/tmp/jq --arg SHA_HASH ${CI_COMMIT_SHA:0:8} '.version.build.hash=$SHA_HASH' $VERSION_FILE)" > $VERSION_FILE
-    - echo "$(/tmp/jq --arg DATE $(date +%Y-%m-%d) '.version.build.date=$DATE' $VERSION_FILE)" > $VERSION_FILE
 
 Build-Wheel:
   stage: build
 
   script:
-    - pip wheel $PKG_DIR -w ./dist
-    - mv ./dist/*.whl .
+    - cd $PKG_DIR
+    - ln -s ../jadn/libs ./$PKG_NAME
+    - pip wheel . -w ./dist
+    - cp ./dist/*.whl ../
     - deactivate
 
   artifacts:

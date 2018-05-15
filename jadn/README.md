@@ -37,23 +37,7 @@ in the language specification and is used to generate the property tables in tha
 
 ## Building the python wheel package
 - The wheel is build via GitLab CI
--  Building manually
-	1. Install required packages for building - setuptools, wheel
-		- setuptools should be installed with pip
-
-		```bash
-		pip install setuptools wheel
-		```
-
-	2. Run command to build the wheel
-		
-		```bash
-		pip wheel . -w ./dist
-		```
-		
-	3. Use the build whl as neeeded
-		- The file is located in the dist folder named in the format of  
-			{distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
+    - Due to the project setup via oasis, this wheel cannot be built manually while having hte same result as the ci build
 
 #### Note
 - Oasis JADN [github](https://github.com/oasis-open/openc2-jadn/)

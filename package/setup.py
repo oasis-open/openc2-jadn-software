@@ -1,9 +1,14 @@
+import json
+import os
+
 from setuptools import setup, find_packages
 
-setup(
-    name='oc2',
+versionData = json.loads(open('version.json', 'rb').read())
 
-    version='0.0.1',
+setup(
+    name=versionData['name'],
+
+    version='{number}_{hash}'.format(**versionData['version']),
 
     description='OpenC2 Message Translator & Validator',
     # long_description="The Server for NetVamp, that provides the REST API, controllers, and database.",
@@ -28,7 +33,7 @@ setup(
 
     package_data={
         'oc2': [
-            'libs/*',
+            os.environ['PKG_NAME'],
         ]
     }
 )

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message>
+    <action>deny</action>
+    <actuator>
+        <firewall>
+            <asset_id>309924</asset_id>
+        </firewall>
+    </actuator>
+    <id>101</id>
+    <target>
+        <ip_connection>
+            <dst_addr>2001:0db8:85a3:0000:0000:8a2e:0370:8911</dst_addr>
+            <dst_port>https</dst_port>
+            <layer4_protocol>tcp</layer4_protocol>
+            <src_addr>2001:0db8:85a3:0000:0000:8a2e:0370:7334</src_addr>
+            <src_port>10996</src_port>
+        </ip_connection>
+    </target>
+</message>

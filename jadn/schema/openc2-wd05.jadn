@@ -216,7 +216,7 @@
     [3, "actuator_groups", "Null", [], "query: Results = JSON array of actuator group names"]]
   ],
 
-  ["command-id", "String", [], "Uniquely identifies a particular command - TBD syntax"],
+  ["Command-ID", "String", [], "Uniquely identifies a particular command - TBD syntax"],
 
   ["date-time", "String", ["@date-time"], "RFC 3339 date-time"],
 

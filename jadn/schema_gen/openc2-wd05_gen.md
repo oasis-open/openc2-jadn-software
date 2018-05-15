@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd05.jadn, Mon Apr 30 15:39:12 2018-->
+<!-- Generated from schema/openc2-wd05.jadn, Tue May 15 09:53:49 2018-->
 <!--
 -->
 
@@ -305,7 +305,7 @@ A target used to query Actuator for its supported capabilities
 ## 3.3 Primitive Types
 |Name|Type|Description|
 |---|---|---|
-|command-id|String|Uniquely identifies a particular command - TBD syntax|
+|Command-ID|String|Uniquely identifies a particular command - TBD syntax|
 |date-time|String (date-time)|RFC 3339 date-time|
 |duration|String (duration)|RFC 3339 / ISO 8601 duration|
 |domain-name|String (hostname)|Domain name, RFC 1034, section 3.5|

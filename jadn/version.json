@@ -1,0 +1,11 @@
+{
+  "name" : "OpenC2",
+  "version" : {
+    "number" : "0.0.1",
+    "build" : {
+      "pipe_number" : "2",
+      "hash" : "",
+      "date" : ""
+    }
+  }
+}

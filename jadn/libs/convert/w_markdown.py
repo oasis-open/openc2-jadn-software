@@ -13,8 +13,8 @@ def markdown_dumps(jadn):
     Produce property tables in Markdown format from JADN structure
     """
 
-    hdrs = jadn["meta"]
-    hdr_list = ["module", "title", "version", "description", "namespace"]
+    hdrs = jadn['meta']
+    hdr_list = ['module', 'title', 'version', 'description', 'namespace']
     mdown = '<!--\n'
     for h in list(set(hdrs) - set(hdr_list)):
         mdown += h + ': ' + str(hdrs[h]) + '\n'
@@ -46,12 +46,12 @@ def markdown_dumps(jadn):
             mdown += '|---:|---|---|---:|---|\n'
             for fd in td[FIELDS]:
                 mdown += '|' + str(fd[FTAG]) + '|' + fd[FNAME] + '|' + fd[FTYPE]
-                fo = {'min': 1, 'max':1}
+                fo = {'min': 1, 'max': 1}
                 fo.update(fopts_s2d(fd[FOPTS]))
                 mdown += '|' + cardinality(fo['min'], fo['max'])
                 mdown += '|' + fd[FDESC] + '|\n'
             n += 1
-        elif td[TTYPE] == 'Choice':            #same as above but without cardinality column
+        elif td[TTYPE] == 'Choice':            # same as above but without cardinality column
             mdown += '|ID|Name|Type|Description|\n'
             mdown += '|---:|---|---|---|\n'
             for fd in td[FIELDS]:
@@ -78,18 +78,18 @@ def markdown_dumps(jadn):
     mdown += '## 3.3 Primitive Types\n'
     mdown += '|Name|Type|Description|\n'
     mdown += '|---|---|---|\n'
-    for td in jadn["types"]:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
+    for td in jadn['types']:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
         if td[TTYPE] in PRIMITIVE_TYPES:
             to = topts_s2d(td[TOPTS])
-            len = ""        # TODO: format min-max into string length or number range
-            fmt = " (" + to["format"] + ")" if "format" in to else ""
-            mdown += '|' + td[TNAME] + '|' + td[TTYPE] + len + fmt + '|' + td[TDESC] + '|\n'
+            rng = ''            # TODO: format min-max into string length or number range
+            fmt = ' (' + to['format'] + ')' if 'format' in to else ''
+            mdown += '|' + td[TNAME] + '|' + td[TTYPE] + rng + fmt + '|' + td[TDESC] + '|\n'
 
     return mdown
 
 
-def markdown_dump(jadn, fname, source=""):
-    with open(fname, "w") as f:
+def markdown_dump(jadn, fname, source=''):
+    with open(fname, 'w') as f:
         if source:
             f.write('<!-- Generated from ' + source + ', ' + datetime.ctime(datetime.now()) + '-->\n')
         f.write(markdown_dumps(jadn))

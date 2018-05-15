@@ -1,0 +1,18 @@
+{
+    "action": "deny",
+    "actuator": {
+        "firewall": {
+            "asset_id": "309924"
+        }
+    },
+    "id": "101",
+    "target": {
+        "ip_connection": {
+            "dst_addr": "2001:0db8:85a3:0000:0000:8a2e:0370:8911",
+            "dst_port": "https",
+            "layer4_protocol": "tcp",
+            "src_addr": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+            "src_port": "10996"
+        }
+    }
+}

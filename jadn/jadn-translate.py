@@ -15,12 +15,17 @@ addtional libraries such as xlsxwriter.
 """
 
 import os
+from libs.codec import jadn_load, jadn_dump, jadn_analyze
+from libs.convert import jas_dump, html_dump, markdown_dump  # , proto_dump, thrift_dump
 
+'''
 from libs.codec.jadn import jadn_load, jadn_dump, jadn_analyze
 from libs.convert.w_jas import jas_dump
 from libs.convert.w_markdown import markdown_dump
+from libs.convert.w_html import html_dump
 #from libs.convert.w_proto import proto_dump
 #from libs.convert.w_thrift import thrift_dump
+'''
 
 
 if __name__ == "__main__":
@@ -38,6 +43,7 @@ if __name__ == "__main__":
         jas_dump(schema, dest + ".jas", source)
         jadn_dump(schema, dest + ".jadn", source)
         markdown_dump(schema, dest + ".md", source)
+        html_dump(schema, dest + ".html", source)
  #       proto_dump(schema, dest + ".proto3", source)
  #       thrift_dump(schema, dest + ".thrift", source)
 

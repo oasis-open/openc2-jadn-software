@@ -1,4 +1,4 @@
--- Generated from schema\openc2-wd05.jadn, Mon Apr 30 15:39:12 2018
+-- Generated from schema/openc2-wd05.jadn, Tue May 15 09:53:49 2018
 
 /*
 module:        openc2
@@ -216,7 +216,7 @@ openc2 ::= CHOICE {    -- A target used to query Actuator for its supported capa
     actuator_groups  [3] NULL     -- query: Results = JSON array of actuator group names
 }
 
-command-id ::= STRING    -- Uniquely identifies a particular command - TBD syntax
+Command-ID ::= STRING    -- Uniquely identifies a particular command - TBD syntax
 
 date-time ::= STRING    -- RFC 3339 date-time
 

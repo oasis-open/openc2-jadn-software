@@ -37,7 +37,7 @@ in the language specification and is used to generate the property tables in tha
 
 ## Building the python wheel package
 - The wheel is build via GitLab CI
-    - Due to the project setup via oasis, this wheel cannot be built manually while having hte same result as the ci build
+    - See readme in package for manually building
 
 #### Note
 - Oasis JADN [github](https://github.com/oasis-open/openc2-jadn/)

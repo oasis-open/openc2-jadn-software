@@ -8,7 +8,7 @@ versionData = json.loads(open('version.json', 'rb').read())
 setup(
     name=versionData['name'],
 
-    version='{number}_{hash}'.format(**versionData['version']),
+    version='{major}.{minor}.{bugfix}'.format(**versionData['version']['number']),
 
     description='OpenC2 Message Translator & Validator',
     # long_description="The Server for NetVamp, that provides the REST API, controllers, and database.",
@@ -32,8 +32,8 @@ setup(
     python_requires='>=2.7, !=3.[1-5], <4',
 
     package_data={
-        'oc2': [
-            os.environ['PKG_NAME'],
+        'OpenC2': [
+            './{}/*'.format(os.environ['PKG_NAME']),
         ]
     }
 )

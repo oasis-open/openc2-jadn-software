@@ -21,9 +21,9 @@ Build-Wheel:
 
   script:
     - cd $PKG_DIR
-    - ln -s ../jadn/libs ./$PKG_NAME
+    - mkdir -p $PKG_NAME && cp -r ../jadn/libs/* ./$PKG_NAME
     - pip wheel . -w ./dist
-    - cp ./dist/*.whl ../
+    - ln -s ./dist/*.whl ../
     - deactivate
 
   artifacts:

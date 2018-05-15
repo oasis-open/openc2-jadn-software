@@ -2,7 +2,11 @@
   "name" : "OpenC2",
   "pkg_name": "",
   "version" : {
-    "number" : "0.0.1",
+    "number" : {
+      "major": 0,
+      "minor": 0,
+      "bugfix": 1
+    },
     "pipe_number" : "",
     "hash" : "",
     "date" : ""

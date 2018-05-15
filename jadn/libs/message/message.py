@@ -1,4 +1,5 @@
 import cbor2
+import sys
 
 from dicttoxml import dicttoxml
 from xml.dom.minidom import parseString
@@ -58,4 +59,7 @@ class OpenC2Message(object):
         :return: cbor version of message
         :rtype: str
         """
-        return ''.join(["\\x{}".format(c.encode('hex')) if ord(c) >= 128 else c for c in cbor2.dumps(self._msg)])
+        if sys.version_info.major >= 3:
+            return cbor2.dumps(self._msg).decode('utf-8', 'backslashreplace')
+        else:
+            return ''.join(["\\x{}".format(c.encode('hex')) if ord(c) >= 128 else c for c in cbor2.dumps(self._msg)])

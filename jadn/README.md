@@ -54,3 +54,6 @@ in the language specification and is used to generate the property tables in tha
 	3. Use the build whl as neeeded
 		- The file is located in the dist folder named in the format of  
 			{distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
+
+#### Note
+- Using git flow for developement

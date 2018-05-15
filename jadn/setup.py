@@ -21,10 +21,10 @@ setup(
 
     packages=find_packages(),
 
-    install_requires=open('requirements.txt', 'r').readlines(),
+    install_requires=[d.replace('\n', '') for d in open('requirements.txt', 'r').readlines()],
 
-    # Python 2.7 up but not 4
-    python_requires='>=2.7, !=3.1, !=3.2, !=3.3, !=3.4, !=3.5, <4',
+    # Python 2.7, 3.6+ but not 4
+    python_requires='>=2.7, !=3.[1-5], <4',
 
     package_data={
         'oc2': [

@@ -5,6 +5,7 @@ import os
 import xmltodict
 
 from ..enums import OpenC2MessageFormats
+from ..utils import Utils
 
 
 def OpenC2MessageLoader(msg='', msgType=OpenC2MessageFormats.JSON):
@@ -15,7 +16,7 @@ def OpenC2MessageLoader(msg='', msgType=OpenC2MessageFormats.JSON):
         'xml': load_xml
     }
     if msgType in OpenC2MessageFormats.values():
-        return load.get(msgType, OpenC2MessageFormats.JSON)(msg)
+        return load.get(msgType, load['json'])(msg)
     else:
         raise ValueError("Message Type is not a Valid OpenC2 Message Format")
 
@@ -74,7 +75,7 @@ def load_cbor(m):
     else:
         raise Exception('Cannot load cbor, improperly formatted')
 
-    return json.loads(json.dumps(rtn))
+    return Utils.defaultEncode(rtn)
 
 
 def load_protobuf(m):

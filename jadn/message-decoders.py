@@ -15,7 +15,6 @@ for msg_file in os.listdir(dir):
     k = "{}-{}".format(t, n)
     msgs[k] = t, OpenC2Message(os.path.join(dir, msg_file), OpenC2MessageFormats.get(t.upper()))
 
-
 print("Load Schema")
 schema = jadn_load('schema/openc2-wd05.jadn')
 tc = Codec(schema, True, True)

@@ -56,4 +56,5 @@ in the language specification and is used to generate the property tables in tha
 			{distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
 
 #### Note
-- Using git flow for developement
+- Oasis JADN [github](https://github.com/oasis-open/openc2-jadn/)
+- Using [git flow](https://danielkummer.github.io/git-flow-cheatsheet/) for developement

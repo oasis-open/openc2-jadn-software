@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='openc2.proto',
   package='openc2',
   syntax='proto3',
-  serialized_pb=_b('\n\x0copenc2.proto\x12\x06openc2\x1a\x19google/protobuf/any.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa8\x01\n\rOpenC2Command\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1e\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x0e.openc2.Action\x12\x1e\n\x06target\x18\x03 \x01(\x0b\x32\x0e.openc2.Target\x12\"\n\x08\x61\x63tuator\x18\x04 \x01(\x0b\x32\x10.openc2.Actuator\x12\'\n\x07options\x18\x05 \x01(\x0b\x32\x16.openc2.CommandOptions\"w\n\x0eOpenC2Response\x12\n\n\x02id\x18\x01 \x01(\t\x12\"\n\x06status\x18\x02 \x01(\x0e\x32\x12.openc2.StatusCode\x12\x13\n\x0bstatus_text\x18\x03 \x01(\t\x12 \n\x07results\x18\x04 \x03(\x0b\x32\x0f.openc2.Results\"=\n\x05Media\x12\x12\n\nmedia_type\x18\x01 \x01(\t\x12 \n\x07payload\x18\x02 \x01(\x0b\x32\x0f.openc2.Payload\";\n\x12\x41\x63tuatorSpecifiers\x12\x13\n\x0b\x61\x63tuator_id\x18\x01 \x01(\t\x12\x10\n\x08\x61sset_id\x18\x02 \x01(\t\"d\n\x08\x41rtifact\x12\x11\n\tmime_type\x18\x01 \x01(\t\x12%\n\x07payload\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\x12\x1e\n\x06hashes\x18\x03 \x01(\x0b\x32\x0e.openc2.hashes\"\x88\x01\n\rIP_Connection\x12\x10\n\x08src_addr\x18\x01 \x01(\t\x12\x10\n\x08src_port\x18\x02 \x01(\t\x12\x10\n\x08\x64st_addr\x18\x03 \x01(\t\x12\x10\n\x08\x64st_port\x18\x04 \x01(\t\x12/\n\x0flayer4_protocol\x18\x05 \x01(\x0e\x32\x16.openc2.Layer4Protocol\"F\n\x07Results\x12\x10\n\x06string\x18\x01 \x01(\tH\x00\x12\x1e\n\x05media\x18\x02 \x01(\x0b\x32\r.openc2.MediaH\x00\x42\t\n\x07results\"\xa6\x04\n\x06Target\x12\x12\n\x08\x61rtifact\x18\x01 \x01(\tH\x00\x12\x11\n\x07\x63ommand\x18\x02 \x01(\tH\x00\x12\x10\n\x06\x64\x65vice\x18\x03 \x01(\tH\x00\x12\x13\n\tdirectory\x18\x04 \x01(\tH\x00\x12\x0e\n\x04\x64isk\x18\x05 \x01(\tH\x00\x12\x18\n\x0e\x64isk_partition\x18\x06 \x01(\tH\x00\x12\x15\n\x0b\x64omain_name\x18\x07 \x01(\tH\x00\x12\x14\n\nemail_addr\x18\x08 \x01(\tH\x00\x12\x17\n\remail_message\x18\t \x01(\tH\x00\x12\x0e\n\x04\x66ile\x18\n \x01(\tH\x00\x12\x13\n\tipv4_addr\x18\x0b \x01(\tH\x00\x12\x13\n\tipv6_addr\x18\x0c \x01(\tH\x00\x12\x12\n\x08mac_addr\x18\r \x01(\tH\x00\x12\x10\n\x06memory\x18\x0e \x01(\tH\x00\x12.\n\rip_connection\x18\x0f \x01(\x0b\x32\x15.openc2.IP_ConnectionH\x00\x12\x10\n\x06openc2\x18\x10 \x01(\tH\x00\x12\x11\n\x07process\x18\x11 \x01(\tH\x00\x12\x12\n\x08software\x18\x12 \x01(\tH\x00\x12\r\n\x03uri\x18\x13 \x01(\tH\x00\x12\x16\n\x0cuser_account\x18\x14 \x01(\tH\x00\x12\x16\n\x0cuser_session\x18\x15 \x01(\tH\x00\x12\x10\n\x06volume\x18\x16 \x01(\tH\x00\x12\x1e\n\x14windows_registry_key\x18\x17 \x01(\tH\x00\x12\x1a\n\x10x509_certificate\x18\x18 \x01(\tH\x00\x42\x08\n\x06target\"q\n\x08\x41\x63tuator\x12)\n\x03\x61ny\x18\x01 \x01(\x0b\x32\x1a.openc2.ActuatorSpecifiersH\x00\x12.\n\x08\x66irewall\x18\x02 \x01(\x0b\x32\x1a.openc2.ActuatorSpecifiersH\x00\x42\n\n\x08\x61\x63tuator\":\n\x07Payload\x12\x15\n\x0bpayload_bin\x18\x01 \x01(\tH\x00\x12\r\n\x03url\x18\x02 \x01(\tH\x00\x42\t\n\x07payload\"\xc7\x01\n\x0e\x43ommandOptions\x12.\n\nstart_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x11\n\tdutartion\x18\x03 \x01(\x03\x12\x30\n\x12response_requested\x18\x04 \x01(\x0e\x32\x14.openc2.ResponseType\x12\x12\n\ncommand_id\x18\x05 \x01(\t\"\xf4\x01\n\x06hashes\x12\x0b\n\x03MD5\x18\x01 \x01(\t\x12\x0b\n\x03MD6\x18\x02 \x01(\t\x12\x12\n\nRIPEMD_160\x18\x03 \x01(\t\x12\r\n\x05SHA_1\x18\x04 \x01(\t\x12\x0f\n\x07SHA_224\x18\x05 \x01(\t\x12\x0f\n\x07SHA_256\x18\x06 \x01(\t\x12\x0f\n\x07SHA_384\x18\x07 \x01(\t\x12\x0f\n\x07SHA_512\x18\x08 \x01(\t\x12\x10\n\x08SHA3_224\x18\t \x01(\t\x12\x10\n\x08SHA3_256\x18\n \x01(\t\x12\x10\n\x08SHA3_384\x18\x0b \x01(\t\x12\x10\n\x08SHA3_512\x18\x0c \x01(\t\x12\x0e\n\x06ssdeep\x18\r \x01(\t\x12\x11\n\tWHIRLPOOL\x18\x0e \x01(\t\"\xa0\x01\n\x06\x64\x65vice\x12\x13\n\x0b\x64\x65scription\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x03 \x01(\t\x12\r\n\x05model\x18\x04 \x01(\t\x12\x15\n\rserial_number\x18\x05 \x01(\t\x12\x18\n\x10\x66irmware_version\x18\x06 \x01(\t\x12\x16\n\x0esystem_details\x18\x07 \x01(\t\"h\n\x04\x66ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x1c\n\x04hash\x18\x03 \x01(\x0b\x32\x0e.openc2.hashes\x12&\n\nreputation\x18\x04 \x01(\x0e\x32\x12.openc2.Reputation*\x9e\x03\n\x06\x41\x63tion\x12\x11\n\rUnknownAction\x10\x00\x12\x08\n\x04Scan\x10\x01\x12\n\n\x06Locate\x10\x02\x12\t\n\x05Query\x10\x03\x12\n\n\x06Report\x10\x04\x12\n\n\x06Notify\x10\x05\x12\x08\n\x04\x44\x65ny\x10\x06\x12\x0b\n\x07\x43ontain\x10\x07\x12\t\n\x05\x41llow\x10\x08\x12\t\n\x05Start\x10\t\x12\x08\n\x04Stop\x10\n\x12\x0b\n\x07Restart\x10\x0b\x12\t\n\x05Pause\x10\x0c\x12\n\n\x06Resume\x10\r\x12\n\n\x06\x63\x61ncel\x10\x0e\x12\x07\n\x03Set\x10\x0f\x12\n\n\x06Update\x10\x10\x12\x08\n\x04Move\x10\x11\x12\x0c\n\x08Redirect\x10\x12\x12\n\n\x06\x43reate\x10\x13\x12\n\n\x06\x44\x65lete\x10\x14\x12\x0c\n\x08Snapshot\x10\x15\x12\x0c\n\x08\x44\x65tonate\x10\x16\x12\x0b\n\x07Restore\x10\x17\x12\x08\n\x04Save\x10\x18\x12\x0c\n\x08Throttle\x10\x19\x12\t\n\x05\x44\x65lay\x10\x1a\x12\x0e\n\nSubstitute\x10\x1b\x12\x08\n\x04\x43opy\x10\x1c\x12\x08\n\x04Sync\x10\x1d\x12\x0f\n\x0bInvestigate\x10\x1e\x12\x0c\n\x08Mitigate\x10\x1f\x12\r\n\tRemediate\x10 *8\n\x0cResponseType\x12\x13\n\x0fUnknownResponse\x10\x00\x12\x07\n\x03\x41\x63k\x10\x01\x12\n\n\x06Status\x10\x02*\xaa\x01\n\nStatusCode\x12\x11\n\rUnknownStatus\x10\x00\x12\x0e\n\nProcessing\x10\x66\x12\x07\n\x02OK\x10\xc8\x01\x12\x15\n\x10MovedPermanently\x10\xad\x02\x12\x0f\n\nBadRequest\x10\x90\x03\x12\x11\n\x0cUnauthorized\x10\x91\x03\x12\x0e\n\tForbidden\x10\x93\x03\x12\x10\n\x0bServerError\x10\xf4\x03\x12\x13\n\x0eNotImplemented\x10\xf5\x03*\x9d\x01\n\nReputation\x12\n\n\x06NotSet\x10\x00\x12\n\n\x06\x42\x65nign\x10\x01\x12\x10\n\x0cLikelyBenign\x10\x02\x12\x12\n\x0ePossiblyBenign\x10\x03\x12\x11\n\rIndeterminate\x10\x04\x12\x15\n\x11PossiblyMalicious\x10\x05\x12\x13\n\x0fLikelyMalicious\x10\x06\x12\x12\n\x0eKnownMalicious\x10\x07*M\n\x0eLayer4Protocol\x12\x14\n\x10Unknown4Protocol\x10\x00\x12\x08\n\x04ICMP\x10\x01\x12\x07\n\x03TCP\x10\x06\x12\x07\n\x03UDP\x10\x11\x12\t\n\x04SCTP\x10\x84\x01*r\n\x0eLayer7Protocol\x12\x14\n\x10Unknown7Protocol\x10\x00\x12\x0c\n\x08\x46TP_DATA\x10\x14\x12\x07\n\x03\x46TP\x10\x15\x12\x07\n\x03SSH\x10\x16\x12\n\n\x06Telnet\x10\x17\x12\x08\n\x04SMTP\x10\x19\x12\x08\n\x04HTTP\x10P\x12\n\n\x05HTTPS\x10\xbb\x03\x62\x06proto3')
+  serialized_pb=_b('\n\x0copenc2.proto\x12\x06openc2\x1a\x19google/protobuf/any.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa8\x01\n\rOpenC2Command\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1e\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x0e.openc2.Action\x12\x1e\n\x06target\x18\x03 \x01(\x0b\x32\x0e.openc2.Target\x12\"\n\x08\x61\x63tuator\x18\x04 \x01(\x0b\x32\x10.openc2.Actuator\x12\'\n\x07options\x18\x05 \x01(\x0b\x32\x16.openc2.CommandOptions\"w\n\x0eOpenC2Response\x12\n\n\x02id\x18\x01 \x01(\t\x12\"\n\x06status\x18\x02 \x01(\x0e\x32\x12.openc2.StatusCode\x12\x13\n\x0bstatus_text\x18\x03 \x01(\t\x12 \n\x07results\x18\x04 \x03(\x0b\x32\x0f.openc2.Results\"=\n\x05Media\x12\x12\n\nmedia_type\x18\x01 \x01(\t\x12 \n\x07payload\x18\x02 \x01(\x0b\x32\x0f.openc2.Payload\";\n\x12\x41\x63tuatorSpecifiers\x12\x13\n\x0b\x61\x63tuator_id\x18\x01 \x01(\t\x12\x10\n\x08\x61sset_id\x18\x02 \x01(\t\"d\n\x08\x41rtifact\x12\x11\n\tmime_type\x18\x01 \x01(\t\x12%\n\x07payload\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\x12\x1e\n\x06hashes\x18\x03 \x01(\x0b\x32\x0e.openc2.hashes\"\x88\x01\n\rIP_Connection\x12\x10\n\x08src_addr\x18\x01 \x01(\t\x12\x10\n\x08src_port\x18\x02 \x01(\t\x12\x10\n\x08\x64st_addr\x18\x03 \x01(\t\x12\x10\n\x08\x64st_port\x18\x04 \x01(\t\x12/\n\x0flayer4_protocol\x18\x05 \x01(\x0e\x32\x16.openc2.Layer4Protocol\"F\n\x07Results\x12\x10\n\x06string\x18\x01 \x01(\tH\x00\x12\x1e\n\x05media\x18\x02 \x01(\x0b\x32\r.openc2.MediaH\x00\x42\t\n\x07results\"\xb6\x04\n\x06Target\x12\x12\n\x08\x61rtifact\x18\x01 \x01(\tH\x00\x12\x11\n\x07\x63ommand\x18\x02 \x01(\tH\x00\x12\x10\n\x06\x64\x65vice\x18\x03 \x01(\tH\x00\x12\x13\n\tdirectory\x18\x04 \x01(\tH\x00\x12\x0e\n\x04\x64isk\x18\x05 \x01(\tH\x00\x12\x18\n\x0e\x64isk_partition\x18\x06 \x01(\tH\x00\x12\x15\n\x0b\x64omain_name\x18\x07 \x01(\tH\x00\x12\x14\n\nemail_addr\x18\x08 \x01(\tH\x00\x12\x17\n\remail_message\x18\t \x01(\tH\x00\x12\x0e\n\x04\x66ile\x18\n \x01(\tH\x00\x12\x13\n\tipv4_addr\x18\x0b \x01(\tH\x00\x12\x13\n\tipv6_addr\x18\x0c \x01(\tH\x00\x12\x12\n\x08mac_addr\x18\r \x01(\tH\x00\x12\x10\n\x06memory\x18\x0e \x01(\tH\x00\x12.\n\rip_connection\x18\x0f \x01(\x0b\x32\x15.openc2.IP_ConnectionH\x00\x12 \n\x06openc2\x18\x10 \x01(\x0b\x32\x0e.openc2.OpenC2H\x00\x12\x11\n\x07process\x18\x11 \x01(\tH\x00\x12\x12\n\x08software\x18\x12 \x01(\tH\x00\x12\r\n\x03uri\x18\x13 \x01(\tH\x00\x12\x16\n\x0cuser_account\x18\x14 \x01(\tH\x00\x12\x16\n\x0cuser_session\x18\x15 \x01(\tH\x00\x12\x10\n\x06volume\x18\x16 \x01(\tH\x00\x12\x1e\n\x14windows_registry_key\x18\x17 \x01(\tH\x00\x12\x1a\n\x10x509_certificate\x18\x18 \x01(\tH\x00\x42\x08\n\x06target\"q\n\x08\x41\x63tuator\x12)\n\x03\x61ny\x18\x01 \x01(\x0b\x32\x1a.openc2.ActuatorSpecifiersH\x00\x12.\n\x08\x66irewall\x18\x02 \x01(\x0b\x32\x1a.openc2.ActuatorSpecifiersH\x00\x42\n\n\x08\x61\x63tuator\":\n\x07Payload\x12\x15\n\x0bpayload_bin\x18\x01 \x01(\tH\x00\x12\r\n\x03url\x18\x02 \x01(\tH\x00\x42\t\n\x07payload\"R\n\x06OpenC2\x12\x11\n\x07\x61\x63tions\x18\x01 \x01(\tH\x00\x12\x10\n\x06schema\x18\x02 \x01(\tH\x00\x12\x19\n\x0f\x61\x63tuator_groups\x18\x03 \x01(\tH\x00\x42\x08\n\x06openc2\"\xc6\x01\n\x0e\x43ommandOptions\x12.\n\nstart_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64uration\x18\x03 \x01(\t\x12\x30\n\x12response_requested\x18\x04 \x01(\x0e\x32\x14.openc2.ResponseType\x12\x12\n\ncommand_id\x18\x05 \x01(\t\"\xf4\x01\n\x06hashes\x12\x0b\n\x03MD5\x18\x01 \x01(\t\x12\x0b\n\x03MD6\x18\x02 \x01(\t\x12\x12\n\nRIPEMD_160\x18\x03 \x01(\t\x12\r\n\x05SHA_1\x18\x04 \x01(\t\x12\x0f\n\x07SHA_224\x18\x05 \x01(\t\x12\x0f\n\x07SHA_256\x18\x06 \x01(\t\x12\x0f\n\x07SHA_384\x18\x07 \x01(\t\x12\x0f\n\x07SHA_512\x18\x08 \x01(\t\x12\x10\n\x08SHA3_224\x18\t \x01(\t\x12\x10\n\x08SHA3_256\x18\n \x01(\t\x12\x10\n\x08SHA3_384\x18\x0b \x01(\t\x12\x10\n\x08SHA3_512\x18\x0c \x01(\t\x12\x0e\n\x06ssdeep\x18\r \x01(\t\x12\x11\n\tWHIRLPOOL\x18\x0e \x01(\t\"\xa0\x01\n\x06\x64\x65vice\x12\x13\n\x0b\x64\x65scription\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x03 \x01(\t\x12\r\n\x05model\x18\x04 \x01(\t\x12\x15\n\rserial_number\x18\x05 \x01(\t\x12\x18\n\x10\x66irmware_version\x18\x06 \x01(\t\x12\x16\n\x0esystem_details\x18\x07 \x01(\t\"h\n\x04\x66ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x1c\n\x04hash\x18\x03 \x01(\x0b\x32\x0e.openc2.hashes\x12&\n\nreputation\x18\x04 \x01(\x0e\x32\x12.openc2.Reputation*\x9e\x03\n\x06\x41\x63tion\x12\x11\n\rUnknownAction\x10\x00\x12\x08\n\x04scan\x10\x01\x12\n\n\x06locate\x10\x02\x12\t\n\x05query\x10\x03\x12\n\n\x06report\x10\x04\x12\n\n\x06notify\x10\x05\x12\x08\n\x04\x64\x65ny\x10\x06\x12\x0b\n\x07\x63ontain\x10\x07\x12\t\n\x05\x61llow\x10\x08\x12\t\n\x05start\x10\t\x12\x08\n\x04stop\x10\n\x12\x0b\n\x07restart\x10\x0b\x12\t\n\x05pause\x10\x0c\x12\n\n\x06resume\x10\r\x12\n\n\x06\x63\x61ncel\x10\x0e\x12\x07\n\x03set\x10\x0f\x12\n\n\x06update\x10\x10\x12\x08\n\x04move\x10\x11\x12\x0c\n\x08redirect\x10\x12\x12\n\n\x06\x63reate\x10\x13\x12\n\n\x06\x64\x65lete\x10\x14\x12\x0c\n\x08snapshot\x10\x15\x12\x0c\n\x08\x64\x65tonate\x10\x16\x12\x0b\n\x07restore\x10\x17\x12\x08\n\x04save\x10\x18\x12\x0c\n\x08throttle\x10\x19\x12\t\n\x05\x64\x65lay\x10\x1a\x12\x0e\n\nsubstitute\x10\x1b\x12\x08\n\x04\x63opy\x10\x1c\x12\x08\n\x04sync\x10\x1d\x12\x0f\n\x0binvestigate\x10\x1e\x12\x0c\n\x08mitigate\x10\x1f\x12\r\n\tremediate\x10 *8\n\x0cResponseType\x12\x13\n\x0fUnknownResponse\x10\x00\x12\x07\n\x03\x61\x63k\x10\x01\x12\n\n\x06status\x10\x02*\xae\x01\n\nStatusCode\x12\x11\n\rUnknownStatus\x10\x00\x12\x0e\n\nprocessing\x10\x66\x12\x07\n\x02oK\x10\xc8\x01\x12\x16\n\x11moved_permanently\x10\xad\x02\x12\x10\n\x0b\x62\x61\x64_request\x10\x90\x03\x12\x11\n\x0cunauthorized\x10\x91\x03\x12\x0e\n\tforbidden\x10\x93\x03\x12\x11\n\x0cserver_error\x10\xf4\x03\x12\x14\n\x0fNot_implemented\x10\xf5\x03*\xa3\x01\n\nReputation\x12\x0b\n\x07Not_Set\x10\x00\x12\n\n\x06\x42\x65nign\x10\x01\x12\x11\n\rLikely_Benign\x10\x02\x12\x13\n\x0fPossibly_Benign\x10\x03\x12\x11\n\rIndeterminate\x10\x04\x12\x16\n\x12Possibly_Malicious\x10\x05\x12\x14\n\x10Likely_Malicious\x10\x06\x12\x13\n\x0fKnown_Malicious\x10\x07*M\n\x0eLayer4Protocol\x12\x14\n\x10Unknown4Protocol\x10\x00\x12\x08\n\x04icmp\x10\x01\x12\x07\n\x03tcp\x10\x06\x12\x07\n\x03udp\x10\x11\x12\t\n\x04sctp\x10\x84\x01*r\n\x0eLayer7Protocol\x12\x14\n\x10Unknown7Protocol\x10\x00\x12\x0c\n\x08\x66tp_data\x10\x14\x12\x07\n\x03\x66tp\x10\x15\x12\x07\n\x03ssh\x10\x16\x12\n\n\x06telnet\x10\x17\x12\x08\n\x04smtp\x10\x19\x12\x08\n\x04http\x10P\x12\n\n\x05https\x10\xbb\x03\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_any__pb2.DESCRIPTOR,google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -37,55 +37,55 @@ _ACTION = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Scan', index=1, number=1,
+      name='scan', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Locate', index=2, number=2,
+      name='locate', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Query', index=3, number=3,
+      name='query', index=3, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Report', index=4, number=4,
+      name='report', index=4, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Notify', index=5, number=5,
+      name='notify', index=5, number=5,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Deny', index=6, number=6,
+      name='deny', index=6, number=6,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Contain', index=7, number=7,
+      name='contain', index=7, number=7,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Allow', index=8, number=8,
+      name='allow', index=8, number=8,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Start', index=9, number=9,
+      name='start', index=9, number=9,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Stop', index=10, number=10,
+      name='stop', index=10, number=10,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Restart', index=11, number=11,
+      name='restart', index=11, number=11,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Pause', index=12, number=12,
+      name='pause', index=12, number=12,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Resume', index=13, number=13,
+      name='resume', index=13, number=13,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -93,82 +93,82 @@ _ACTION = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Set', index=15, number=15,
+      name='set', index=15, number=15,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Update', index=16, number=16,
+      name='update', index=16, number=16,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Move', index=17, number=17,
+      name='move', index=17, number=17,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Redirect', index=18, number=18,
+      name='redirect', index=18, number=18,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Create', index=19, number=19,
+      name='create', index=19, number=19,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Delete', index=20, number=20,
+      name='delete', index=20, number=20,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Snapshot', index=21, number=21,
+      name='snapshot', index=21, number=21,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Detonate', index=22, number=22,
+      name='detonate', index=22, number=22,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Restore', index=23, number=23,
+      name='restore', index=23, number=23,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Save', index=24, number=24,
+      name='save', index=24, number=24,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Throttle', index=25, number=25,
+      name='throttle', index=25, number=25,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Delay', index=26, number=26,
+      name='delay', index=26, number=26,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Substitute', index=27, number=27,
+      name='substitute', index=27, number=27,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Copy', index=28, number=28,
+      name='copy', index=28, number=28,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Sync', index=29, number=29,
+      name='sync', index=29, number=29,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Investigate', index=30, number=30,
+      name='investigate', index=30, number=30,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Mitigate', index=31, number=31,
+      name='mitigate', index=31, number=31,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Remediate', index=32, number=32,
+      name='remediate', index=32, number=32,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=2260,
-  serialized_end=2674,
+  serialized_start=2359,
+  serialized_end=2773,
 )
 _sym_db.RegisterEnumDescriptor(_ACTION)
 
@@ -184,18 +184,18 @@ _RESPONSETYPE = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Ack', index=1, number=1,
+      name='ack', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Status', index=2, number=2,
+      name='status', index=2, number=2,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=2676,
-  serialized_end=2732,
+  serialized_start=2775,
+  serialized_end=2831,
 )
 _sym_db.RegisterEnumDescriptor(_RESPONSETYPE)
 
@@ -211,42 +211,42 @@ _STATUSCODE = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Processing', index=1, number=102,
+      name='processing', index=1, number=102,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OK', index=2, number=200,
+      name='oK', index=2, number=200,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MovedPermanently', index=3, number=301,
+      name='moved_permanently', index=3, number=301,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='BadRequest', index=4, number=400,
+      name='bad_request', index=4, number=400,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Unauthorized', index=5, number=401,
+      name='unauthorized', index=5, number=401,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Forbidden', index=6, number=403,
+      name='forbidden', index=6, number=403,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='ServerError', index=7, number=500,
+      name='server_error', index=7, number=500,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='NotImplemented', index=8, number=501,
+      name='Not_implemented', index=8, number=501,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=2735,
-  serialized_end=2905,
+  serialized_start=2834,
+  serialized_end=3008,
 )
 _sym_db.RegisterEnumDescriptor(_STATUSCODE)
 
@@ -258,7 +258,7 @@ _REPUTATION = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='NotSet', index=0, number=0,
+      name='Not_Set', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -266,11 +266,11 @@ _REPUTATION = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='LikelyBenign', index=2, number=2,
+      name='Likely_Benign', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PossiblyBenign', index=3, number=3,
+      name='Possibly_Benign', index=3, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -278,22 +278,22 @@ _REPUTATION = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PossiblyMalicious', index=5, number=5,
+      name='Possibly_Malicious', index=5, number=5,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='LikelyMalicious', index=6, number=6,
+      name='Likely_Malicious', index=6, number=6,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='KnownMalicious', index=7, number=7,
+      name='Known_Malicious', index=7, number=7,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=2908,
-  serialized_end=3065,
+  serialized_start=3011,
+  serialized_end=3174,
 )
 _sym_db.RegisterEnumDescriptor(_REPUTATION)
 
@@ -309,26 +309,26 @@ _LAYER4PROTOCOL = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='ICMP', index=1, number=1,
+      name='icmp', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TCP', index=2, number=6,
+      name='tcp', index=2, number=6,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='UDP', index=3, number=17,
+      name='udp', index=3, number=17,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SCTP', index=4, number=132,
+      name='sctp', index=4, number=132,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=3067,
-  serialized_end=3144,
+  serialized_start=3176,
+  serialized_end=3253,
 )
 _sym_db.RegisterEnumDescriptor(_LAYER4PROTOCOL)
 
@@ -344,108 +344,108 @@ _LAYER7PROTOCOL = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='FTP_DATA', index=1, number=20,
+      name='ftp_data', index=1, number=20,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='FTP', index=2, number=21,
+      name='ftp', index=2, number=21,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SSH', index=3, number=22,
+      name='ssh', index=3, number=22,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='Telnet', index=4, number=23,
+      name='telnet', index=4, number=23,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SMTP', index=5, number=25,
+      name='smtp', index=5, number=25,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='HTTP', index=6, number=80,
+      name='http', index=6, number=80,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='HTTPS', index=7, number=443,
+      name='https', index=7, number=443,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=3146,
-  serialized_end=3260,
+  serialized_start=3255,
+  serialized_end=3369,
 )
 _sym_db.RegisterEnumDescriptor(_LAYER7PROTOCOL)
 
 Layer7Protocol = enum_type_wrapper.EnumTypeWrapper(_LAYER7PROTOCOL)
 UnknownAction = 0
-Scan = 1
-Locate = 2
-Query = 3
-Report = 4
-Notify = 5
-Deny = 6
-Contain = 7
-Allow = 8
-Start = 9
-Stop = 10
-Restart = 11
-Pause = 12
-Resume = 13
+scan = 1
+locate = 2
+query = 3
+report = 4
+notify = 5
+deny = 6
+contain = 7
+allow = 8
+start = 9
+stop = 10
+restart = 11
+pause = 12
+resume = 13
 cancel = 14
-Set = 15
-Update = 16
-Move = 17
-Redirect = 18
-Create = 19
-Delete = 20
-Snapshot = 21
-Detonate = 22
-Restore = 23
-Save = 24
-Throttle = 25
-Delay = 26
-Substitute = 27
-Copy = 28
-Sync = 29
-Investigate = 30
-Mitigate = 31
-Remediate = 32
+set = 15
+update = 16
+move = 17
+redirect = 18
+create = 19
+delete = 20
+snapshot = 21
+detonate = 22
+restore = 23
+save = 24
+throttle = 25
+delay = 26
+substitute = 27
+copy = 28
+sync = 29
+investigate = 30
+mitigate = 31
+remediate = 32
 UnknownResponse = 0
-Ack = 1
-Status = 2
+ack = 1
+status = 2
 UnknownStatus = 0
-Processing = 102
-OK = 200
-MovedPermanently = 301
-BadRequest = 400
-Unauthorized = 401
-Forbidden = 403
-ServerError = 500
-NotImplemented = 501
-NotSet = 0
+processing = 102
+oK = 200
+moved_permanently = 301
+bad_request = 400
+unauthorized = 401
+forbidden = 403
+server_error = 500
+Not_implemented = 501
+Not_Set = 0
 Benign = 1
-LikelyBenign = 2
-PossiblyBenign = 3
+Likely_Benign = 2
+Possibly_Benign = 3
 Indeterminate = 4
-PossiblyMalicious = 5
-LikelyMalicious = 6
-KnownMalicious = 7
+Possibly_Malicious = 5
+Likely_Malicious = 6
+Known_Malicious = 7
 Unknown4Protocol = 0
-ICMP = 1
-TCP = 6
-UDP = 17
-SCTP = 132
+icmp = 1
+tcp = 6
+udp = 17
+sctp = 132
 Unknown7Protocol = 0
-FTP_DATA = 20
-FTP = 21
-SSH = 22
-Telnet = 23
-SMTP = 25
-HTTP = 80
-HTTPS = 443
+ftp_data = 20
+ftp = 21
+ssh = 22
+telnet = 23
+smtp = 25
+http = 80
+https = 443
 
 
 
@@ -895,8 +895,8 @@ _TARGET = _descriptor.Descriptor(
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='openc2', full_name='openc2.Target.openc2', index=15,
-      number=16, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      number=16, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -972,7 +972,7 @@ _TARGET = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=814,
-  serialized_end=1364,
+  serialized_end=1380,
 )
 
 
@@ -1012,8 +1012,8 @@ _ACTUATOR = _descriptor.Descriptor(
       name='actuator', full_name='openc2.Actuator.actuator',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1366,
-  serialized_end=1479,
+  serialized_start=1382,
+  serialized_end=1495,
 )
 
 
@@ -1053,8 +1053,56 @@ _PAYLOAD = _descriptor.Descriptor(
       name='payload', full_name='openc2.Payload.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1481,
-  serialized_end=1539,
+  serialized_start=1497,
+  serialized_end=1555,
+)
+
+
+_OPENC2 = _descriptor.Descriptor(
+  name='OpenC2',
+  full_name='openc2.OpenC2',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='actions', full_name='openc2.OpenC2.actions', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='schema', full_name='openc2.OpenC2.schema', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='actuator_groups', full_name='openc2.OpenC2.actuator_groups', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='openc2', full_name='openc2.OpenC2.openc2',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=1557,
+  serialized_end=1639,
 )
 
 
@@ -1080,9 +1128,9 @@ _COMMANDOPTIONS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='dutartion', full_name='openc2.CommandOptions.dutartion', index=2,
-      number=3, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      name='duration', full_name='openc2.CommandOptions.duration', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -1112,8 +1160,8 @@ _COMMANDOPTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1542,
-  serialized_end=1741,
+  serialized_start=1642,
+  serialized_end=1840,
 )
 
 
@@ -1234,8 +1282,8 @@ _HASHES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1744,
-  serialized_end=1988,
+  serialized_start=1843,
+  serialized_end=2087,
 )
 
 
@@ -1307,8 +1355,8 @@ _DEVICE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1991,
-  serialized_end=2151,
+  serialized_start=2090,
+  serialized_end=2250,
 )
 
 
@@ -1359,8 +1407,8 @@ _FILE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2153,
-  serialized_end=2257,
+  serialized_start=2252,
+  serialized_end=2356,
 )
 
 _OPENC2COMMAND.fields_by_name['action'].enum_type = _ACTION
@@ -1381,6 +1429,7 @@ _RESULTS.oneofs_by_name['results'].fields.append(
   _RESULTS.fields_by_name['media'])
 _RESULTS.fields_by_name['media'].containing_oneof = _RESULTS.oneofs_by_name['results']
 _TARGET.fields_by_name['ip_connection'].message_type = _IP_CONNECTION
+_TARGET.fields_by_name['openc2'].message_type = _OPENC2
 _TARGET.oneofs_by_name['target'].fields.append(
   _TARGET.fields_by_name['artifact'])
 _TARGET.fields_by_name['artifact'].containing_oneof = _TARGET.oneofs_by_name['target']
@@ -1467,6 +1516,15 @@ _PAYLOAD.fields_by_name['payload_bin'].containing_oneof = _PAYLOAD.oneofs_by_nam
 _PAYLOAD.oneofs_by_name['payload'].fields.append(
   _PAYLOAD.fields_by_name['url'])
 _PAYLOAD.fields_by_name['url'].containing_oneof = _PAYLOAD.oneofs_by_name['payload']
+_OPENC2.oneofs_by_name['openc2'].fields.append(
+  _OPENC2.fields_by_name['actions'])
+_OPENC2.fields_by_name['actions'].containing_oneof = _OPENC2.oneofs_by_name['openc2']
+_OPENC2.oneofs_by_name['openc2'].fields.append(
+  _OPENC2.fields_by_name['schema'])
+_OPENC2.fields_by_name['schema'].containing_oneof = _OPENC2.oneofs_by_name['openc2']
+_OPENC2.oneofs_by_name['openc2'].fields.append(
+  _OPENC2.fields_by_name['actuator_groups'])
+_OPENC2.fields_by_name['actuator_groups'].containing_oneof = _OPENC2.oneofs_by_name['openc2']
 _COMMANDOPTIONS.fields_by_name['start_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _COMMANDOPTIONS.fields_by_name['end_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _COMMANDOPTIONS.fields_by_name['response_requested'].enum_type = _RESPONSETYPE
@@ -1482,6 +1540,7 @@ DESCRIPTOR.message_types_by_name['Results'] = _RESULTS
 DESCRIPTOR.message_types_by_name['Target'] = _TARGET
 DESCRIPTOR.message_types_by_name['Actuator'] = _ACTUATOR
 DESCRIPTOR.message_types_by_name['Payload'] = _PAYLOAD
+DESCRIPTOR.message_types_by_name['OpenC2'] = _OPENC2
 DESCRIPTOR.message_types_by_name['CommandOptions'] = _COMMANDOPTIONS
 DESCRIPTOR.message_types_by_name['hashes'] = _HASHES
 DESCRIPTOR.message_types_by_name['device'] = _DEVICE
@@ -1563,6 +1622,13 @@ Payload = _reflection.GeneratedProtocolMessageType('Payload', (_message.Message,
   # @@protoc_insertion_point(class_scope:openc2.Payload)
   ))
 _sym_db.RegisterMessage(Payload)
+
+OpenC2 = _reflection.GeneratedProtocolMessageType('OpenC2', (_message.Message,), dict(
+  DESCRIPTOR = _OPENC2,
+  __module__ = 'openc2_pb2'
+  # @@protoc_insertion_point(class_scope:openc2.OpenC2)
+  ))
+_sym_db.RegisterMessage(OpenC2)
 
 CommandOptions = _reflection.GeneratedProtocolMessageType('CommandOptions', (_message.Message,), dict(
   DESCRIPTOR = _COMMANDOPTIONS,

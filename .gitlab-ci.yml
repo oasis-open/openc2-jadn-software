@@ -21,7 +21,7 @@ Build-Wheel:
 
   script:
     - cd $PKG_DIR
-    - mkdir -p $PKG_NAME && cp -r ../jadn/libs/* ./$PKG_NAME
+    - rsync -rh --delete ../jadn/libs/* ./$PKG_NAME
     - pip wheel . -w ./dist
     - ln -s ./dist/*.whl ../
     - deactivate

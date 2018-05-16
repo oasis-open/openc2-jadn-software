@@ -16,4 +16,9 @@
             <src_port>10996</src_port>
         </ip_connection>
     </target>
+    <options>
+        <duration>PT2M30S</duration>
+        <start_time>2016-11-25T08:10:31-04:00</start_time>
+        <command_id>fw17_8675309</command_id>
+    </options>
 </message>

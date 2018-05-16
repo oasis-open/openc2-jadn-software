@@ -9,12 +9,11 @@
 	```
 	 
 2. Edit the version.json file as necessary
-3. Copy the jadn/libs folder to package as oc2
+3. Copy the contents of the jadn/libs folder to package in the folder PKG_NAME is set as (oc2)
 	
 	```bash
 	mkdir -p $PKG_NAME && cp ../jadn/libs ./$PKG_NAME
 	```
-
 
 ## Building manually
 	1. Install required packages for building - setuptools, wheel

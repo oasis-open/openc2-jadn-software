@@ -9,7 +9,7 @@
  "types": [
 
   ["OpenC2-Command", "Record", [], "Communicates an action to be performed on a target and may include information identifying the actuator(s) to execute the command.", [
-    [1, "id", "Command-ID", [], "Identifier used to link responses to a command"],
+    [1, "id", "command-id", [], "Identifier used to link responses to a command"],
     [2, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')"],
     [3, "target", "Target", [], "The object of the action. The action is performed on the target"],
     [4, "actuator", "Actuator", ["[0"], "The subject of the action. The actuator executes the action on the target"],
@@ -17,7 +17,7 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "id", "Command-ID", [], "Command that induced this response"],
+    [1, "id", "command-id", [], "Command that induced this response"],
     [2, "status", "Status-Code", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [3, "status_text", "String", ["[0"], "Status description"],
     [4, "*", "Results", [], "Results of executing the command"]]
@@ -216,7 +216,7 @@
     [3, "actuator_groups", "Null", [], "query: Results = JSON array of actuator group names"]]
   ],
 
-  ["Command-ID", "String", [], "Uniquely identifies a particular command - TBD syntax"],
+  ["command-id", "String", [], "Uniquely identifies a particular command - TBD syntax"],
 
   ["date-time", "String", ["@date-time"], "RFC 3339 date-time"],
 

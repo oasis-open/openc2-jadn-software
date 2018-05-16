@@ -23,8 +23,8 @@ def OpenC2MessageLoader(msg='', msgType=OpenC2MessageFormats.JSON):
 
 def load_json(m):
     """
-    :param msg: JSON Encoded message
-    :type msg: str or dict
+    :param m: JSON Encoded message
+    :type m: str or dict
     :raise SyntaxError: Malformed JSON encoded message
     :raise ValueError: Malformed JSON encoded message
     """
@@ -52,8 +52,8 @@ def load_json(m):
 
 def load_cbor(m):
     """
-    :param msg: CBOR Encoded message
-    :type msg: hex encoded string (each character is a two digit hex value)
+    :param m: CBOR Encoded message
+    :type m: hex encoded string (each character is a two digit hex value)
     :raise SyntaxError: Malformed CBOR encoded message
     :raise ValueError: Malformed CBOR encoded message
     :raise cbor2.decoder.CBORDecodeError: Malformed CBOR encoded message
@@ -80,8 +80,8 @@ def load_cbor(m):
 
 def load_protobuf(m):
     """
-    :param msg: ProtoBuf Encoded message
-    :type msg: str ??
+    :param m: ProtoBuf Encoded message
+    :type m: str ??
     """
     if os.path.isfile(m):
         if os.path.isfile(m):
@@ -101,8 +101,8 @@ def load_protobuf(m):
 
 def load_xml(m):
     """
-    :param msg: XML Encoded message
-    :type msg: str
+    :parammg: XML Encoded message
+    :type m: str
     """
     def _xml_to_dict(xml):
         tmp = {}

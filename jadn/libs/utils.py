@@ -6,7 +6,7 @@ primitives = [bytes, str]
 
 if sys.version_info.major >= 3:
     def toUnicode(s):
-        return s.decode(encoding, 'backslashreplace')
+        return s.decode(encoding, 'backslashreplace') if hasattr(s, 'decode') else s
 
 elif sys.version_info.major < 3:
     primitives.append(unicode)

@@ -109,7 +109,7 @@ message OpenC2 {
 message CommandOptions {
     google.protobuf.Timestamp start_time = 1; // universal
     google.protobuf.Timestamp end_time = 2; // universal
-    int64 dutartion = 3; // pause, delay
+    string duration = 3; // pause, delay
     ResponseType response_requested = 4; // Type of response required for the action
     string command_id = 5; // universal  (was "id")
 }
@@ -151,86 +151,86 @@ message file {
 // Enum
 enum Action {
     UnknownAction = 0; // required starting number for protobuf3
-    Scan = 1; // Systematic examination of some aspect of the target entity or its environment in order to obtain information
-    Locate = 2; // Find the target object physically, logically, functionally, or by organization
-    Query = 3; // Initiate a request for information
-    Report = 4; // Task an entity to provide information to a designated recipient
-    Notify = 5; // Set an entity's alerting preferences
-    Deny = 6; // Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access
-    Contain = 7; // Isolate a file, process, or entity so that it cannot modify or access other assets or processes
-    Allow = 8; // Permit access to or execution of a target
-    Start = 9; // Initiate a process, application, system, or activity
-    Stop = 10; // Halt a system or end an activity
-    Restart = 11; // Stop then start a system or activity
-    Pause = 12; // Cease a system or activity while maintaining state
-    Resume = 13; // Start a system or activity from a paused state
+    scan = 1; // Systematic examination of some aspect of the target entity or its environment in order to obtain information
+    locate = 2; // Find the target object physically, logically, functionally, or by organization
+    query = 3; // Initiate a request for information
+    report = 4; // Task an entity to provide information to a designated recipient
+    notify = 5; // Set an entity's alerting preferences
+    deny = 6; // Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access
+    contain = 7; // Isolate a file, process, or entity so that it cannot modify or access other assets or processes
+    allow = 8; // Permit access to or execution of a target
+    start = 9; // Initiate a process, application, system, or activity
+    stop = 10; // Halt a system or end an activity
+    restart = 11; // Stop then start a system or activity
+    pause = 12; // Cease a system or activity while maintaining state
+    resume = 13; // Start a system or activity from a paused state
     cancel = 14; // Invalidate a previous action
-    Set = 15; // Change a value, configuration, or state of a managed entity
-    Update = 16; // Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update
-    Move = 17; // Change the location of a file, subnet, network, or process
-    Redirect = 18; // Change the flow of traffic to a destination other than its original destination
-    Create = 19; // Add a new entity of a known type (e.g., data, files, directories)
-    Delete = 20; // Remove an entity (e.g., data, files, flows)
-    Snapshot = 21; // Record and store the state of a target at an instant in time
-    Detonate = 22; // Execute and observe the behavior of a target (e.g., file, hyperlink) in an isolated environment
-    Restore = 23; // Return the system to a previously known state
-    Save = 24; // Commit data or system state to memory
-    Throttle = 25; // Adjust the rate of a process, function, or activity
-    Delay = 26; // Stop or hold up an activity or data transmittal
-    Substitute = 27; // Replace all or part of the data, content or payload
-    Copy = 28; // Duplicate a file or data flow
-    Sync = 29; // Synchronize a sensor or actuator with other system components
-    Investigate = 30; // Task the recipient to aggregate and report information as it pertains to a security event or incident
-    Mitigate = 31; // Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point
-    Remediate = 32; // Task the recipient to eliminate a vulnerability or attack point
+    set = 15; // Change a value, configuration, or state of a managed entity
+    update = 16; // Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update
+    move = 17; // Change the location of a file, subnet, network, or process
+    redirect = 18; // Change the flow of traffic to a destination other than its original destination
+    create = 19; // Add a new entity of a known type (e.g., data, files, directories)
+    delete = 20; // Remove an entity (e.g., data, files, flows)
+    snapshot = 21; // Record and store the state of a target at an instant in time
+    detonate = 22; // Execute and observe the behavior of a target (e.g., file, hyperlink) in an isolated environment
+    restore = 23; // Return the system to a previously known state
+    save = 24; // Commit data or system state to memory
+    throttle = 25; // Adjust the rate of a process, function, or activity
+    delay = 26; // Stop or hold up an activity or data transmittal
+    substitute = 27; // Replace all or part of the data, content or payload
+    copy = 28; // Duplicate a file or data flow
+    sync = 29; // Synchronize a sensor or actuator with other system components
+    investigate = 30; // Task the recipient to aggregate and report information as it pertains to a security event or incident
+    mitigate = 31; // Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point
+    remediate = 32; // Task the recipient to eliminate a vulnerability or attack point
 }
 
 enum ResponseType {
     UnknownResponse = 0; // required starting number for protobuf3
-    Ack = 1;
-    Status = 2;
+    ack = 1;
+    status = 2;
 }
 
 enum StatusCode {
     UnknownStatus = 0; // required starting number for protobuf3
-    Processing = 102; // an interim response used to inform the client that the server has accepted the request but not yet completed it
-    OK = 200; // the request has succeeded
-    MovedPermanently = 301; // the target resource has been assigned a new permanent URI
-    BadRequest = 400; // the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
-    Unauthorized = 401; // the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials
-    Forbidden = 403; // the server understood the request but refuses to authorize it
-    ServerError = 500; // the server encountered an unexpected condition that prevented it from fulfilling the request
-    NotImplemented = 501; // the server does not support the functionality required to fulfill the request
+    processing = 102; // an interim response used to inform the client that the server has accepted the request but not yet completed it
+    oK = 200; // the request has succeeded
+    moved_permanently = 301; // the target resource has been assigned a new permanent URI
+    bad_request = 400; // the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+    unauthorized = 401; // the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials
+    forbidden = 403; // the server understood the request but refuses to authorize it
+    server_error = 500; // the server encountered an unexpected condition that prevented it from fulfilling the request
+    Not_implemented = 501; // the server does not support the functionality required to fulfill the request
 }
 
 enum Reputation {
-    NotSet = 0;
+    Not_Set = 0;
     Benign = 1;
-    LikelyBenign = 2;
-    PossiblyBenign = 3;
+    Likely_Benign = 2;
+    Possibly_Benign = 3;
     Indeterminate = 4;
-    PossiblyMalicious = 5;
-    LikelyMalicious = 6;
-    KnownMalicious = 7;
+    Possibly_Malicious = 5;
+    Likely_Malicious = 6;
+    Known_Malicious = 7;
 }
 
 enum Layer4Protocol {
     Unknown4Protocol = 0; // required starting number for protobuf3
-    ICMP = 1; // Internet Control Message Protocol - RFC 792
-    TCP = 6; // Transmission Control Protocol - RFC 793
-    UDP = 17; // User Datagram Protocol - RFC 768
-    SCTP = 132; // Stream Control Transmission Protocol - RFC 4960
+    icmp = 1; // Internet Control Message Protocol - RFC 792
+    tcp = 6; // Transmission Control Protocol - RFC 793
+    udp = 17; // User Datagram Protocol - RFC 768
+    sctp = 132; // Stream Control Transmission Protocol - RFC 4960
 }
 
 enum Layer7Protocol {
     Unknown7Protocol = 0; // required starting number for protobuf3
-    FTP_DATA = 20; // File Transfer Protocol (data)
-    FTP = 21; // File Transfer Protocol (control)
-    SSH = 22; // Secure Shell Protocol
-    Telnet = 23; // Telnet
-    SMTP = 25; // Simple Mail Transfer Protocol
-    HTTP = 80; // Hypertext Transport Protocol
-    HTTPS = 443; // HTTP over TLS
+    ftp_data = 20; // File Transfer Protocol (data)
+    ftp = 21; // File Transfer Protocol (control)
+    ssh = 22; // Secure Shell Protocol
+    telnet = 23; // Telnet
+    smtp = 25; // Simple Mail Transfer Protocol
+    http = 80; // Hypertext Transport Protocol
+    https = 443; // HTTP over TLS
 }
 
 /**

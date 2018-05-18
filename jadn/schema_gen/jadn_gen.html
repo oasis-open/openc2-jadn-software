@@ -1,0 +1,81 @@
+<!-- Generated from schema\jadn.jadn, Thu May 17 16:23:36 2018-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="theme.css">
+<title>jadn v.1.0 wd01</title>
+</head>
+<body>
+<h2>Schema</h2>
+<table>
+<tr><td class="h">title: </td><td class="s">JADN Schema Syntax</td></tr>
+<tr><td class="h">module: </td><td class="s">jadn</td></tr>
+<tr><td class="h">version: </td><td class="s">1.0 wd01</td></tr>
+<tr><td class="h">description: </td><td class="s">Syntax of a JSON Abstract Schema Notation (JADN) module.</td></tr>
+</table><h2>3.2 Structure Types</h2>
+<h3>3.2.1 JADN</h3>
+Definition of a JADN file
+<table><caption>JADN (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">meta</td><td class="s">SchemaMeta</td><td class="n">1</td><td class="s">Information about the schema module</td></tr>
+<tr><td class="n">2</td><td class="s">types</td><td class="s">SchemaType</td><td class="n">1..n</td><td class="s">Type definitions</td></tr>
+</table>
+<h3>3.2.2 SchemaMeta</h3>
+Meta-information about this schema
+<table><caption>SchemaMeta (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">module</td><td class="s">String</td><td class="n">1</td><td class="s">Module name</td></tr>
+<tr><td class="n">2</td><td class="s">title</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
+<tr><td class="n">3</td><td class="s">version</td><td class="s">String</td><td class="n">0..1</td><td class="s">Module version</td></tr>
+<tr><td class="n">4</td><td class="s">description</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
+<tr><td class="n">5</td><td class="s">imports</td><td class="s">Import</td><td class="n">0..n</td><td class="s">List of imported modules</td></tr>
+</table>
+<h3>3.2.3 Import</h3>
+
+<table><caption>Import (Array)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">nsid</td><td class="s">String</td><td class="n">1</td><td class="s">Namespace identifier</td></tr>
+<tr><td class="n">2</td><td class="s">name</td><td class="s">String</td><td class="n">1</td><td class="s">Unique name of the defining module</td></tr>
+</table>
+<h3>3.2.4 SchemaType</h3>
+
+<table><caption>SchemaType (Array)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">name</td><td class="s">String</td><td class="n">1</td><td class="s"></td></tr>
+<tr><td class="n">2</td><td class="s">type</td><td class="s">JADN-Type</td><td class="n">1</td><td class="s">TODO: Need * option to  autogenerate enum from choice</td></tr>
+<tr><td class="n">3</td><td class="s">options</td><td class="s">String</td><td class="n">1..n</td><td class="s"></td></tr>
+<tr><td class="n">4</td><td class="s">description</td><td class="s">String</td><td class="n">1</td><td class="s"></td></tr>
+<tr><td class="n">5</td><td class="s">fields</td><td class="s">JADN-Type</td><td class="n">1..n</td><td class="s"></td></tr>
+</table>
+<h3>3.2.5 JADN-Type</h3>
+
+<table><caption>JADN-Type (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">Binary</td><td class="s">Null</td><td class="s">Octet sequence</td></tr>
+<tr><td class="n">2</td><td class="s">Boolean</td><td class="s">Null</td><td class="s">True or False</td></tr>
+<tr><td class="n">3</td><td class="s">Integer</td><td class="s">Null</td><td class="s">Whole number</td></tr>
+<tr><td class="n">4</td><td class="s">Number</td><td class="s">Null</td><td class="s">Real number</td></tr>
+<tr><td class="n">5</td><td class="s">Null</td><td class="s">Null</td><td class="s">Nothing</td></tr>
+<tr><td class="n">6</td><td class="s">String</td><td class="s">Null</td><td class="s">Character sequence</td></tr>
+<tr><td class="n">7</td><td class="s">Array</td><td class="s">FullField</td><td class="s">Ordered list of fields</td></tr>
+<tr><td class="n">8</td><td class="s">ArrayOf</td><td class="s">Null</td><td class="s">Ordered list of fields of a specified type</td></tr>
+<tr><td class="n">9</td><td class="s">Choice</td><td class="s">FullField</td><td class="s">One of a set of named fields</td></tr>
+<tr><td class="n">10</td><td class="s">Enumerated</td><td class="s">EnumField</td><td class="s">One of a set of id:name pairs</td></tr>
+<tr><td class="n">11</td><td class="s">Map</td><td class="s">FullField</td><td class="s">Unordered set of named fields</td></tr>
+<tr><td class="n">12</td><td class="s">Record</td><td class="s">FullField</td><td class="s">Ordered list of named fields</td></tr>
+</table>
+<h3>3.2.6 EnumField</h3>
+Field definition for Enumerated types
+<table><caption>EnumField (Array)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">id</td><td class="s">Integer</td><td class="n">1</td><td class="s">Field ID</td></tr>
+<tr><td class="n">2</td><td class="s">name</td><td class="s">String</td><td class="n">1</td><td class="s">Field name</td></tr>
+<tr><td class="n">3</td><td class="s">desc</td><td class="s">String</td><td class="n">1</td><td class="s">Field description</td></tr>
+</table>
+<h3>3.2.7 FullField</h3>
+Field definition for types other than Enumerated
+<table><caption>FullField (Array)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">id</td><td class="s">Integer</td><td class="n">1</td><td class="s">Field ID or ordinal position</td></tr>
+<tr><td class="n">2</td><td class="s">name</td><td class="s">String</td><td class="n">1</td><td class="s">Field name</td></tr>
+<tr><td class="n">3</td><td class="s">type</td><td class="s">String</td><td class="n">1</td><td class="s">Field type</td></tr>
+<tr><td class="n">4</td><td class="s">opts</td><td class="s">String</td><td class="n">0..n</td><td class="s">Field optiona</td></tr>
+<tr><td class="n">5</td><td class="s">desc</td><td class="s">String</td><td class="n">1</td><td class="s">Field description</td></tr>
+</table>
+<h2>3.3 Primitive Types</h2>
+<table><thead><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+</table></body>

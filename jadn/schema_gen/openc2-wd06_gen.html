@@ -1,48 +1,29 @@
+<!-- Generated from schema\openc2-wd06.jadn, Thu May 17 16:23:36 2018-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="theme.css">
-<title>openc2 v.wd05</title>
+<title>openc2 v.wd06</title>
 </head>
 <body>
 <h2>Schema</h2>
 <table>
 <tr><td class="h">title: </td><td class="s">OpenC2 Command Definitions</td></tr>
 <tr><td class="h">module: </td><td class="s">openc2</td></tr>
-<tr><td class="h">version: </td><td class="s">wd05</td></tr>
+<tr><td class="h">version: </td><td class="s">wd06</td></tr>
 <tr><td class="h">description: </td><td class="s">Datatypes that define the content of OpenC2 commands and responses.</td></tr>
 </table><h2>3.2 Structure Types</h2>
 <h3>3.2.1 OpenC2-Command</h3>
-Communicates an action to be performed on a target and may include information identifying the actuator(s) to execute the command.
+The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context.
 <table><caption>OpenC2-Command (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">id</td><td class="s">Command-ID</td><td class="n">1</td><td class="s">Identifier used to link responses to a command</td></tr>
-<tr><td class="n">2</td><td class="s">action</td><td class="s">Action</td><td class="n">1</td><td class="s">The task or activity to be performed (i.e., the 'verb')</td></tr>
-<tr><td class="n">3</td><td class="s">target</td><td class="s">Target</td><td class="n">1</td><td class="s">The object of the action. The action is performed on the target</td></tr>
-<tr><td class="n">4</td><td class="s">actuator</td><td class="s">Actuator</td><td class="n">0..1</td><td class="s">The subject of the action. The actuator executes the action on the target</td></tr>
-<tr><td class="n">5</td><td class="s">options</td><td class="s">Command-Options</td><td class="n">0..1</td><td class="s">Additional information that applies to the command</td></tr>
+<tr><td class="n">1</td><td class="s">action</td><td class="s">Action</td><td class="n">1</td><td class="s">The task or activity to be performed (i.e., the 'verb')</td></tr>
+<tr><td class="n">2</td><td class="s">target</td><td class="s">Target</td><td class="n">1</td><td class="s">The object of the action. The action is performed on the target</td></tr>
+<tr><td class="n">3</td><td class="s">actuator</td><td class="s">Actuator</td><td class="n">0..1</td><td class="s">The subject of the action. The actuator executes the action on the target</td></tr>
+<tr><td class="n">4</td><td class="s">args</td><td class="s">Args</td><td class="n">0..1</td><td class="s">Additional information that applies to the command</td></tr>
+<tr><td class="n">5</td><td class="s">id</td><td class="s">Command-ID</td><td class="n">0..1</td><td class="s">Identifier used to link responses to a command</td></tr>
 </table>
-<h3>3.2.2 OpenC2Response</h3>
-
-<table><caption>OpenC2Response (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">id</td><td class="s">Command-ID</td><td class="n">1</td><td class="s">Command that induced this response</td></tr>
-<tr><td class="n">2</td><td class="s">status</td><td class="s">Status-Code</td><td class="n">1</td><td class="s">Adapted from HTTP Status Codes, RFC 7231</td></tr>
-<tr><td class="n">3</td><td class="s">status_text</td><td class="s">String</td><td class="n">0..1</td><td class="s">Status description</td></tr>
-<tr><td class="n">4</td><td class="s">*</td><td class="s">Results</td><td class="n">1</td><td class="s">Results of executing the command</td></tr>
-</table>
-<h3>3.2.3 Results</h3>
-
-<table><caption>Results (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">string</td><td class="s">String</td><td class="s">List of strings</td></tr>
-<tr><td class="n">2</td><td class="s">media</td><td class="s">Media</td><td class="s">Media type and data</td></tr>
-</table>
-<h3>3.2.4 Media</h3>
-
-<table><caption>Media (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">media-type</td><td class="s">String</td><td class="n">1</td><td class="s">Media Type (formerly MIME Type), RFC 6838</td></tr>
-<tr><td class="n">2</td><td class="s">data</td><td class="s">Payload</td><td class="n">1</td><td class="s">Content or URI</td></tr>
-</table>
-<h3>3.2.5 Action</h3>
+<h3>3.2.2 Action</h3>
 
 <table><caption>Action (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">scan</td><td class="s">Systematic examination of some aspect of the target entity or its environment in order to obtain information.</td></tr>
@@ -58,7 +39,7 @@ Communicates an action to be performed on a target and may include information i
 <tr><td class="n">11</td><td class="s">restart</td><td class="s">Stop then start a system or activity.</td></tr>
 <tr><td class="n">12</td><td class="s">pause</td><td class="s">Cease a system or activity while maintaining state.</td></tr>
 <tr><td class="n">13</td><td class="s">resume</td><td class="s">Start a system or activity from a paused state.</td></tr>
-<tr><td class="n">14</td><td class="s">cancel</td><td class="s">Invalidate a previous action.</td></tr>
+<tr><td class="n">14</td><td class="s">cancel</td><td class="s">Invalidate a previously issued action.</td></tr>
 <tr><td class="n">15</td><td class="s">set</td><td class="s">Change a value, configuration, or state of a managed entity.</td></tr>
 <tr><td class="n">16</td><td class="s">update</td><td class="s">Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.</td></tr>
 <tr><td class="n">17</td><td class="s">move</td><td class="s">Change the location of a file, subnet, network, or process.</td></tr>
@@ -78,7 +59,7 @@ Communicates an action to be performed on a target and may include information i
 <tr><td class="n">31</td><td class="s">mitigate</td><td class="s">Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point.</td></tr>
 <tr><td class="n">32</td><td class="s">remediate</td><td class="s">Task the recipient to eliminate a vulnerability or attack point.</td></tr>
 </table>
-<h3>3.2.6 Target</h3>
+<h3>3.2.3 Target</h3>
 OpenC2 Target datatypes
 <table><caption>Target (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">artifact</td><td class="s">artifact</td><td class="s">An array of bytes representing a file-like object or a link to that object.</td></tr>
@@ -105,35 +86,31 @@ OpenC2 Target datatypes
 <tr><td class="n">22</td><td class="s">volume</td><td class="s">volume</td><td class="s"></td></tr>
 <tr><td class="n">23</td><td class="s">windows_registry_key</td><td class="s">windows-registry-key</td><td class="s"></td></tr>
 <tr><td class="n">24</td><td class="s">x509_certificate</td><td class="s">x509-certificate</td><td class="s"></td></tr>
+<tr><td class="n">1024</td><td class="s">slpff</td><td class="s">Slpff-Target</td><td class="s">Targets defined in the Stateless Packet Filter Firewall profile</td></tr>
 </table>
-<h3>3.2.7 Actuator</h3>
+<h3>3.2.4 Actuator</h3>
 
 <table><caption>Actuator (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">any</td><td class="s">ActuatorSpecifiers</td><td class="s"></td></tr>
-<tr><td class="n">2</td><td class="s">firewall</td><td class="s">ActuatorSpecifiers</td><td class="s"></td></tr>
+<tr><td class="n">100</td><td class="s">spff</td><td class="s">SpffSpecifiers</td><td class="s">Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01</td></tr>
 </table>
-<h3>3.2.8 ActuatorSpecifiers</h3>
+<h3>3.2.5 Args</h3>
 
-<table><caption>ActuatorSpecifiers (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">actuator_id</td><td class="s">uri</td><td class="n">0..1</td><td class="s"></td></tr>
-<tr><td class="n">2</td><td class="s">asset_id</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
+<table><caption>Args (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">start_time</td><td class="s">Date-Time</td><td class="n">0..1</td><td class="s">The specific date/time to initiate the action</td></tr>
+<tr><td class="n">2</td><td class="s">end_time</td><td class="s">Date-Time</td><td class="n">0..1</td><td class="s">The specific date/time to terminate the action</td></tr>
+<tr><td class="n">3</td><td class="s">duration</td><td class="s">Duration</td><td class="n">0..1</td><td class="s">The length of time for an action to be in effect</td></tr>
+<tr><td class="n">4</td><td class="s">response_requested</td><td class="s">Response-Type</td><td class="n">0..1</td><td class="s">The type of response required for the action</td></tr>
+<tr><td class="n">100</td><td class="s">spff</td><td class="s">SpffArgs</td><td class="n">0..1</td><td class="s">Command arguments defined in the Stateless Packet Filtering Firewall profile</td></tr>
 </table>
-<h3>3.2.9 Command-Options</h3>
+<h3>3.2.6 OpenC2-Response</h3>
 
-<table><caption>Command-Options (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">start_time</td><td class="s">date-time</td><td class="n">0..1</td><td class="s">universal</td></tr>
-<tr><td class="n">2</td><td class="s">end_time</td><td class="s">date-time</td><td class="n">0..1</td><td class="s">universal</td></tr>
-<tr><td class="n">3</td><td class="s">duration</td><td class="s">duration</td><td class="n">0..1</td><td class="s">pause, delay</td></tr>
-<tr><td class="n">4</td><td class="s">response_requested</td><td class="s">response-type</td><td class="n">0..1</td><td class="s">Type of response required for the action</td></tr>
-<tr><td class="n">5</td><td class="s">command_id</td><td class="s">command-id</td><td class="n">0..1</td><td class="s">universal  (was "id")</td></tr>
+<table><caption>OpenC2-Response (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">id</td><td class="s">Command-ID</td><td class="n">1</td><td class="s">Id of the ommand that induced this response</td></tr>
+<tr><td class="n">2</td><td class="s">status</td><td class="s">Status-Code</td><td class="n">1</td><td class="s">An integer status code</td></tr>
+<tr><td class="n">3</td><td class="s">status_text</td><td class="s">String</td><td class="n">0..1</td><td class="s">A free-form human-readable description of the response status</td></tr>
+<tr><td class="n">4</td><td class="s">*</td><td class="s">Results</td><td class="n">1</td><td class="s">Data or extended status information that was requested from an OpenC2 command</td></tr>
 </table>
-<h3>3.2.10 response-type</h3>
-
-<table><caption>response-type (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">ack</td><td class="s"></td></tr>
-<tr><td class="n">2</td><td class="s">status</td><td class="s"></td></tr>
-</table>
-<h3>3.2.11 Status-Code</h3>
+<h3>3.2.7 Status-Code</h3>
 
 <div class="topts">{u'compact': True}</div>
 <table><caption>Status-Code (Enumerated)</caption><thead><th class="n">Value</th><th class="s">Description</th></thead>
@@ -146,38 +123,79 @@ OpenC2 Target datatypes
 <tr><td class="n">500</td><td class="s">Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.</td></tr>
 <tr><td class="n">501</td><td class="s">Not Implemented - the server does not support the functionality required to fulfill the request.</td></tr>
 </table>
-<h3>3.2.12 hashes</h3>
-Hash values
-<table><caption>hashes (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">MD5</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">MD5 message digest as defined in RFC3121</td></tr>
-<tr><td class="n">2</td><td class="s">MD6</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">MD6 message digest as defined in MD6 proposal</td></tr>
-<tr><td class="n">3</td><td class="s">RIPEMD-160</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification</td></tr>
-<tr><td class="n">4</td><td class="s">SHA-1</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Secure Hash Algorithm (SHA)-1 as defined in RFC3174</td></tr>
-<tr><td class="n">5</td><td class="s">SHA-224</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)</td></tr>
-<tr><td class="n">6</td><td class="s">SHA-256</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA-256 as defined in RFC6234</td></tr>
-<tr><td class="n">7</td><td class="s">SHA-384</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA-384 as defined in RFC6234</td></tr>
-<tr><td class="n">8</td><td class="s">SHA-512</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA-512 as defined in RFC6234</td></tr>
-<tr><td class="n">9</td><td class="s">SHA3-224</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA3-224 as defined in FIPS PUP 202</td></tr>
-<tr><td class="n">10</td><td class="s">SHA3-256</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA3-256 as defined in FIPS PUP 202</td></tr>
-<tr><td class="n">11</td><td class="s">SHA3-384</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA3-384 as defined in FIPS PUP 202</td></tr>
-<tr><td class="n">12</td><td class="s">SHA3-512</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">SHA3-512 as defined in FIPS PUP 202</td></tr>
-<tr><td class="n">13</td><td class="s">ssdeep</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification</td></tr>
-<tr><td class="n">14</td><td class="s">WHIRLPOOL</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004</td></tr>
-</table>
-<h3>3.2.13 artifact</h3>
+<h3>3.2.8 artifact</h3>
 
 <table><caption>artifact (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">mime_type</td><td class="s">String</td><td class="n">0..1</td><td class="s">MUST be a valid MIME type as specified in the IANA Media Types registry</td></tr>
+<tr><td class="n">1</td><td class="s">mime_type</td><td class="s">String</td><td class="n">0..1</td><td class="s">Permitted values specified in the IANA Media Types registry</td></tr>
 <tr><td class="n">2</td><td class="s">*</td><td class="s">payload</td><td class="n">0..1</td><td class="s">choice of literal content or URL to obtain content</td></tr>
 <tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">Specifies a dictionary of hashes for the contents of the payload</td></tr>
 </table>
-<h3>3.2.14 payload</h3>
+<h3>3.2.9 payload</h3>
 
 <table><caption>payload (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">payload_bin</td><td class="s">Binary</td><td class="s">Specifies the data contained in the artifact.</td></tr>
 <tr><td class="n">2</td><td class="s">url</td><td class="s">uri</td><td class="s">MUST be a valid URL that resolves to the un-encoded content</td></tr>
 </table>
-<h3>3.2.15 device</h3>
+<h3>3.2.10 openc2</h3>
+A target used to query Actuator for its supported capabilities
+<div class="topts">{u'aetype': u'Query-Item', u'max': 3, u'min': 0}</div>
+</table>
+<h3>3.2.11 Query-Item</h3>
+Results to be included in response to query openc2 command
+<table><caption>Query-Item (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">versions</td><td class="s">OpenC2 language versions supported by this actuator</td></tr>
+<tr><td class="n">2</td><td class="s">profiles</td><td class="s">List of profiles supported by this actuator</td></tr>
+<tr><td class="n">3</td><td class="s">schema</td><td class="s">Definition of the command syntax supported by this actuator</td></tr>
+</table>
+<h3>3.2.12 ip-connection</h3>
+5-tuple that specifies a tcp/ip connection
+<table><caption>ip-connection (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">src_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">source address</td></tr>
+<tr><td class="n">2</td><td class="s">src_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">source TCP/UDP port number</td></tr>
+<tr><td class="n">3</td><td class="s">dst_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">destination address</td></tr>
+<tr><td class="n">4</td><td class="s">dst_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">destination TCP/UDP port number</td></tr>
+<tr><td class="n">5</td><td class="s">layer4_protocol</td><td class="s">layer4-protocol</td><td class="n">0..1</td><td class="s">Protocol (IPv4) / Next Header (IPv6)</td></tr>
+</table>
+<h3>3.2.13 layer4-protocol</h3>
+protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
+<table><caption>layer4-protocol (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">icmp</td><td class="s">Internet Control Message Protocol - RFC 792</td></tr>
+<tr><td class="n">6</td><td class="s">tcp</td><td class="s">Transmission Control Protocol - RFC 793</td></tr>
+<tr><td class="n">17</td><td class="s">udp</td><td class="s">User Datagram Protocol - RFC 768</td></tr>
+<tr><td class="n">132</td><td class="s">sctp</td><td class="s">Stream Control Transmission Protocol - RFC 4960</td></tr>
+</table>
+<h3>3.2.14 file</h3>
+
+<table><caption>file (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s">The name of the file as defined in the file system</td></tr>
+<tr><td class="n">2</td><td class="s">path</td><td class="s">String</td><td class="n">0..1</td><td class="s">The absolute path to the location of the file in the file system</td></tr>
+<tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">One or more cryptographic hash codes of the file contents</td></tr>
+</table>
+<h3>3.2.15 Response-Type</h3>
+
+<table><caption>Response-Type (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<tr><td class="n">0</td><td class="s">None</td><td class="s">No response</td></tr>
+<tr><td class="n">1</td><td class="s">Ack</td><td class="s">Respond when command received</td></tr>
+<tr><td class="n">2</td><td class="s">Complete</td><td class="s">Respond when all aspects of command completed</td></tr>
+</table>
+<h3>3.2.16 Process</h3>
+
+<table><caption>Process (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">pid</td><td class="s">Integer</td><td class="n">0..1</td><td class="s">Process ID of the process</td></tr>
+<tr><td class="n">2</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s">Name of the process</td></tr>
+<tr><td class="n">3</td><td class="s">cwd</td><td class="s">String</td><td class="n">0..1</td><td class="s">Current working directory of the process</td></tr>
+<tr><td class="n">4</td><td class="s">executable</td><td class="s">File</td><td class="n">0..1</td><td class="s">Executable that was executed to start the process</td></tr>
+<tr><td class="n">5</td><td class="s">parent</td><td class="s">Process</td><td class="n">0..1</td><td class="s">Process that spawned this one</td></tr>
+<tr><td class="n">6</td><td class="s">command_line</td><td class="s">String</td><td class="n">0..1</td><td class="s">The full command line invocation used to start this process, including all arguments</td></tr>
+</table>
+<h3>3.2.17 hashes</h3>
+Cryptographic Hash values
+<table><caption>hashes (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">md5</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded MD5 hash as defined in RFC3121</td></tr>
+<tr><td class="n">4</td><td class="s">sha1</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA1 hash as defined in RFC3174</td></tr>
+<tr><td class="n">6</td><td class="s">sha256</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA256 as defined in RFC6234</td></tr>
+</table>
+<h3>3.2.18 device</h3>
 TODO: Add inventory device-id?
 <table><caption>device (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">description</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
@@ -187,62 +205,6 @@ TODO: Add inventory device-id?
 <tr><td class="n">5</td><td class="s">serial_number</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 <tr><td class="n">6</td><td class="s">firmware_version</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 <tr><td class="n">7</td><td class="s">system_details</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
-</table>
-<h3>3.2.16 file</h3>
-
-<table><caption>file (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
-<tr><td class="n">2</td><td class="s">path</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
-<tr><td class="n">3</td><td class="s">hash</td><td class="s">hashes</td><td class="n">0..1</td><td class="s"></td></tr>
-<tr><td class="n">4</td><td class="s">reputation</td><td class="s">reputation</td><td class="n">0..1</td><td class="s"></td></tr>
-</table>
-<h3>3.2.17 reputation</h3>
-
-<div class="topts">{u'compact': True}</div>
-<table><caption>reputation (Enumerated)</caption><thead><th class="n">Value</th><th class="s">Description</th></thead>
-<tr><td class="n">0</td><td class="s">Not Set</td></tr>
-<tr><td class="n">1</td><td class="s">Benign</td></tr>
-<tr><td class="n">2</td><td class="s">Likely Benign</td></tr>
-<tr><td class="n">3</td><td class="s">Possibly Benign</td></tr>
-<tr><td class="n">4</td><td class="s">Indeterminate</td></tr>
-<tr><td class="n">5</td><td class="s">Possibly Malicious</td></tr>
-<tr><td class="n">6</td><td class="s">Likely Malicious</td></tr>
-<tr><td class="n">7</td><td class="s">Known Malicious</td></tr>
-</table>
-<h3>3.2.18 ip-connection</h3>
-5-tuple that specifies a tcp/ip connection
-<table><caption>ip-connection (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">src_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">source address</td></tr>
-<tr><td class="n">2</td><td class="s">src_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">source TCP/UDP port number</td></tr>
-<tr><td class="n">3</td><td class="s">dst_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">destination address</td></tr>
-<tr><td class="n">4</td><td class="s">dst_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">destination TCP/UDP port number</td></tr>
-<tr><td class="n">5</td><td class="s">layer4_protocol</td><td class="s">layer4-protocol</td><td class="n">0..1</td><td class="s">Protocol (IPv4) / Next Header (IPv6)</td></tr>
-</table>
-<h3>3.2.19 layer4-protocol</h3>
-protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
-<table><caption>layer4-protocol (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">icmp</td><td class="s">Internet Control Message Protocol - RFC 792</td></tr>
-<tr><td class="n">6</td><td class="s">tcp</td><td class="s">Transmission Control Protocol - RFC 793</td></tr>
-<tr><td class="n">17</td><td class="s">udp</td><td class="s">User Datagram Protocol - RFC 768</td></tr>
-<tr><td class="n">132</td><td class="s">sctp</td><td class="s">Stream Control Transmission Protocol - RFC 4960</td></tr>
-</table>
-<h3>3.2.20 layer7-protocol</h3>
-Service Name and Transport Protocol Port - any IANA value, RFC 6335
-<table><caption>layer7-protocol (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
-<tr><td class="n">20</td><td class="s">ftp-data</td><td class="s">File Transfer Protocol (data)</td></tr>
-<tr><td class="n">21</td><td class="s">ftp</td><td class="s">File Transfer Protocol (control)</td></tr>
-<tr><td class="n">22</td><td class="s">ssh</td><td class="s">Secure Shell Protocol</td></tr>
-<tr><td class="n">23</td><td class="s">telnet</td><td class="s">Telnet</td></tr>
-<tr><td class="n">25</td><td class="s">smtp</td><td class="s">Simple Mail Transfer Protocol</td></tr>
-<tr><td class="n">80</td><td class="s">http</td><td class="s">Hypertext Transport Protocol</td></tr>
-<tr><td class="n">443</td><td class="s">https</td><td class="s">HTTP over TLS</td></tr>
-</table>
-<h3>3.2.21 openc2</h3>
-A target used to query Actuator for its supported capabilities
-<table><caption>openc2 (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">actions</td><td class="s">Null</td><td class="s">query: Results = JSON array of supported action verbs</td></tr>
-<tr><td class="n">2</td><td class="s">schema</td><td class="s">Null</td><td class="s">query: Results = JADN syntax of supported commands</td></tr>
-<tr><td class="n">3</td><td class="s">actuator_groups</td><td class="s">Null</td><td class="s">query: Results = JSON array of actuator group names</td></tr>
 </table>
 <h2>3.3 Primitive Types</h2>
 <table><thead><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>

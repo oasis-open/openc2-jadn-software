@@ -14,6 +14,7 @@ The jadn-convert script parses text representations into JADN, and creates repre
 addtional libraries such as xlsxwriter.
 """
 
+from __future__ import print_function
 import os
 
 from libs.codec.jadn import jadn_load, jadn_dump, jadn_analyze
@@ -27,6 +28,7 @@ from libs.convert.w_html import html_dump
 if __name__ == "__main__":
     idir = 'schema'
     for fn in (f[0] for f in (os.path.splitext(i) for i in os.listdir(idir)) if f[1] == '.jadn'):
+        print('**', fn)
         ifname = os.path.join(idir, fn)
         ofname = os.path.join("schema_gen", fn)
 

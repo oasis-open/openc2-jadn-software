@@ -68,6 +68,8 @@ def html_dumps(jadn):
                 text += thead(td, ['ID', 'Name', 'Type', 'Description'], cls)
                 for fd in td[FIELDS]:
                     text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], fd[FDESC]], cls)
+            elif td[TTYPE] == 'ArrayOf':            # In STRUCTURE_TYPES but with no field definitions
+                pass
             else:
                 cls = ['n', 's', 's', 'n', 's']
                 text += thead(td, ['ID', 'Name', 'Type', '#', 'Description'], cls)

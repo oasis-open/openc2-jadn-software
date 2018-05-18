@@ -2,35 +2,18 @@
  "meta": {
   "module": "openc2",
   "title": "OpenC2 Command Definitions",
-  "version": "wd05",
+  "version": "wd06",
   "description": "Datatypes that define the content of OpenC2 commands and responses."
  },
 
  "types": [
 
-  ["OpenC2-Command", "Record", [], "Communicates an action to be performed on a target and may include information identifying the actuator(s) to execute the command.", [
-    [1, "id", "Command-ID", [], "Identifier used to link responses to a command"],
-    [2, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')"],
-    [3, "target", "Target", [], "The object of the action. The action is performed on the target"],
-    [4, "actuator", "Actuator", ["[0"], "The subject of the action. The actuator executes the action on the target"],
-    [5, "options", "Command-Options", ["[0"], "Additional information that applies to the command"]]
-  ],
-
-  ["OpenC2Response", "Record", [], "", [
-    [1, "id", "Command-ID", [], "Command that induced this response"],
-    [2, "status", "Status-Code", [], "Adapted from HTTP Status Codes, RFC 7231"],
-    [3, "status_text", "String", ["[0"], "Status description"],
-    [4, "*", "Results", [], "Results of executing the command"]]
-  ],
-
-  ["Results", "Choice", [], "", [
-    [1, "string", "String", ["[0","]0"], "List of strings"],
-    [2, "media", "Media", [], "Media type and data"]]
-  ],
-
-  ["Media", "Record", [], "", [
-    [1, "media-type", "String", [], "Media Type (formerly MIME Type), RFC 6838"],
-    [2, "data", "Payload", [], "Content or URI"]]
+  ["OpenC2-Command", "Record", [], "The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context.", [
+    [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')"],
+    [2, "target", "Target", [], "The object of the action. The action is performed on the target"],
+    [3, "actuator", "Actuator", ["[0"], "The subject of the action. The actuator executes the action on the target"],
+    [4, "args", "Args", ["[0"], "Additional information that applies to the command"],
+    [5, "id", "Command-ID", ["[0"], "Identifier used to link responses to a command"]]
   ],
 
   ["Action", "Enumerated", [], "", [
@@ -47,7 +30,7 @@
     [11, "restart", "Stop then start a system or activity."],
     [12, "pause", "Cease a system or activity while maintaining state."],
     [13, "resume", "Start a system or activity from a paused state."],
-    [14, "cancel", "Invalidate a previous action."],
+    [14, "cancel", "Invalidate a previously issued action."],
     [15, "set", "Change a value, configuration, or state of a managed entity."],
     [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
     [17, "move", "Change the location of a file, subnet, network, or process."],
@@ -92,30 +75,27 @@
     [21, "user_session", "user-session", [], ""],
     [22, "volume", "volume", [], ""],
     [23, "windows_registry_key", "windows-registry-key", [], ""],
-    [24, "x509_certificate", "x509-certificate", [], ""]]
+    [24, "x509_certificate", "x509-certificate", [], ""],
+    [1024, "slpff", "Slpff-Target", [], "Targets defined in the Stateless Packet Filter Firewall profile"]]
   ],
 
   ["Actuator", "Choice", [], "", [
-    [1, "any", "ActuatorSpecifiers", [], ""],
-    [2, "firewall", "ActuatorSpecifiers", [], ""]]
+    [100, "spff", "SpffSpecifiers", [], "Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01"]]
   ],
 
-  ["ActuatorSpecifiers", "Record", [], "", [
-    [1, "actuator_id", "uri", ["[0"], ""],
-    [2, "asset_id", "String", ["[0"], ""]]
+  ["Args", "Map", [], "", [
+    [1, "start_time", "Date-Time", ["[0"], "The specific date/time to initiate the action"],
+    [2, "end_time", "Date-Time", ["[0"], "The specific date/time to terminate the action"],
+    [3, "duration", "Duration", ["[0"], "The length of time for an action to be in effect"],
+    [4, "response_requested", "Response-Type", ["[0"], "The type of response required for the action"],
+    [100, "spff", "SpffArgs", ["[0"], "Command arguments defined in the Stateless Packet Filtering Firewall profile"]]
   ],
 
-  ["Command-Options", "Map", [], "", [
-    [1, "start_time", "date-time", ["[0"], "universal"],
-    [2, "end_time", "date-time", ["[0"], "universal"],
-    [3, "duration", "duration", ["[0"], "pause, delay"],
-    [4, "response_requested", "response-type", ["[0"], "Type of response required for the action"],
-    [5, "command_id", "command-id", ["[0"], "universal  (was \"id\")"]]
-  ],
-
-  ["response-type", "Enumerated", [], "", [
-    [1, "ack", ""],
-    [2, "status", ""]]
+  ["OpenC2-Response", "Record", [], "", [
+    [1, "id", "Command-ID", [], "Id of the ommand that induced this response"],
+    [2, "status", "Status-Code", [], "An integer status code"],
+    [3, "status_text", "String", ["[0"], "A free-form human-readable description of the response status"],
+    [4, "*", "Results", [], "Data or extended status information that was requested from an OpenC2 command"]]
   ],
 
   ["Status-Code", "Enumerated", ["="], "", [
@@ -129,25 +109,8 @@
     [501, "", "Not Implemented - the server does not support the functionality required to fulfill the request."]]
   ],
 
-  ["hashes", "Map", [], "Hash values", [
-    [1, "MD5", "Binary", ["[0"], "MD5 message digest as defined in RFC3121"],
-    [2, "MD6", "Binary", ["[0"], "MD6 message digest as defined in MD6 proposal"],
-    [3, "RIPEMD-160", "Binary", ["[0"], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
-    [4, "SHA-1", "Binary", ["[0"], "Secure Hash Algorithm (SHA)-1 as defined in RFC3174"],
-    [5, "SHA-224", "Binary", ["[0"], "SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)"],
-    [6, "SHA-256", "Binary", ["[0"], "SHA-256 as defined in RFC6234"],
-    [7, "SHA-384", "Binary", ["[0"], "SHA-384 as defined in RFC6234"],
-    [8, "SHA-512", "Binary", ["[0"], "SHA-512 as defined in RFC6234"],
-    [9, "SHA3-224", "Binary", ["[0"], "SHA3-224 as defined in FIPS PUP 202"],
-    [10, "SHA3-256", "Binary", ["[0"], "SHA3-256 as defined in FIPS PUP 202"],
-    [11, "SHA3-384", "Binary", ["[0"], "SHA3-384 as defined in FIPS PUP 202"],
-    [12, "SHA3-512", "Binary", ["[0"], "SHA3-512 as defined in FIPS PUP 202"],
-    [13, "ssdeep", "Binary", ["[0"], "ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification"],
-    [14, "WHIRLPOOL", "Binary", ["[0"], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
-  ],
-
   ["artifact", "Record", [], "", [
-    [1, "mime_type", "String", ["[0"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
+    [1, "mime_type", "String", ["[0"], "Permitted values specified in the IANA Media Types registry"],
     [2, "*", "payload", ["[0"], "choice of literal content or URL to obtain content"],
     [3, "hashes", "hashes", ["[0"], "Specifies a dictionary of hashes for the contents of the payload"]]
   ],
@@ -157,32 +120,12 @@
     [2, "url", "uri", [], "MUST be a valid URL that resolves to the un-encoded content"]]
   ],
 
-  ["device", "Map", [], "TODO: Add inventory device-id?", [
-    [1, "description", "String", ["[0"], ""],
-    [2, "device_type", "String", ["[0"], ""],
-    [3, "manufacturer", "String", ["[0"], ""],
-    [4, "model", "String", ["[0"], ""],
-    [5, "serial_number", "String", ["[0"], ""],
-    [6, "firmware_version", "String", ["[0"], ""],
-    [7, "system_details", "String", ["[0"], ""]]
-  ],
+  ["openc2", "ArrayOf", ["#Query-Item", "[0", "]3"], "A target used to query Actuator for its supported capabilities"],
 
-  ["file", "Map", [], "", [
-    [1, "name", "String", ["[0"], ""],
-    [2, "path", "String", ["[0"], ""],
-    [3, "hash", "hashes", ["[0"], ""],
-    [4, "reputation", "reputation", ["[0"], ""]]
-   ],
-
-  ["reputation", "Enumerated", ["="], "", [
-    [0, "", "Not Set"],
-    [1, "", "Benign"],
-    [2, "", "Likely Benign"],
-    [3, "", "Possibly Benign"],
-    [4, "", "Indeterminate"],
-    [5, "", "Possibly Malicious"],
-    [6, "", "Likely Malicious"],
-    [7, "", "Known Malicious"]]
+  ["Query-Item", "Enumerated", [], "Results to be included in response to query openc2 command", [
+    [1, "versions", "OpenC2 language versions supported by this actuator"],
+    [2, "profiles", "List of profiles supported by this actuator"],
+    [3, "schema", "Definition of the command syntax supported by this actuator"]]
   ],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
@@ -200,20 +143,41 @@
     [132, "sctp", "Stream Control Transmission Protocol - RFC 4960"]]
   ],
 
-  ["layer7-protocol", "Enumerated", [], "Service Name and Transport Protocol Port - any IANA value, RFC 6335", [
-    [20, "ftp-data", "File Transfer Protocol (data)"],
-    [21, "ftp", "File Transfer Protocol (control)"],
-    [22, "ssh", "Secure Shell Protocol"],
-    [23, "telnet", "Telnet"],
-    [25, "smtp", "Simple Mail Transfer Protocol"],
-    [80, "http", "Hypertext Transport Protocol"],
-    [443, "https", "HTTP over TLS"]]
+  ["file", "Map", [], "", [
+    [1, "name", "String", ["[0"], "The name of the file as defined in the file system"],
+    [2, "path", "String", ["[0"], "The absolute path to the location of the file in the file system"],
+    [3, "hashes", "hashes", ["[0"], "One or more cryptographic hash codes of the file contents"]]
+   ],
+
+  ["Response-Type", "Enumerated", [], "", [
+    [0, "None", "No response"],
+    [1, "Ack", "Respond when command received"],
+    [2, "Complete", "Respond when all aspects of command completed"]]
   ],
 
-  ["openc2", "Choice", [], "A target used to query Actuator for its supported capabilities", [
-    [1, "actions", "Null", [], "query: Results = JSON array of supported action verbs"],
-    [2, "schema", "Null", [], "query: Results = JADN syntax of supported commands"],
-    [3, "actuator_groups", "Null", [], "query: Results = JSON array of actuator group names"]]
+  ["Process", "Map", [], "", [
+    [1, "pid", "Integer", ["[0"], "Process ID of the process"],
+    [2, "name", "String", ["[0"], "Name of the process"],
+    [3, "cwd", "String", ["[0"], "Current working directory of the process"],
+    [4, "executable", "File", ["[0"], "Executable that was executed to start the process"],
+    [5, "parent", "Process", ["[0"], "Process that spawned this one"],
+    [6, "command_line", "String", ["[0"], "The full command line invocation used to start this process, including all arguments"]]
+  ],
+
+  ["hashes", "Map", [], "Cryptographic Hash values", [
+    [1, "md5", "Binary", ["[0"], "Hex-encoded MD5 hash as defined in RFC3121"],
+    [4, "sha1", "Binary", ["[0"], "Hex-encoded SHA1 hash as defined in RFC3174"],
+    [6, "sha256", "Binary", ["[0"], "Hex-encoded SHA256 as defined in RFC6234"]]
+  ],
+
+  ["device", "Map", [], "TODO: Add inventory device-id?", [
+    [1, "description", "String", ["[0"], ""],
+    [2, "device_type", "String", ["[0"], ""],
+    [3, "manufacturer", "String", ["[0"], ""],
+    [4, "model", "String", ["[0"], ""],
+    [5, "serial_number", "String", ["[0"], ""],
+    [6, "firmware_version", "String", ["[0"], ""],
+    [7, "system_details", "String", ["[0"], ""]]
   ],
 
   ["command-id", "String", [], "Uniquely identifies a particular command - TBD syntax"],

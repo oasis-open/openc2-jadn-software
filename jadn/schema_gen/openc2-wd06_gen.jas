@@ -1,36 +1,19 @@
--- Generated from schema\openc2-wd05.jadn, Tue May  8 10:48:24 2018
+-- Generated from schema\openc2-wd06.jadn, Thu May 17 16:23:36 2018
 
 /*
 module:        openc2
 title:         OpenC2 Command Definitions
-version:       wd05
+version:       wd06
 description:   Datatypes that define the content of OpenC2 commands and
                responses.
 */
 
-OpenC2-Command ::= RECORD {    -- Communicates an action to be performed on a target and may include information identifying the actuator(s) to execute the command.
-    id           Command-ID,    -- Identifier used to link responses to a command
+OpenC2-Command ::= RECORD {    -- The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context.
     action       Action,    -- The task or activity to be performed (i.e., the 'verb')
     target       Target,    -- The object of the action. The action is performed on the target
     actuator     Actuator OPTIONAL,    -- The subject of the action. The actuator executes the action on the target
-    options      Command-Options OPTIONAL     -- Additional information that applies to the command
-}
-
-OpenC2Response ::= RECORD {
-    id           Command-ID,    -- Command that induced this response
-    status       Status-Code,    -- Adapted from HTTP Status Codes, RFC 7231
-    status_text  STRING OPTIONAL,    -- Status description
-    *            Results     -- Results of executing the command
-}
-
-Results ::= CHOICE {
-    string       [1] STRING OPTIONAL,    -- List of strings ***{u'max': 0}
-    media        [2] Media     -- Media type and data
-}
-
-Media ::= RECORD {
-    media-type   STRING,    -- Media Type (formerly MIME Type), RFC 6838
-    data         Payload     -- Content or URI
+    args         Args OPTIONAL,    -- Additional information that applies to the command
+    id           Command-ID OPTIONAL     -- Identifier used to link responses to a command
 }
 
 Action ::= ENUMERATED {
@@ -47,7 +30,7 @@ Action ::= ENUMERATED {
     restart      (11),    -- Stop then start a system or activity.
     pause        (12),    -- Cease a system or activity while maintaining state.
     resume       (13),    -- Start a system or activity from a paused state.
-    cancel       (14),    -- Invalidate a previous action.
+    cancel       (14),    -- Invalidate a previously issued action.
     set          (15),    -- Change a value, configuration, or state of a managed entity.
     update       (16),    -- Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
     move         (17),    -- Change the location of a file, subnet, network, or process.
@@ -92,30 +75,27 @@ Target ::= CHOICE {    -- OpenC2 Target datatypes
     user_session          [21] user-session,
     volume                [22] volume,
     windows_registry_key  [23] windows-registry-key,
-    x509_certificate      [24] x509-certificate
+    x509_certificate      [24] x509-certificate,
+    slpff                 [1024] Slpff-Target     -- Targets defined in the Stateless Packet Filter Firewall profile
 }
 
 Actuator ::= CHOICE {
-    any          [1] ActuatorSpecifiers,
-    firewall     [2] ActuatorSpecifiers
+    spff         [100] SpffSpecifiers     -- Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01
 }
 
-ActuatorSpecifiers ::= RECORD {
-    actuator_id  uri OPTIONAL,
-    asset_id     STRING OPTIONAL
+Args ::= MAP {
+    start_time          [1] Date-Time OPTIONAL,    -- The specific date/time to initiate the action
+    end_time            [2] Date-Time OPTIONAL,    -- The specific date/time to terminate the action
+    duration            [3] Duration OPTIONAL,    -- The length of time for an action to be in effect
+    response_requested  [4] Response-Type OPTIONAL,    -- The type of response required for the action
+    spff                [100] SpffArgs OPTIONAL     -- Command arguments defined in the Stateless Packet Filtering Firewall profile
 }
 
-Command-Options ::= MAP {
-    start_time          [1] date-time OPTIONAL,    -- universal
-    end_time            [2] date-time OPTIONAL,    -- universal
-    duration            [3] duration OPTIONAL,    -- pause, delay
-    response_requested  [4] response-type OPTIONAL,    -- Type of response required for the action
-    command_id          [5] command-id OPTIONAL     -- universal  (was "id")
-}
-
-response-type ::= ENUMERATED {
-    ack          (1),
-    status       (2)
+OpenC2-Response ::= RECORD {
+    id           Command-ID,    -- Id of the ommand that induced this response
+    status       Status-Code,    -- An integer status code
+    status_text  STRING OPTIONAL,    -- A free-form human-readable description of the response status
+    *            Results     -- Data or extended status information that was requested from an OpenC2 command
 }
 
 Status-Code ::= ENUMERATED {
@@ -129,25 +109,8 @@ Status-Code ::= ENUMERATED {
                  (501)     -- Not Implemented - the server does not support the functionality required to fulfill the request.
 }
 
-hashes ::= MAP {    -- Hash values
-    MD5          [1] BINARY OPTIONAL,    -- MD5 message digest as defined in RFC3121
-    MD6          [2] BINARY OPTIONAL,    -- MD6 message digest as defined in MD6 proposal
-    RIPEMD-160   [3] BINARY OPTIONAL,    -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
-    SHA-1        [4] BINARY OPTIONAL,    -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
-    SHA-224      [5] BINARY OPTIONAL,    -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
-    SHA-256      [6] BINARY OPTIONAL,    -- SHA-256 as defined in RFC6234
-    SHA-384      [7] BINARY OPTIONAL,    -- SHA-384 as defined in RFC6234
-    SHA-512      [8] BINARY OPTIONAL,    -- SHA-512 as defined in RFC6234
-    SHA3-224     [9] BINARY OPTIONAL,    -- SHA3-224 as defined in FIPS PUP 202
-    SHA3-256     [10] BINARY OPTIONAL,    -- SHA3-256 as defined in FIPS PUP 202
-    SHA3-384     [11] BINARY OPTIONAL,    -- SHA3-384 as defined in FIPS PUP 202
-    SHA3-512     [12] BINARY OPTIONAL,    -- SHA3-512 as defined in FIPS PUP 202
-    ssdeep       [13] BINARY OPTIONAL,    -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
-    WHIRLPOOL    [14] BINARY OPTIONAL     -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
-}
-
 artifact ::= RECORD {
-    mime_type    STRING OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
+    mime_type    STRING OPTIONAL,    -- Permitted values specified in the IANA Media Types registry
     *            payload OPTIONAL,    -- choice of literal content or URL to obtain content
     hashes       hashes OPTIONAL     -- Specifies a dictionary of hashes for the contents of the payload
 }
@@ -157,32 +120,12 @@ payload ::= CHOICE {
     url          [2] uri     -- MUST be a valid URL that resolves to the un-encoded content
 }
 
-device ::= MAP {    -- TODO: Add inventory device-id?
-    description       [1] STRING OPTIONAL,
-    device_type       [2] STRING OPTIONAL,
-    manufacturer      [3] STRING OPTIONAL,
-    model             [4] STRING OPTIONAL,
-    serial_number     [5] STRING OPTIONAL,
-    firmware_version  [6] STRING OPTIONAL,
-    system_details    [7] STRING OPTIONAL
-}
+openc2 ::= ARRAY_OF(Query-Item)    -- A target used to query Actuator for its supported capabilities
 
-file ::= MAP {
-    name         [1] STRING OPTIONAL,
-    path         [2] STRING OPTIONAL,
-    hash         [3] hashes OPTIONAL,
-    reputation   [4] reputation OPTIONAL
-}
-
-reputation ::= ENUMERATED {
-                 (0),    -- Not Set
-                 (1),    -- Benign
-                 (2),    -- Likely Benign
-                 (3),    -- Possibly Benign
-                 (4),    -- Indeterminate
-                 (5),    -- Possibly Malicious
-                 (6),    -- Likely Malicious
-                 (7)     -- Known Malicious
+Query-Item ::= ENUMERATED {    -- Results to be included in response to query openc2 command
+    versions     (1),    -- OpenC2 language versions supported by this actuator
+    profiles     (2),    -- List of profiles supported by this actuator
+    schema       (3)     -- Definition of the command syntax supported by this actuator
 }
 
 ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
@@ -200,20 +143,41 @@ layer4-protocol ::= ENUMERATED {    -- protocol (IPv4) or next header (IPv6) fie
     sctp         (132)     -- Stream Control Transmission Protocol - RFC 4960
 }
 
-layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port - any IANA value, RFC 6335
-    ftp-data     (20),    -- File Transfer Protocol (data)
-    ftp          (21),    -- File Transfer Protocol (control)
-    ssh          (22),    -- Secure Shell Protocol
-    telnet       (23),    -- Telnet
-    smtp         (25),    -- Simple Mail Transfer Protocol
-    http         (80),    -- Hypertext Transport Protocol
-    https        (443)     -- HTTP over TLS
+file ::= MAP {
+    name         [1] STRING OPTIONAL,    -- The name of the file as defined in the file system
+    path         [2] STRING OPTIONAL,    -- The absolute path to the location of the file in the file system
+    hashes       [3] hashes OPTIONAL     -- One or more cryptographic hash codes of the file contents
 }
 
-openc2 ::= CHOICE {    -- A target used to query Actuator for its supported capabilities
-    actions          [1] NULL,    -- query: Results = JSON array of supported action verbs
-    schema           [2] NULL,    -- query: Results = JADN syntax of supported commands
-    actuator_groups  [3] NULL     -- query: Results = JSON array of actuator group names
+Response-Type ::= ENUMERATED {
+    None         (0),    -- No response
+    Ack          (1),    -- Respond when command received
+    Complete     (2)     -- Respond when all aspects of command completed
+}
+
+Process ::= MAP {
+    pid           [1] INTEGER OPTIONAL,    -- Process ID of the process
+    name          [2] STRING OPTIONAL,    -- Name of the process
+    cwd           [3] STRING OPTIONAL,    -- Current working directory of the process
+    executable    [4] File OPTIONAL,    -- Executable that was executed to start the process
+    parent        [5] Process OPTIONAL,    -- Process that spawned this one
+    command_line  [6] STRING OPTIONAL     -- The full command line invocation used to start this process, including all arguments
+}
+
+hashes ::= MAP {    -- Cryptographic Hash values
+    md5          [1] BINARY OPTIONAL,    -- Hex-encoded MD5 hash as defined in RFC3121
+    sha1         [4] BINARY OPTIONAL,    -- Hex-encoded SHA1 hash as defined in RFC3174
+    sha256       [6] BINARY OPTIONAL     -- Hex-encoded SHA256 as defined in RFC6234
+}
+
+device ::= MAP {    -- TODO: Add inventory device-id?
+    description       [1] STRING OPTIONAL,
+    device_type       [2] STRING OPTIONAL,
+    manufacturer      [3] STRING OPTIONAL,
+    model             [4] STRING OPTIONAL,
+    serial_number     [5] STRING OPTIONAL,
+    firmware_version  [6] STRING OPTIONAL,
+    system_details    [7] STRING OPTIONAL
 }
 
 command-id ::= STRING    -- Uniquely identifies a particular command - TBD syntax

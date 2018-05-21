@@ -1,0 +1,66 @@
+{
+    "meta": {
+        "module": "jadn",
+        "title": "JADN Schema Syntax",
+        "version": "1.0 wd01",
+        "description": "Syntax of a JSON Abstract Schema Notation (JADN) module."
+    },
+
+    "types": [
+
+        ["JADN", "Record", [], "Definition of a JADN file", [
+            [1, "meta", "SchemaMeta", [], "Information about the schema module"],
+            [2, "types", "SchemaType", ["]0"], "Type definitions"]]
+        ],
+
+        ["SchemaMeta", "Map", [], "Meta-information about this schema", [
+            [1, "module", "String", [], "Module name"],
+            [2, "title", "String", ["[0"], ""],
+            [3, "version", "String", ["[0"], "Module version"],
+            [4, "description", "String", ["[0"], ""],
+            [5, "imports", "Import", ["[0", "]0"], "List of imported modules"]]
+        ],
+
+        ["Import", "Array", [], "", [
+            [1, "nsid", "String", [], "Namespace identifier"],
+            [2, "name", "String", [], "Unique name of the defining module"]]
+        ],
+
+        ["SchemaType", "Array", [], "", [
+            [1, "name", "String", [], ""],
+            [2, "type", "JADN-Type", [], "TODO: Need * option to  autogenerate enum from choice"],
+            [3, "options", "String", ["]0"], ""],
+            [4, "description", "String", [], ""],
+            [5, "fields", "JADN-Type", ["&type", "]0"], ""]]
+        ],
+
+        ["JADN-Type", "Choice", [], "", [
+            [1, "Binary", "Null", [], "Octet sequence"],
+            [2, "Boolean", "Null", [], "True or False"],
+            [3, "Integer", "Null", [], "Whole number"],
+            [4, "Number", "Null", [], "Real number"],
+            [5, "Null", "Null", [], "Nothing"],
+            [6, "String", "Null", [], "Character sequence"],
+            [7, "Array", "FullField", ["]0"], "Ordered list of fields"],
+            [8, "ArrayOf", "Null", [], "Ordered list of fields of a specified type"],
+            [9, "Choice", "FullField", ["]0"], "One of a set of named fields"],
+            [10, "Enumerated", "EnumField", ["]0"], "One of a set of id:name pairs"],
+            [11, "Map", "FullField", ["]0"], "Unordered set of named fields"],
+            [12, "Record", "FullField", ["]0"], "Ordered list of named fields"]]
+        ],
+
+        ["EnumField", "Array", [], "Field definition for Enumerated types", [
+            [1, "id", "Integer", [], "Field ID"],
+            [2, "name", "String", [], "Field name"],
+            [3, "desc", "String", [], "Field description"]]
+        ],
+
+        ["FullField", "Array", [], "Field definition for types other than Enumerated", [
+            [1, "id", "Integer", [], "Field ID or ordinal position"],
+            [2, "name", "String", [], "Field name"],
+            [3, "type", "String", [], "Field type"],
+            [4, "opts", "String", ["[0", "]0"], "Field optiona"],
+            [5, "desc", "String", [], "Field description"]]
+        ]
+    ]
+}

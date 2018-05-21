@@ -91,6 +91,7 @@ def jadn_check(schema):
         'Boolean': [],
         'Integer': ['min', 'max'],
         'Number': ['min', 'max'],
+        'Null': [],
         'String': ['min', 'max', 'pattern', 'format'],
         'Array': ['min', 'max'],
         'ArrayOf': ['min', 'max', 'aetype'],
@@ -100,21 +101,29 @@ def jadn_check(schema):
         'Record': ['compact'],
     }
     valid_fopts = {
-        "Array": ['min', 'max', 'etype'],
-        "Choice": [],
+        "Array": ['min', 'max', 'etype', 'atfield'],
+        "Choice": ['min', 'max', 'etype'],
         "Enumerated": [],
         "Map": ['min', 'max', 'etype'],
         "Record": ['min', 'max', 'etype', 'atfield'],
     }
 
+    assert set(valid_topts) == set(PRIMITIVE_TYPES + STRUCTURE_TYPES)
     jsonschema.Draft4Validator(jadn_schema).validate(schema)
+
+    # TODO: raise exception instead of print
+    # TODO: field type Null can't have options
 
     for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if not is_builtin(t[TTYPE]):
             print("Type error: Unknown type", t[TTYPE], "(" + t[TNAME] + ")")       # TODO: handle if t[TNAME] doesn't exist
-        vop = {k for k in topts_s2d(t[TOPTS])} - {k for k in valid_topts[t[TTYPE]]}
+
+        topts = topts_s2d(t[TOPTS])
+        vop = {k for k in topts} - {k for k in valid_topts[t[TTYPE]]}
         if vop:
             print("Error:", t[TNAME], "type", t[TTYPE], "invalid option", str(vop))
+        if t[TTYPE] == 'ArrayOf' and 'aetype' not in topts:
+            print("Error:", t[TNAME], "- Missing array element type")
         if is_primitive(t[TTYPE]) or t[TTYPE] == 'ArrayOf':
             if len(t) != 4:    # TODO: trace back to base type
                 print("Type format error:", t[TNAME], "- type", t[TTYPE], "cannot have items")
@@ -133,7 +142,7 @@ def jadn_check(schema):
                     if len(i) > 3:
                         fop = {k for k in fopts_s2d(i[FOPTS])} - {k for k in valid_fopts[t[TTYPE]]}
                         if fop:
-                            print("Error:", t[TNAME], "field", i[FNAME], i[FTYPE], "invalid option", str(fop))
+                            print("Error:", t[TNAME], ":", i[FNAME], i[FTYPE], "invalid option", str(fop))
     # TODO: add check that wildcard name MUST be Choice type, and that only one wildcard is permitted per map/record.
                 if len(t[FIELDS]) != len(tags):
                     print("Tag collision", t[TNAME], len(t[FIELDS]), "items,", len(tags), "unique tags")
@@ -167,8 +176,8 @@ def build_jadn_deps(schema):
     items = []
     for tdef in schema["types"]:
         deps = []
-        if tdef[TTYPE] == "Array":
-            aetype = opts_s2d(tdef[TOPTS])["aetype"]
+        if tdef[TTYPE] == "ArrayOf":
+            aetype = topts_s2d(tdef[TOPTS])["aetype"]
             if not is_builtin(aetype):
                 deps.append(aetype)
         if len(tdef) > FIELDS and tdef[TTYPE] != "Enumerated":

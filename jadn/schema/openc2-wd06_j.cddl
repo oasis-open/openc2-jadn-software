@@ -1,0 +1,47 @@
+openC2Command = {
+    action = action,
+    target = target,
+    actuator = actuator,
+    args = , ; something...
+    id = command_id,
+}
+
+openC2Responce = {
+    id = command_id,
+    status = statusCode,
+    statusText = bstr,
+    RESULTS ; something...
+}
+
+actuatorSpecifiers = {
+}
+
+artifact = {
+    mimeType = bstr,
+    payload = PAYLOAD, ; something...
+    hashes = hashes; something...
+}
+
+ip_connection = {
+    src_addr = ip-addr,
+    src_por = port,
+    dst_addr = ip-addr,
+    dst_port = port,
+    layer4_protocol = layer4-protocol ; somehting....
+}
+
+
+
+
+command_id = bstr
+date_time" = bstr
+duration = bstr
+domain_name = bstr
+email_addr = bstr
+ip_addr = bstr
+ipv4_addr = bstr
+ipv6_addr = bstr
+mac_addr = bstr
+port = bstr,
+version = bstr
+uri = bstr

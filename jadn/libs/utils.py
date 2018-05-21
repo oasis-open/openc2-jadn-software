@@ -32,3 +32,23 @@ class Utils(object):
                 tmp[ks] = itm[k]
 
         return tmp
+
+    @staticmethod
+    def defaultDecode(itm):
+        tmp = type(itm)()
+
+        if hasattr(tmp, '__iter__'):
+            for k in itm:
+                if type(tmp) == dict:
+                    tmp[k] = Utils.defaultDecode(k)
+
+                elif type(tmp) == list:
+                    tmp.append(Utils.defaultDecode(k))
+
+                else:
+                    print('not prepared type')
+
+        else:
+            tmp = str(itm)
+
+        return tmp

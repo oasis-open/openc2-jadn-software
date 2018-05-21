@@ -30,7 +30,7 @@
 
   ["Media", "Record", [], "", [
     [1, "media-type", "String", [], "Media Type (formerly MIME Type), RFC 6838"],
-    [2, "data", "Payload", [], "Content or URI"]]
+    [2, "data", "payload", [], "Content or URI"]]
   ],
 
   ["Action", "Enumerated", [], "", [

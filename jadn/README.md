@@ -42,3 +42,4 @@ in the language specification and is used to generate the property tables in tha
 #### Note
 - Oasis JADN [github](https://github.com/oasis-open/openc2-jadn/)
 - Using [git flow](https://danielkummer.github.io/git-flow-cheatsheet/) for developement
+- Protobuf3 to python code ```protoc -I=./ --python_out=./python/ openc2-wd05.proto```

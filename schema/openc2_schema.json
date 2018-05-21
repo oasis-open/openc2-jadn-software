@@ -1,0 +1,1629 @@
+{
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/command"
+    },
+    {
+      "$ref": "#/definitions/response"
+    },
+    {
+      "$ref": "#/definitions/alert"
+    }
+  ],
+  "definitions": {
+    "__comment0": "OpenC2 Object Definitions",
+    "command": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/action"
+        },
+        "target": {
+          "$ref": "#/definitions/target"
+        },
+        "actuator": {
+          "$ref": "#/definitions/actuator"
+        },
+        "modifiers": {
+          "$ref": "#/definitions/modifiers"
+        }
+      },
+      
+      "required": [
+        "action",
+        "target"
+      ]
+    },
+    "action": {
+      "enum": [
+        "allow",
+        "augment",
+        "cancel",
+        "contain",
+        "copy",
+        "delay",
+        "delete",
+        "deny",
+        "detonate",
+        "distill",
+        "investigate",
+        "locate",
+        "mitigate",
+        "modify",
+        "move",
+        "notify",
+        "pause",
+        "query",
+        "redirect",
+        "remediate",
+        "report",
+        "restart",
+        "restore",
+        "resume",
+        "save",
+        "scan",
+        "set",
+        "snapshot",
+        "start",
+        "stop",
+        "substitute",
+        "sync",
+        "throttle",
+        "update"
+      ]
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "artifact": {
+          "$ref": "#/definitions/artifact"
+        },
+        "commands": {
+          "$ref": "#/definitions/commands"
+        },
+        "device": {
+          "$ref": "#/definitions/device"
+        },
+        "directory": {
+          "$ref": "#/definitions/directory"
+        },
+        "disk": {
+          "$ref": "#/definitions/disk"
+        },
+        "disk_partition": {
+          "$ref": "#/definitions/disk_partition"
+        },
+        "domain_name": {
+          "$ref": "#/definitions/domain_name"
+        },
+        "email_addr": {
+          "$ref": "#/definitions/email_addr"
+        },
+        "email_message": {
+          "$ref": "#/definitions/email_message"
+        },
+        "file": {
+          "$ref": "#/definitions/file"
+        },
+        "ipv4_addr": {
+          "$ref": "#/definitions/ipv4_addr"
+        },
+        "ipv6_addr": {
+          "$ref": "#/definitions/ipv6_addr"
+        },
+        "mac_addr": {
+          "$ref": "#/definitions/mac_addr"
+        },
+        "memory": {
+          "$ref": "#/definitions/memory"
+        },
+        "ip_connection": {
+          "$ref": "#/definitions/ip_connection"
+        },
+        "process": {
+          "$ref": "#/definitions/process"
+        },
+        "software": {
+          "$ref": "#/definitions/software"
+        },
+        "url": {
+          "$ref": "#/definitions/url"
+        },
+        "user_account": {
+          "$ref": "#/definitions/user_account"
+        },
+        "user_session": {
+          "$ref": "#/definitions/user_session"
+        },
+        "volume": {
+          "$ref": "#/definitions/volume"
+        },
+        "windows_registry_key": {
+          "$ref": "#/definitions/windows_registry_key"
+        },
+        "x509_certificate": {
+          "$ref": "#/definitions/x509_certificate"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "artifact"
+          ]
+        },
+        {
+          "required": [
+            "commands"
+          ]
+        },
+        {
+          "required": [
+            "device"
+          ]
+        },
+        {
+          "required": [
+            "directory"
+          ]
+        },
+        {
+          "required": [
+            "disk"
+          ]
+        },
+        {
+          "required": [
+            "disk_partition"
+          ]
+        },
+        {
+          "required": [
+            "domain_name"
+          ]
+        },
+        {
+          "required": [
+            "email_addr"
+          ]
+        },
+        {
+          "required": [
+            "email_message"
+          ]
+        },
+        {
+          "required": [
+            "file"
+          ]
+        },
+        {
+          "required": [
+            "ipv4_addr"
+          ]
+        },
+        {
+          "required": [
+            "ipv6_addr"
+          ]
+        },
+        {
+          "required": [
+            "mac_addr"
+          ]
+        },
+        {
+          "required": [
+            "memory"
+          ]
+        },
+        {
+          "required": [
+            "ip_connection"
+          ]
+        },
+        {
+          "required": [
+            "process"
+          ]
+        },
+        {
+          "required": [
+            "software"
+          ]
+        },
+        {
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "required": [
+            "user_account"
+          ]
+        },
+        {
+          "required": [
+            "user_session"
+          ]
+        },
+        {
+          "required": [
+            "volume"
+          ]
+        },
+        {
+          "required": [
+            "windows_registry_key"
+          ]
+        },
+        {
+          "required": [
+            "x509_certificate"
+          ]
+        }
+      ]
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "response_src": {
+          "$ref": "#/definitions/device_id"
+        },
+        "command_id": {
+          "$ref": "#/definitions/command_id"
+        },
+        "status": {
+          "$ref": "#/definitions/status_code"
+        },
+        "statusText": {
+          "type": "string"
+        },
+        "results": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "actuator": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_digital_telephone_handset": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_laptop": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_pos_terminal": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_printer": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_sensor": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_server": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_smart_meter": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_smart_phone": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_tablet": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "endpoint_workstation": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_bridge": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_firewall": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_gateway": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_guard": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_hips": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_hub": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_ids": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_ips": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_modem": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_nic": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_proxy": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_router": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_security_manager": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_sense_making": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_sensor": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_switch": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_vpn": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "network_wap": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_aaa_server": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_anti_virus_scanner": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_connection_scanner": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_directory_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_dns_server": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_email_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_file_scanner": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_location_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_network_scanner": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_remediation_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_reputation_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_sandbox": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_virtualization_service": {
+          "$ref": "#/definitions/actuator_specifier"
+        },
+        "process_vulnerability_scanner": {
+          "$ref": "#/definitions/actuator_specifier"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "endpoint"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_digital_telephone_handset"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_laptop"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_pos_terminal"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_printer"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_sensor"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_server"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_smart_meter"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_smart_phone"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_tablet"
+          ]
+        },
+        {
+          "required": [
+            "endpoint_workstation"
+          ]
+        },
+        {
+          "required": [
+            "network"
+          ]
+        },
+        {
+          "required": [
+            "network_bridge"
+          ]
+        },
+        {
+          "required": [
+            "network_firewall"
+          ]
+        },
+        {
+          "required": [
+            "network_gateway"
+          ]
+        },
+        {
+          "required": [
+            "network_guard"
+          ]
+        },
+        {
+          "required": [
+            "network_hips"
+          ]
+        },
+        {
+          "required": [
+            "network_hub"
+          ]
+        },
+        {
+          "required": [
+            "network_ids"
+          ]
+        },
+        {
+          "required": [
+            "network_ips"
+          ]
+        },
+        {
+          "required": [
+            "network_modem"
+          ]
+        },
+        {
+          "required": [
+            "network_nic"
+          ]
+        },
+        {
+          "required": [
+            "network_proxy"
+          ]
+        },
+        {
+          "required": [
+            "network_router"
+          ]
+        },
+        {
+          "required": [
+            "network_security_manager"
+          ]
+        },
+        {
+          "required": [
+            "network_sense_making"
+          ]
+        },
+        {
+          "required": [
+            "network_sensor"
+          ]
+        },
+        {
+          "required": [
+            "network_switch"
+          ]
+        },
+        {
+          "required": [
+            "network_vpn"
+          ]
+        },
+        {
+          "required": [
+            "network_wap"
+          ]
+        },
+        {
+          "required": [
+            "process"
+          ]
+        },
+        {
+          "required": [
+            "process_aaa_server"
+          ]
+        },
+        {
+          "required": [
+            "process_anti_virus_scanner"
+          ]
+        },
+        {
+          "required": [
+            "process_connection_scanner"
+          ]
+        },
+        {
+          "required": [
+            "process_directory_service"
+          ]
+        },
+        {
+          "required": [
+            "process_dns_server"
+          ]
+        },
+        {
+          "required": [
+            "process_email_service"
+          ]
+        },
+        {
+          "required": [
+            "process_file_scanner"
+          ]
+        },
+        {
+          "required": [
+            "process_location_service"
+          ]
+        },
+        {
+          "required": [
+            "process_network_scanner"
+          ]
+        },
+        {
+          "required": [
+            "process_remediation_service"
+          ]
+        },
+        {
+          "required": [
+            "process_reputation_service"
+          ]
+        },
+        {
+          "required": [
+            "process_sandbox"
+          ]
+        },
+        {
+          "required": [
+            "process_virtualization_service"
+          ]
+        },
+        {
+          "required": [
+            "process_vulnerability_scanner"
+          ]
+        }
+      ]
+    },
+    "modifiers": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "command_id" : {
+          "$red" : "#/definitions/command_id"
+        },
+        "start_time": {
+          "$ref": "#/definitions/datetime"
+        },
+        "end_time": {
+          "$ref": "#/definitions/datetime"
+        },
+        "duration": {
+          "$ref": "#/definitions/duration"
+        },
+        "frequency": {
+          "$ref": "#/definitions/duration"
+        },
+        "command_src": {
+          "$ref": "#/definitions/device_id"
+        },
+        "response": {
+          "$ref": "#/definitions/response_type"
+        },
+        "repond_to": {
+          "$ref": "#/definitions/respond_to"
+        },
+        "source": {
+          "$ref": "#/definitions/location"
+        },
+        "destination": {
+          "$ref": "#/definitions/location"
+        },
+        "options": {
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/definitions/method_value"
+        },
+        "search": {
+          "$ref": "#/definitions/search_type"
+        },
+        "where": {
+          "$ref": "#/definitions/where"
+        },
+        "message": {
+          "type": "string"
+        },
+        "command_ref": {
+          "$ref": "#/definitions/command_id"
+        },
+        "network_acl": {
+          "$ref": "#/definitions/network_acl"
+        },
+        "segmentation": {
+          "$ref": "#/definitions/segmentation"
+        }
+      }
+    },
+    "alert": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ]
+    },
+    "__comment1": "Target Definitions",
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "mime_type": {
+          "type": "string"
+        },
+        "*": {
+          "$ref": "#/definitions/payload"
+        },
+        "hashes": {
+          "$ref": "#/definitions/hashes_type"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "payload_bin": {
+          "$ref": "#/definitions/base64"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "payload_bin"
+          ]
+        },
+        {
+          "required": [
+            "url"
+          ]
+        }
+      ]
+    },
+    "commands": {
+      "enum": [
+        "actions",
+        "schema",
+        "actuator_groups"
+      ]
+    },
+    "device": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "device_type": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "serial_number": {
+          "type": "string"
+        },
+        "firmware_version": {
+          "type": "string"
+        },
+        "system_details": {
+          "type": "string"
+        }
+      }
+    },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "path_enc": {
+          "type": "string"
+        },
+        "created": {
+          "$ref": "#/definitions/datetime"
+        },
+        "modified": {
+          "$ref": "#/definitions/datetime"
+        },
+        "accessed": {
+          "$ref": "#/definitions/datetime"
+        },
+        "contains": {
+          "$ref": "#/definitions/dir_contents"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "dir_contents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dirfile"
+      }
+    },
+    "dirfile": {
+      "type": "object",
+      "properties": {
+        "d": {
+          "$ref": "#/definitions/directory"
+        },
+        "f": {
+          "$ref": "#/definitions/file"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "d"
+          ]
+        },
+        {
+          "required": [
+            "f"
+          ]
+        }
+      ]
+    },
+    "disk": {
+      "type": "object"
+    },
+    "disk_partition": {
+      "type": "object"
+    },
+    "domain_name": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "resolves_to": {
+          "$ref": "#/definitions/ip_addrs"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "ip_addrs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ip_addr"
+      }
+    },
+    "ip_addr": {
+      "type": "object",
+      "properties": {
+        "ipv4": {
+          "$ref": "#/definitions/ipv4_addr"
+        },
+        "ipv6": {
+          "$ref": "#/definitions/ipv6_addr"
+        },
+        "name": {
+          "$ref": "#/definitions/domain_name"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "ipv4"
+          ]
+        },
+        {
+          "required": [
+            "ipv6"
+          ]
+        },
+        {
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "email_addr": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "belongs_to": {
+          "$ref": "#/definitions/user_account"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "email_message": {
+      "type": "object"
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "extensions": {
+          "$ref": "#/definitions/file_extensions"
+        },
+        "hashes": {
+          "$ref": "#/definitions/hashes_type"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_enc": {
+          "type": "string"
+        },
+        "magic_number_hex": {
+          "$ref": "#/definitions/hex"
+        },
+        "mime_type": {
+          "type": "string"
+        },
+        "created": {
+          "$ref": "#/definitions/datetime"
+        },
+        "modified": {
+          "$ref": "#/definitions/datetime"
+        },
+        "accessed": {
+          "$ref": "#/definitions/datetime"
+        },
+        "parent_directory": {
+          "$ref": "#/definitions/directory"
+        },
+        "is_encrypted": {
+          "type": "boolean"
+        },
+        "encryption_algorithm": {
+          "$ref": "#/definitions/encryption_algo"
+        },
+        "decryption_key": {
+          "type": "string"
+        },
+        "contains": {
+          "$ref": "#/definitions/file_contents"
+        },
+        "content": {
+          "$ref": "#/definitions/artifact"
+        }
+      }
+    },
+    "file_contents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/target"
+      }
+    },
+    "file_extensions": {
+      "type": "object",
+      "properties": {
+        "ntfs_ext": {
+          "$ref": "#/definitions/ntfs_ext"
+        },
+        "raster_image_ext": {
+          "$ref": "#/definitions/raster_image_ext"
+        },
+        "pdf_ext": {
+          "$ref": "#/definitions/pdf_ext"
+        },
+        "archive_ext": {
+          "$ref": "#/definitions/archive_ext"
+        },
+        "windows_pebinary_ext": {
+          "$ref": "#/definitions/windows_pebinary_ext"
+        }
+      }
+    },
+    "ntfs_ext": {
+      "type": "object"
+    },
+    "raster_image_ext": {
+      "type": "object"
+    },
+    "pdf_ext": {
+      "type": "object"
+    },
+    "archive_ext": {
+      "type": "object"
+    },
+    "windows_pebinary_ext": {
+      "type": "object"
+    },
+    "ipv4_addr": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "resolves_to_refs": {
+          "$ref": "#/definitions/mac_addrs"
+        },
+        "belongs_to_refs": {
+          "$ref": "#/definitions/asystems"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "ipv6_addr": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "resolves_to_refs": {
+          "$ref": "#/definitions/mac_addrs"
+        },
+        "belongs_to_refs": {
+          "$ref": "#/definitions/asystems"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "mac_addrs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/mac_addr"
+      }
+    },
+    "mac_addr": {
+      "type": "string"
+    },
+    "asystems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/autonomous_system"
+      }
+    },
+    "autonomous_system": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rir": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "number"
+      ]
+    },
+    "memory": {
+      "type": "object"
+    },
+    "ip_connection": {
+      "type": "object",
+      "properties": {
+        "src_addr": {
+          "$ref": "#/definitions/ip_addr"
+        },
+        "src_port": {
+          "$ref": "#/definitions/port"
+        },
+        "dst_addr": {
+          "$ref": "#/definitions/ip_addr"
+        },
+        "dst_port": {
+          "$ref": "#/definitions/port"
+        },
+        "layer4_protocol": {
+          "$ref": "#/definitions/layer4_protocol"
+        }
+      }
+    },
+    "port": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer"
+        },
+        "protocol": {
+          "$ref": "#/definitions/layer7_protocol"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "number"
+          ]
+        },
+        {
+          "required": [
+            "protocol"
+          ]
+        }
+      ]
+    },
+    "layer3_protocol": {
+      "enum": [
+        "IPv4",
+        "ARP",
+        "IPv6",
+        "MPLS"
+      ]
+    },
+    "layer4_protocol": {
+      "enum": [
+        "ICMP",
+        "TCP",
+        "UDP"
+      ]
+    },
+    "layer7_protocol": {
+      "enum": [
+        "ftp-data",
+        "ftp",
+        "ssh",
+        "telnet",
+        "smtp",
+        "http",
+        "https"
+      ]
+    },
+    "process": {
+      "type": "object",
+      "properties": {
+        "extension": {
+          "$ref": "#/definitions/process_ext"
+        },
+        "is_hidden": {
+          "type": "boolean"
+        },
+        "pid": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "created": {
+          "$ref": "#/definitions/datetime"
+        },
+        "cwd": {
+          "type": "string"
+        },
+        "arguments": {
+          "$ref": "#/definitions/arguments"
+        },
+        "environment_variables": {
+          "$ref": "#/definitions/envars"
+        },
+        "opened_connections": {
+          "$ref": "#/definitions/opened_connections"
+        },
+        "creator_user": {
+          "$ref": "#/definitions/user_account"
+        },
+        "binary": {
+          "$ref": "#/definitions/file"
+        },
+        "parent": {
+          "$ref": "#/definitions/process"
+        },
+        "children": {
+          "$ref": "#/definitions/process_children"
+        }
+      }
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "envars": {
+      "type": "object"
+    },
+    "opened_connections": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "process_ext": {
+      "type": "object",
+      "properties": {
+        "windows_process_ext": {
+          "$ref": "#/definitions/windows_process_ext"
+        },
+        "windows_service_ext": {
+          "$ref": "#/definitions/windows_service_ext"
+        }
+      }
+    },
+    "process_children": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/process"
+      }
+    },
+    "windows_process_ext": {
+      "type": "object"
+    },
+    "windows_service_ext": {
+      "type": "object"
+    },
+    "software": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "cpe": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "vendor": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "url": {
+      "type": "string"
+    },
+    "user_account": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "account_login": {
+          "type": "string"
+        },
+        "account_type": {
+          "$ref": "#/definitions/account_type"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "is_service_account": {
+          "type": "boolean"
+        },
+        "is_privileged": {
+          "type": "boolean"
+        },
+        "can_escalate_privs": {
+          "type": "boolean"
+        },
+        "is_disabled": {
+          "type": "boolean"
+        },
+        "account_created": {
+          "$ref": "#/definitions/datetime"
+        },
+        "account_expires": {
+          "$ref": "#/definitions/datetime"
+        },
+        "password_last_changed": {
+          "$ref": "#/definitions/datetime"
+        },
+        "account_first_login": {
+          "$ref": "#/definitions/datetime"
+        },
+        "account_last_login": {
+          "$ref": "#/definitions/datetime"
+        }
+      }
+    },
+    "account_type": {
+      "type": "object"
+    },
+    "user_session": {
+      "type": "object"
+    },
+    "volume": {
+      "type": "object"
+    },
+    "windows_registry_key": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "values": {
+          "$ref": "#/definitions/windows_registry_values"
+        },
+        "modified": {
+          "$ref": "#/definitions/datetime"
+        },
+        "creator_user": {
+          "$red": "#/definitions/user_account"
+        },
+        "number_of_subkeys": {
+          "type": "integer"
+        }
+      }
+    },
+    "windows_registry_values": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/windows_registry_value"
+      }
+    },
+    "windows_registry_value": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        },
+        "data_type": {
+          "$ref": "#/definitions/windows_registry_datatype_enum"
+        }
+      }
+    },
+    "windows_registry_datatype_enum": {
+      "enum": [
+        "REG_NONE",
+        "REG_SZ",
+        "REG_EXPAND_SZ",
+        "REG_BINARY",
+        "REG_DWORD",
+        "REG_DWORD_BIG_ENDIAN",
+        "REG_LINK",
+        "REG_MULTI_SZ",
+        "REG_RESOURCE_LIST",
+        "REG_FULL_RESOURCE_DESCRIPTION",
+        "REG_RESOURCE_REQUIREMENTS_LIST",
+        "REG_QWORD",
+        "REG_INVALID_TYPE"
+      ]
+    },
+    "x509_certificate": {
+      "type": "object",
+      "properties": {
+        "is_self_signed": {
+          "type": "boolean"
+        },
+        "hashes": {
+          "$ref": "#/definitions/hashes_type"
+        }
+      },
+      "required": [
+        "hashes"
+      ]
+    },
+    "__comment2": "Actuator Definitions",
+    "actuator_specifier": {
+      "type": "object",
+      "properties": {
+        "actuator_id": {
+          "$ref": "#/definitions/url"
+        },
+        "asset_id": {
+          "type": "string"
+        }
+      }
+    },
+    "__comment3": "Modifier Definitions",
+    "response_type": {
+      "enum": [
+        "ack",
+        "status"
+      ]
+    },
+    "method_value": {
+      "properties": {
+        "deny": {
+          "$ref": "#/definitions/method_deny"
+        },
+        "pause": {
+          "$ref": "#/definitions/method_pause"
+        },
+        "scan": {
+          "$ref": "#/definitions/method_scan"
+        },
+        "start": {
+          "$ref": "#/definitions/method_start"
+        },
+        "stop": {
+          "$ref": "#/definitions/method_stop"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "deny"
+          ]
+        },
+        {
+          "required": [
+            "pause"
+          ]
+        },
+        {
+          "required": [
+            "scan"
+          ]
+        },
+        {
+          "required": [
+            "start"
+          ]
+        },
+        {
+          "required": [
+            "stop"
+          ]
+        }
+      ]
+    },
+    "method_deny": {
+      "enum": [
+        "acl",
+        "blackhole",
+        "sinkhole",
+        "blacklist",
+        "whitelist"
+      ]
+    },
+    "method_pause": {
+      "enum": [
+        "hibernate",
+        "sleep",
+        "suspend"
+      ]
+    },
+    "method_scan": {
+      "enum": [
+        "authenticated",
+        "non-authenticated"
+      ]
+    },
+    "method_start": {
+      "enum": [
+        "spawn"
+      ]
+    },
+    "method_stop": {
+      "enum": [
+        "graceful",
+        "immediate"
+      ]
+    },
+    "where": {
+      "enum": [
+        "internal",
+        "perimeter",
+        "unspecified"
+      ]
+    },
+    "segmentation": {
+      "type": "object"
+    },
+    "network_acl": {
+      "type": "object"
+    },
+    "search_type": {
+      "enum": [
+        "cve",
+        "patch",
+        "vendor-bulletin",
+        "signature"
+      ]
+    },
+    "__comment4": "Response Definitions",
+    "device_id": {
+      "type": "string"
+    },
+    "respond_to": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "command_id": {
+      "type": "string"
+    },
+    "status_code": {
+      "enum": [
+        "Processing",
+        "OK",
+        "Bad_Request",
+        "Unauthorized",
+        "Forbidden",
+        "Internal_Server_Error",
+        "Not_Implemented"
+      ]
+    },
+    "__comment5": "Generic Definitions",
+    "duration": {
+      "type": "string",
+      "pattern": "^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"
+    },
+    "datetime": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"
+    },
+    "base64": {
+      "type": "string"
+    },
+    "hex": {
+      "type": "string"
+    },
+    "hashes_type": {
+      "type": "object",
+      "properties": {
+        "MD5": {
+          "$ref": "#/definitions/hex"
+        },
+        "MD6": {
+          "$ref": "#/definitions/hex"
+        },
+        "RIPEMD-160": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA-1": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA-224": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA-256": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA-384": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA-512": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA3-224": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA3-256": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA3-384": {
+          "$ref": "#/definitions/hex"
+        },
+        "SHA3-512": {
+          "$ref": "#/definitions/hex"
+        },
+        "ssdeep": {
+          "$ref": "#/definitions/hex"
+        },
+        "WHIRLPOOL": {
+          "$ref": "#/definitions/hex"
+        }
+      }
+    },
+    "encryption_algo": {
+      "enum": [
+        "AES128-ECB",
+        "AES128-CBC",
+        "AES128-CFB",
+        "AES128-OFB",
+        "AES128-CTR",
+        "AES128-XTS",
+        "AES128-GCM",
+        "Salsa20",
+        "Salsa12",
+        "ChaCha20-Poly1305",
+        "ChaCha20",
+        "DES-CBC",
+        "3DES-CBC",
+        "DES-ECB",
+        "3DES-ECB",
+        "CAST128-CBC",
+        "CAST256-CBC",
+        "RSA",
+        "DSA"
+      ]
+    }
+  }
+}

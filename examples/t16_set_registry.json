@@ -1,1 +1,0 @@
-{"action": "set", "target": {"windows_registry_key": {"values": [{"data": "qwerty", "name": "Foo", "data_type": "REG_SZ"}], "key": "HKEY_LOCAL_MACHINE\\System\\Foo\\Bar"}}}

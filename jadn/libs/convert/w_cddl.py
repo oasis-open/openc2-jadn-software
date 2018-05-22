@@ -2,13 +2,11 @@ import datetime
 import json
 import re
 
-from ..utils import Utils
 
-
-class JADNtoProto3(object):
+class JADNtoCDDL(object):
     def __init__(self, jadn):
         """
-        Schema Converter for JADN to ProtoBuf3
+        Schema Converter for JADN to CDDL
         :param jadn: str or dict of the JADN schema
         :type jadn: str or dict
         """
@@ -27,18 +25,17 @@ class JADNtoProto3(object):
         self._types = [t for t in jadn['types'] if len(t) == 5 or t[1].lower() in ['arrayof', 'array']]
         self._custom = [t for t in jadn['types'] if len(t) == 4 and t[1].lower() not in ['arrayof', 'array']]
 
-        self._imports = []
         self.indent = '    '
 
-        self._customFields = [t[0] for t in self._types]
+        self._customFields = [t[0] for t in self._custom] + [t[0] for t in self._types]
 
         self._fieldMap = {
-            'Binary': 'string',
+            'Binary': 'bstr',
             'Boolean': 'bool',
             'Integer': 'int64',
-            'Number': 'string',
-            'Null': 'string',
-            'String': 'string'
+            'Number': 'float64',
+            'Null': 'null',
+            'String': 'bstr'
         }
         self._structFormats = {
             'Record': self._formatRecord,
@@ -49,18 +46,11 @@ class JADNtoProto3(object):
             'ArrayOf': self._formatArrayOf,
         }
 
-    def proto_dump(self):
-        """
-        Converts the JADN schema to Protobuf3
-        :return: Protobuf3 schema
-        :rtype str
-        """
-        return '{header}{imports}{defs}\n/* JADN Custom Fields\n[\n{jadn_fields}\n]\n*/'.format(
-            idn=self.indent,
+    def cddl_dump(self):
+        return '{header}{defs}\n{custom}'.format(
             header=self.makeHeader(),
             defs=self.makeStructures(),
-            imports=''.join(['import \"{}\";\n'.format(i) for i in self._imports]),
-            jadn_fields=',\n'.join([self.indent+f.__str__() for f in Utils.defaultDecode(self._custom)])
+            custom=self.makeCustom()
         )
 
     def formatStr(self, s):
@@ -82,17 +72,7 @@ class JADNtoProto3(object):
         :return: header for schema
         :rtype str
         """
-        header = list([
-            'syntax = "proto3";',
-            '',
-            'package {};'.format(self._meta['module'] or 'ProtoBuf_Schema'),
-            '',
-            '/* meta'
-        ])
-
-        header.extend([' * {} - {}'.format(k, v) for k, v in self._meta.items()])
-
-        header.append('*/')
+        header = ['; {} - {}'.format(k, v) for k, v in self._meta.items()]
 
         return '\n'.join(header) + '\n\n'
 
@@ -104,34 +84,23 @@ class JADNtoProto3(object):
         """
         tmp = ''
         for t in self._types:
-            if len(t) == 5:
-                # print('type - {}'.format(t[:-1]))
-                df = self._structFormats.get(t[1], None)
+            df = self._structFormats.get(t[1], None)
 
-                if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
-                    tmp += df(t)
-                elif df is not None:
-                    tmp += self._wrapAsRecord(df(t))
-
+            if df is not None:
+                tmp += df(t)
         return tmp
 
-    def _wrapAsRecord(self, itm):
-        """
-        wraps the given item as a record for the schema
-        :param itm: item to wrap
-        :type s: str
-        :return: item wrapped as a record for hte schema
-        :rtype str
-        """
-        lines = itm.split('\n')[1:-1]
-        if len(lines) > 1:
-            n = re.search(r'\s[\w\d\_]+\s', lines[0]).group()[1:-1]
-            tmp = "\nmessage {} {{\n".format(self.formatStr(n))
-            for l in lines:
-                tmp += '{}{}\n'.format(self.indent, l)
-            tmp += '}\n'
-            return tmp
-        return ''
+    def makeCustom(self):
+        defs = []
+        for field in self._custom:
+            line = '{name} = {type} ; {com}'.format(
+                name=self.formatStr(field[0]),
+                type=self._fieldType(field[1]),
+                com=field[-1]
+            )
+            defs.append(line)
+
+        return '\n'.join(defs)
 
     def _fieldType(self, f):
         """
@@ -140,17 +109,16 @@ class JADNtoProto3(object):
         :return: type mapped to the schema
         :rtype str
         """
-        rtn = 'string'
-        if re.search(r'(datetime|date|time)', f):
-            if 'google/protobuf/timestamp.proto' not in self._imports:
-                self._imports.append('google/protobuf/timestamp.proto')
-            rtn = 'google.protobuf.Timestamp'
-
         if f in self._customFields:
             rtn = self.formatStr(f)
 
         elif f in self._fieldMap.keys():
             rtn = self.formatStr(self._fieldMap.get(f, f))
+
+        else:
+            rtn = 'bstr'
+
+        # print(f, rtn)
         return rtn
 
     # Structure Formats
@@ -161,16 +129,24 @@ class JADNtoProto3(object):
         :return: formatted record
         :rtype str
         """
-        tmp = "\nmessage {} {{".format(self.formatStr(itm[0]))
+        tmp = "\n{} = {{".format(self.formatStr(itm[0]))
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
+        tmp += ' ; {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
 
+        i = 1
         for l in itm[-1]:
-            tmp += '{}{} {} = {};'.format(self.indent, self._fieldType(l[2]), self.formatStr(l[1]), l[0])
-            opts = {'type': l[2]}
+            tmp += '{idn}{pre_opts}{name}: {fType}{com}'.format(
+                idn=self.indent,
+                pre_opts='? ' if '[0' in l[-2] else '',
+                name=self.formatStr(l[1]),
+                fType=self._fieldType(l[2]),
+                com=',' if i < len(itm[-1]) else ''
+            )
+            opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
-            tmp += ' // {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
+            tmp += ' ; {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
+            i += 1
         tmp += "}\n"
 
         return tmp
@@ -182,19 +158,25 @@ class JADNtoProto3(object):
         :return: formatted choice
         :rtype str
         """
-        tmp = '\n'
-        tmp += "oneof {} {{".format(self.formatStr(itm[0]))
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
+        tmp = "{} = ( ; {}#jadn_opts:{}\n".format(self.formatStr(itm[0]), '' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
 
+        lines = []
+        i = 1
         for l in itm[-1]:
-            tmp += '{}{} {} = {};'.format(self.indent, self._fieldType(l[2]), self.formatStr(l[1]), l[0])
-            opts = {'type': l[2]}
+            ltmp = '{}: {}{}'.format(self.formatStr(l[1]), self._fieldType(l[2]), ' //' if i < len(itm[-1]) else '')
+            opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
-            tmp += ' // {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
-        tmp += '}\n'
-        return tmp
+            ltmp += ' ; {}#jadn_opts:{}'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
+            lines.append(ltmp)
+            i += 1
+
+        return '\n{head}{idn}{defs}\n)\n'.format(
+            head=tmp,
+            idn=self.indent,
+            defs='\n{}'.format(self.indent).join(lines)
+        )
 
     def _formatMap(self, itm):
         """
@@ -203,7 +185,26 @@ class JADNtoProto3(object):
         :return: formatted map
         :rtype str
         """
-        return self._formatRecord(itm)
+        tmp = "\n{} = [".format(self.formatStr(itm[0]))
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = itm[2]
+        tmp += ' ; {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2] + ' ', json.dumps(opts))
+
+        i = 1
+        for l in itm[-1]:
+            tmp += '{idn}{pre_opts}{name}: {fType}{com}'.format(
+                idn=self.indent,
+                pre_opts='? ' if '[0' in l[-2] else '',
+                name=self.formatStr(l[1]),
+                fType=self._fieldType(l[2]),
+                com=',' if i < len(itm[-1]) else ''
+            )
+            opts = {'type': l[2], 'field': l[0]}
+            if len(l[-2]) > 0: opts['options'] = l[-2]
+            tmp += ' ; {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1] + ' ', json.dumps(opts))
+            i += 1
+        tmp += "]\n"
+        return tmp
 
     def _formatEnumerated(self, itm):
         """
@@ -212,26 +213,20 @@ class JADNtoProto3(object):
         :return: formatted enum
         :rtype str
         """
-        tmp = '\nenum {} {{'.format(self.formatStr(itm[0]))
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
+        tmp = '\n; {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2] + ' ', json.dumps(opts))
+        tmp += '{} = '.format(self.formatStr(itm[0]))
 
         lines = []
-        default = True
         for l in itm[-1]:
-            if l[0] == 0:
-                default = False
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
-            ltmp = '{}{} = {};'.format(self.indent, n, l[0])
-            ltmp += '\n' if l[-1] == '' else ' // {}\n'.format(l[-1])
+            ltmp = '\"{}\"'.format(n)
+            opts = {'field': l[0]}
+            ltmp += ' ; {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1] + ' ', json.dumps(opts))
             lines.append(ltmp)
+        tmp += '{} /= '.format(self.formatStr(itm[0])).join(lines)
 
-        if default:
-            tmp += '{}Unknown_{} = 0; // required starting enum number for protobuf3\n'.format(self.indent, itm[0].replace('-', '_'))
-        tmp += ''.join(lines)
-
-        tmp += "}\n"
         return tmp
 
     def _formatArray(self, itm):  # TODO: what should this do??
@@ -250,22 +245,45 @@ class JADNtoProto3(object):
         :return: formatted arrayof
         :rtype str
         """
-        return ''
+        of_type = filter(lambda x: x.startswith('#'), itm[2])
+        of_type = of_type[0][1:] if len(of_type) == 1 else 'UNKNOWN'
+
+        min_n = filter(lambda x: x.startswith('['), itm[2])
+        min_n = min_n[0][1:] if len(min_n) == 1 else ''
+        min_n = int(min_n) if min_n.isdigit() else ''
+
+        max_n = filter(lambda x: x.startswith(']'), itm[2])
+        max_n = max_n[0][1:] if len(max_n) == 1 else ''
+        max_n = int(max_n) if max_n.isdigit() else ''
+
+        field_type = '[{min}*{max} {type}]'.format(
+            min='' if min_n == 0 else min_n,
+            max='' if max_n == 0 else max_n,
+            type=self._fieldType(of_type)
+        )
+
+        line = '\n{name} = {type} ; {com}\n'.format(
+            name=self.formatStr(itm[0]),
+            type=field_type,
+            com=itm[-1]
+        )
+
+        return line
 
 
-def proto_dumps(jadn):
+def cddl_dumps(jadn):
     """
-    Produce Protobuf3 schema from JADN schema
+    Produce CDDL schema from JADN schema
     :arg jadn: JADN Schema to convert
     :type jadn: str or dict
     :return: Protobuf3 schema
     :rtype str
     """
-    return JADNtoProto3(jadn).proto_dump()
+    return JADNtoCDDL(jadn).cddl_dump()
 
 
-def proto_dump(jadn, fname, source=""):
+def cddl_dump(jadn, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(proto_dumps(jadn))
+        f.write(cddl_dumps(jadn))

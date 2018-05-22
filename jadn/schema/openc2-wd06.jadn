@@ -13,7 +13,7 @@
     [2, "target", "Target", [], "The object of the action. The action is performed on the target"],
     [3, "actuator", "Actuator", ["[0"], "The subject of the action. The actuator executes the action on the target"],
     [4, "args", "Args", ["[0"], "Additional information that applies to the command"],
-    [5, "id", "Command-ID", ["[0"], "Identifier used to link responses to a command"]]
+    [5, "id", "command-id", ["[0"], "Identifier used to link responses to a command"]]
   ],
 
   ["Action", "Enumerated", [], "", [
@@ -84,15 +84,15 @@
   ],
 
   ["Args", "Map", [], "", [
-    [1, "start_time", "Date-Time", ["[0"], "The specific date/time to initiate the action"],
-    [2, "end_time", "Date-Time", ["[0"], "The specific date/time to terminate the action"],
-    [3, "duration", "Duration", ["[0"], "The length of time for an action to be in effect"],
+    [1, "start_time", "date-time", ["[0"], "The specific date/time to initiate the action"],
+    [2, "end_time", "date-time", ["[0"], "The specific date/time to terminate the action"],
+    [3, "duration", "duration", ["[0"], "The length of time for an action to be in effect"],
     [4, "response_requested", "Response-Type", ["[0"], "The type of response required for the action"],
     [100, "spff", "SpffArgs", ["[0"], "Command arguments defined in the Stateless Packet Filtering Firewall profile"]]
   ],
 
   ["OpenC2-Response", "Record", [], "", [
-    [1, "id", "Command-ID", [], "Id of the ommand that induced this response"],
+    [1, "id", "command-id", [], "Id of the ommand that induced this response"],
     [2, "status", "Status-Code", [], "An integer status code"],
     [3, "status_text", "String", ["[0"], "A free-form human-readable description of the response status"],
     [4, "*", "Results", [], "Data or extended status information that was requested from an OpenC2 command"]]
@@ -159,7 +159,7 @@
     [1, "pid", "Integer", ["[0"], "Process ID of the process"],
     [2, "name", "String", ["[0"], "Name of the process"],
     [3, "cwd", "String", ["[0"], "Current working directory of the process"],
-    [4, "executable", "File", ["[0"], "Executable that was executed to start the process"],
+    [4, "executable", "file", ["[0"], "Executable that was executed to start the process"],
     [5, "parent", "Process", ["[0"], "Process that spawned this one"],
     [6, "command_line", "String", ["[0"], "The full command line invocation used to start this process, including all arguments"]]
   ],

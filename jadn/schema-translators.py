@@ -1,10 +1,13 @@
 import glob
+import json
+import pprint
+import xmltodict
 
 from lxml import etree
 
 from StringIO import StringIO
 
-convert = False
+convert = True
 
 if convert:
     from libs.convert import cddl_dump, proto_dump, relax_dump
@@ -23,8 +26,7 @@ if convert:
 else:
     with open('test_openc2-wd06.rng', 'rb') as r:
         relax_schema = StringIO(r.read())
-
-    relaxng = etree.RelaxNG(etree.parse(relax_schema))
+        relaxng = etree.RelaxNG(etree.parse(relax_schema))
 
     for f in glob.glob('message/*.xml'):
         print(f)
@@ -35,6 +37,7 @@ else:
                 print('Validating: {}'.format(f))
                 relaxng.assertValid(doc)
                 print('Valid Message')
+                pprint.pprint(json.loads(json.dumps(xmltodict.parse(etree.tostring(doc)))))
             except Exception as e:
                 print('Error: {}'.format(e))
         print('')

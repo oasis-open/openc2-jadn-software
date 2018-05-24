@@ -3,28 +3,28 @@
 <!-- module - openc2 -->
 <!-- title - OpenC2 Command Definitions -->
 
-<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns="http://relaxng.org/ns/structure/1.0">
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <choice>
-      <element name="message"><ref name="OpenC2_Command"/></element>
-      <element name="message"><ref name="OpenC2_Response"/></element>
-      <element name="message"><ref name="artifact"/></element>
-      <element name="message"><ref name="ip_connection"/></element>
+      <element name="message"><ref name="OpenC2_Command" /></element>
+      <element name="message"><ref name="OpenC2_Response" /></element>
+      <element name="message"><ref name="artifact" /></element>
+      <element name="message"><ref name="ip_connection" /></element>
     </choice>
   </start>
 
   <define name="OpenC2_Command"> <!-- The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"} -->
     <interleave>
-      <element name="action"><ref name="Action"/></element> <!-- The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"field": 1, "type": "Action"} -->
-      <element name="target"><ref name="Target"/></element> <!-- The object of the action. The action is performed on the target #jadn_opts:{"field": 2, "type": "Target"} -->
+      <element name="action"><ref name="Action" /></element> <!-- The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"field": 1, "type": "Action"} -->
+      <element name="target"><ref name="Target" /></element> <!-- The object of the action. The action is performed on the target #jadn_opts:{"field": 2, "type": "Target"} -->
       <optional>
-        <element name="actuator"><ref name="Actuator"/></element> <!-- The subject of the action. The actuator executes the action on the target #jadn_opts:{"field": 3, "type": "Actuator", "options": ["[0"]} -->
+        <element name="actuator"><ref name="Actuator" /></element> <!-- The subject of the action. The actuator executes the action on the target #jadn_opts:{"field": 3, "type": "Actuator", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="args"><ref name="Args"/></element> <!-- Additional information that applies to the command #jadn_opts:{"field": 4, "type": "Args", "options": ["[0"]} -->
+        <element name="args"><ref name="Args" /></element> <!-- Additional information that applies to the command #jadn_opts:{"field": 4, "type": "Args", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="id"><text/></element> <!-- Identifier used to link responses to a command #jadn_opts:{"field": 5, "type": "command-id", "options": ["[0"]} -->
+        <element name="id"><text /></element> <!-- Identifier used to link responses to a command #jadn_opts:{"field": 5, "type": "command-id", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -68,67 +68,67 @@
 
   <define name="Target"> <!-- OpenC2 Target datatypes #jadn_opts:{"type": "Choice"} -->
       <choice>
-        <element name="artifact"><ref name="artifact"/></element> <!-- An array of bytes representing a file-like object or a link to that object. #jadn_opts:{"field": 1} -->
-        <element name="command"><text/></element> <!-- A reference to a previously issued OpenC2 command #jadn_opts:{"field": 2} -->
-        <element name="device"><ref name="device"/></element> <!-- #jadn_opts:{"field": 3} -->
-        <element name="directory"><text/></element> <!-- #jadn_opts:{"field": 4} -->
-        <element name="disk"><text/></element> <!-- #jadn_opts:{"field": 5} -->
-        <element name="disk_partition"><text/></element> <!-- #jadn_opts:{"field": 6} -->
-        <element name="domain_name"><text/></element> <!-- #jadn_opts:{"field": 7} -->
-        <element name="email_addr"><text/></element> <!-- #jadn_opts:{"field": 8} -->
-        <element name="email_message"><text/></element> <!-- #jadn_opts:{"field": 9} -->
-        <element name="file"><ref name="file"/></element> <!-- #jadn_opts:{"field": 10} -->
-        <element name="ipv4_addr"><text/></element> <!-- #jadn_opts:{"field": 11} -->
-        <element name="ipv6_addr"><text/></element> <!-- #jadn_opts:{"field": 12} -->
-        <element name="mac_addr"><text/></element> <!-- #jadn_opts:{"field": 13} -->
-        <element name="memory"><text/></element> <!-- #jadn_opts:{"field": 14} -->
-        <element name="ip_connection"><ref name="ip_connection"/></element> <!-- #jadn_opts:{"field": 15} -->
-        <element name="openc2"><ref name="openc2"/></element> <!-- OpenC2 - query actuator for supported capabilities, negotiate connection #jadn_opts:{"field": 16} -->
-        <element name="process"><text/></element> <!-- #jadn_opts:{"field": 17} -->
-        <element name="software"><text/></element> <!-- #jadn_opts:{"field": 18} -->
-        <element name="uri"><text/></element> <!-- #jadn_opts:{"field": 19} -->
-        <element name="user_account"><text/></element> <!-- #jadn_opts:{"field": 20} -->
-        <element name="user_session"><text/></element> <!-- #jadn_opts:{"field": 21} -->
-        <element name="volume"><text/></element> <!-- #jadn_opts:{"field": 22} -->
-        <element name="windows_registry_key"><text/></element> <!-- #jadn_opts:{"field": 23} -->
-        <element name="x509_certificate"><text/></element> <!-- #jadn_opts:{"field": 24} -->
-        <element name="slpff"><text/></element> <!-- Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"field": 1024} -->
+        <element name="artifact"><ref name="artifact" /></element> <!-- An array of bytes representing a file-like object or a link to that object. #jadn_opts:{"field": 1} -->
+        <element name="command"><text /></element> <!-- A reference to a previously issued OpenC2 command #jadn_opts:{"field": 2} -->
+        <element name="device"><ref name="device" /></element> <!-- #jadn_opts:{"field": 3} -->
+        <element name="directory"><text /></element> <!-- #jadn_opts:{"field": 4} -->
+        <element name="disk"><text /></element> <!-- #jadn_opts:{"field": 5} -->
+        <element name="disk_partition"><text /></element> <!-- #jadn_opts:{"field": 6} -->
+        <element name="domain_name"><text /></element> <!-- #jadn_opts:{"field": 7} -->
+        <element name="email_addr"><text /></element> <!-- #jadn_opts:{"field": 8} -->
+        <element name="email_message"><text /></element> <!-- #jadn_opts:{"field": 9} -->
+        <element name="file"><ref name="file" /></element> <!-- #jadn_opts:{"field": 10} -->
+        <element name="ipv4_addr"><text /></element> <!-- #jadn_opts:{"field": 11} -->
+        <element name="ipv6_addr"><text /></element> <!-- #jadn_opts:{"field": 12} -->
+        <element name="mac_addr"><text /></element> <!-- #jadn_opts:{"field": 13} -->
+        <element name="memory"><text /></element> <!-- #jadn_opts:{"field": 14} -->
+        <element name="ip_connection"><ref name="ip_connection" /></element> <!-- #jadn_opts:{"field": 15} -->
+        <element name="openc2"><ref name="openc2" /></element> <!-- OpenC2 - query actuator for supported capabilities, negotiate connection #jadn_opts:{"field": 16} -->
+        <element name="process"><text /></element> <!-- #jadn_opts:{"field": 17} -->
+        <element name="software"><text /></element> <!-- #jadn_opts:{"field": 18} -->
+        <element name="uri"><text /></element> <!-- #jadn_opts:{"field": 19} -->
+        <element name="user_account"><text /></element> <!-- #jadn_opts:{"field": 20} -->
+        <element name="user_session"><text /></element> <!-- #jadn_opts:{"field": 21} -->
+        <element name="volume"><text /></element> <!-- #jadn_opts:{"field": 22} -->
+        <element name="windows_registry_key"><text /></element> <!-- #jadn_opts:{"field": 23} -->
+        <element name="x509_certificate"><text /></element> <!-- #jadn_opts:{"field": 24} -->
+        <element name="slpff"><text /></element> <!-- Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"field": 1024} -->
       </choice>
   </define>
 
   <define name="Actuator"> <!-- #jadn_opts:{"type": "Choice"} -->
       <choice>
-        <element name="spff"><text/></element> <!-- Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01 #jadn_opts:{"field": 100} -->
+        <element name="spff"><text /></element> <!-- Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01 #jadn_opts:{"field": 100} -->
       </choice>
   </define>
 
   <define name="Args"> <!-- #jadn_opts:{"type": "Map"} -->
     <interleave>
       <optional>
-        <element name="start_time"><text/></element> <!-- The specific date/time to initiate the action #jadn_opts:{"field": 1, "type": "date-time", "options": ["[0"]}-->
+        <element name="start_time"><text /></element> <!-- The specific date/time to initiate the action #jadn_opts:{"field": 1, "type": "date-time", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="end_time"><text/></element> <!-- The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": ["[0"]}-->
+        <element name="end_time"><text /></element> <!-- The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="duration"><text/></element> <!-- The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": ["[0"]}-->
+        <element name="duration"><text /></element> <!-- The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="response_requested"><ref name="Response_Type"/></element> <!-- The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": ["[0"]}-->
+        <element name="response_requested"><ref name="Response_Type" /></element> <!-- The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="spff"><text/></element> <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": ["[0"]}-->
+        <element name="spff"><text /></element> <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
 
   <define name="OpenC2_Response"> <!-- #jadn_opts:{"type": "Record"} -->
     <interleave>
-      <element name="id"><text/></element> <!-- Id of the ommand that induced this response #jadn_opts:{"field": 1, "type": "command-id"} -->
-      <element name="status"><ref name="Status_Code"/></element> <!-- An integer status code #jadn_opts:{"field": 2, "type": "Status-Code"} -->
-      <element name="unknown"><text/></element> <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"} -->
+      <element name="id"><text /></element> <!-- Id of the ommand that induced this response #jadn_opts:{"field": 1, "type": "command-id"} -->
+      <element name="status"><ref name="Status_Code" /></element> <!-- An integer status code #jadn_opts:{"field": 2, "type": "Status-Code"} -->
+      <element name="unknown"><text /></element> <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"} -->
       <optional>
-        <element name="status_text"><data type="string"/></element> <!-- A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]} -->
+        <element name="status_text"><data type="string" /></element> <!-- A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -149,28 +149,28 @@
   <define name="artifact"> <!-- #jadn_opts:{"type": "Record"} -->
     <interleave>
       <optional>
-        <element name="mime_type"><data type="string"/></element> <!-- Permitted values specified in the IANA Media Types registry #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]} -->
+        <element name="mime_type"><data type="string" /></element> <!-- Permitted values specified in the IANA Media Types registry #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="unknown"><ref name="payload"/></element> <!-- choice of literal content or URL to obtain content #jadn_opts:{"field": 2, "type": "payload", "options": ["[0"]} -->
+        <element name="unknown"><ref name="payload" /></element> <!-- choice of literal content or URL to obtain content #jadn_opts:{"field": 2, "type": "payload", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="hashes"><ref name="hashes"/></element> <!-- Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]} -->
+        <element name="hashes"><ref name="hashes" /></element> <!-- Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
 
   <define name="payload"> <!-- #jadn_opts:{"type": "Choice"} -->
       <choice>
-        <element name="payload_bin"><data type="base64Binary"/></element> <!-- Specifies the data contained in the artifact. #jadn_opts:{"field": 1} -->
-        <element name="url"><text/></element> <!-- MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"field": 2} -->
+        <element name="payload_bin"><data type="base64Binary" /></element> <!-- Specifies the data contained in the artifact. #jadn_opts:{"field": 1} -->
+        <element name="url"><text /></element> <!-- MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"field": 2} -->
       </choice>
   </define>
 
   <define name="openc2"> <!-- A target used to query Actuator for its supported capabilities#jadn_opts:{"type": "ArrayOf", "options": ["#Query-Item", "[0", "]3"]} -->
-    <zeroOrMore>
-      <ref name="Query_Item"/>
-    </zeroOrMore>
+    <list>
+      <ref name="Query_Item" />
+    </list>
   </define>
 
   <define name="Query_Item"> <!-- Results to be included in response to query openc2 command #jadn_opts:{"type": "Enumerated"} -->
@@ -184,19 +184,19 @@
   <define name="ip_connection"> <!-- 5-tuple that specifies a tcp/ip connection #jadn_opts:{"type": "Record"} -->
     <interleave>
       <optional>
-        <element name="src_addr"><text/></element> <!-- source address #jadn_opts:{"field": 1, "type": "ip-addr", "options": ["[0"]} -->
+        <element name="src_addr"><text /></element> <!-- source address #jadn_opts:{"field": 1, "type": "ip-addr", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="src_port"><text/></element> <!-- source TCP/UDP port number #jadn_opts:{"field": 2, "type": "port", "options": ["[0"]} -->
+        <element name="src_port"><text /></element> <!-- source TCP/UDP port number #jadn_opts:{"field": 2, "type": "port", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="dst_addr"><text/></element> <!-- destination address #jadn_opts:{"field": 3, "type": "ip-addr", "options": ["[0"]} -->
+        <element name="dst_addr"><text /></element> <!-- destination address #jadn_opts:{"field": 3, "type": "ip-addr", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="dst_port"><text/></element> <!-- destination TCP/UDP port number #jadn_opts:{"field": 4, "type": "port", "options": ["[0"]} -->
+        <element name="dst_port"><text /></element> <!-- destination TCP/UDP port number #jadn_opts:{"field": 4, "type": "port", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="layer4_protocol"><ref name="layer4_protocol"/></element> <!-- Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"field": 5, "type": "layer4-protocol", "options": ["[0"]} -->
+        <element name="layer4_protocol"><ref name="layer4_protocol" /></element> <!-- Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"field": 5, "type": "layer4-protocol", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -213,13 +213,13 @@
   <define name="file"> <!-- #jadn_opts:{"type": "Map"} -->
     <interleave>
       <optional>
-        <element name="name"><data type="string"/></element> <!-- The name of the file as defined in the file system #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]}-->
+        <element name="name"><data type="string" /></element> <!-- The name of the file as defined in the file system #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="path"><data type="string"/></element> <!-- The absolute path to the location of the file in the file system #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}-->
+        <element name="path"><data type="string" /></element> <!-- The absolute path to the location of the file in the file system #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="hashes"><ref name="hashes"/></element> <!-- One or more cryptographic hash codes of the file contents #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]}-->
+        <element name="hashes"><ref name="hashes" /></element> <!-- One or more cryptographic hash codes of the file contents #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -235,22 +235,22 @@
   <define name="Process"> <!-- #jadn_opts:{"type": "Map"} -->
     <interleave>
       <optional>
-        <element name="pid"><data type="integer"/></element> <!-- Process ID of the process #jadn_opts:{"field": 1, "type": "Integer", "options": ["[0"]}-->
+        <element name="pid"><data type="integer" /></element> <!-- Process ID of the process #jadn_opts:{"field": 1, "type": "Integer", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="name"><data type="string"/></element> <!-- Name of the process #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}-->
+        <element name="name"><data type="string" /></element> <!-- Name of the process #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="cwd"><data type="string"/></element> <!-- Current working directory of the process #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]}-->
+        <element name="cwd"><data type="string" /></element> <!-- Current working directory of the process #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="executable"><ref name="file"/></element> <!-- Executable that was executed to start the process #jadn_opts:{"field": 4, "type": "file", "options": ["[0"]}-->
+        <element name="executable"><ref name="file" /></element> <!-- Executable that was executed to start the process #jadn_opts:{"field": 4, "type": "file", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="parent"><ref name="Process"/></element> <!-- Process that spawned this one #jadn_opts:{"field": 5, "type": "Process", "options": ["[0"]}-->
+        <element name="parent"><ref name="Process" /></element> <!-- Process that spawned this one #jadn_opts:{"field": 5, "type": "Process", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="command_line"><data type="string"/></element> <!-- The full command line invocation used to start this process, including all arguments #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]}-->
+        <element name="command_line"><data type="string" /></element> <!-- The full command line invocation used to start this process, including all arguments #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -258,13 +258,13 @@
   <define name="hashes"> <!-- Cryptographic Hash values #jadn_opts:{"type": "Map"} -->
     <interleave>
       <optional>
-        <element name="md5"><data type="base64Binary"/></element> <!-- Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"field": 1, "type": "Binary", "options": ["[0"]}-->
+        <element name="md5"><data type="base64Binary" /></element> <!-- Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"field": 1, "type": "Binary", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="sha1"><data type="base64Binary"/></element> <!-- Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"field": 4, "type": "Binary", "options": ["[0"]}-->
+        <element name="sha1"><data type="base64Binary" /></element> <!-- Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"field": 4, "type": "Binary", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="sha256"><data type="base64Binary"/></element> <!-- Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"field": 6, "type": "Binary", "options": ["[0"]}-->
+        <element name="sha256"><data type="base64Binary" /></element> <!-- Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"field": 6, "type": "Binary", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>
@@ -272,25 +272,25 @@
   <define name="device"> <!-- TODO: Add inventory device-id? #jadn_opts:{"type": "Map"} -->
     <interleave>
       <optional>
-        <element name="description"><data type="string"/></element> <!-- #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]}-->
+        <element name="description"><data type="string" /></element> <!-- #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="device_type"><data type="string"/></element> <!-- #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}-->
+        <element name="device_type"><data type="string" /></element> <!-- #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="manufacturer"><data type="string"/></element> <!-- #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]}-->
+        <element name="manufacturer"><data type="string" /></element> <!-- #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="model"><data type="string"/></element> <!-- #jadn_opts:{"field": 4, "type": "String", "options": ["[0"]}-->
+        <element name="model"><data type="string" /></element> <!-- #jadn_opts:{"field": 4, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="serial_number"><data type="string"/></element> <!-- #jadn_opts:{"field": 5, "type": "String", "options": ["[0"]}-->
+        <element name="serial_number"><data type="string" /></element> <!-- #jadn_opts:{"field": 5, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="firmware_version"><data type="string"/></element> <!-- #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]}-->
+        <element name="firmware_version"><data type="string" /></element> <!-- #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]} -->
       </optional>
       <optional>
-        <element name="system_details"><data type="string"/></element> <!-- #jadn_opts:{"field": 7, "type": "String", "options": ["[0"]}-->
+        <element name="system_details"><data type="string" /></element> <!-- #jadn_opts:{"field": 7, "type": "String", "options": ["[0"]} -->
       </optional>
     </interleave>
   </define>

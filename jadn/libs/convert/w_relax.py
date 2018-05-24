@@ -57,23 +57,24 @@ class JADNtoRelaxNG(object):
                 self._custom.append(t)
 
     def relax_dump(self):
-        records = ['{idn}{idn}{idn}<element name="message">{rec}</element>'.format(
-            idn=self.indent,
-            rec=self._fieldType(r)
-        ) for r in self._records]
+        records = [self._formatTag('element', self._fieldType(r), self.indent * 3, name='message') for r in self._records]
 
-        return '{header}<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ' \
-            'xmlns="http://relaxng.org/ns/structure/1.0">\n' \
-            '{idn}<start>\n{root}\n{idn}</start>\n{defs}\n</grammar>\n'.format(
-                idn=self.indent,
+        root_start = self._formatTag(
+            'start',
+            self._formatTag('choice', '\n{rec}\n{idn}'.format(rec='\n'.join(records), idn=self.indent * 2), '\n' + self.indent * 2) + '\n' + self.indent,
+            '\n' + self.indent
+        ) + '\n'
+
+        rtn = '{header}{root}\n'.format(
                 header=self.makeHeader(),
-                root='{idn}{idn}<choice>\n{recs}\n{idn}{idn}</choice>'.format(
-                    idn=self.indent,
-                    recs='\n'.join(records)
-                ),
-                defs=self.makeStructures(),
-                custom=self.makeCustom()
+                root=self._formatTag(
+                    'grammar',
+                    root_start + self.makeStructures() + '\n',
+                    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes",
+                    xmlns="http://relaxng.org/ns/structure/1.0"
+                )
             )
+        return rtn
 
     def formatStr(self, s):
         """
@@ -125,6 +126,24 @@ class JADNtoRelaxNG(object):
 
         return '\n'.join(defs)
 
+    def _formatTag(self, tag, contents='', pre='', com='', **kargs):
+        if tag.startswith('/'):
+            return '{pre}<{tag}{args} />{com}'.format(
+                pre=pre,
+                tag=tag[1:],
+                args='{}'.format(''.join([' {k}=\"{v}\"'.format(k=k, v=v) for k, v in kargs.items()])),
+                contents=contents,
+                com='' if com == '' else '<!-- {c} -->'.format(c=com)
+            )
+        else:
+            return '{pre}<{tag}{args}>{contents}</{tag}>{com}'.format(
+                pre=pre,
+                tag=tag,
+                args='{}'.format(''.join([' {k}=\"{v}\"'.format(k=k, v=v) for k, v in kargs.items()])),
+                contents=contents,
+                com='' if com == '' else ' <!-- {c} -->'.format(c=com)
+            )
+
     def _fieldType(self, f):
         """
         Determines the field type for the schema
@@ -133,14 +152,14 @@ class JADNtoRelaxNG(object):
         :rtype str
         """
         if f in self._customFields:
-            rtn = '<ref name=\"{}\"/>'.format(self.formatStr(f))
+            rtn = self._formatTag('/ref', name=self.formatStr(f))
 
         elif f in self._fieldMap.keys():
             rtn = self.formatStr(self._fieldMap.get(f, f))
-            rtn = '<text/>' if rtn == '' else '<data type="{}"/>'.format(rtn)
+            rtn = self._formatTag('/text') if rtn == '' else self._formatTag('/data', type=rtn)
 
         else:
-            rtn = '<text/>'
+            rtn = self._formatTag('/text')
 
         return rtn
 
@@ -160,13 +179,16 @@ class JADNtoRelaxNG(object):
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
-            ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent*3 if '[0' in l[-2] else self.indent*2,
+            ltmp = self._formatTag(
+                'element',
+                self._fieldType(l[2]),
+                self.indent * 3 if '[0' in l[-2] else self.indent * 2,
                 name=self.formatStr(l[1]),
-                fType=self._fieldType(l[2]),
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
-            )
+                com='{com}#jadn_opts:{opts}'.format(
+                    com='' if l[-1] == '' else l[-1] + ' ',
+                    opts=json.dumps(opts)
+                )
+            ) + '\n'
             lines['opt' if '[0' in l[-2] else 'req'].append(ltmp)
 
         opts = {'type': itm[1]}
@@ -193,13 +215,15 @@ class JADNtoRelaxNG(object):
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
             opts = {'field': l[0]}
 
-            lines.append('{idn}<element name=\"{name}\">{val}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent*3,
-                name=n,
-                val=self._fieldType(l[2]),
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
-            ))
+            lines.append(self._formatTag(
+                'element',
+                self._fieldType(l[2]),
+                self.indent * 3,
+                com='{com}#jadn_opts:{opts}'.format(
+                    com='' if l[-1] == '' else l[-1] + ' ',
+                    opts=json.dumps(opts)),
+                name=n
+            ) + '\n')
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
@@ -228,13 +252,16 @@ class JADNtoRelaxNG(object):
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
-            ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts}-->\n'.format(
-                idn=self.indent * 3 if '[0' in l[-2] else self.indent * 2,
+            ltmp = self._formatTag(
+                'element',
+                self._fieldType(l[2]),
+                self.indent * 3 if '[0' in l[-2] else self.indent * 2,
                 name=self.formatStr(l[1]),
-                fType=self._fieldType(l[2]),
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
-            )
+                com='{com}#jadn_opts:{opts}'.format(
+                    com='' if l[-1] == '' else l[-1] + ' ',
+                    opts=json.dumps(opts)
+                )
+            ) + '\n'
 
             lines['opt' if '[0' in l[-2] else 'req'].append(ltmp)
 
@@ -261,12 +288,15 @@ class JADNtoRelaxNG(object):
         for l in itm[-1]:
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
             opts = {'field': l[0]}
-            lines.append('{idn}<value>{val}</value> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent*3,
-                val=n,
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
-            ))
+            lines.append(self._formatTag(
+                'value',
+                n,
+                self.indent * 3,
+                com='{com}#jadn_opts:{opts}'.format(
+                    com='' if l[-1] == '' else l[-1] + ' ',
+                    opts=json.dumps(opts)
+                )
+            ) + '\n')
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
@@ -317,7 +347,7 @@ class JADNtoRelaxNG(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<zeroOrMore>\n{idn}{idn}{type}\n{idn}</zeroOrMore>\n</define>'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<list>\n{idn}{idn}{type}\n{idn}</list>\n</define>'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
             type=self._fieldType(of_type),

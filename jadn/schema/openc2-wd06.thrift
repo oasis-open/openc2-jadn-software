@@ -94,7 +94,7 @@ struct OpenC2_Response {
     4: required string results;
 }
 
-enum Status_Code {  // This should be a boolean.
+enum Status_Code {  // enumerated boolean? (how its shown on original jadn. Left as normal enum here.
     processing = 102,
     ok = 200,
     moved = 301,
@@ -111,12 +111,12 @@ struct Artifact {
     3: optional Hashes hashes;
 }
 
-struct Payload {
+struct Payload {  // This is a 'choice'
     1: optional binary payload_bin;
     2: optional string uri;
 }
 
-struct Openc2 {
+struct Openc2 {  //  Listed as 'arrayof' not sure.
     1: optional Query_Item item;
 }
 
@@ -141,7 +141,7 @@ enum Layer4_Protocol {
     sctp = 4,
 }
 
-struct File {
+struct File {  // This is a map
     1: optional string name;
     2: optional string path;
     3: optional Hashes hash;
@@ -153,7 +153,7 @@ enum Response_Type {
     complete = 3,
 }
 
-struct Process {
+struct Process {  // This is a map
     1: optional i64 pid;
     2: optional string name;
     3: optional string cwd;
@@ -162,13 +162,13 @@ struct Process {
     6: optional string command_line;
 }
 
-struct Hashes {
+struct Hashes {  // This is a map
     1: optional binary md5;
     2: optional binary sha1;
     3: optional binary  sha256;
 }
 
-struct Device {
+struct Device {  // This is a map
     1: optional string description;
     2: optional string device_type;
     3: optional string manufacturer;

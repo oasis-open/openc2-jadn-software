@@ -83,7 +83,7 @@
         <element name="mac_addr"><text/></element> <!-- #jadn_opts:{"field": 13} -->
         <element name="memory"><text/></element> <!-- #jadn_opts:{"field": 14} -->
         <element name="ip_connection"><ref name="ip_connection"/></element> <!-- #jadn_opts:{"field": 15} -->
-        <element name="openc2"><ref name="openc2"/></element> <!-- OpenC2 - query actuator for supported capabilities, negotiate connection #jadn_opts:{"field": 16} -->
+        <!--<element name="openc2"><ref name="openc2"/></element>--> <!-- OpenC2 - query actuator for supported capabilities, negotiate connection #jadn_opts:{"field": 16} -->
         <element name="process"><text/></element> <!-- #jadn_opts:{"field": 17} -->
         <element name="software"><text/></element> <!-- #jadn_opts:{"field": 18} -->
         <element name="uri"><text/></element> <!-- #jadn_opts:{"field": 19} -->

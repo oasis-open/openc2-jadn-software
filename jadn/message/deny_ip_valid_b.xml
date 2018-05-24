@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <message id="101" action="deny">
-    <actuator>
-        <firewall asset_id="309924" />
-    </actuator>
     <target>
         <ip_connection
             dst_addr="2001:0db8:85a3:0000:0000:8a2e:0370:8911"
@@ -12,7 +9,7 @@
             src_port="10996"
         />
     </target>
-    <options
+    <argss
         duration="PT2M30S"
         start_time="2016-11-25T08:10:31-04:00"
         command_id="fw17_8675309"

@@ -63,17 +63,17 @@ class JADNtoRelaxNG(object):
         ) for r in self._records]
 
         return '{header}<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ' \
-               'ns="http://relaxng.org/ns/structure/1.0" xmlns="http://relaxng.org/ns/structure/1.0">\n' \
-               '{idn}<start>\n{root}\n{idn}</start>\n{defs}\n</grammar>\n'.format(
+            'xmlns="http://relaxng.org/ns/structure/1.0">\n' \
+            '{idn}<start>\n{root}\n{idn}</start>\n{defs}\n</grammar>\n'.format(
+                idn=self.indent,
+                header=self.makeHeader(),
+                root='{idn}{idn}<choice>\n{recs}\n{idn}{idn}</choice>'.format(
                     idn=self.indent,
-                    header=self.makeHeader(),
-                    root='{idn}{idn}<choice>\n{recs}\n{idn}{idn}</choice>'.format(
-                        idn=self.indent,
-                        recs='\n'.join(records)
-                    ),
-                    defs=self.makeStructures(),
-                    custom=self.makeCustom()
-                )
+                    recs='\n'.join(records)
+                ),
+                defs=self.makeStructures(),
+                custom=self.makeCustom()
+            )
 
     def formatStr(self, s):
         """
@@ -142,7 +142,6 @@ class JADNtoRelaxNG(object):
         else:
             rtn = '<text/>'
 
-        # print(f, rtn)
         return rtn
 
     # Structure Formats
@@ -162,7 +161,7 @@ class JADNtoRelaxNG(object):
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
             ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent + self.indent if '[0' in l[-2] else self.indent,
+                idn=self.indent*3 if '[0' in l[-2] else self.indent*2,
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
                 com='' if l[-1] == '' else l[-1] + ' ',
@@ -173,13 +172,13 @@ class JADNtoRelaxNG(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{req}{opt}\n</define>'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<interleave>\n{req}{opt}\n{idn}</interleave>\n</define>'.format(
+            idn=self.indent,
             name=self.formatStr(itm[0]),
             req=''.join(lines['req']),
-            opt='' if len(lines['opt']) == 0 else '{idn}<optional>\n{opts}{idn}</optional>'.format(idn=self.indent, opts=''.join(lines['opt'])),
+            opt='' if len(lines['opt']) == 0 else '\n'.join(['{idn}{idn}<optional>\n{o}{idn}{idn}</optional>'.format(idn=self.indent, o=o) for o in lines['opt']]),
             com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
-            idn=self.indent
+            opts=json.dumps(opts)
         )
 
     def _formatChoice(self, itm):
@@ -194,8 +193,8 @@ class JADNtoRelaxNG(object):
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
             opts = {'field': l[0]}
 
-            lines.append('{idn}{idn}{idn}<element name=\"{name}\">{val}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent,
+            lines.append('{idn}<element name=\"{name}\">{val}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
+                idn=self.indent*3,
                 name=n,
                 val=self._fieldType(l[2]),
                 com='' if l[-1] == '' else l[-1] + ' ',
@@ -205,8 +204,8 @@ class JADNtoRelaxNG(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}{idn}<choice>\n{req}{idn}{idn}</choice>\n</define>'.format(
-            idn=self.indent,
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<choice>\n{req}{idn}</choice>\n</define>'.format(
+            idn=self.indent*2,
             name=self.formatStr(itm[0]),
             req=''.join(lines),
             com='' if itm[-2] == '' else itm[-2] + ' ',
@@ -230,7 +229,7 @@ class JADNtoRelaxNG(object):
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
             ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts}-->\n'.format(
-                idn=self.indent+self.indent if '[0' in l[-2] else self.indent,
+                idn=self.indent * 3 if '[0' in l[-2] else self.indent * 2,
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
                 com='' if l[-1] == '' else l[-1] + ' ',
@@ -242,11 +241,11 @@ class JADNtoRelaxNG(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{req}{opt}\n</define>'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<interleave>\n{req}{opt}\n{idn}</interleave>\n</define>'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
             req=''.join(lines['req']),
-            opt='' if len(lines['opt']) == 0 else '{idn}<optional>\n{opts}{idn}</optional>'.format(idn=self.indent, opts=''.join(lines['opt'])),
+            opt='' if len(lines['opt']) == 0 else '\n'.join(['{idn}<optional>\n{o}{idn}</optional>'.format(idn=self.indent*2, o=o) for o in lines['opt']]),
             com='' if itm[-2] == '' else itm[-2] + ' ',
             opts=json.dumps(opts)
         )
@@ -262,8 +261,8 @@ class JADNtoRelaxNG(object):
         for l in itm[-1]:
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
             opts = {'field': l[0]}
-            lines.append('{idn}{idn}{idn}<value>{val}</value> <!-- {com}#jadn_opts:{opts} -->\n'.format(
-                idn=self.indent,
+            lines.append('{idn}<value>{val}</value> <!-- {com}#jadn_opts:{opts} -->\n'.format(
+                idn=self.indent*3,
                 val=n,
                 com='' if l[-1] == '' else l[-1] + ' ',
                 opts=json.dumps(opts)
@@ -272,8 +271,8 @@ class JADNtoRelaxNG(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}{idn}<choice>\n{req}{idn}{idn}</choice>\n</define>'.format(
-            idn=self.indent,
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<choice>\n{req}{idn}</choice>\n</define>'.format(
+            idn=self.indent*2,
             name=self.formatStr(itm[0]),
             req=''.join(lines),
             com='' if itm[-2] == '' else itm[-2] + ' ',

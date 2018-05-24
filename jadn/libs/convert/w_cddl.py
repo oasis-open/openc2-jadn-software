@@ -42,9 +42,9 @@ class JADNtoCDDL(object):
         }
 
         self._meta = jadn['meta'] or []
-        self._types = []  # [t for t in jadn['types'] if len(t) == 5 or t[1].lower() in ['arrayof', 'array']]
-        self._custom = []  # [t for t in jadn['types'] if len(t) == 4 and t[1].lower() not in ['arrayof', 'array']]
-        self._customFields = []  # [t[0] for t in self._custom] + [t[0] for t in self._types]
+        self._types = []
+        self._custom = []
+        self._customFields = []
 
         for t in jadn['types']:
             self._customFields.append(t[0])

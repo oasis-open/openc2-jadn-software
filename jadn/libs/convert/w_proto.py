@@ -114,6 +114,7 @@ class JADNtoProto3(object):
 
             if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
                 tmp += df(t)
+
             elif df is not None:
                 tmp += self._wrapAsRecord(df(t))
 

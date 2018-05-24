@@ -3,7 +3,7 @@ import json
 import re
 
 
-class JADNtoCDDL(object):
+class JADNtoRelaxNG(object):
     def __init__(self, jadn):
         """
         Schema Converter for JADN to CDDL
@@ -24,12 +24,12 @@ class JADNtoCDDL(object):
         self.indent = '  '
 
         self._fieldMap = {
-            'Binary': 'bstr',
-            'Boolean': 'bool',
-            'Integer': 'int64',
-            'Number': 'float64',
-            'Null': 'null',
-            'String': 'bstr'
+            'Binary': 'base64Binary',
+            'Boolean': 'boolean',
+            'Integer': 'integer',
+            'Number': 'float',
+            'Null': '',
+            'String': 'string'
         }
 
         self._structFormats = {
@@ -42,24 +42,38 @@ class JADNtoCDDL(object):
         }
 
         self._meta = jadn['meta'] or []
-        self._types = []  # [t for t in jadn['types'] if len(t) == 5 or t[1].lower() in ['arrayof', 'array']]
-        self._custom = []  # [t for t in jadn['types'] if len(t) == 4 and t[1].lower() not in ['arrayof', 'array']]
-        self._customFields = []  # [t[0] for t in self._custom] + [t[0] for t in self._types]
+        self._types = []
+        self._custom = []
+        self._records = []
+        self._customFields = []
 
         for t in jadn['types']:
-            self._customFields.append(t[0])
             if t[1] in self._structFormats.keys():
                 self._types.append(t)
-
+                self._customFields.append(t[0])
+                if t[1] == 'Record':
+                    self._records.append(t[0])
             else:
                 self._custom.append(t)
 
-    def cddl_dump(self):
-        return '{header}{defs}\n{custom}'.format(
-            header=self.makeHeader(),
-            defs=self.makeStructures(),
-            custom=self.makeCustom()
-        )
+    def relax_dump(self):
+        records = ['{idn}{idn}{idn}<element name="message">{rec}</element>'.format(
+            idn=self.indent,
+            rec=self._fieldType(r)
+        ) for r in self._records]
+
+        return '{header}<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ' \
+               'ns="http://relaxng.org/ns/structure/1.0" xmlns="http://relaxng.org/ns/structure/1.0">\n' \
+               '{idn}<start>\n{root}\n{idn}</start>\n{defs}\n</grammar>\n'.format(
+                    idn=self.indent,
+                    header=self.makeHeader(),
+                    root='{idn}{idn}<choice>\n{recs}\n{idn}{idn}</choice>'.format(
+                        idn=self.indent,
+                        recs='\n'.join(records)
+                    ),
+                    defs=self.makeStructures(),
+                    custom=self.makeCustom()
+                )
 
     def formatStr(self, s):
         """
@@ -80,7 +94,7 @@ class JADNtoCDDL(object):
         :return: header for schema
         :rtype str
         """
-        header = ['; {} - {}'.format(k, v) for k, v in self._meta.items()]
+        header = ['<!-- {} - {} -->'.format(k, v) for k, v in self._meta.items()]
 
         return '\n'.join(header) + '\n\n'
 
@@ -90,13 +104,14 @@ class JADNtoCDDL(object):
         :return: type definitions for the schema
         :rtype str
         """
-        tmp = ''
+        defs = []
         for t in self._types:
             df = self._structFormats.get(t[1], None)
 
             if df is not None:
-                tmp += df(t)
-        return tmp
+                defs.append('\n' + '\n'.join([re.sub(r'^', self.indent, l) for l in df(t).split('\n')]))
+
+        return '\n'.join(defs)
 
     def makeCustom(self):
         defs = []
@@ -118,13 +133,14 @@ class JADNtoCDDL(object):
         :rtype str
         """
         if f in self._customFields:
-            rtn = self.formatStr(f)
+            rtn = '<ref name=\"{}\"/>'.format(self.formatStr(f))
 
         elif f in self._fieldMap.keys():
             rtn = self.formatStr(self._fieldMap.get(f, f))
+            rtn = '<text/>' if rtn == '' else '<data type="{}"/>'.format(rtn)
 
         else:
-            rtn = 'bstr'
+            rtn = '<text/>'
 
         # print(f, rtn)
         return rtn
@@ -137,30 +153,33 @@ class JADNtoCDDL(object):
         :return: formatted record
         :rtype str
         """
-        lines = []
-        i = 1
+        lines = {
+            'req': [],
+            'opt': []
+        }
         for l in itm[-1]:
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
-            lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
-                idn=self.indent,
-                pre_opts='? ' if '[0' in l[-2] else '',
+            ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
+                idn=self.indent + self.indent if '[0' in l[-2] else self.indent,
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
-                c=',' if i < len(itm[-1]) else '',
-                com='' if l[-1] == '' else l[-1]+' ',
+                com='' if l[-1] == '' else l[-1] + ' ',
                 opts=json.dumps(opts)
-            ))
-            i += 1
+            )
+            lines['opt' if '[0' in l[-2] else 'req'].append(ltmp)
+
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '\n{name} = {{ ; {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{req}{opt}\n</define>'.format(
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2]+' ',
+            req=''.join(lines['req']),
+            opt='' if len(lines['opt']) == 0 else '{idn}<optional>\n{opts}{idn}</optional>'.format(idn=self.indent, opts=''.join(lines['opt'])),
+            com='' if itm[-2] == '' else itm[-2] + ' ',
             opts=json.dumps(opts),
-            req=''.join(lines)
+            idn=self.indent
         )
 
     def _formatChoice(self, itm):
@@ -171,29 +190,27 @@ class JADNtoCDDL(object):
         :rtype str
         """
         lines = []
-        i = 1
         for l in itm[-1]:
-            opts = {'type': l[2], 'field': l[0]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
+            opts = {'field': l[0]}
 
-            lines.append('{name}: {type}{c} ; {com}#jadn_opts:{opts}'.format(
-                name=self.formatStr(l[1]),
-                type=self._fieldType(l[2]),
-                c=' //' if i < len(itm[-1]) else '',
-                com='' if l[-1] == '' else l[-1]+' ',
+            lines.append('{idn}{idn}{idn}<element name=\"{name}\">{val}</element> <!-- {com}#jadn_opts:{opts} -->\n'.format(
+                idn=self.indent,
+                name=n,
+                val=self._fieldType(l[2]),
+                com='' if l[-1] == '' else l[-1] + ' ',
                 opts=json.dumps(opts)
             ))
-            i += 1
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '\n{name} = ( ; {com}#jadn_opts:{opts}\n{idn}{defs}\n)\n'.format(
-            name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}{idn}<choice>\n{req}{idn}{idn}</choice>\n</define>'.format(
             idn=self.indent,
-            defs='\n{}'.format(self.indent).join(lines)
+            name=self.formatStr(itm[0]),
+            req=''.join(lines),
+            com='' if itm[-2] == '' else itm[-2] + ' ',
+            opts=json.dumps(opts)
         )
 
     def _formatMap(self, itm):
@@ -203,31 +220,35 @@ class JADNtoCDDL(object):
         :return: formatted map
         :rtype str
         """
-        lines = []
-        i = 1
+        lines = {
+            'req': [],
+            'opt': []
+        }
+
         for l in itm[-1]:
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
 
-            lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
-                idn=self.indent,
-                pre_opts='? ' if '[0' in l[-2] else '',
+            ltmp = '{idn}<element name=\"{name}\">{fType}</element> <!-- {com}#jadn_opts:{opts}-->\n'.format(
+                idn=self.indent+self.indent if '[0' in l[-2] else self.indent,
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
-                c=',' if i < len(itm[-1]) else '',
                 com='' if l[-1] == '' else l[-1] + ' ',
                 opts=json.dumps(opts)
-            ))
-            i += 1
+            )
+
+            lines['opt' if '[0' in l[-2] else 'req'].append(ltmp)
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '\n{name} = [ ; {com}#jadn_opts:{opts}\n{defs}]\n'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{req}{opt}\n</define>'.format(
+            idn=self.indent,
             name=self.formatStr(itm[0]),
+            req=''.join(lines['req']),
+            opt='' if len(lines['opt']) == 0 else '{idn}<optional>\n{opts}{idn}</optional>'.format(idn=self.indent, opts=''.join(lines['opt'])),
             com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
-            defs=''.join(lines)
+            opts=json.dumps(opts)
         )
 
     def _formatEnumerated(self, itm):
@@ -239,10 +260,11 @@ class JADNtoCDDL(object):
         """
         lines = []
         for l in itm[-1]:
+            n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
             opts = {'field': l[0]}
-
-            lines.append('\"{name}\" ; {com}#jadn_opts:{opts}\n'.format(
-                name=self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
+            lines.append('{idn}{idn}{idn}<value>{val}</value> <!-- {com}#jadn_opts:{opts} -->\n'.format(
+                idn=self.indent,
+                val=n,
                 com='' if l[-1] == '' else l[-1] + ' ',
                 opts=json.dumps(opts)
             ))
@@ -250,11 +272,12 @@ class JADNtoCDDL(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '\n; {com}#jadn_opts:{opts}\n{init}{rem}'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}{idn}<choice>\n{req}{idn}{idn}</choice>\n</define>'.format(
+            idn=self.indent,
+            name=self.formatStr(itm[0]),
+            req=''.join(lines),
             com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
-            init='{} = '.format(self.formatStr(itm[0])),
-            rem='{} /= '.format(self.formatStr(itm[0])).join(lines)
+            opts=json.dumps(opts)
         )
 
     def _formatArray(self, itm):  # TODO: what should this do??
@@ -276,7 +299,7 @@ class JADNtoCDDL(object):
         """
         of_type = filter(lambda x: x.startswith('#'), itm[2])
         of_type = of_type[0][1:] if len(of_type) == 1 else 'UNKNOWN'
-
+        '''
         min_n = filter(lambda x: x.startswith('['), itm[2])
         min_n = min_n[0][1:] if len(min_n) == 1 else ''
         min_n = int(min_n) if min_n.isdigit() else ''
@@ -290,17 +313,21 @@ class JADNtoCDDL(object):
             max='' if max_n == 0 else max_n,
             type=self._fieldType(of_type)
         )
+        '''
 
-        print('ArrayOf {} - min:{}, max:{}'.format(of_type, min_n, max_n))
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        return '\n{name} = {type} ; {com}\n'.format(
+        return '<define name="{name}"> <!-- {com}#jadn_opts:{opts} -->\n{idn}<zeroOrMore>\n{idn}{idn}{type}\n{idn}</zeroOrMore>\n</define>'.format(
+            idn=self.indent,
             name=self.formatStr(itm[0]),
-            type=field_type,
-            com=itm[-1]
+            type=self._fieldType(of_type),
+            com=itm[-1],
+            opts=json.dumps(opts)
         )
 
 
-def cddl_dumps(jadn):
+def relax_dumps(jadn):
     """
     Produce CDDL schema from JADN schema
     :arg jadn: JADN Schema to convert
@@ -308,11 +335,11 @@ def cddl_dumps(jadn):
     :return: Protobuf3 schema
     :rtype str
     """
-    return JADNtoCDDL(jadn).cddl_dump()
+    return JADNtoRelaxNG(jadn).relax_dump()
 
 
-def cddl_dump(jadn, fname, source=""):
+def relax_dump(jadn, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(cddl_dumps(jadn))
+        f.write(relax_dumps(jadn))

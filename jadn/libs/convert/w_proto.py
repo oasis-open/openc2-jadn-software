@@ -23,14 +23,7 @@ class JADNtoProto3(object):
         else:
             raise TypeError('JADN improperly formatted')
 
-        self._meta = jadn['meta'] or []
-        self._types = [t for t in jadn['types'] if len(t) == 5 or t[1].lower() in ['arrayof', 'array']]
-        self._custom = [t for t in jadn['types'] if len(t) == 4 and t[1].lower() not in ['arrayof', 'array']]
-
-        self._imports = []
-        self.indent = '    '
-
-        self._customFields = [t[0] for t in self._types]
+        self.indent = '  '
 
         self._fieldMap = {
             'Binary': 'string',
@@ -48,6 +41,19 @@ class JADNtoProto3(object):
             'Array': self._formatArray,
             'ArrayOf': self._formatArrayOf,
         }
+
+        self._imports = []
+        self._meta = jadn['meta'] or []
+        self._types = []
+        self._custom = []
+        self._customFields = []  # [t[0] for t in self._types]
+
+        for t in jadn['types']:
+            if t[1] in self._structFormats.keys():
+                self._types.append(t)
+                self._customFields.append(t[0])
+            else:
+                self._custom.append(t)
 
     def proto_dump(self):
         """
@@ -104,14 +110,12 @@ class JADNtoProto3(object):
         """
         tmp = ''
         for t in self._types:
-            if len(t) == 5:
-                # print('type - {}'.format(t[:-1]))
-                df = self._structFormats.get(t[1], None)
+            df = self._structFormats.get(t[1], None)
 
-                if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
-                    tmp += df(t)
-                elif df is not None:
-                    tmp += self._wrapAsRecord(df(t))
+            if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
+                tmp += df(t)
+            elif df is not None:
+                tmp += self._wrapAsRecord(df(t))
 
         return tmp
 
@@ -161,19 +165,29 @@ class JADNtoProto3(object):
         :return: formatted record
         :rtype str
         """
-        tmp = "\nmessage {} {{".format(self.formatStr(itm[0]))
-        opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
-
+        lines = []
         for l in itm[-1]:
-            tmp += '{}{} {} = {};'.format(self.indent, self._fieldType(l[2]), self.formatStr(l[1]), l[0])
             opts = {'type': l[2]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
-            tmp += ' // {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
-        tmp += "}\n"
 
-        return tmp
+            lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
+                idn=self.indent,
+                type=self._fieldType(l[2]),
+                name=self.formatStr(l[1]),
+                num=l[0],
+                com='' if l[-1] == '' else l[-1]+' ',
+                opts=json.dumps(opts)
+            ))
+
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = itm[2]
+
+        return '\nmessage {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+            name=self.formatStr(itm[0]),
+            req=''.join(lines),
+            com='' if itm[-2] == '' else itm[-2] + ' ',
+            opts=json.dumps(opts)
+        )
 
     def _formatChoice(self, itm):
         """
@@ -182,19 +196,30 @@ class JADNtoProto3(object):
         :return: formatted choice
         :rtype str
         """
-        tmp = '\n'
-        tmp += "oneof {} {{".format(self.formatStr(itm[0]))
-        opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
-
+        lines = []
         for l in itm[-1]:
-            tmp += '{}{} {} = {};'.format(self.indent, self._fieldType(l[2]), self.formatStr(l[1]), l[0])
             opts = {'type': l[2]}
             if len(l[-2]) > 0: opts['options'] = l[-2]
-            tmp += ' // {}#jadn_opts:{}\n'.format('' if l[-1] == '' else l[-1]+' ', json.dumps(opts))
-        tmp += '}\n'
-        return tmp
+
+            lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
+                idn=self.indent,
+                type=self._fieldType(l[2]),
+                name=self.formatStr(l[1]),
+                num=l[0],
+                com='' if l[-1] == '' else l[-1]+' ',
+                opts=json.dumps(opts)
+            ))
+
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = itm[2]
+
+        return '\noneof {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+            idn=self.indent,
+            name=self.formatStr(itm[0]),
+            com='' if itm[-2] == '' else itm[-2] + ' ',
+            opts=json.dumps(opts),
+            req=''.join(lines)
+        )
 
     def _formatMap(self, itm):
         """
@@ -212,27 +237,28 @@ class JADNtoProto3(object):
         :return: formatted enum
         :rtype str
         """
-        tmp = '\nenum {} {{'.format(self.formatStr(itm[0]))
-        opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
-        tmp += ' // {}#jadn_opts:{}\n'.format('' if itm[-2] == '' else itm[-2]+' ', json.dumps(opts))
-
         lines = []
         default = True
         for l in itm[-1]:
-            if l[0] == 0:
-                default = False
-            n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
-            ltmp = '{}{} = {};'.format(self.indent, n, l[0])
-            ltmp += '\n' if l[-1] == '' else ' // {}\n'.format(l[-1])
-            lines.append(ltmp)
+            if l[0] == 0: default = False
+            lines.append('{idn}{name} = {num};{com}\n'.format(
+                idn=self.indent,
+                name=self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
+                num=l[0],
+                com='' if l[-1] == '' else ' // {}'.format(l[-1])
+            ))
 
-        if default:
-            tmp += '{}Unknown_{} = 0; // required starting enum number for protobuf3\n'.format(self.indent, itm[0].replace('-', '_'))
-        tmp += ''.join(lines)
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = itm[2]
 
-        tmp += "}\n"
-        return tmp
+        return '\nenum {name} {{ // {com}#jadn_opts:{opts}\n{default}{enum}}}\n'.format(
+            idn=self.indent,
+            name=self.formatStr(itm[0]),
+            com='' if itm[-2] == '' else itm[-2] + ' ',
+            opts=json.dumps(opts),
+            default='{}Unknown_{} = 0; // required starting enum number for protobuf3\n'.format(self.indent, itm[0].replace('-', '_')) if default else '',
+            enum=''.join(lines)
+        )
 
     def _formatArray(self, itm):  # TODO: what should this do??
         """
@@ -241,6 +267,7 @@ class JADNtoProto3(object):
         :return: formatted array
         :rtype str
         """
+        print('Array: {}'.format(itm))
         return ''
 
     def _formatArrayOf(self, itm):  # TODO: what should this do??
@@ -250,6 +277,19 @@ class JADNtoProto3(object):
         :return: formatted arrayof
         :rtype str
         """
+        of_type = filter(lambda x: x.startswith('#'), itm[2])
+        of_type = of_type[0][1:] if len(of_type) == 1 else 'UNKNOWN'
+
+        min_n = filter(lambda x: x.startswith('['), itm[2])
+        min_n = min_n[0][1:] if len(min_n) == 1 else ''
+        min_n = int(min_n) if min_n.isdigit() else ''
+
+        max_n = filter(lambda x: x.startswith(']'), itm[2])
+        max_n = max_n[0][1:] if len(max_n) == 1 else ''
+        max_n = int(max_n) if max_n.isdigit() else ''
+
+        print('ArrayOf {} - min:{}, max:{}'.format(of_type, min_n, max_n))
+
         return ''
 
 

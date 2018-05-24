@@ -1,9 +1,14 @@
 {
  "meta": {
-  "module": "openc2",
-  "title": "OpenC2 Command Definitions",
+  "module": "oasis-open.org/openc2/v1.0/openc2-lang",
+  "title": "OpenC2 Language Objects",
   "version": "wd06",
-  "description": "Datatypes that define the content of OpenC2 commands and responses."
+  "description": "Datatypes that define the content of OpenC2 commands and responses.",
+  "imports": [
+    ["slpff", "oasis-open.org/openc2/v1.0/ap-slpff"],
+    ["jadn", "oasis-open.org/openc2/v1.0/jadn"]
+  ],
+  "exports": ["OpenC2-Command", "OpenC2-Response", "OpenC2-Message"]
  },
 
  "types": [
@@ -76,11 +81,11 @@
     [22, "volume", "volume", [], ""],
     [23, "windows_registry_key", "windows-registry-key", [], ""],
     [24, "x509_certificate", "x509-certificate", [], ""],
-    [1024, "slpff", "Slpff-Target", [], "Targets defined in the Stateless Packet Filter Firewall profile"]]
+    [1024, "slpff", "Slpff-Targets", [], "Targets defined in the Stateless Packet Filter Firewall profile"]]
   ],
 
   ["Actuator", "Choice", [], "", [
-    [100, "spff", "SpffSpecifiers", [], "Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01"]]
+    [1024, "slpff", "Slpff-Specifiers", [], "Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff"]]
   ],
 
   ["Args", "Map", [], "", [
@@ -88,7 +93,7 @@
     [2, "end_time", "Date-Time", ["[0"], "The specific date/time to terminate the action"],
     [3, "duration", "Duration", ["[0"], "The length of time for an action to be in effect"],
     [4, "response_requested", "Response-Type", ["[0"], "The type of response required for the action"],
-    [100, "spff", "SpffArgs", ["[0"], "Command arguments defined in the Stateless Packet Filtering Firewall profile"]]
+    [1024, "slpff", "Slpff-Args", ["[0"], "Command arguments defined in the Stateless Packet Filtering Firewall profile"]]
   ],
 
   ["OpenC2-Response", "Record", [], "", [

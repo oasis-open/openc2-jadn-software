@@ -1,36 +1,38 @@
--- Generated from schema\jadn.jadn, Thu May 17 16:23:36 2018
+-- Generated from schema\jadn.jadn, Thu May 24 16:29:05 2018
 
 /*
-module:        jadn
-title:         JADN Schema Syntax
+module:        oasis-open.org/openc2/v1.0/jadn
+title:         JADN Syntax
 version:       1.0 wd01
 description:   Syntax of a JSON Abstract Schema Notation (JADN) module.
+exports:       [u'Schema']
 */
 
-JADN ::= RECORD {    -- Definition of a JADN file
-    meta         SchemaMeta,    -- Information about the schema module
-    types        SchemaType     -- Type definitions ***{u'max': 0}
+Schema ::= RECORD {    -- Definition of a JADN file
+    meta         Meta,    -- Information about the schema module
+    types        Type     -- Type definitions ***{u'max': 0}
 }
 
-SchemaMeta ::= MAP {    -- Meta-information about this schema
-    module       [1] STRING,    -- Module name
-    title        [2] STRING OPTIONAL,
+Meta ::= MAP {    -- Meta-information about this schema
+    module       [1] Uname,    -- Module unique name
+    title        [2] STRING OPTIONAL,    -- Title
     version      [3] STRING OPTIONAL,    -- Module version
-    description  [4] STRING OPTIONAL,
-    imports      [5] Import OPTIONAL     -- List of imported modules ***{u'max': 0}
+    description  [4] STRING OPTIONAL,    -- Description
+    imports      [5] Import OPTIONAL,    -- Imported modules ***{u'max': 0}
+    exports      [6] STRING OPTIONAL     -- Exported datatype names ***{u'max': 0}
 }
 
-Import ::= ARRAY {
-    nsid         [1] STRING,    -- Namespace identifier
-    name         [2] STRING     -- Unique name of the defining module
+Import ::= ARRAY {    -- Imported module id and unique name
+                 [1] Nsid,    -- Local ID used within this module to refer to the imported module
+                 [2] Uname     -- Unique name of imported module
 }
 
-SchemaType ::= ARRAY {
-    name         [1] STRING,
-    type         [2] JADN-Type,    -- TODO: Need * option to  autogenerate enum from choice
-    options      [3] STRING, ***{u'max': 0}
-    description  [4] STRING,
-    fields       [5] JADN-Type.&type ***{u'max': 0}
+Type ::= ARRAY {
+                 [1] Identifier,    -- Name of this datatype
+                 [2] JADN-Type,    -- Base type
+                 [3] Option,    -- Type options ***{u'max': 0}
+                 [4] STRING,    -- Type description
+                 [5] JADN-Type.&type     -- List of fields (for compound types) ***{u'max': 0}
 }
 
 JADN-Type ::= CHOICE {
@@ -48,16 +50,24 @@ JADN-Type ::= CHOICE {
     Record       [12] FullField     -- Ordered list of named fields ***{u'max': 0}
 }
 
-EnumField ::= ARRAY {    -- Field definition for Enumerated types
-    id           [1] INTEGER,    -- Field ID
-    name         [2] STRING,    -- Field name
-    desc         [3] STRING     -- Field description
+EnumField ::= ARRAY {    -- Item definition for Enumerated types
+                 [1] INTEGER,    -- Item ID
+                 [2] STRING,    -- Item name
+                 [3] STRING     -- Item description
 }
 
-FullField ::= ARRAY {    -- Field definition for types other than Enumerated
-    id           [1] INTEGER,    -- Field ID or ordinal position
-    name         [2] STRING,    -- Field name
-    type         [3] STRING,    -- Field type
-    opts         [4] STRING OPTIONAL,    -- Field optiona ***{u'max': 0}
-    desc         [5] STRING     -- Field description
+FullField ::= ARRAY {    -- Field definition for other compound types
+                 [1] INTEGER,    -- Field ID or ordinal position
+                 [2] Identifier,    -- Field name
+                 [3] Identifier,    -- Field type
+                 [4] Option OPTIONAL,    -- Field options ***{u'max': 0}
+                 [5] STRING     -- Field description
 }
+
+Identifier ::= STRING(PATTERN "^[a-zA-Z][\w-]*$")    -- A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars
+
+Nsid ::= STRING(PATTERN "^[a-zA-Z][\w-]*$")    -- Namespace ID - a short identifier
+
+Uname ::= STRING    -- Unique name of imported module
+
+Option ::= STRING    -- Option string: 1st char = option id

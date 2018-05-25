@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd06.jadn, Thu May 24 16:29:05 2018-->
+<!-- Generated from schema\openc2-wd06.jadn, Fri May 25 14:09:23 2018-->
 ## Schema
  . | . 
 ---|---
@@ -126,7 +126,7 @@ ID|Name|Type|#|Description
 ###3.2.7 Status-Code
 
 
-**Status-Code (Enumerated)**
+**Status-Code (Enumerated{u'compact': True})**
 
 Value|Description
 ---|---

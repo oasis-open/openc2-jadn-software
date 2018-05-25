@@ -27,8 +27,10 @@ example data (good and bad cases) and calling conventions for the software.
 - jadn-translate.py - Convert JADN schemas to other formats supported in the "convert" package
 
 ### Schemas
-The jadn-translate utility reads `.jadn` schemas from an input directory (schema) and writes
-converted files to an output directory (schema_gen).
-- openc2-wd05.jadn - Schema that defines the OpenC2 message format as defined in the OpenC2
+The jadn-translate utility reads `.jadn` schemas from an input directory (*"schema"*) and writes
+converted files to an output directory (*"schema_gen"*).
+- openc2-wd\<*nn*>.jadn - Schema that defines the OpenC2 message format as defined in the OpenC2
 Language Specification, currently a work-in-progress document.  This schema is included
 in the language specification and is used to generate the property tables in that spec.
+- jadn.jadn - Schema for the JADN language
+- *others* - Schemas for other data types such as those defined in OpenC2 actuator profiles

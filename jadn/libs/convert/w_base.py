@@ -23,9 +23,9 @@ def sect_m(num, name):
     return len(num)*'#' + '.'.join([str(n) for n in num]) + ' ' + name + '\n'
 
 
-def thead_m(td, headers, cls):
+def thead_m(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
-    tc = '\n**' + (td[TNAME] + ' (' + td[TTYPE]) + ')**' if td else ''
+    tc = '\n**' + (tname + ' (' + ttype) + topts + ')' + '**' if tname else ''
     return tc + '\n\n' + '|'.join(headers) + '\n' + '|'.join(len(cls)*['---']) + '\n'
 
 
@@ -65,9 +65,9 @@ def sect_h(num, name):
     return '\n<' + hn + '>' + '.'.join([str(n) for n in num]) + ' ' + name + '</' + hn + '>\n'
 
 
-def thead_h(td, headers, cls):
+def thead_h(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
-    tc = '<caption>' + (td[TNAME] + ' (' + td[TTYPE]) + ')</caption>' if td else ''
+    tc = '<caption>' + (tname + ' (' + ttype) + topts + ')' + '</caption>' if tname else ''
     rc = zip(headers, cls)
     return  '<table>' + tc + '<thead>' + ''.join(['<th class="' + c[1] + '">' + c[0] + '</th>' for c in rc]) + '</thead>\n'
 
@@ -132,6 +132,7 @@ def base_dumps(jadn, form=DEFAULT_FORMAT, section=DEFAULT_SECTION):
             text += sect(sec + [sub], td[TNAME])
             text += td[TDESC] + '\n'
             to = topts_s2d(td[TOPTS])
+            tos = ' ' + str(to) if to else ''
 #            if to:
 #                text += '<div class="topts">' + str(to) + '</div>\n'  # have a look
             if td[TTYPE] == 'ArrayOf':            # In STRUCTURE_TYPES but with no field definitions
@@ -140,30 +141,30 @@ def base_dumps(jadn, form=DEFAULT_FORMAT, section=DEFAULT_SECTION):
             elif td[TTYPE] == 'Enumerated':
                 if 'compact' in topts_s2d(td[TOPTS]):
                     cls = ['n', 's']
-                    text += thead(td, ['Value', 'Description'], cls)
+                    text += thead(td[TNAME], td[TTYPE], tos, ['Value', 'Description'], cls)
                     for fd in td[FIELDS]:
                         name = fd[FNAME] + ' / ' if fd[FNAME] else ''
                         text += trow([str(fd[FTAG]), name + fd[EDESC]], cls)
                 else:
                     cls = ['n', 's', 's']
-                    text += thead(td, ['ID', 'Name', 'Description'], cls)
+                    text += thead(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Description'], cls)
                     for fd in td[FIELDS]:
                         text += trow([str(fd[FTAG]), fd[FNAME], fd[EDESC]], cls)
             elif td[TTYPE] == 'Choice':            # same as above but without cardinality column
                 cls = ['n', 's', 's', 's']
-                text += thead(td, ['ID', 'Name', 'Type', 'Description'], cls)
+                text += thead(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', 'Description'], cls)
                 for fd in td[FIELDS]:
                     text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], fd[FDESC]], cls)
             elif td[TTYPE] == 'Array':
                 cls = ['n', 's', 'n', 's']
-                text += thead(td, ['ID', 'Type', '#', 'Description'], cls)
+                text += thead(td[TNAME], td[TTYPE], tos, ['ID', 'Type', '#', 'Description'], cls)
                 for fd in td[FIELDS]:
                     fo = {'min': 1, 'max': 1}
                     fo.update(fopts_s2d(fd[FOPTS]))
                     text += trow([str(fd[FTAG]), fd[FTYPE], cardinality(fo['min'], fo['max']), fd[FDESC]], cls)
             else:
                 cls = ['n', 's', 's', 'n', 's']
-                text += thead(td, ['ID', 'Name', 'Type', '#', 'Description'], cls)
+                text += thead(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', '#', 'Description'], cls)
                 for fd in td[FIELDS]:
                     fo = {'min': 1, 'max': 1}
                     fo.update(fopts_s2d(fd[FOPTS]))
@@ -174,7 +175,7 @@ def base_dumps(jadn, form=DEFAULT_FORMAT, section=DEFAULT_SECTION):
     sec[-1] += 1
     text += sect(sec, 'Primitive Types')
     cls = ['s', 's', 's']
-    text += thead(None, ['Name', 'Type', 'Description'], cls)
+    text += thead(None, None, None, ['Name', 'Type', 'Description'], cls)
     for td in jadn['types']:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
         if td[TTYPE] in PRIMITIVE_TYPES:
             to = topts_s2d(td[TOPTS])

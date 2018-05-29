@@ -1,6 +1,6 @@
 {
   "name" : "OpenC2",
-  "pkg_name": "",
+  "pkg_name": "oc2",
   "version" : {
     "number" : {
       "major": 0,

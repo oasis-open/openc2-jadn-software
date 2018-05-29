@@ -33,7 +33,7 @@ setup(
 
     package_data={
         'OpenC2': [
-            './{}/*'.format(os.environ['PKG_NAME']),
+            './{}/*'.format(versionData['pkg_name']),
         ]
     }
 )

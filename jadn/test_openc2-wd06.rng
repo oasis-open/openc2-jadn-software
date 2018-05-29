@@ -1,7 +1,9 @@
-<!-- version - wd06 -->
+<!-- exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message'] -->
 <!-- description - Datatypes that define the content of OpenC2 commands and responses. -->
-<!-- module - openc2 -->
-<!-- title - OpenC2 Command Definitions -->
+<!-- title - OpenC2 Language Objects -->
+<!-- imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']] -->
+<!-- module - oasis-open.org/openc2/v1.0/openc2-lang -->
+<!-- version - wd06 -->
 
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
@@ -196,8 +198,8 @@
   <define name="Actuator">
     <!-- #jadn_opts:{"type": "Choice"} -->
     <choice>
-      <element name="spff">
-        <!-- Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01 #jadn_opts:{"field": 100} -->
+      <element name="slpff">
+        <!-- Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff #jadn_opts:{"field": 1024} -->
         <text/>
       </element>
     </choice>
@@ -230,8 +232,8 @@
         </element>
       </optional>
       <optional>
-        <element name="spff">
-          <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": {"min": 0}} -->
+        <element name="slpff">
+          <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 1024, "type": "Slpff-Args", "options": {"min": 0}} -->
           <text/>
         </element>
       </optional>
@@ -312,7 +314,7 @@
   <define name="openc2">
     <!-- A target used to query Actuator for its supported capabilities#jadn_opts:{"type": "ArrayOf", "options": {"aetype": "Query-Item", "max": 3, "min": 0}} -->
     <list>
-      <text/>
+      <ref name="Query_Item"/>
     </list>
   </define>
   <define name="Query_Item">

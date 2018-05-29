@@ -377,7 +377,6 @@ class JADNtoRelaxNG(object):
         :rtype str
         """
         field_opts = topts_s2d(itm[2])
-        field_opts['aetype'] = self.formatStr(field_opts['aetype'])
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])

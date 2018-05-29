@@ -1,7 +1,9 @@
-; version - wd06
+; exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
 ; description - Datatypes that define the content of OpenC2 commands and responses.
-; module - openc2
-; title - OpenC2 Command Definitions
+; title - OpenC2 Language Objects
+; imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+; module - oasis-open.org/openc2/v1.0/openc2-lang
+; version - wd06
 
 
 OpenC2_Command = { ; The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"}
@@ -71,11 +73,11 @@ Target = ( ; OpenC2 Target datatypes #jadn_opts:{"type": "Choice"}
   volume: bstr // ; #jadn_opts:{"field": 22, "type": "volume"}
   windows_registry_key: bstr // ; #jadn_opts:{"field": 23, "type": "windows-registry-key"}
   x509_certificate: bstr // ; #jadn_opts:{"field": 24, "type": "x509-certificate"}
-  slpff: bstr ; Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"field": 1024, "type": "Slpff-Target"}
+  slpff: bstr ; Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"field": 1024, "type": "Slpff-Targets"}
 )
 
 Actuator = ( ; #jadn_opts:{"type": "Choice"}
-  spff: bstr ; Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01 #jadn_opts:{"field": 100, "type": "SpffSpecifiers"}
+  slpff: bstr ; Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff #jadn_opts:{"field": 1024, "type": "Slpff-Specifiers"}
 )
 
 Args = [ ; #jadn_opts:{"type": "Map"}
@@ -83,7 +85,7 @@ Args = [ ; #jadn_opts:{"type": "Map"}
   ? end_time: date_time, ; The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": {"min": 0}}
   ? duration: duration, ; The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": {"min": 0}}
   ? response_requested: Response_Type, ; The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": {"min": 0}}
-  ? spff: bstr ; Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": {"min": 0}}
+  ? slpff: bstr ; Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 1024, "type": "Slpff-Args", "options": {"min": 0}}
 ]
 
 OpenC2_Response = { ; #jadn_opts:{"type": "Record"}
@@ -171,6 +173,7 @@ device = [ ; TODO: Add inventory device-id? #jadn_opts:{"type": "Map"}
   ? system_details: bstr ; #jadn_opts:{"field": 7, "type": "String", "options": {"min": 0}}
 ]
 
+; Custom Defined Types
 command_id = bstr ; Uniquely identifies a particular command - TBD syntax
 date_time = bstr ; RFC 3339 date-time
 duration = bstr ; RFC 3339 / ISO 8601 duration

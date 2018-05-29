@@ -57,7 +57,7 @@ class JADNtoCDDL(object):
                 self._custom.append(t)
 
     def cddl_dump(self):
-        return '{header}{defs}\n{custom}\n'.format(
+        return '{header}{defs}\n; Custom Defined Types\n{custom}\n'.format(
             header=self.makeHeader(),
             defs=self.makeStructures(),
             custom=self.makeCustom()
@@ -277,9 +277,12 @@ class JADNtoCDDL(object):
         :rtype str
         """
         field_opts = topts_s2d(itm[2])
-        field_opts['aetype'] = self.formatStr(field_opts['aetype'])
 
-        field_type = '[{min}*{max} {aetype}]'.format(**field_opts)
+        field_type = '[{min}*{max} {type}]'.format(
+            min=field_opts['min'],
+            max=field_opts['max'],
+            type=self.formatStr(field_opts['aetype'])
+        )
 
         print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 

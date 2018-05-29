@@ -280,7 +280,6 @@ class JADNtoProto3(object):
         :rtype str
         """
         field_opts = topts_s2d(itm[2])
-        field_opts['aetype'] = self.formatStr(field_opts['aetype'])
 
         print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 

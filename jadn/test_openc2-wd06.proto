@@ -1,12 +1,14 @@
 syntax = "proto3";
 
-package openc2;
+package oasis-open.org/openc2/v1.0/openc2-lang;
 
 /* meta
- * version - wd06
+ * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
  * description - Datatypes that define the content of OpenC2 commands and responses.
- * module - openc2
- * title - OpenC2 Command Definitions
+ * title - OpenC2 Language Objects
+ * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+ * module - oasis-open.org/openc2/v1.0/openc2-lang
+ * version - wd06
 */
 
 import "google/protobuf/timestamp.proto";
@@ -81,13 +83,13 @@ message Target {
     string volume = 22; // #jadn_opts:{"type": "volume"}
     string windows_registry_key = 23; // #jadn_opts:{"type": "windows-registry-key"}
     string x509_certificate = 24; // #jadn_opts:{"type": "x509-certificate"}
-    string slpff = 1024; // Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"type": "Slpff-Target"}
+    string slpff = 1024; // Targets defined in the Stateless Packet Filter Firewall profile #jadn_opts:{"type": "Slpff-Targets"}
   }
 }
 
 message Actuator {
   oneof Actuator { // #jadn_opts:{"type": "Choice"}
-    string spff = 100; // Specifiers as defined in the Stateless Packet Filtering Firewall profile, docs.oasis-open.org/openc2/oc2ap-spff/v1.0/csd01 #jadn_opts:{"type": "SpffSpecifiers"}
+    string slpff = 1024; // Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff #jadn_opts:{"type": "Slpff-Specifiers"}
   }
 }
 
@@ -96,7 +98,7 @@ message Args { // #jadn_opts:{"type": "Map"}
   google.protobuf.Timestamp end_time = 2; // The specific date/time to terminate the action #jadn_opts:{"type": "date-time", "options": {"min": 0}}
   string duration = 3; // The length of time for an action to be in effect #jadn_opts:{"type": "duration", "options": {"min": 0}}
   Response_Type response_requested = 4; // The type of response required for the action #jadn_opts:{"type": "Response-Type", "options": {"min": 0}}
-  string spff = 100; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "SpffArgs", "options": {"min": 0}}
+  string slpff = 1024; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "Slpff-Args", "options": {"min": 0}}
 }
 
 message OpenC2_Response { // #jadn_opts:{"type": "Record"}

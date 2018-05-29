@@ -9,9 +9,8 @@
             src_port="10996"
         />
     </target>
-    <argss
+    <args
         duration="PT2M30S"
         start_time="2016-11-25T08:10:31-04:00"
-        command_id="fw17_8675309"
     />
 </message>

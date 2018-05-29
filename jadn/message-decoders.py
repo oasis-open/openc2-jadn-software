@@ -16,7 +16,7 @@ for msg_file in os.listdir(dir):
     msgs[k] = t, OpenC2Message(os.path.join(dir, msg_file), OpenC2MessageFormats.get(t.upper()))
 
 print("Load Schema")
-schema = jadn_load('schema/openc2-wd05.jadn')
+schema = jadn_load('schema/openc2-wd06_functional.jadn')
 tc = Codec(schema, True, True)
 
 print("Validate Messages\n")

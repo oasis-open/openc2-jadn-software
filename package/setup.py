@@ -1,9 +1,8 @@
 import json
-import os
 
 from setuptools import setup, find_packages
 
-versionData = json.loads(open('version.json', 'rb').read())
+versionData = json.loads(open('version.json', 'r').read())
 
 setup(
     name=versionData['name'],

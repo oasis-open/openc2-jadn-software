@@ -7,9 +7,9 @@
 OpenC2_Command = { ; The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"}
   action: Action, ; The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"field": 1, "type": "Action"}
   target: Target, ; The object of the action. The action is performed on the target #jadn_opts:{"field": 2, "type": "Target"}
-  ? actuator: Actuator, ; The subject of the action. The actuator executes the action on the target #jadn_opts:{"field": 3, "type": "Actuator", "options": ["[0"]}
-  ? args: Args, ; Additional information that applies to the command #jadn_opts:{"field": 4, "type": "Args", "options": ["[0"]}
-  ? id: command_id ; Identifier used to link responses to a command #jadn_opts:{"field": 5, "type": "command-id", "options": ["[0"]}
+  ? actuator: Actuator, ; The subject of the action. The actuator executes the action on the target #jadn_opts:{"field": 3, "type": "Actuator", "options": {"min": 0}}
+  ? args: Args, ; Additional information that applies to the command #jadn_opts:{"field": 4, "type": "Args", "options": {"min": 0}}
+  ? id: command_id ; Identifier used to link responses to a command #jadn_opts:{"field": 5, "type": "command-id", "options": {"min": 0}}
 }
 
 ; #jadn_opts:{"type": "Enumerated"}
@@ -79,21 +79,21 @@ Actuator = ( ; #jadn_opts:{"type": "Choice"}
 )
 
 Args = [ ; #jadn_opts:{"type": "Map"}
-  ? start_time: date_time, ; The specific date/time to initiate the action #jadn_opts:{"field": 1, "type": "date-time", "options": ["[0"]}
-  ? end_time: date_time, ; The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": ["[0"]}
-  ? duration: duration, ; The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": ["[0"]}
-  ? response_requested: Response_Type, ; The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": ["[0"]}
-  ? spff: bstr ; Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": ["[0"]}
+  ? start_time: date_time, ; The specific date/time to initiate the action #jadn_opts:{"field": 1, "type": "date-time", "options": {"min": 0}}
+  ? end_time: date_time, ; The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": {"min": 0}}
+  ? duration: duration, ; The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": {"min": 0}}
+  ? response_requested: Response_Type, ; The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": {"min": 0}}
+  ? spff: bstr ; Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 100, "type": "SpffArgs", "options": {"min": 0}}
 ]
 
 OpenC2_Response = { ; #jadn_opts:{"type": "Record"}
   id: command_id, ; Id of the ommand that induced this response #jadn_opts:{"field": 1, "type": "command-id"}
   status: Status_Code, ; An integer status code #jadn_opts:{"field": 2, "type": "Status-Code"}
-  ? status_text: bstr, ; A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]}
+  ? status_text: bstr, ; A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}}
   unknown: bstr ; Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"}
 }
 
-; #jadn_opts:{"type": "Enumerated", "options": ["="]}
+; #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
 Status_Code = "Unknown_Status_Code_102" ; Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it. #jadn_opts:{"field": 102}
 Status_Code /= "Unknown_Status_Code_200" ; OK - the request has succeeded. #jadn_opts:{"field": 200}
 Status_Code /= "Unknown_Status_Code_301" ; Moved Permanently - the target resource has been assigned a new permanent URI #jadn_opts:{"field": 301}
@@ -104,9 +104,9 @@ Status_Code /= "Unknown_Status_Code_500" ; Server Error - the server encountered
 Status_Code /= "Unknown_Status_Code_501" ; Not Implemented - the server does not support the functionality required to fulfill the request. #jadn_opts:{"field": 501}
 
 artifact = { ; #jadn_opts:{"type": "Record"}
-  ? mime_type: bstr, ; Permitted values specified in the IANA Media Types registry #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]}
-  ? unknown: payload, ; choice of literal content or URL to obtain content #jadn_opts:{"field": 2, "type": "payload", "options": ["[0"]}
-  ? hashes: hashes ; Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]}
+  ? mime_type: bstr, ; Permitted values specified in the IANA Media Types registry #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}}
+  ? unknown: payload, ; choice of literal content or URL to obtain content #jadn_opts:{"field": 2, "type": "payload", "options": {"min": 0}}
+  ? hashes: hashes ; Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"field": 3, "type": "hashes", "options": {"min": 0}}
 }
 
 payload = ( ; #jadn_opts:{"type": "Choice"}
@@ -114,7 +114,7 @@ payload = ( ; #jadn_opts:{"type": "Choice"}
   url: uri ; MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"field": 2, "type": "uri"}
 )
 
-openc2 = [*3 Query_Item] ; A target used to query Actuator for its supported capabilities
+openc2 = [0*3 Query_Item] ; A target used to query Actuator for its supported capabilities
 
 ; Results to be included in response to query openc2 command #jadn_opts:{"type": "Enumerated"}
 Query_Item = "versions" ; OpenC2 language versions supported by this actuator #jadn_opts:{"field": 1}
@@ -122,11 +122,11 @@ Query_Item /= "profiles" ; List of profiles supported by this actuator #jadn_opt
 Query_Item /= "schema" ; Definition of the command syntax supported by this actuator #jadn_opts:{"field": 3}
 
 ip_connection = { ; 5-tuple that specifies a tcp/ip connection #jadn_opts:{"type": "Record"}
-  ? src_addr: ip_addr, ; source address #jadn_opts:{"field": 1, "type": "ip-addr", "options": ["[0"]}
-  ? src_port: port, ; source TCP/UDP port number #jadn_opts:{"field": 2, "type": "port", "options": ["[0"]}
-  ? dst_addr: ip_addr, ; destination address #jadn_opts:{"field": 3, "type": "ip-addr", "options": ["[0"]}
-  ? dst_port: port, ; destination TCP/UDP port number #jadn_opts:{"field": 4, "type": "port", "options": ["[0"]}
-  ? layer4_protocol: layer4_protocol ; Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"field": 5, "type": "layer4-protocol", "options": ["[0"]}
+  ? src_addr: ip_addr, ; source address #jadn_opts:{"field": 1, "type": "ip-addr", "options": {"min": 0}}
+  ? src_port: port, ; source TCP/UDP port number #jadn_opts:{"field": 2, "type": "port", "options": {"min": 0}}
+  ? dst_addr: ip_addr, ; destination address #jadn_opts:{"field": 3, "type": "ip-addr", "options": {"min": 0}}
+  ? dst_port: port, ; destination TCP/UDP port number #jadn_opts:{"field": 4, "type": "port", "options": {"min": 0}}
+  ? layer4_protocol: layer4_protocol ; Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"field": 5, "type": "layer4-protocol", "options": {"min": 0}}
 }
 
 ; protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237 #jadn_opts:{"type": "Enumerated"}
@@ -136,9 +136,9 @@ layer4_protocol /= "udp" ; User Datagram Protocol - RFC 768 #jadn_opts:{"field":
 layer4_protocol /= "sctp" ; Stream Control Transmission Protocol - RFC 4960 #jadn_opts:{"field": 132}
 
 file = [ ; #jadn_opts:{"type": "Map"}
-  ? name: bstr, ; The name of the file as defined in the file system #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]}
-  ? path: bstr, ; The absolute path to the location of the file in the file system #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}
-  ? hashes: hashes ; One or more cryptographic hash codes of the file contents #jadn_opts:{"field": 3, "type": "hashes", "options": ["[0"]}
+  ? name: bstr, ; The name of the file as defined in the file system #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}}
+  ? path: bstr, ; The absolute path to the location of the file in the file system #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}}
+  ? hashes: hashes ; One or more cryptographic hash codes of the file contents #jadn_opts:{"field": 3, "type": "hashes", "options": {"min": 0}}
 ]
 
 ; #jadn_opts:{"type": "Enumerated"}
@@ -147,28 +147,28 @@ Response_Type /= "Ack" ; Respond when command received #jadn_opts:{"field": 1}
 Response_Type /= "Complete" ; Respond when all aspects of command completed #jadn_opts:{"field": 2}
 
 Process = [ ; #jadn_opts:{"type": "Map"}
-  ? pid: int64, ; Process ID of the process #jadn_opts:{"field": 1, "type": "Integer", "options": ["[0"]}
-  ? name: bstr, ; Name of the process #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}
-  ? cwd: bstr, ; Current working directory of the process #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]}
-  ? executable: file, ; Executable that was executed to start the process #jadn_opts:{"field": 4, "type": "file", "options": ["[0"]}
-  ? parent: Process, ; Process that spawned this one #jadn_opts:{"field": 5, "type": "Process", "options": ["[0"]}
-  ? command_line: bstr ; The full command line invocation used to start this process, including all arguments #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]}
+  ? pid: int64, ; Process ID of the process #jadn_opts:{"field": 1, "type": "Integer", "options": {"min": 0}}
+  ? name: bstr, ; Name of the process #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}}
+  ? cwd: bstr, ; Current working directory of the process #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}}
+  ? executable: file, ; Executable that was executed to start the process #jadn_opts:{"field": 4, "type": "file", "options": {"min": 0}}
+  ? parent: Process, ; Process that spawned this one #jadn_opts:{"field": 5, "type": "Process", "options": {"min": 0}}
+  ? command_line: bstr ; The full command line invocation used to start this process, including all arguments #jadn_opts:{"field": 6, "type": "String", "options": {"min": 0}}
 ]
 
 hashes = [ ; Cryptographic Hash values #jadn_opts:{"type": "Map"}
-  ? md5: bstr, ; Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"field": 1, "type": "Binary", "options": ["[0"]}
-  ? sha1: bstr, ; Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"field": 4, "type": "Binary", "options": ["[0"]}
-  ? sha256: bstr ; Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"field": 6, "type": "Binary", "options": ["[0"]}
+  ? md5: bstr, ; Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"field": 1, "type": "Binary", "options": {"min": 0}}
+  ? sha1: bstr, ; Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"field": 4, "type": "Binary", "options": {"min": 0}}
+  ? sha256: bstr ; Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"field": 6, "type": "Binary", "options": {"min": 0}}
 ]
 
 device = [ ; TODO: Add inventory device-id? #jadn_opts:{"type": "Map"}
-  ? description: bstr, ; #jadn_opts:{"field": 1, "type": "String", "options": ["[0"]}
-  ? device_type: bstr, ; #jadn_opts:{"field": 2, "type": "String", "options": ["[0"]}
-  ? manufacturer: bstr, ; #jadn_opts:{"field": 3, "type": "String", "options": ["[0"]}
-  ? model: bstr, ; #jadn_opts:{"field": 4, "type": "String", "options": ["[0"]}
-  ? serial_number: bstr, ; #jadn_opts:{"field": 5, "type": "String", "options": ["[0"]}
-  ? firmware_version: bstr, ; #jadn_opts:{"field": 6, "type": "String", "options": ["[0"]}
-  ? system_details: bstr ; #jadn_opts:{"field": 7, "type": "String", "options": ["[0"]}
+  ? description: bstr, ; #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}}
+  ? device_type: bstr, ; #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}}
+  ? manufacturer: bstr, ; #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}}
+  ? model: bstr, ; #jadn_opts:{"field": 4, "type": "String", "options": {"min": 0}}
+  ? serial_number: bstr, ; #jadn_opts:{"field": 5, "type": "String", "options": {"min": 0}}
+  ? firmware_version: bstr, ; #jadn_opts:{"field": 6, "type": "String", "options": {"min": 0}}
+  ? system_details: bstr ; #jadn_opts:{"field": 7, "type": "String", "options": {"min": 0}}
 ]
 
 command_id = bstr ; Uniquely identifies a particular command - TBD syntax

@@ -2,6 +2,7 @@ import datetime
 import json
 import re
 
+from ..codec.codec_utils import fopts_s2d, topts_s2d
 from ..utils import Utils
 
 
@@ -169,7 +170,7 @@ class JADNtoProto3(object):
         lines = []
         for l in itm[-1]:
             opts = {'type': l[2]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
             lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
                 idn=self.indent,
@@ -181,7 +182,7 @@ class JADNtoProto3(object):
             ))
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\nmessage {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
@@ -200,7 +201,7 @@ class JADNtoProto3(object):
         lines = []
         for l in itm[-1]:
             opts = {'type': l[2]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
             lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
                 idn=self.indent,
@@ -212,7 +213,7 @@ class JADNtoProto3(object):
             ))
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\noneof {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
             idn=self.indent,
@@ -250,7 +251,7 @@ class JADNtoProto3(object):
             ))
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\nenum {name} {{ // {com}#jadn_opts:{opts}\n{default}{enum}}}\n'.format(
             idn=self.indent,
@@ -278,18 +279,10 @@ class JADNtoProto3(object):
         :return: formatted arrayof
         :rtype str
         """
-        of_type = filter(lambda x: x.startswith('#'), itm[2])
-        of_type = of_type[0][1:] if len(of_type) == 1 else 'UNKNOWN'
+        field_opts = topts_s2d(itm[2])
+        field_opts['aetype'] = self.formatStr(field_opts['aetype'])
 
-        min_n = filter(lambda x: x.startswith('['), itm[2])
-        min_n = min_n[0][1:] if len(min_n) == 1 else ''
-        min_n = int(min_n) if min_n.isdigit() else ''
-
-        max_n = filter(lambda x: x.startswith(']'), itm[2])
-        max_n = max_n[0][1:] if len(max_n) == 1 else ''
-        max_n = int(max_n) if max_n.isdigit() else ''
-
-        print('ArrayOf {} - min:{}, max:{}'.format(of_type, min_n, max_n))
+        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 
         return ''
 

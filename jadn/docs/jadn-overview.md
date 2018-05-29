@@ -148,7 +148,7 @@ and the Value has the type shown in the tables.
 
 |  ID  | ID Char | Name |  Type  |  Description |
 |------|:---:|---------|---------|--------------|
-  0x3d |  =  | compact | boolean | enumerated type is serialized as tag, record type is serialized as array
+  0x3d |  =  | compact | boolean | enumerated type is serialized as tag
   0x5b |  [  | min     | integer | minimum string length, integer value, array length, or property count
   0x5d |  ]  | max     | integer | maximum string length, integer value, array length, or property count
   0x23 |  #  | aetype  | string  | ArrayOf element type

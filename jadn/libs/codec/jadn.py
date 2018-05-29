@@ -25,24 +25,25 @@ jadn_schema = {
             "additionalProperties": False,
             "properties": {
                 "description": {"type": "string"},
-                "import": {
+                "module": {"type": "string"},
+                "title": {"type": "string"},
+                "version": {"type": "string"},
+                "imports": {
                     "type": "array",
                     "items": {
                         "type": "array",
-                        "minItems": 3,
-                        "maxItems": 3,
+                        "minItems": 2,
+                        "maxItems": 2,
                         "items": [
-                            {"type": "integer"},
                             {"type": "string"},
                             {"type": "string"}
                         ]
                     }
                 },
-                "module": {"type": "string"},
-                "root": {"type": "string"},
-                "namespace": {"type": "string"},
-                "title": {"type": "string"},
-                "version": {"type": "string"}
+                "exports": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
             }
         },
         "types": {
@@ -114,7 +115,7 @@ def jadn_check(schema):
     # TODO: raise exception instead of print
     # TODO: field type Null can't have options
 
-    for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
+    for t in schema["types"]:     # datatype definition: TNAME, TTYPE, TOPTS, TDESC, FIELDS
         if not is_builtin(t[TTYPE]):
             print("Type error: Unknown type", t[TTYPE], "(" + t[TNAME] + ")")       # TODO: handle if t[TNAME] doesn't exist
 
@@ -191,8 +192,9 @@ def build_jadn_deps(schema):
 def jadn_analyze(schema):
     items = build_jadn_deps(schema)
 #    out, roots = topo_sort(items)
+    exports = schema['meta']['exports'] if 'exports' in schema['meta'] else []
     types = {i[0] for i in items}
-    refs = set().union(*[i[1] for i in items])
+    refs = set().union(*[i[1] for i in items]) | set(exports)
     version = ", " + schema['meta']['version'] if 'version' in schema['meta'] else ''
     print("  module:", schema["meta"]["module"] + version)
     print("  unreferenced:", [str(k) for k in types - refs])

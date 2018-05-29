@@ -2,6 +2,8 @@ import datetime
 import json
 import re
 
+from ..codec.codec_utils import fopts_s2d, topts_s2d
+
 
 class JADNtoCDDL(object):
     def __init__(self, jadn):
@@ -55,7 +57,7 @@ class JADNtoCDDL(object):
                 self._custom.append(t)
 
     def cddl_dump(self):
-        return '{header}{defs}\n{custom}'.format(
+        return '{header}{defs}\n{custom}\n'.format(
             header=self.makeHeader(),
             defs=self.makeStructures(),
             custom=self.makeCustom()
@@ -141,7 +143,7 @@ class JADNtoCDDL(object):
         i = 1
         for l in itm[-1]:
             opts = {'type': l[2], 'field': l[0]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
             lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
                 idn=self.indent,
@@ -154,7 +156,7 @@ class JADNtoCDDL(object):
             ))
             i += 1
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\n{name} = {{ ; {com}#jadn_opts:{opts}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
@@ -174,7 +176,7 @@ class JADNtoCDDL(object):
         i = 1
         for l in itm[-1]:
             opts = {'type': l[2], 'field': l[0]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
             lines.append('{name}: {type}{c} ; {com}#jadn_opts:{opts}'.format(
                 name=self.formatStr(l[1]),
@@ -186,7 +188,7 @@ class JADNtoCDDL(object):
             i += 1
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\n{name} = ( ; {com}#jadn_opts:{opts}\n{idn}{defs}\n)\n'.format(
             name=self.formatStr(itm[0]),
@@ -207,7 +209,7 @@ class JADNtoCDDL(object):
         i = 1
         for l in itm[-1]:
             opts = {'type': l[2], 'field': l[0]}
-            if len(l[-2]) > 0: opts['options'] = l[-2]
+            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
             lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
                 idn=self.indent,
@@ -221,7 +223,7 @@ class JADNtoCDDL(object):
             i += 1
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\n{name} = [ ; {com}#jadn_opts:{opts}\n{defs}]\n'.format(
             name=self.formatStr(itm[0]),
@@ -248,7 +250,7 @@ class JADNtoCDDL(object):
             ))
 
         opts = {'type': itm[1]}
-        if len(itm[2]) > 0: opts['options'] = itm[2]
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\n; {com}#jadn_opts:{opts}\n{init}{rem}'.format(
             com='' if itm[-2] == '' else itm[-2] + ' ',
@@ -274,24 +276,12 @@ class JADNtoCDDL(object):
         :return: formatted arrayof
         :rtype str
         """
-        of_type = filter(lambda x: x.startswith('#'), itm[2])
-        of_type = of_type[0][1:] if len(of_type) == 1 else 'UNKNOWN'
+        field_opts = topts_s2d(itm[2])
+        field_opts['aetype'] = self.formatStr(field_opts['aetype'])
 
-        min_n = filter(lambda x: x.startswith('['), itm[2])
-        min_n = min_n[0][1:] if len(min_n) == 1 else ''
-        min_n = int(min_n) if min_n.isdigit() else ''
+        field_type = '[{min}*{max} {aetype}]'.format(**field_opts)
 
-        max_n = filter(lambda x: x.startswith(']'), itm[2])
-        max_n = max_n[0][1:] if len(max_n) == 1 else ''
-        max_n = int(max_n) if max_n.isdigit() else ''
-
-        field_type = '[{min}*{max} {type}]'.format(
-            min='' if min_n == 0 else min_n,
-            max='' if max_n == 0 else max_n,
-            type=self._fieldType(of_type)
-        )
-
-        print('ArrayOf {} - min:{}, max:{}'.format(of_type, min_n, max_n))
+        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 
         return '\n{name} = {type} ; {com}\n'.format(
             name=self.formatStr(itm[0]),

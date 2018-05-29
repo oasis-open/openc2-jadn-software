@@ -14,9 +14,9 @@ import "google/protobuf/timestamp.proto";
 message OpenC2_Command { // The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"}
   Action action = 1; // The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"type": "Action"}
   Target target = 2; // The object of the action. The action is performed on the target #jadn_opts:{"type": "Target"}
-  Actuator actuator = 3; // The subject of the action. The actuator executes the action on the target #jadn_opts:{"type": "Actuator", "options": ["[0"]}
-  Args args = 4; // Additional information that applies to the command #jadn_opts:{"type": "Args", "options": ["[0"]}
-  string id = 5; // Identifier used to link responses to a command #jadn_opts:{"type": "command-id", "options": ["[0"]}
+  Actuator actuator = 3; // The subject of the action. The actuator executes the action on the target #jadn_opts:{"type": "Actuator", "options": {"min": 0}}
+  Args args = 4; // Additional information that applies to the command #jadn_opts:{"type": "Args", "options": {"min": 0}}
+  string id = 5; // Identifier used to link responses to a command #jadn_opts:{"type": "command-id", "options": {"min": 0}}
 }
 
 enum Action { // #jadn_opts:{"type": "Enumerated"}
@@ -92,21 +92,21 @@ message Actuator {
 }
 
 message Args { // #jadn_opts:{"type": "Map"}
-  google.protobuf.Timestamp start_time = 1; // The specific date/time to initiate the action #jadn_opts:{"type": "date-time", "options": ["[0"]}
-  google.protobuf.Timestamp end_time = 2; // The specific date/time to terminate the action #jadn_opts:{"type": "date-time", "options": ["[0"]}
-  string duration = 3; // The length of time for an action to be in effect #jadn_opts:{"type": "duration", "options": ["[0"]}
-  Response_Type response_requested = 4; // The type of response required for the action #jadn_opts:{"type": "Response-Type", "options": ["[0"]}
-  string spff = 100; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "SpffArgs", "options": ["[0"]}
+  google.protobuf.Timestamp start_time = 1; // The specific date/time to initiate the action #jadn_opts:{"type": "date-time", "options": {"min": 0}}
+  google.protobuf.Timestamp end_time = 2; // The specific date/time to terminate the action #jadn_opts:{"type": "date-time", "options": {"min": 0}}
+  string duration = 3; // The length of time for an action to be in effect #jadn_opts:{"type": "duration", "options": {"min": 0}}
+  Response_Type response_requested = 4; // The type of response required for the action #jadn_opts:{"type": "Response-Type", "options": {"min": 0}}
+  string spff = 100; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "SpffArgs", "options": {"min": 0}}
 }
 
 message OpenC2_Response { // #jadn_opts:{"type": "Record"}
   string id = 1; // Id of the ommand that induced this response #jadn_opts:{"type": "command-id"}
   Status_Code status = 2; // An integer status code #jadn_opts:{"type": "Status-Code"}
-  string status_text = 3; // A free-form human-readable description of the response status #jadn_opts:{"type": "String", "options": ["[0"]}
+  string status_text = 3; // A free-form human-readable description of the response status #jadn_opts:{"type": "String", "options": {"min": 0}}
   string unknown = 4; // Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"type": "Results"}
 }
 
-enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": ["="]}
+enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
   Unknown_Status_Code = 0; // required starting enum number for protobuf3
   Unknown_Status_Code_102 = 102; // Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
   Unknown_Status_Code_200 = 200; // OK - the request has succeeded.
@@ -119,9 +119,9 @@ enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": ["="]}
 }
 
 message artifact { // #jadn_opts:{"type": "Record"}
-  string mime_type = 1; // Permitted values specified in the IANA Media Types registry #jadn_opts:{"type": "String", "options": ["[0"]}
-  payload unknown = 2; // choice of literal content or URL to obtain content #jadn_opts:{"type": "payload", "options": ["[0"]}
-  hashes hashes = 3; // Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"type": "hashes", "options": ["[0"]}
+  string mime_type = 1; // Permitted values specified in the IANA Media Types registry #jadn_opts:{"type": "String", "options": {"min": 0}}
+  payload unknown = 2; // choice of literal content or URL to obtain content #jadn_opts:{"type": "payload", "options": {"min": 0}}
+  hashes hashes = 3; // Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"type": "hashes", "options": {"min": 0}}
 }
 
 message payload {
@@ -139,11 +139,11 @@ enum Query_Item { // Results to be included in response to query openc2 command 
 }
 
 message ip_connection { // 5-tuple that specifies a tcp/ip connection #jadn_opts:{"type": "Record"}
-  string src_addr = 1; // source address #jadn_opts:{"type": "ip-addr", "options": ["[0"]}
-  string src_port = 2; // source TCP/UDP port number #jadn_opts:{"type": "port", "options": ["[0"]}
-  string dst_addr = 3; // destination address #jadn_opts:{"type": "ip-addr", "options": ["[0"]}
-  string dst_port = 4; // destination TCP/UDP port number #jadn_opts:{"type": "port", "options": ["[0"]}
-  layer4_protocol layer4_protocol = 5; // Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"type": "layer4-protocol", "options": ["[0"]}
+  string src_addr = 1; // source address #jadn_opts:{"type": "ip-addr", "options": {"min": 0}}
+  string src_port = 2; // source TCP/UDP port number #jadn_opts:{"type": "port", "options": {"min": 0}}
+  string dst_addr = 3; // destination address #jadn_opts:{"type": "ip-addr", "options": {"min": 0}}
+  string dst_port = 4; // destination TCP/UDP port number #jadn_opts:{"type": "port", "options": {"min": 0}}
+  layer4_protocol layer4_protocol = 5; // Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"type": "layer4-protocol", "options": {"min": 0}}
 }
 
 enum layer4_protocol { // protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237 #jadn_opts:{"type": "Enumerated"}
@@ -155,9 +155,9 @@ enum layer4_protocol { // protocol (IPv4) or next header (IPv6) field - any IANA
 }
 
 message file { // #jadn_opts:{"type": "Map"}
-  string name = 1; // The name of the file as defined in the file system #jadn_opts:{"type": "String", "options": ["[0"]}
-  string path = 2; // The absolute path to the location of the file in the file system #jadn_opts:{"type": "String", "options": ["[0"]}
-  hashes hashes = 3; // One or more cryptographic hash codes of the file contents #jadn_opts:{"type": "hashes", "options": ["[0"]}
+  string name = 1; // The name of the file as defined in the file system #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string path = 2; // The absolute path to the location of the file in the file system #jadn_opts:{"type": "String", "options": {"min": 0}}
+  hashes hashes = 3; // One or more cryptographic hash codes of the file contents #jadn_opts:{"type": "hashes", "options": {"min": 0}}
 }
 
 enum Response_Type { // #jadn_opts:{"type": "Enumerated"}
@@ -167,28 +167,28 @@ enum Response_Type { // #jadn_opts:{"type": "Enumerated"}
 }
 
 message Process { // #jadn_opts:{"type": "Map"}
-  int64 pid = 1; // Process ID of the process #jadn_opts:{"type": "Integer", "options": ["[0"]}
-  string name = 2; // Name of the process #jadn_opts:{"type": "String", "options": ["[0"]}
-  string cwd = 3; // Current working directory of the process #jadn_opts:{"type": "String", "options": ["[0"]}
-  file executable = 4; // Executable that was executed to start the process #jadn_opts:{"type": "file", "options": ["[0"]}
-  Process parent = 5; // Process that spawned this one #jadn_opts:{"type": "Process", "options": ["[0"]}
-  string command_line = 6; // The full command line invocation used to start this process, including all arguments #jadn_opts:{"type": "String", "options": ["[0"]}
+  int64 pid = 1; // Process ID of the process #jadn_opts:{"type": "Integer", "options": {"min": 0}}
+  string name = 2; // Name of the process #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string cwd = 3; // Current working directory of the process #jadn_opts:{"type": "String", "options": {"min": 0}}
+  file executable = 4; // Executable that was executed to start the process #jadn_opts:{"type": "file", "options": {"min": 0}}
+  Process parent = 5; // Process that spawned this one #jadn_opts:{"type": "Process", "options": {"min": 0}}
+  string command_line = 6; // The full command line invocation used to start this process, including all arguments #jadn_opts:{"type": "String", "options": {"min": 0}}
 }
 
 message hashes { // Cryptographic Hash values #jadn_opts:{"type": "Map"}
-  string md5 = 1; // Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"type": "Binary", "options": ["[0"]}
-  string sha1 = 4; // Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"type": "Binary", "options": ["[0"]}
-  string sha256 = 6; // Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"type": "Binary", "options": ["[0"]}
+  string md5 = 1; // Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"type": "Binary", "options": {"min": 0}}
+  string sha1 = 4; // Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"type": "Binary", "options": {"min": 0}}
+  string sha256 = 6; // Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"type": "Binary", "options": {"min": 0}}
 }
 
 message device { // TODO: Add inventory device-id? #jadn_opts:{"type": "Map"}
-  string description = 1; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string device_type = 2; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string manufacturer = 3; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string model = 4; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string serial_number = 5; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string firmware_version = 6; // #jadn_opts:{"type": "String", "options": ["[0"]}
-  string system_details = 7; // #jadn_opts:{"type": "String", "options": ["[0"]}
+  string description = 1; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string device_type = 2; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string manufacturer = 3; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string model = 4; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string serial_number = 5; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string firmware_version = 6; // #jadn_opts:{"type": "String", "options": {"min": 0}}
+  string system_details = 7; // #jadn_opts:{"type": "String", "options": {"min": 0}}
 }
 
 /* JADN Custom Fields

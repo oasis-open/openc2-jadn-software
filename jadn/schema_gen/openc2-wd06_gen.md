@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd06.jadn, Fri May 25 14:09:23 2018-->
+<!-- Generated from schema\openc2-wd06.jadn, Wed May 30 16:28:17 2018-->
 ## Schema
  . | . 
 ---|---
@@ -91,7 +91,7 @@ ID|Name|Type|Description
 22|volume|volume|
 23|windows_registry_key|windows-registry-key|
 24|x509_certificate|x509-certificate|
-1024|slpff|Slpff-Targets|Targets defined in the Stateless Packet Filter Firewall profile
+1024|slpff|slpff:Target|Target imported from the Stateless Packet Filter Firewall profile
 ###3.2.4 Actuator
 
 
@@ -99,8 +99,18 @@ ID|Name|Type|Description
 
 ID|Name|Type|Description
 ---|---|---|---
-1024|slpff|Slpff-Specifiers|Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
-###3.2.5 Args
+1|generic|ActuatorSpecifiers|
+1024|slpff|slpff:Specifiers|Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
+###3.2.5 ActuatorSpecifiers
+
+
+**ActuatorSpecifiers (Map)**
+
+ID|Name|Type|#|Description
+---|---|---|---|---
+1|actuator_id|uri|0..1|
+2|asset_id|String|0..1|
+###3.2.6 Args
 
 
 **Args (Map)**
@@ -111,8 +121,8 @@ ID|Name|Type|#|Description
 2|end_time|Date-Time|0..1|The specific date/time to terminate the action
 3|duration|Duration|0..1|The length of time for an action to be in effect
 4|response_requested|Response-Type|0..1|The type of response required for the action
-1024|slpff|Slpff-Args|0..1|Command arguments defined in the Stateless Packet Filtering Firewall profile
-###3.2.6 OpenC2-Response
+1024|slpff|slpff:Args|0..1|Command arguments defined in the Stateless Packet Filtering Firewall profile
+###3.2.7 OpenC2-Response
 
 
 **OpenC2-Response (Record)**
@@ -123,22 +133,22 @@ ID|Name|Type|#|Description
 2|status|Status-Code|1|An integer status code
 3|status_text|String|0..1|A free-form human-readable description of the response status
 4|*|Results|1|Data or extended status information that was requested from an OpenC2 command
-###3.2.7 Status-Code
+###3.2.8 Status-Code
 
 
-**Status-Code (Enumerated{u'compact': True})**
+**Status-Code (Enumerated.Tag)**
 
 Value|Description
 ---|---
-102|Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
-200|OK - the request has succeeded.
-301|Moved Permanently - the target resource has been assigned a new permanent URI
-400|Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
-401|Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
-403|Forbidden - the server understood the request but refuses to authorize it.
-500|Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
-501|Not Implemented - the server does not support the functionality required to fulfill the request.
-###3.2.8 artifact
+102|Processing -- An interim response used to inform the client that the server has accepted the request but not yet completed it.
+200|OK -- The request has succeeded.
+301|Moved Permanently -- The target resource has been assigned a new permanent URI
+400|Bad Request -- The server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+401|Unauthorized -- The request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+403|Forbidden -- The server understood the request but refuses to authorize it.
+500|Server Error -- The server encountered an unexpected condition that prevented it from fulfilling the request.
+501|Not Implemented -- The server does not support the functionality required to fulfill the request.
+###3.2.9 artifact
 
 
 **artifact (Record)**
@@ -148,7 +158,7 @@ ID|Name|Type|#|Description
 1|mime_type|String|0..1|Permitted values specified in the IANA Media Types registry
 2|*|payload|0..1|choice of literal content or URL to obtain content
 3|hashes|hashes|0..1|Specifies a dictionary of hashes for the contents of the payload
-###3.2.9 payload
+###3.2.10 payload
 
 
 **payload (Choice)**
@@ -157,10 +167,14 @@ ID|Name|Type|Description
 ---|---|---|---
 1|payload_bin|Binary|Specifies the data contained in the artifact.
 2|url|uri|MUST be a valid URL that resolves to the un-encoded content
-###3.2.10 openc2
+###3.2.11 openc2
 A target used to query Actuator for its supported capabilities
-(arrayof definition)
-###3.2.11 Query-Item
+
+**openc2 (ArrayOf.Query-Item)**
+
+
+
+###3.2.12 Query-Item
 Results to be included in response to query openc2 command
 
 **Query-Item (Enumerated)**
@@ -170,7 +184,7 @@ ID|Name|Description
 1|versions|OpenC2 language versions supported by this actuator
 2|profiles|List of profiles supported by this actuator
 3|schema|Definition of the command syntax supported by this actuator
-###3.2.12 ip-connection
+###3.2.13 ip-connection
 5-tuple that specifies a tcp/ip connection
 
 **ip-connection (Record)**
@@ -182,7 +196,7 @@ ID|Name|Type|#|Description
 3|dst_addr|ip-addr|0..1|destination address
 4|dst_port|port|0..1|destination TCP/UDP port number
 5|layer4_protocol|layer4-protocol|0..1|Protocol (IPv4) / Next Header (IPv6)
-###3.2.13 layer4-protocol
+###3.2.14 layer4-protocol
 protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 
 **layer4-protocol (Enumerated)**
@@ -193,7 +207,7 @@ ID|Name|Description
 6|tcp|Transmission Control Protocol - RFC 793
 17|udp|User Datagram Protocol - RFC 768
 132|sctp|Stream Control Transmission Protocol - RFC 4960
-###3.2.14 file
+###3.2.15 file
 
 
 **file (Map)**
@@ -203,7 +217,7 @@ ID|Name|Type|#|Description
 1|name|String|0..1|The name of the file as defined in the file system
 2|path|String|0..1|The absolute path to the location of the file in the file system
 3|hashes|hashes|0..1|One or more cryptographic hash codes of the file contents
-###3.2.15 Response-Type
+###3.2.16 Response-Type
 
 
 **Response-Type (Enumerated)**
@@ -213,7 +227,7 @@ ID|Name|Description
 0|None|No response
 1|Ack|Respond when command received
 2|Complete|Respond when all aspects of command completed
-###3.2.16 Process
+###3.2.17 Process
 
 
 **Process (Map)**
@@ -226,7 +240,7 @@ ID|Name|Type|#|Description
 4|executable|File|0..1|Executable that was executed to start the process
 5|parent|Process|0..1|Process that spawned this one
 6|command_line|String|0..1|The full command line invocation used to start this process, including all arguments
-###3.2.17 hashes
+###3.2.18 hashes
 Cryptographic Hash values
 
 **hashes (Map)**
@@ -236,7 +250,7 @@ ID|Name|Type|#|Description
 1|md5|Binary|0..1|Hex-encoded MD5 hash as defined in RFC3121
 4|sha1|Binary|0..1|Hex-encoded SHA1 hash as defined in RFC3174
 6|sha256|Binary|0..1|Hex-encoded SHA256 as defined in RFC6234
-###3.2.18 device
+###3.2.19 device
 TODO: Add inventory device-id?
 
 **device (Map)**

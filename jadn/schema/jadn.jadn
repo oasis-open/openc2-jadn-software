@@ -29,11 +29,11 @@
         ],
 
         ["Type", "Array", [], "", [
-            [1, "", "Identifier", [], "Name of this datatype"],
-            [2, "", "JADN-Type", [], "Base type"],
-            [3, "", "Option", ["]0"], "Type options"],
-            [4, "", "String", [], "Type description"],
-            [5, "", "JADN-Type", ["&type", "]0"], "List of fields (for compound types)"]]
+            [1, "tname", "Identifier", [], "Name of this datatype"],
+            [2, "btype", "JADN-Type", [], "Base type"],
+            [3, "opts", "Option", ["]0"], "Type options"],
+            [4, "desc", "String", [], "Type description"],
+            [5, "fields", "JADN-Type", ["&btype", "]0"], "List of fields (for compound types)"]]
         ],
 
         ["JADN-Type", "Choice", [], "", [

@@ -1,4 +1,4 @@
--- Generated from schema\openc2-wd06.jadn, Fri May 25 14:09:23 2018
+-- Generated from schema\openc2-wd06.jadn, Wed May 30 16:28:17 2018
 
 /*
 module:        oasis-open.org/openc2/v1.0/openc2-lang
@@ -78,11 +78,17 @@ Target ::= CHOICE {    -- OpenC2 Target datatypes
     volume                [22] volume,
     windows_registry_key  [23] windows-registry-key,
     x509_certificate      [24] x509-certificate,
-    slpff                 [1024] Slpff-Targets     -- Targets defined in the Stateless Packet Filter Firewall profile
+    slpff                 [1024] slpff:Target     -- Target imported from the Stateless Packet Filter Firewall profile
 }
 
 Actuator ::= CHOICE {
-    slpff        [1024] Slpff-Specifiers     -- Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
+    generic      [1] ActuatorSpecifiers,
+    slpff        [1024] slpff:Specifiers     -- Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
+}
+
+ActuatorSpecifiers ::= MAP {
+    actuator_id  [1] uri OPTIONAL,
+    asset_id     [2] STRING OPTIONAL
 }
 
 Args ::= MAP {
@@ -90,7 +96,7 @@ Args ::= MAP {
     end_time            [2] Date-Time OPTIONAL,    -- The specific date/time to terminate the action
     duration            [3] Duration OPTIONAL,    -- The length of time for an action to be in effect
     response_requested  [4] Response-Type OPTIONAL,    -- The type of response required for the action
-    slpff               [1024] Slpff-Args OPTIONAL     -- Command arguments defined in the Stateless Packet Filtering Firewall profile
+    slpff               [1024] slpff:Args OPTIONAL     -- Command arguments defined in the Stateless Packet Filtering Firewall profile
 }
 
 OpenC2-Response ::= RECORD {
@@ -101,14 +107,14 @@ OpenC2-Response ::= RECORD {
 }
 
 Status-Code ::= ENUMERATED {
-                 (102),    -- Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
-                 (200),    -- OK - the request has succeeded.
-                 (301),    -- Moved Permanently - the target resource has been assigned a new permanent URI
-                 (400),    -- Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
-                 (401),    -- Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
-                 (403),    -- Forbidden - the server understood the request but refuses to authorize it.
-                 (500),    -- Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
-                 (501)     -- Not Implemented - the server does not support the functionality required to fulfill the request.
+    Processing         (102),    -- An interim response used to inform the client that the server has accepted the request but not yet completed it.
+    OK                 (200),    -- The request has succeeded.
+    Moved Permanently  (301),    -- The target resource has been assigned a new permanent URI
+    Bad Request        (400),    -- The server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+    Unauthorized       (401),    -- The request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+    Forbidden          (403),    -- The server understood the request but refuses to authorize it.
+    Server Error       (500),    -- The server encountered an unexpected condition that prevented it from fulfilling the request.
+    Not Implemented    (501)     -- The server does not support the functionality required to fulfill the request.
 }
 
 artifact ::= RECORD {
@@ -122,7 +128,7 @@ payload ::= CHOICE {
     url          [2] uri     -- MUST be a valid URL that resolves to the un-encoded content
 }
 
-openc2 ::= ARRAY_OF(Query-Item)    -- A target used to query Actuator for its supported capabilities
+openc2 ::= ARRAY_OF    -- A target used to query Actuator for its supported capabilities
 
 Query-Item ::= ENUMERATED {    -- Results to be included in response to query openc2 command
     versions     (1),    -- OpenC2 language versions supported by this actuator

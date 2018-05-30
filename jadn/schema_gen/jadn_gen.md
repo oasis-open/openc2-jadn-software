@@ -1,4 +1,4 @@
-<!-- Generated from schema\jadn.jadn, Fri May 25 14:09:23 2018-->
+<!-- Generated from schema\jadn.jadn, Wed May 30 16:28:17 2018-->
 ## Schema
  . | . 
 ---|---
@@ -46,11 +46,11 @@ ID|Type|#|Description
 
 ID|Type|#|Description
 ---|---|---|---
-1|Identifier|1|Name of this datatype
-2|JADN-Type|1|Base type
-3|Option|1..n|Type options
-4|String|1|Type description
-5|JADN-Type|1..n|List of fields (for compound types)
+1|Identifier|1|"tname": Name of this datatype
+2|JADN-Type|1|"btype": Base type
+3|Option|1..n|"opts": Type options
+4|String|1|"desc": Type description
+5|JADN-Type|1..n|"fields": List of fields (for compound types)
 ###3.2.5 JADN-Type
 
 

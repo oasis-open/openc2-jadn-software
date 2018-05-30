@@ -1,4 +1,4 @@
--- Generated from schema\jadn.jadn, Fri May 25 14:09:23 2018
+-- Generated from schema\jadn.jadn, Wed May 30 16:28:17 2018
 
 /*
 module:        oasis-open.org/openc2/v1.0/jadn
@@ -28,11 +28,11 @@ Import ::= ARRAY {    -- Imported module id and unique name
 }
 
 Type ::= ARRAY {
-                 [1] Identifier,    -- Name of this datatype
-                 [2] JADN-Type,    -- Base type
-                 [3] Option,    -- Type options ***{u'max': 0}
-                 [4] STRING,    -- Type description
-                 [5] JADN-Type.&type     -- List of fields (for compound types) ***{u'max': 0}
+    tname        [1] Identifier,    -- Name of this datatype
+    btype        [2] JADN-Type,    -- Base type
+    opts         [3] Option,    -- Type options ***{u'max': 0}
+    desc         [4] STRING,    -- Type description
+    fields       [5] JADN-Type.&btype     -- List of fields (for compound types) ***{u'max': 0}
 }
 
 JADN-Type ::= CHOICE {

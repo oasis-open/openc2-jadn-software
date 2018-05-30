@@ -151,7 +151,7 @@ and the Value has the type shown in the tables.
   0x3d |  =  | compact | boolean | enumerated type is serialized as tag
   0x5b |  [  | min     | integer | minimum string length, integer value, array length, or property count
   0x5d |  ]  | max     | integer | maximum string length, integer value, array length, or property count
-  0x23 |  #  | aetype  | string  | ArrayOf element type
+  0x2a |  *  | rtype   | string  | enumerated value from referenced type or ArrayOf element type
   0x24 |  $  | pattern | string  | regular expression that a string type must match
   0x40 |  @  | format  | string  | name of validation function, e.g., date-time, email, ipaddr, ...
 
@@ -161,6 +161,7 @@ and the Value has the type shown in the tables.
   0x5b |  [  | min     | integer | minimum cardinality of field, default = 1, 0 = field is optional
   0x5d |  ]  | max     | integer | maximum cardinality of field, default = 1, 0 = inherited max. If max != 1, field is an array.
   0x26 |  &  | atfield | string  | name of a field that specifies the type of this field
+  0x2a |  *  | rtype   | string  | enumerated value from referenced type or ArrayOf element type
   0x2f |  /  | etype   | string  | serializer-specific encoding type, e.g., u8, i32, hex, base64
   0x21 |  !  | default | string  | default value for this field (coerced to field type)
 

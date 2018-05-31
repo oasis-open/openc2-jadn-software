@@ -1,6 +1,7 @@
 import glob
 import json
 import pprint
+import sys
 import xmltodict
 
 from lxml import etree
@@ -8,23 +9,33 @@ from lxml import etree
 convert = True
 
 if convert:
-    from libs.convert import cddl_dump, proto_dump, relax_dump, thrift_dump
+    from libs.utils import Utils
+    from libs.convert import base_dump, cddl_dump, proto_dump, relax_dump, thrift_dump
 
     schema = 'schema/openc2-wd06_functional.jadn'
 
     with open(schema, 'rb') as r:
-        schema_file = json.loads(r.read())
+        schema_json = json.loads(r.read())
 
-    proto_dump(schema_file, 'test_openc2-wd06.proto')
+    print(Utils.defaultDecode(schema_json))
 
-    cddl_dump(schema_file, 'test_openc2-wd06.cddl')
+    proto_dump(schema_json, 'test_openc2-wd06.proto')
 
-    relax_dump(schema_file, 'test_openc2-wd06.rng')
+    cddl_dump(schema_json, 'test_openc2-wd06.cddl')
 
-    thrift_dump(schema_file, 'test_openc2-wd06.thrift')
+    relax_dump(schema_json, 'test_openc2-wd06.rng')
+
+    thrift_dump(schema_json, 'test_openc2-wd06.thrift')
+
+    base_dump(schema_json, 'test_openc2-wd06.md', form='markdown')
+
+    base_dump(schema_json, 'test_openc2-wd06.html', form='html')
 
 else:
-    from StringIO import StringIO
+    if sys.version_info.major >= 3:
+        from io import StringIO
+    elif sys.version_info.major >= 2:
+        from StringIO import StringIO
 
     with open('test_openc2-wd06.rng', 'rb') as r:
         relax_schema = StringIO(r.read())

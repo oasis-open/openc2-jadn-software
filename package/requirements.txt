@@ -1,5 +1,6 @@
 cbor2
 dicttoxml
 jsonschema
+lxml
 protobuf
 xmltodict

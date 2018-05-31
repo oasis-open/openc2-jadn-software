@@ -1,6 +1,7 @@
-import datetime
 import json
 import re
+
+from datetime import datetime
 
 from ..codec.codec_utils import fopts_s2d, topts_s2d
 

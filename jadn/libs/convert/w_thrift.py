@@ -109,7 +109,7 @@ class JADNtoThrift(object):
         for t in self._types:
             df = self._structFormats.get(t[1], None)
 
-            if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
+            if df is not None and t[1] in ['Record', 'Choice', 'Enumerated', 'Map']:
                 tmp += df(t)
 
             elif df is not None:
@@ -150,7 +150,6 @@ class JADNtoThrift(object):
 
         else:
             rtn = 'string'
-        # print(f, rtn)
         return rtn
 
     # Structure Formats
@@ -165,16 +164,27 @@ class JADNtoThrift(object):
         lines = []
         for l in itm[-1]:
             opts = {'type': l[2]}
-            if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
-
-            lines.append('{idn}{num}: {opts} {type} {name}; // {com}#jadn_opts:{opts}\n'.format(
-                idn=self.indent,
-                type=self._fieldType(l[2]),
-                name=self.formatStr(l[1]),
-                num=l[0],
-                com='' if l[-1] == '' else l[-1]+' ',
-                opts=json.dumps(opts)
-            ))
+            if len(l[-2]) > 0:
+                opts['options'] = fopts_s2d(l[-2])
+                lines.append('{idn}{num}: {choice} {type} {name}; // {com}#jadn_opts:{opts}\n'.format(
+                    idn=self.indent,
+                    choice='optional',
+                    type=self._fieldType(l[2]),
+                    name=self.formatStr(l[1]),
+                    num=l[0],
+                    com='' if l[-1] == '' else l[-1]+' ',
+                    opts=json.dumps(opts)
+                ))
+            else:
+                lines.append('{idn}{num}: {choice} {type} {name}; // {com}#jadn_opts:{opts}\n'.format(
+                    idn=self.indent,
+                    choice='required',
+                    type=self._fieldType(l[2]),
+                    name=self.formatStr(l[1]),
+                    num=l[0],
+                    com='' if l[-1] == '' else l[-1] + ' ',
+                    opts=json.dumps(opts)
+                ))
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
@@ -194,7 +204,6 @@ class JADNtoThrift(object):
         :rtype str
         """
         # Thrift does not use maps, using struct
-
         lines = []
         for l in itm[-1]:
             opts = {'type': l[2]}
@@ -214,11 +223,10 @@ class JADNtoThrift(object):
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
         return '\nstruct {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
-            idn=self.indent,
             name=self.formatStr(itm[0]),
+            req=''.join(lines),
             com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
-            req=''.join(lines)
+            opts=json.dumps(opts)
         )
 
     def _formatMap(self, itm):
@@ -254,12 +262,11 @@ class JADNtoThrift(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\nenum {name} {{ // {com}#jadn_opts:{opts}\n{default}{enum}}}\n'.format(
+        return '\nenum {name} {{ // {com}#jadn_opts:{opts}\n{enum}}}\n'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
             com='' if itm[-2] == '' else itm[-2] + ' ',
             opts=json.dumps(opts),
-            default='{}Unknown_{} = 1, // required starting enum number for thrift\n'.format(self.indent, itm[0].replace('-', '_')) if default else '',
             enum=''.join(lines)
         )
 
@@ -300,24 +307,11 @@ class JADNtoThrift(object):
         """
         # Thrift does not use maps, using struct
 
-        lines = []
-        for l in itm[-1]:
+        field_opts = topts_s2d(itm[2])
 
-            lines.append('{idn}{num}: {choice} {type} {name}; // {com}\n'.format(
-                idn=self.indent,
-                choice='optional',
-                type=self._fieldType(l[2]),
-                name=self.formatStr(l[1]),
-                num=l[0],
-                com='' if l[-1] == '' else l[-1] + ' '
-            ))
+        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 
-        return '\nstruct {name} {{ // {com}\n{req}}}\n'.format(
-            idn=self.indent,
-            name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            req=''.join(lines)
-        )
+        return ''
 
 
 def thrift_dumps(jadn):

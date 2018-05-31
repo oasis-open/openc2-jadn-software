@@ -1,8 +1,8 @@
-import datetime
 import json
 import re
 import lxml
 
+from datetime import datetime
 from lxml import objectify
 
 from ..codec.codec_utils import fopts_s2d, topts_s2d

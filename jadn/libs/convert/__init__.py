@@ -5,8 +5,6 @@ from .w_proto import proto_dump, proto_dumps
 from .w_relax import relax_dump, relax_dumps
 from .w_thrift import thrift_dump, thrift_dumps
 
-# from w_thrift import thrift_dump
-
 __all__ = [
     'base_dump',
     'base_dumps',

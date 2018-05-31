@@ -39,11 +39,12 @@ class Utils(object):
 
         if hasattr(tmp, '__iter__'):
             for k in itm:
+                def_k = Utils.defaultDecode(k)
                 if type(tmp) == dict:
-                    tmp[k] = Utils.defaultDecode(k)
+                    tmp[def_k] = Utils.defaultDecode(itm[k])
 
                 elif type(tmp) == list:
-                    tmp.append(Utils.defaultDecode(k))
+                    tmp.append(def_k)
 
                 else:
                     print('not prepared type')

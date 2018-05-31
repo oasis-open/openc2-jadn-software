@@ -1,7 +1,9 @@
-<!-- version - wd06 -->
+<!-- exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message'] -->
 <!-- description - Datatypes that define the content of OpenC2 commands and responses. -->
-<!-- module - openc2 -->
-<!-- title - OpenC2 Command Definitions -->
+<!-- title - OpenC2 Language Objects -->
+<!-- imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']] -->
+<!-- module - oasis-open.org/openc2/v1.0/openc2-lang -->
+<!-- version - wd06 -->
 
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
@@ -256,9 +258,22 @@
       </optional>
       <element name="unknown">
         <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"} -->
-        <text/>
+        <Results/>
       </element>
     </interleave>
+  </define>
+  <define name="Results">
+    <!-- #jadn_opts:{"type": "Choice"} -->
+    <choice>
+      <element name="string">
+        <!-- List of strings #jadn_opts:{"field": 1} -->
+        <data type="string"/>
+      </element>
+      <element name="media">
+        <!-- Media type and data #jadn_opts:{"field": 2} -->
+        <text/>
+      </element>
+    </choice>
   </define>
   <define name="Status_Code">
     <!-- #jadn_opts:{"type": "Enumerated", "options": {"compact": true}} -->

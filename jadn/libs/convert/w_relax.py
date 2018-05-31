@@ -6,6 +6,7 @@ from datetime import datetime
 from lxml import objectify
 
 from ..codec.codec_utils import fopts_s2d, topts_s2d
+from ..utils import toStr
 
 
 class JADNtoRelaxNG(object):
@@ -90,7 +91,7 @@ class JADNtoRelaxNG(object):
 
         return '{header}{root}'.format(
             header=self.makeHeader(),
-            root=lxml.etree.tostring(root, pretty_print=True, xml_declaration=False)
+            root=toStr(lxml.etree.tostring(root, pretty_print=True, xml_declaration=False))
         )
 
     def formatStr(self, s):

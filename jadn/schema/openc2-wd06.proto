@@ -3,10 +3,12 @@ syntax = "proto3";
 package openc2;
 
 /* meta
- * version - wd06
+ * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
  * description - Datatypes that define the content of OpenC2 commands and responses.
- * module - openc2
- * title - OpenC2 Command Definitions
+ * title - OpenC2 Language Objects
+ * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+ * module - oasis-open.org/openc2/v1.0/openc2-lang
+ * version - wd06
 */
 
 import "google/protobuf/timestamp.proto";
@@ -104,6 +106,13 @@ message OpenC2_Response { // #jadn_opts:{"type": "Record"}
   Status_Code status = 2; // An integer status code #jadn_opts:{"type": "Status-Code"}
   string status_text = 3; // A free-form human-readable description of the response status #jadn_opts:{"type": "String", "options": {"min": 0}}
   repeated Results results = 4; // Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"type": "Results"}
+}
+
+message Results {
+  oneof Results { // #jadn_opts:{"type": "Choice"}
+    string string = 1; // List of strings #jadn_opts:{"type": "String", "options": {"max": 0, "min": 0}}
+    string media = 2; // Media type and data #jadn_opts:{"type": "Media"}
+  }
 }
 
 enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}

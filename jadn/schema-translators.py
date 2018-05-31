@@ -9,15 +9,12 @@ from lxml import etree
 convert = True
 
 if convert:
-    from libs.utils import Utils
     from libs.convert import base_dump, cddl_dump, proto_dump, relax_dump, thrift_dump
 
     schema = 'schema/openc2-wd06_functional.jadn'
 
     with open(schema, 'rb') as r:
         schema_json = json.loads(r.read())
-
-    print(Utils.defaultDecode(schema_json))
 
     proto_dump(schema_json, 'test_openc2-wd06.proto')
 

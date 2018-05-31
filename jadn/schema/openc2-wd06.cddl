@@ -1,7 +1,9 @@
-; version - wd06
+; exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
 ; description - Datatypes that define the content of OpenC2 commands and responses.
-; module - openc2
-; title - OpenC2 Command Definitions
+; title - OpenC2 Language Objects
+; imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+; module - oasis-open.org/openc2/v1.0/openc2-lang
+; version - wd06
 
 
 OpenC2_Command = { ; The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"}
@@ -92,6 +94,11 @@ OpenC2_Response = { ; #jadn_opts:{"type": "Record"}
   ? status_text: bstr, ; A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}}
   unknown: bstr ; Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"}
 }
+
+Results = ( ; #jadn_opts:{"type": "Choice"}
+  string: bstr // ; List of strings #jadn_opts:{"field": 1, "type": "String", "options": {"max": 0, "min": 0}}
+  media: bstr ; Media type and data #jadn_opts:{"field": 2, "type": "Media"}
+)
 
 ; #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
 Status_Code = "Unknown_Status_Code_102" ; Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it. #jadn_opts:{"field": 102}

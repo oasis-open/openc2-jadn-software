@@ -2,17 +2,32 @@ import sys
 
 # Version Compatability
 encoding = sys.getdefaultencoding()
-primitives = [bytes, str]
+primitives = [
+    bytes,
+    str
+]
+defaultDecode_ign = [
+    str,
+    int,
+    float
+]
 
 if sys.version_info.major >= 3:
     def toUnicode(s):
         return s.decode(encoding, 'backslashreplace') if hasattr(s, 'decode') else s
 
+    def toStr(s):
+        return toUnicode(s)
+
 elif sys.version_info.major < 3:
     primitives.append(unicode)
+    defaultDecode_ign.append(basestring)
 
     def toUnicode(s):
         return unicode(s)
+
+    def toStr(s):
+        return str(s)
 
 
 class Utils(object):
@@ -37,14 +52,13 @@ class Utils(object):
     def defaultDecode(itm):
         tmp = type(itm)()
 
-        if hasattr(tmp, '__iter__'):
+        if hasattr(tmp, '__iter__') and type(tmp) not in defaultDecode_ign:
             for k in itm:
-                def_k = Utils.defaultDecode(k)
                 if type(tmp) == dict:
-                    tmp[def_k] = Utils.defaultDecode(itm[k])
+                    tmp[Utils.defaultDecode(k)] = Utils.defaultDecode(itm[k])
 
                 elif type(tmp) == list:
-                    tmp.append(def_k)
+                    tmp.append(Utils.defaultDecode(k))
 
                 else:
                     print('not prepared type')

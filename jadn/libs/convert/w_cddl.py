@@ -285,7 +285,7 @@ class JADNtoCDDL(object):
             type=self.formatStr(field_opts['aetype'])
         )
 
-        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
+        #print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 
         return '\n{name} = {type} ; {com}\n'.format(
             name=self.formatStr(itm[0]),

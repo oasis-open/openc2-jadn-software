@@ -1,11 +1,11 @@
-<!-- exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message'] -->
-<!-- description - Datatypes that define the content of OpenC2 commands and responses. -->
-<!-- title - OpenC2 Language Objects -->
-<!-- imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']] -->
 <!-- module - oasis-open.org/openc2/v1.0/openc2-lang -->
+<!-- title - OpenC2 Language Objects -->
 <!-- version - wd06 -->
+<!-- description - Datatypes that define the content of OpenC2 commands and responses. -->
+<!-- imports - [['slpff', 'oasis-open.org/openc2/v1.0/ap-slpff'], ['jadn', 'oasis-open.org/openc2/v1.0/jadn']] -->
+<!-- exports - ['OpenC2-Command', 'OpenC2-Response', 'OpenC2-Message'] -->
 
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <choice>
       <element name="message">
@@ -26,28 +26,28 @@
     <!-- The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context. #jadn_opts:{"type": "Record"} -->
     <interleave>
       <element name="action">
-        <!-- The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"field": 1, "type": "Action"} -->
+        <!-- The task or activity to be performed (i.e., the 'verb') #jadn_opts:{"type": "Action", "field": 1} -->
         <ref name="Action"/>
       </element>
       <element name="target">
-        <!-- The object of the action. The action is performed on the target #jadn_opts:{"field": 2, "type": "Target"} -->
+        <!-- The object of the action. The action is performed on the target #jadn_opts:{"type": "Target", "field": 2} -->
         <ref name="Target"/>
       </element>
       <optional>
         <element name="actuator">
-          <!-- The subject of the action. The actuator executes the action on the target #jadn_opts:{"field": 3, "type": "Actuator", "options": {"min": 0}} -->
+          <!-- The subject of the action. The actuator executes the action on the target #jadn_opts:{"type": "Actuator", "field": 3, "options": {"min": 0}} -->
           <ref name="Actuator"/>
         </element>
       </optional>
       <optional>
         <element name="args">
-          <!-- Additional information that applies to the command #jadn_opts:{"field": 4, "type": "Args", "options": {"min": 0}} -->
+          <!-- Additional information that applies to the command #jadn_opts:{"type": "Args", "field": 4, "options": {"min": 0}} -->
           <ref name="Args"/>
         </element>
       </optional>
       <optional>
         <element name="id">
-          <!-- Identifier used to link responses to a command #jadn_opts:{"field": 5, "type": "command-id", "options": {"min": 0}} -->
+          <!-- Identifier used to link responses to a command #jadn_opts:{"type": "command-id", "field": 5, "options": {"min": 0}} -->
           <ref name="command_id"/>
         </element>
       </optional>
@@ -209,31 +209,31 @@
     <interleave>
       <optional>
         <element name="start_time">
-          <!-- The specific date/time to initiate the action #jadn_opts:{"field": 1, "type": "date-time", "options": {"min": 0}} -->
+          <!-- The specific date/time to initiate the action #jadn_opts:{"type": "date-time", "field": 1, "options": {"min": 0}} -->
           <ref name="date_time"/>
         </element>
       </optional>
       <optional>
         <element name="end_time">
-          <!-- The specific date/time to terminate the action #jadn_opts:{"field": 2, "type": "date-time", "options": {"min": 0}} -->
+          <!-- The specific date/time to terminate the action #jadn_opts:{"type": "date-time", "field": 2, "options": {"min": 0}} -->
           <ref name="date_time"/>
         </element>
       </optional>
       <optional>
         <element name="duration">
-          <!-- The length of time for an action to be in effect #jadn_opts:{"field": 3, "type": "duration", "options": {"min": 0}} -->
+          <!-- The length of time for an action to be in effect #jadn_opts:{"type": "duration", "field": 3, "options": {"min": 0}} -->
           <ref name="duration"/>
         </element>
       </optional>
       <optional>
         <element name="response_requested">
-          <!-- The type of response required for the action #jadn_opts:{"field": 4, "type": "Response-Type", "options": {"min": 0}} -->
+          <!-- The type of response required for the action #jadn_opts:{"type": "Response-Type", "field": 4, "options": {"min": 0}} -->
           <ref name="Response_Type"/>
         </element>
       </optional>
       <optional>
         <element name="slpff">
-          <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"field": 1024, "type": "Slpff-Args", "options": {"min": 0}} -->
+          <!-- Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "Slpff-Args", "field": 1024, "options": {"min": 0}} -->
           <text/>
         </element>
       </optional>
@@ -243,21 +243,21 @@
     <!-- #jadn_opts:{"type": "Record"} -->
     <interleave>
       <element name="id">
-        <!-- Id of the ommand that induced this response #jadn_opts:{"field": 1, "type": "command-id"} -->
+        <!-- Id of the ommand that induced this response #jadn_opts:{"type": "command-id", "field": 1} -->
         <ref name="command_id"/>
       </element>
       <element name="status">
-        <!-- An integer status code #jadn_opts:{"field": 2, "type": "Status-Code"} -->
+        <!-- An integer status code #jadn_opts:{"type": "Status-Code", "field": 2} -->
         <ref name="Status_Code"/>
       </element>
       <optional>
         <element name="status_text">
-          <!-- A free-form human-readable description of the response status #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}} -->
+          <!-- A free-form human-readable description of the response status #jadn_opts:{"type": "String", "field": 3, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <element name="unknown">
-        <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"} -->
+        <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"type": "Results", "field": 4} -->
         <ref name="Results"/>
       </element>
     </interleave>
@@ -293,19 +293,19 @@
     <interleave>
       <optional>
         <element name="mime_type">
-          <!-- Permitted values specified in the IANA Media Types registry #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}} -->
+          <!-- Permitted values specified in the IANA Media Types registry #jadn_opts:{"type": "String", "field": 1, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="unknown">
-          <!-- choice of literal content or URL to obtain content #jadn_opts:{"field": 2, "type": "payload", "options": {"min": 0}} -->
+          <!-- choice of literal content or URL to obtain content #jadn_opts:{"type": "payload", "field": 2, "options": {"min": 0}} -->
           <ref name="payload"/>
         </element>
       </optional>
       <optional>
         <element name="hashes">
-          <!-- Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"field": 3, "type": "hashes", "options": {"min": 0}} -->
+          <!-- Specifies a dictionary of hashes for the contents of the payload #jadn_opts:{"type": "hashes", "field": 3, "options": {"min": 0}} -->
           <ref name="hashes"/>
         </element>
       </optional>
@@ -325,7 +325,7 @@
     </choice>
   </define>
   <define name="openc2">
-    <!-- A target used to query Actuator for its supported capabilities#jadn_opts:{"type": "ArrayOf", "options": {"aetype": "Query-Item", "max": 3, "min": 0}} -->
+    <!-- A target used to query Actuator for its supported capabilities#jadn_opts:{"type": "ArrayOf", "options": {"aetype": "Query-Item", "min": 0, "max": 3}} -->
     <list>
       <ref name="Query_Item"/>
     </list>
@@ -343,31 +343,31 @@
     <interleave>
       <optional>
         <element name="src_addr">
-          <!-- source address #jadn_opts:{"field": 1, "type": "ip-addr", "options": {"min": 0}} -->
+          <!-- source address #jadn_opts:{"type": "ip-addr", "field": 1, "options": {"min": 0}} -->
           <ref name="ip_addr"/>
         </element>
       </optional>
       <optional>
         <element name="src_port">
-          <!-- source TCP/UDP port number #jadn_opts:{"field": 2, "type": "port", "options": {"min": 0}} -->
+          <!-- source TCP/UDP port number #jadn_opts:{"type": "port", "field": 2, "options": {"min": 0}} -->
           <ref name="port"/>
         </element>
       </optional>
       <optional>
         <element name="dst_addr">
-          <!-- destination address #jadn_opts:{"field": 3, "type": "ip-addr", "options": {"min": 0}} -->
+          <!-- destination address #jadn_opts:{"type": "ip-addr", "field": 3, "options": {"min": 0}} -->
           <ref name="ip_addr"/>
         </element>
       </optional>
       <optional>
         <element name="dst_port">
-          <!-- destination TCP/UDP port number #jadn_opts:{"field": 4, "type": "port", "options": {"min": 0}} -->
+          <!-- destination TCP/UDP port number #jadn_opts:{"type": "port", "field": 4, "options": {"min": 0}} -->
           <ref name="port"/>
         </element>
       </optional>
       <optional>
         <element name="layer4_protocol">
-          <!-- Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"field": 5, "type": "layer4-protocol", "options": {"min": 0}} -->
+          <!-- Protocol (IPv4) / Next Header (IPv6) #jadn_opts:{"type": "layer4-protocol", "field": 5, "options": {"min": 0}} -->
           <ref name="layer4_protocol"/>
         </element>
       </optional>
@@ -387,19 +387,19 @@
     <interleave>
       <optional>
         <element name="name">
-          <!-- The name of the file as defined in the file system #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}} -->
+          <!-- The name of the file as defined in the file system #jadn_opts:{"type": "String", "field": 1, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="path">
-          <!-- The absolute path to the location of the file in the file system #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}} -->
+          <!-- The absolute path to the location of the file in the file system #jadn_opts:{"type": "String", "field": 2, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="hashes">
-          <!-- One or more cryptographic hash codes of the file contents #jadn_opts:{"field": 3, "type": "hashes", "options": {"min": 0}} -->
+          <!-- One or more cryptographic hash codes of the file contents #jadn_opts:{"type": "hashes", "field": 3, "options": {"min": 0}} -->
           <ref name="hashes"/>
         </element>
       </optional>
@@ -418,37 +418,37 @@
     <interleave>
       <optional>
         <element name="pid">
-          <!-- Process ID of the process #jadn_opts:{"field": 1, "type": "Integer", "options": {"min": 0}} -->
+          <!-- Process ID of the process #jadn_opts:{"type": "Integer", "field": 1, "options": {"min": 0}} -->
           <data type="integer"/>
         </element>
       </optional>
       <optional>
         <element name="name">
-          <!-- Name of the process #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}} -->
+          <!-- Name of the process #jadn_opts:{"type": "String", "field": 2, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="cwd">
-          <!-- Current working directory of the process #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}} -->
+          <!-- Current working directory of the process #jadn_opts:{"type": "String", "field": 3, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="executable">
-          <!-- Executable that was executed to start the process #jadn_opts:{"field": 4, "type": "file", "options": {"min": 0}} -->
+          <!-- Executable that was executed to start the process #jadn_opts:{"type": "file", "field": 4, "options": {"min": 0}} -->
           <ref name="file"/>
         </element>
       </optional>
       <optional>
         <element name="parent">
-          <!-- Process that spawned this one #jadn_opts:{"field": 5, "type": "Process", "options": {"min": 0}} -->
+          <!-- Process that spawned this one #jadn_opts:{"type": "Process", "field": 5, "options": {"min": 0}} -->
           <ref name="Process"/>
         </element>
       </optional>
       <optional>
         <element name="command_line">
-          <!-- The full command line invocation used to start this process, including all arguments #jadn_opts:{"field": 6, "type": "String", "options": {"min": 0}} -->
+          <!-- The full command line invocation used to start this process, including all arguments #jadn_opts:{"type": "String", "field": 6, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
@@ -459,19 +459,19 @@
     <interleave>
       <optional>
         <element name="md5">
-          <!-- Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"field": 1, "type": "Binary", "options": {"min": 0}} -->
+          <!-- Hex-encoded MD5 hash as defined in RFC3121 #jadn_opts:{"type": "Binary", "field": 1, "options": {"min": 0}} -->
           <data type="base64Binary"/>
         </element>
       </optional>
       <optional>
         <element name="sha1">
-          <!-- Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"field": 4, "type": "Binary", "options": {"min": 0}} -->
+          <!-- Hex-encoded SHA1 hash as defined in RFC3174 #jadn_opts:{"type": "Binary", "field": 4, "options": {"min": 0}} -->
           <data type="base64Binary"/>
         </element>
       </optional>
       <optional>
         <element name="sha256">
-          <!-- Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"field": 6, "type": "Binary", "options": {"min": 0}} -->
+          <!-- Hex-encoded SHA256 as defined in RFC6234 #jadn_opts:{"type": "Binary", "field": 6, "options": {"min": 0}} -->
           <data type="base64Binary"/>
         </element>
       </optional>
@@ -482,43 +482,43 @@
     <interleave>
       <optional>
         <element name="description">
-          <!-- #jadn_opts:{"field": 1, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 1, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="device_type">
-          <!-- #jadn_opts:{"field": 2, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 2, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="manufacturer">
-          <!-- #jadn_opts:{"field": 3, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 3, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="model">
-          <!-- #jadn_opts:{"field": 4, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 4, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="serial_number">
-          <!-- #jadn_opts:{"field": 5, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 5, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="firmware_version">
-          <!-- #jadn_opts:{"field": 6, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 6, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>
       <optional>
         <element name="system_details">
-          <!-- #jadn_opts:{"field": 7, "type": "String", "options": {"min": 0}} -->
+          <!-- #jadn_opts:{"type": "String", "field": 7, "options": {"min": 0}} -->
           <data type="string"/>
         </element>
       </optional>

@@ -125,6 +125,10 @@ struct payload { // #jadn_opts:{"type": "Choice"}
     2: optional string url; // MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"type": "uri"}
 }
 
+struct openc2 { 
+    1: optional list<Query_Item> item;
+}
+
 enum Query_Item { // Results to be included in response to query openc2 command #jadn_opts:{"type": "Enumerated"}
     versions = 1; // OpenC2 language versions supported by this actuator
     profiles = 2; // List of profiles supported by this actuator
@@ -185,17 +189,17 @@ struct device { // TODO: Add inventory device-id? #jadn_opts:{"type": "Map"}
 
 /* JADN Custom Fields
 [
-    ['', '', [], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [''], ''],
-    ['', '', [], ''],
-    ['', '', [''], '']
+    ['command-id', 'String', [], 'Uniquely identifies a particular command - TBD syntax'],
+    ['date-time', 'String', ['@date-time'], 'RFC 3339 date-time'],
+    ['duration', 'String', ['@duration'], 'RFC 3339 / ISO 8601 duration'],
+    ['domain-name', 'String', ['@hostname'], 'Domain name, RFC 1034, section 3.5'],
+    ['email-addr', 'String', ['@email'], 'Email address, RFC 5322, section 3.4.1'],
+    ['ip-addr', 'String', ['@ip'], 'IPv4 or IPv6 address'],
+    ['ipv4-addr', 'String', ['@ipv4'], 'IPv4 address or range in CIDR notation, RFC 2673, section 3.2'],
+    ['ipv6-addr', 'String', ['@ipv6'], 'IPv6 address or range, RFC 4291, section 2.2'],
+    ['mac-addr', 'String', ['@mac'], '48 bit Media Access Code address'],
+    ['port', 'String', ['@port'], 'Service Name or Transport Protocol Port Number, RFC 6335'],
+    ['version', 'String', [], 'Version string - TBD syntax'],
+    ['uri', 'String', ['@uri'], 'Uniform Resource Identifier']
 ]
 */

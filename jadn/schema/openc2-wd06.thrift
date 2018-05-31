@@ -117,7 +117,7 @@ struct Payload {  // This is a 'choice'
 }
 
 struct Openc2 {  //  Listed as 'arrayof' not sure.
-    1: optional Query_Item item;
+    1: optional list<Query_Item> item;
 }
 
 enum Query_Item {

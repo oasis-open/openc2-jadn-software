@@ -282,7 +282,7 @@ class JADNtoProto3(object):
         """
         field_opts = topts_s2d(itm[2])
 
-        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
+        #print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
 
         return ''
 

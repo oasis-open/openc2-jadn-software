@@ -109,31 +109,10 @@ class JADNtoThrift(object):
         for t in self._types:
             df = self._structFormats.get(t[1], None)
 
-            if df is not None and t[1] in ['Record', 'Choice', 'Enumerated', 'Map']:
+            if df is not None:
                 tmp += df(t)
 
-            elif df is not None:
-                tmp += self._wrapAsRecord(df(t))
-
         return tmp
-
-    def _wrapAsRecord(self, itm):
-        """
-        wraps the given item as a record for the schema
-        :param itm: item to wrap
-        :type s: str
-        :return: item wrapped as a record for hte schema
-        :rtype str
-        """
-        lines = itm.split('\n')[1:-1]
-        if len(lines) > 1:
-            n = re.search(r'\s[\w\d\_]+\s', lines[0]).group()[1:-1]
-            tmp = "\nstruct {} {{\n".format(self.formatStr(n))
-            for l in lines:
-                tmp += '{}{}\n'.format(self.indent, l)
-            tmp += '}\n'
-            return tmp
-        return ''
 
     def _fieldType(self, f):
         """
@@ -279,23 +258,17 @@ class JADNtoThrift(object):
         """
         # Thrift does not use maps, using struct
 
-        lines = []
-        for l in itm[-1]:
+        field_opts = topts_s2d(itm[2])
 
-            lines.append('{idn}{num}: {choice} {type} {name}; // {com}\n'.format(
+        return '\nstruct {name} {{ \n{req}}}\n'.format(
+            name=self.formatStr(itm[0]),
+            req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
                 idn=self.indent,
                 choice='optional',
-                type=self._fieldType(l[2]),
-                name=self.formatStr(l[1]),
-                num=l[0],
-                com='' if l[-1] == '' else l[-1] + ' '
-            ))
-
-        return '\nstruct {name} {{ // {com}\n{req}}}\n'.format(
-            idn=self.indent,
-            name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            req=''.join(lines)
+                type=self.formatStr(field_opts['aetype']),
+                name='item',
+                num='1',
+            ),
         )
 
     def _formatArrayOf(self, itm):  # TODO: what should this do??
@@ -309,10 +282,16 @@ class JADNtoThrift(object):
 
         field_opts = topts_s2d(itm[2])
 
-        print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
-
-        return ''
-
+        return '\nstruct {name} {{ \n{req}}}\n'.format(
+            name=self.formatStr(itm[0]),
+            req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
+                idn=self.indent,
+                choice='optional',
+                type=self.formatStr(field_opts['aetype']),
+                name='item',
+                num='1',
+            ),
+        )
 
 def thrift_dumps(jadn):
     """

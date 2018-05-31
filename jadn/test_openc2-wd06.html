@@ -114,9 +114,15 @@ OpenC2 Target datatypes
 <tr><td class="n">3</td><td class="s">status_text</td><td class="s">String</td><td class="n">0..1</td><td class="s">A free-form human-readable description of the response status</td></tr>
 <tr><td class="n">4</td><td class="s">*</td><td class="s">Results</td><td class="n">1</td><td class="s">Data or extended status information that was requested from an OpenC2 command</td></tr>
 </table>
-<h3>3.2.7 Status-Code</h3>
+<h3>3.2.7 Results</h3>
 
-<table><caption>Status-Code (Enumerated {u'compact': True})</caption><thead><th class="n">Value</th><th class="s">Description</th></thead>
+<table><caption>Results (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<tr><td class="n">1</td><td class="s">string</td><td class="s">String</td><td class="s">List of strings</td></tr>
+<tr><td class="n">2</td><td class="s">media</td><td class="s">Media</td><td class="s">Media type and data</td></tr>
+</table>
+<h3>3.2.8 Status-Code</h3>
+
+<table><caption>Status-Code (Enumerated {'compact': True})</caption><thead><th class="n">Value</th><th class="s">Description</th></thead>
 <tr><td class="n">102</td><td class="s">Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.</td></tr>
 <tr><td class="n">200</td><td class="s">OK - the request has succeeded.</td></tr>
 <tr><td class="n">301</td><td class="s">Moved Permanently - the target resource has been assigned a new permanent URI</td></tr>
@@ -126,31 +132,31 @@ OpenC2 Target datatypes
 <tr><td class="n">500</td><td class="s">Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.</td></tr>
 <tr><td class="n">501</td><td class="s">Not Implemented - the server does not support the functionality required to fulfill the request.</td></tr>
 </table>
-<h3>3.2.8 artifact</h3>
+<h3>3.2.9 artifact</h3>
 
 <table><caption>artifact (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">mime_type</td><td class="s">String</td><td class="n">0..1</td><td class="s">Permitted values specified in the IANA Media Types registry</td></tr>
 <tr><td class="n">2</td><td class="s">*</td><td class="s">payload</td><td class="n">0..1</td><td class="s">choice of literal content or URL to obtain content</td></tr>
 <tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">Specifies a dictionary of hashes for the contents of the payload</td></tr>
 </table>
-<h3>3.2.9 payload</h3>
+<h3>3.2.10 payload</h3>
 
 <table><caption>payload (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">payload_bin</td><td class="s">Binary</td><td class="s">Specifies the data contained in the artifact.</td></tr>
 <tr><td class="n">2</td><td class="s">url</td><td class="s">uri</td><td class="s">MUST be a valid URL that resolves to the un-encoded content</td></tr>
 </table>
-<h3>3.2.10 openc2</h3>
+<h3>3.2.11 openc2</h3>
 A target used to query Actuator for its supported capabilities
 (arrayof definition)
 </table></table>
-<h3>3.2.11 Query-Item</h3>
+<h3>3.2.12 Query-Item</h3>
 Results to be included in response to query openc2 command
 <table><caption>Query-Item (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">versions</td><td class="s">OpenC2 language versions supported by this actuator</td></tr>
 <tr><td class="n">2</td><td class="s">profiles</td><td class="s">List of profiles supported by this actuator</td></tr>
 <tr><td class="n">3</td><td class="s">schema</td><td class="s">Definition of the command syntax supported by this actuator</td></tr>
 </table>
-<h3>3.2.12 ip-connection</h3>
+<h3>3.2.13 ip-connection</h3>
 5-tuple that specifies a tcp/ip connection
 <table><caption>ip-connection (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">src_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">source address</td></tr>
@@ -159,7 +165,7 @@ Results to be included in response to query openc2 command
 <tr><td class="n">4</td><td class="s">dst_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">destination TCP/UDP port number</td></tr>
 <tr><td class="n">5</td><td class="s">layer4_protocol</td><td class="s">layer4-protocol</td><td class="n">0..1</td><td class="s">Protocol (IPv4) / Next Header (IPv6)</td></tr>
 </table>
-<h3>3.2.13 layer4-protocol</h3>
+<h3>3.2.14 layer4-protocol</h3>
 protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 <table><caption>layer4-protocol (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">icmp</td><td class="s">Internet Control Message Protocol - RFC 792</td></tr>
@@ -167,21 +173,21 @@ protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 <tr><td class="n">17</td><td class="s">udp</td><td class="s">User Datagram Protocol - RFC 768</td></tr>
 <tr><td class="n">132</td><td class="s">sctp</td><td class="s">Stream Control Transmission Protocol - RFC 4960</td></tr>
 </table>
-<h3>3.2.14 file</h3>
+<h3>3.2.15 file</h3>
 
 <table><caption>file (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s">The name of the file as defined in the file system</td></tr>
 <tr><td class="n">2</td><td class="s">path</td><td class="s">String</td><td class="n">0..1</td><td class="s">The absolute path to the location of the file in the file system</td></tr>
 <tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">One or more cryptographic hash codes of the file contents</td></tr>
 </table>
-<h3>3.2.15 Response-Type</h3>
+<h3>3.2.16 Response-Type</h3>
 
 <table><caption>Response-Type (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
 <tr><td class="n">0</td><td class="s">None</td><td class="s">No response</td></tr>
 <tr><td class="n">1</td><td class="s">Ack</td><td class="s">Respond when command received</td></tr>
 <tr><td class="n">2</td><td class="s">Complete</td><td class="s">Respond when all aspects of command completed</td></tr>
 </table>
-<h3>3.2.16 Process</h3>
+<h3>3.2.17 Process</h3>
 
 <table><caption>Process (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">pid</td><td class="s">Integer</td><td class="n">0..1</td><td class="s">Process ID of the process</td></tr>
@@ -191,14 +197,14 @@ protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 <tr><td class="n">5</td><td class="s">parent</td><td class="s">Process</td><td class="n">0..1</td><td class="s">Process that spawned this one</td></tr>
 <tr><td class="n">6</td><td class="s">command_line</td><td class="s">String</td><td class="n">0..1</td><td class="s">The full command line invocation used to start this process, including all arguments</td></tr>
 </table>
-<h3>3.2.17 hashes</h3>
+<h3>3.2.18 hashes</h3>
 Cryptographic Hash values
 <table><caption>hashes (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">md5</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded MD5 hash as defined in RFC3121</td></tr>
 <tr><td class="n">4</td><td class="s">sha1</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA1 hash as defined in RFC3174</td></tr>
 <tr><td class="n">6</td><td class="s">sha256</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA256 as defined in RFC6234</td></tr>
 </table>
-<h3>3.2.18 device</h3>
+<h3>3.2.19 device</h3>
 TODO: Add inventory device-id?
 <table><caption>device (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
 <tr><td class="n">1</td><td class="s">description</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>

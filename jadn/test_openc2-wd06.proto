@@ -3,12 +3,12 @@ syntax = "proto3";
 package oasis-open.org/openc2/v1.0/openc2-lang;
 
 /* meta
- * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
- * description - Datatypes that define the content of OpenC2 commands and responses.
- * title - OpenC2 Language Objects
- * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
  * module - oasis-open.org/openc2/v1.0/openc2-lang
+ * title - OpenC2 Language Objects
  * version - wd06
+ * description - Datatypes that define the content of OpenC2 commands and responses.
+ * imports - [['slpff', 'oasis-open.org/openc2/v1.0/ap-slpff'], ['jadn', 'oasis-open.org/openc2/v1.0/jadn']]
+ * exports - ['OpenC2-Command', 'OpenC2-Response', 'OpenC2-Message']
 */
 
 import "google/protobuf/timestamp.proto";
@@ -110,7 +110,7 @@ message OpenC2_Response { // #jadn_opts:{"type": "Record"}
 
 message Results {
   oneof Results { // #jadn_opts:{"type": "Choice"}
-    string string = 1; // List of strings #jadn_opts:{"type": "String", "options": {"max": 0, "min": 0}}
+    string string = 1; // List of strings #jadn_opts:{"type": "String", "options": {"min": 0, "max": 0}}
     string media = 2; // Media type and data #jadn_opts:{"type": "Media"}
   }
 }

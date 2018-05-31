@@ -122,10 +122,19 @@ ID|Name|Type|#|Description
 2|status|Status-Code|1|An integer status code
 3|status_text|String|0..1|A free-form human-readable description of the response status
 4|*|Results|1|Data or extended status information that was requested from an OpenC2 command
-###3.2.7 Status-Code
+###3.2.7 Results
 
 
-**Status-Code (Enumerated {u'compact': True})**
+**Results (Choice)**
+
+ID|Name|Type|Description
+---|---|---|---
+1|string|String|List of strings
+2|media|Media|Media type and data
+###3.2.8 Status-Code
+
+
+**Status-Code (Enumerated {'compact': True})**
 
 Value|Description
 ---|---
@@ -137,7 +146,7 @@ Value|Description
 403|Forbidden - the server understood the request but refuses to authorize it.
 500|Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
 501|Not Implemented - the server does not support the functionality required to fulfill the request.
-###3.2.8 artifact
+###3.2.9 artifact
 
 
 **artifact (Record)**
@@ -147,7 +156,7 @@ ID|Name|Type|#|Description
 1|mime_type|String|0..1|Permitted values specified in the IANA Media Types registry
 2|*|payload|0..1|choice of literal content or URL to obtain content
 3|hashes|hashes|0..1|Specifies a dictionary of hashes for the contents of the payload
-###3.2.9 payload
+###3.2.10 payload
 
 
 **payload (Choice)**
@@ -156,10 +165,10 @@ ID|Name|Type|Description
 ---|---|---|---
 1|payload_bin|Binary|Specifies the data contained in the artifact.
 2|url|uri|MUST be a valid URL that resolves to the un-encoded content
-###3.2.10 openc2
+###3.2.11 openc2
 A target used to query Actuator for its supported capabilities
 (arrayof definition)
-###3.2.11 Query-Item
+###3.2.12 Query-Item
 Results to be included in response to query openc2 command
 
 **Query-Item (Enumerated)**
@@ -169,7 +178,7 @@ ID|Name|Description
 1|versions|OpenC2 language versions supported by this actuator
 2|profiles|List of profiles supported by this actuator
 3|schema|Definition of the command syntax supported by this actuator
-###3.2.12 ip-connection
+###3.2.13 ip-connection
 5-tuple that specifies a tcp/ip connection
 
 **ip-connection (Record)**
@@ -181,7 +190,7 @@ ID|Name|Type|#|Description
 3|dst_addr|ip-addr|0..1|destination address
 4|dst_port|port|0..1|destination TCP/UDP port number
 5|layer4_protocol|layer4-protocol|0..1|Protocol (IPv4) / Next Header (IPv6)
-###3.2.13 layer4-protocol
+###3.2.14 layer4-protocol
 protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 
 **layer4-protocol (Enumerated)**
@@ -192,7 +201,7 @@ ID|Name|Description
 6|tcp|Transmission Control Protocol - RFC 793
 17|udp|User Datagram Protocol - RFC 768
 132|sctp|Stream Control Transmission Protocol - RFC 4960
-###3.2.14 file
+###3.2.15 file
 
 
 **file (Map)**
@@ -202,7 +211,7 @@ ID|Name|Type|#|Description
 1|name|String|0..1|The name of the file as defined in the file system
 2|path|String|0..1|The absolute path to the location of the file in the file system
 3|hashes|hashes|0..1|One or more cryptographic hash codes of the file contents
-###3.2.15 Response-Type
+###3.2.16 Response-Type
 
 
 **Response-Type (Enumerated)**
@@ -212,7 +221,7 @@ ID|Name|Description
 0|None|No response
 1|Ack|Respond when command received
 2|Complete|Respond when all aspects of command completed
-###3.2.16 Process
+###3.2.17 Process
 
 
 **Process (Map)**
@@ -225,7 +234,7 @@ ID|Name|Type|#|Description
 4|executable|file|0..1|Executable that was executed to start the process
 5|parent|Process|0..1|Process that spawned this one
 6|command_line|String|0..1|The full command line invocation used to start this process, including all arguments
-###3.2.17 hashes
+###3.2.18 hashes
 Cryptographic Hash values
 
 **hashes (Map)**
@@ -235,7 +244,7 @@ ID|Name|Type|#|Description
 1|md5|Binary|0..1|Hex-encoded MD5 hash as defined in RFC3121
 4|sha1|Binary|0..1|Hex-encoded SHA1 hash as defined in RFC3174
 6|sha256|Binary|0..1|Hex-encoded SHA256 as defined in RFC6234
-###3.2.18 device
+###3.2.19 device
 TODO: Add inventory device-id?
 
 **device (Map)**

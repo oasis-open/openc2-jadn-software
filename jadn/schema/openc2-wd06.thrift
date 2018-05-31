@@ -1,7 +1,7 @@
-/**
+/*
 * Module: openC2
 * Title: OpenC2 Command Definitions
-* Version: wd05
+* Version: wd06
 * Description: Datatypes that define the content of OpenC2 commands and responses.
 */
 

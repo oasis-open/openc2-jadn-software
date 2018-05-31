@@ -3,12 +3,12 @@ syntax = "proto3";
 package oasis-open.org/openc2/v1.0/openc2-lang;
 
 /* meta
- * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
- * description - Datatypes that define the content of OpenC2 commands and responses.
- * title - OpenC2 Language Objects
- * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
  * module - oasis-open.org/openc2/v1.0/openc2-lang
+ * title - OpenC2 Language Objects
  * version - wd06
+ * description - Datatypes that define the content of OpenC2 commands and responses.
+ * imports - [['slpff', 'oasis-open.org/openc2/v1.0/ap-slpff'], ['jadn', 'oasis-open.org/openc2/v1.0/jadn']]
+ * exports - ['OpenC2-Command', 'OpenC2-Response', 'OpenC2-Message']
 */
 
 import "google/protobuf/timestamp.proto";
@@ -105,7 +105,14 @@ message OpenC2_Response { // #jadn_opts:{"type": "Record"}
   string id = 1; // Id of the ommand that induced this response #jadn_opts:{"type": "command-id"}
   Status_Code status = 2; // An integer status code #jadn_opts:{"type": "Status-Code"}
   string status_text = 3; // A free-form human-readable description of the response status #jadn_opts:{"type": "String", "options": {"min": 0}}
-  string unknown = 4; // Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"type": "Results"}
+  Results unknown = 4; // Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"type": "Results"}
+}
+
+message Results {
+  oneof Results { // #jadn_opts:{"type": "Choice"}
+    string string = 1; // List of strings #jadn_opts:{"type": "String", "options": {"min": 0, "max": 0}}
+    string media = 2; // Media type and data #jadn_opts:{"type": "Media"}
+  }
 }
 
 enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
@@ -195,17 +202,17 @@ message device { // TODO: Add inventory device-id? #jadn_opts:{"type": "Map"}
 
 /* JADN Custom Fields
 [
-  ['command-id', 'String', [], 'Uniquely identifies a particular command - TBD syntax'],
-  ['date-time', 'String', ['@date-time'], 'RFC 3339 date-time'],
-  ['duration', 'String', ['@duration'], 'RFC 3339 / ISO 8601 duration'],
-  ['domain-name', 'String', ['@hostname'], 'Domain name, RFC 1034, section 3.5'],
-  ['email-addr', 'String', ['@email'], 'Email address, RFC 5322, section 3.4.1'],
-  ['ip-addr', 'String', ['@ip'], 'IPv4 or IPv6 address'],
-  ['ipv4-addr', 'String', ['@ipv4'], 'IPv4 address or range in CIDR notation, RFC 2673, section 3.2'],
-  ['ipv6-addr', 'String', ['@ipv6'], 'IPv6 address or range, RFC 4291, section 2.2'],
-  ['mac-addr', 'String', ['@mac'], '48 bit Media Access Code address'],
-  ['port', 'String', ['@port'], 'Service Name or Transport Protocol Port Number, RFC 6335'],
-  ['version', 'String', [], 'Version string - TBD syntax'],
-  ['uri', 'String', ['@uri'], 'Uniform Resource Identifier']
+  ['', '', [], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [''], ''],
+  ['', '', [], ''],
+  ['', '', [''], '']
 ]
 */

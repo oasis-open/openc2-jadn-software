@@ -5,17 +5,15 @@ import xmltodict
 
 from lxml import etree
 
-from StringIO import StringIO
-
 convert = True
 
 if convert:
-    from libs.convert import cddl_dump, proto_dump, relax_dump
+    from libs.convert import cddl_dump, proto_dump, relax_dump, thrift_dump
 
-    schema = 'schema/openc2-wd06.jadn'
+    schema = 'schema/openc2-wd06_functional.jadn'
 
     with open(schema, 'rb') as r:
-        schema_file = r.read()
+        schema_file = json.loads(r.read())
 
     proto_dump(schema_file, 'test_openc2-wd06.proto')
 
@@ -23,7 +21,11 @@ if convert:
 
     relax_dump(schema_file, 'test_openc2-wd06.rng')
 
+    thrift_dump(schema_file, 'test_openc2-wd06.thrift')
+
 else:
+    from StringIO import StringIO
+
     with open('test_openc2-wd06.rng', 'rb') as r:
         relax_schema = StringIO(r.read())
         relaxng = etree.RelaxNG(etree.parse(relax_schema))

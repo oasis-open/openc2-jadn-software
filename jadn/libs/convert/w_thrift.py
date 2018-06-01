@@ -230,10 +230,11 @@ class JADNtoThrift(object):
         lines = []
         default = True
         for l in itm[-1]:
+            a = l[-1].split('-', 1)[0]
             if l[0] == 0: default = False
             lines.append('{idn}{name} = {num};{com}\n'.format(
                 idn=self.indent,
-                name=self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
+                name=self.formatStr(l[1] or '{}'.format(a[0:-1])),
                 num=l[0],
                 com='' if l[-1] == '' else ' // {}'.format(l[-1])
             ))
@@ -249,19 +250,22 @@ class JADNtoThrift(object):
             enum=''.join(lines)
         )
 
-    def _formatArray(self, itm):  # TODO: what should this do??
+    def _formatArray(self, itm):
         """
         Formats array for the given schema type
         :param itm: array to format
         :return: formatted array
         :rtype str
         """
-        # Thrift does not use maps, using struct
+        # Best method for creating some type of array
 
         field_opts = topts_s2d(itm[2])
+        opts = {'type': itm[1]}
 
-        return '\nstruct {name} {{ \n{req}}}\n'.format(
+        return '\nstruct {name} {{ // {com} #jadn_opts:{opts}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
+            com=itm[3],
+            opts=json.dumps(opts),
             req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
                 idn=self.indent,
                 choice='optional',
@@ -271,27 +275,31 @@ class JADNtoThrift(object):
             ),
         )
 
-    def _formatArrayOf(self, itm):  # TODO: what should this do??
+    def _formatArrayOf(self, itm):
         """
         Formats arrayof for the given schema type
         :param itm: arrayof to format
         :return: formatted arrayof
         :rtype str
         """
-        # Thrift does not use maps, using struct
+        # Best method for creating some type of array
 
         field_opts = topts_s2d(itm[2])
+        opts = {'type': itm[1]}
 
-        return '\nstruct {name} {{ \n{req}}}\n'.format(
+        return '\nstruct {name} {{ // {com} #jadn_opts:{opts}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
+            com=itm[3],
+            opts=json.dumps(opts),
             req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
                 idn=self.indent,
+                num='1',
                 choice='optional',
                 type=self.formatStr(field_opts['aetype']),
                 name='item',
-                num='1',
             ),
         )
+
 
 def thrift_dumps(jadn):
     """

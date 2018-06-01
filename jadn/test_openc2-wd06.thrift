@@ -1,10 +1,10 @@
 /* meta
- * module - oasis-open.org/openc2/v1.0/openc2-lang
- * title - OpenC2 Language Objects
- * version - wd06
+ * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
  * description - Datatypes that define the content of OpenC2 commands and responses.
- * imports - [['slpff', 'oasis-open.org/openc2/v1.0/ap-slpff'], ['jadn', 'oasis-open.org/openc2/v1.0/jadn']]
- * exports - ['OpenC2-Command', 'OpenC2-Response', 'OpenC2-Message']
+ * title - OpenC2 Language Objects
+ * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+ * module - oasis-open.org/openc2/v1.0/openc2-lang
+ * version - wd06
 */
 
 
@@ -99,19 +99,19 @@ struct OpenC2_Response { // #jadn_opts:{"type": "Record"}
 }
 
 struct Results { // #jadn_opts:{"type": "Choice"}
-    1: optional string string; // List of strings #jadn_opts:{"type": "String", "options": {"min": 0, "max": 0}}
+    1: optional string string; // List of strings #jadn_opts:{"type": "String", "options": {"max": 0, "min": 0}}
     2: optional string media; // Media type and data #jadn_opts:{"type": "Media"}
 }
 
 enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
-    Unknown_Status_Code_102 = 102; // Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
-    Unknown_Status_Code_200 = 200; // OK - the request has succeeded.
-    Unknown_Status_Code_301 = 301; // Moved Permanently - the target resource has been assigned a new permanent URI
-    Unknown_Status_Code_400 = 400; // Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
-    Unknown_Status_Code_401 = 401; // Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
-    Unknown_Status_Code_403 = 403; // Forbidden - the server understood the request but refuses to authorize it.
-    Unknown_Status_Code_500 = 500; // Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
-    Unknown_Status_Code_501 = 501; // Not Implemented - the server does not support the functionality required to fulfill the request.
+    processing = 102; // Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
+    ok = 200; // OK - the request has succeeded.
+    moved_permanently = 301; // Moved Permanently - the target resource has been assigned a new permanent URI
+    bad_request = 400; // Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+    unauthorized = 401; // Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+    forbidden = 403; // Forbidden - the server understood the request but refuses to authorize it.
+    server_error = 500; // Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
+    not_implemented = 501; // Not Implemented - the server does not support the functionality required to fulfill the request.
 }
 
 struct artifact { // #jadn_opts:{"type": "Record"}
@@ -125,7 +125,7 @@ struct payload { // #jadn_opts:{"type": "Choice"}
     2: optional string url; // MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"type": "uri"}
 }
 
-struct openc2 { 
+struct openc2 { // A target used to query Actuator for its supported capabilities #jadn_opts:{"type": "ArrayOf"}
     1: optional list<Query_Item> item;
 }
 

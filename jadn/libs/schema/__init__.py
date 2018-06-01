@@ -1,6 +1,6 @@
-from .proto import JADNtoProto3, Proto3toJADN
+from .relax_jadn import relax2jadn_dump, relax2jadn_dumps
 
 __all__ = [
-    'JADNtoProto3',
-    'Proto3toJADN',
+    'relax2jadn_dump',
+    'relax2jadn_dumps'
 ]

@@ -1,5 +1,6 @@
 import glob
 import json
+import os
 import pprint
 import sys
 import xmltodict
@@ -12,21 +13,24 @@ if convert:
     from libs.convert import base_dump, cddl_dump, proto_dump, relax_dump, thrift_dump
 
     schema = 'schema/openc2-wd06_functional.jadn'
+    test_dir = 'schema_gen_test'
+    if not os.path.isdir(test_dir):
+        os.makedirs(test_dir)
 
     with open(schema, 'rb') as r:
         schema_json = json.loads(r.read())
 
-    proto_dump(schema_json, 'test_openc2-wd06.proto')
+    proto_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.proto'))
 
-    cddl_dump(schema_json, 'test_openc2-wd06.cddl')
+    cddl_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.cddl'))
 
-    relax_dump(schema_json, 'test_openc2-wd06.rng')
+    relax_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.rng'))
 
-    thrift_dump(schema_json, 'test_openc2-wd06.thrift')
+    thrift_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.thrift'))
 
-    base_dump(schema_json, 'test_openc2-wd06.md', form='markdown')
+    base_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.md'), form='markdown')
 
-    base_dump(schema_json, 'test_openc2-wd06.html', form='html')
+    base_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.html'), form='html')
 
 else:
     if sys.version_info.major >= 3:

@@ -98,7 +98,7 @@ class JADNtoProto3(object):
             '/* meta'
         ])
 
-        header.extend([' * {} - {}'.format(k, v) for k, v in self._meta.items()])
+        header.extend([' * {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
 
         header.append('*/')
 
@@ -160,6 +160,18 @@ class JADNtoProto3(object):
             rtn = self.formatStr(self._fieldMap.get(f, f))
         return rtn
 
+    def _formatComment(self, msg, **kargs):
+        com = '//'
+        if msg not in ['', None, ' ']:
+            com += ' {msg}'.format(msg=msg)
+
+        for k, v in kargs.items():
+            com += ' #{k}:{v}'.format(
+                k=k,
+                v=json.dumps(v)
+            )
+        return com
+
     # Structure Formats
     def _formatRecord(self, itm):
         """
@@ -173,23 +185,21 @@ class JADNtoProto3(object):
             opts = {'type': l[2]}
             if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
-            lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
+            lines.append('{idn}{type} {name} = {num}; {com}\n'.format(
                 idn=self.indent,
                 type=self._fieldType(l[2]),
                 name=self.formatStr(l[1]),
                 num=l[0],
-                com='' if l[-1] == '' else l[-1]+' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\nmessage {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+        return '\nmessage {name} {{ {com}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
             req=''.join(lines),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts)
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts)
         )
 
     def _formatChoice(self, itm):
@@ -204,23 +214,21 @@ class JADNtoProto3(object):
             opts = {'type': l[2]}
             if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
-            lines.append('{idn}{type} {name} = {num}; // {com}#jadn_opts:{opts}\n'.format(
+            lines.append('{idn}{type} {name} = {num}; {com}\n'.format(
                 idn=self.indent,
                 type=self._fieldType(l[2]),
                 name=self.formatStr(l[1]),
                 num=l[0],
-                com='' if l[-1] == '' else l[-1]+' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\noneof {name} {{ // {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+        return '\noneof {name} {{ // {com}\n{req}}}\n'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             req=''.join(lines)
         )
 

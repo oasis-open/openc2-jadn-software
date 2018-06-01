@@ -1,11 +1,11 @@
-<!-- exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message'] -->
-<!-- description - Datatypes that define the content of OpenC2 commands and responses. -->
-<!-- title - OpenC2 Language Objects -->
-<!-- imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']] -->
-<!-- module - oasis-open.org/openc2/v1.0/openc2-lang -->
-<!-- version - wd06 -->
+<!-- meta: exports - ["OpenC2-Command", "OpenC2-Response", "OpenC2-Message"] -->
+<!-- meta: description - Datatypes that define the content of OpenC2 commands and responses. -->
+<!-- meta: title - OpenC2 Language Objects -->
+<!-- meta: imports - [["slpff", "oasis-open.org/openc2/v1.0/ap-slpff"], ["jadn", "oasis-open.org/openc2/v1.0/jadn"]] -->
+<!-- meta: module - oasis-open.org/openc2/v1.0/openc2-lang -->
+<!-- meta: version - wd06 -->
 
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <choice>
       <element name="message">
@@ -56,38 +56,134 @@
   <define name="Action">
     <!-- #jadn_opts:{"type": "Enumerated"} -->
     <choice>
-      <value>scan <!-- Systematic examination of some aspect of the target entity or its environment in order to obtain information. #jadn_opts:{"field": 1} --></value>
-      <value>locate <!-- Find the target object physically, logically, functionally, or by organization. #jadn_opts:{"field": 2} --></value>
-      <value>query <!-- Initiate a request for information. #jadn_opts:{"field": 3} --></value>
-      <value>report <!-- Task an entity to provide information to a designated recipient. #jadn_opts:{"field": 4} --></value>
-      <value>notify <!-- Set an entity's alerting preferences. #jadn_opts:{"field": 5} --></value>
-      <value>deny <!-- Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access. #jadn_opts:{"field": 6} --></value>
-      <value>contain <!-- Isolate a file, process, or entity so that it cannot modify or access other assets or processes. #jadn_opts:{"field": 7} --></value>
-      <value>allow <!-- Permit access to or execution of a target. #jadn_opts:{"field": 8} --></value>
-      <value>start <!-- Initiate a process, application, system, or activity. #jadn_opts:{"field": 9} --></value>
-      <value>stop <!-- Halt a system or end an activity. #jadn_opts:{"field": 10} --></value>
-      <value>restart <!-- Stop then start a system or activity. #jadn_opts:{"field": 11} --></value>
-      <value>pause <!-- Cease a system or activity while maintaining state. #jadn_opts:{"field": 12} --></value>
-      <value>resume <!-- Start a system or activity from a paused state. #jadn_opts:{"field": 13} --></value>
-      <value>cancel <!-- Invalidate a previously issued action. #jadn_opts:{"field": 14} --></value>
-      <value>set <!-- Change a value, configuration, or state of a managed entity. #jadn_opts:{"field": 15} --></value>
-      <value>update <!-- Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update. #jadn_opts:{"field": 16} --></value>
-      <value>move <!-- Change the location of a file, subnet, network, or process. #jadn_opts:{"field": 17} --></value>
-      <value>redirect <!-- Change the flow of traffic to a destination other than its original destination. #jadn_opts:{"field": 18} --></value>
-      <value>create <!-- Add a new entity of a known type (e.g., data, files, directories). #jadn_opts:{"field": 19} --></value>
-      <value>delete <!-- Remove an entity (e.g., data, files, flows. #jadn_opts:{"field": 20} --></value>
-      <value>snapshot <!-- Record and store the state of a target at an instant in time. #jadn_opts:{"field": 21} --></value>
-      <value>detonate <!-- Execute and observe the behavior of a target (e.g., file, hyperlink) in an isolated environment. #jadn_opts:{"field": 22} --></value>
-      <value>restore <!-- Return the system to a previously known state. #jadn_opts:{"field": 23} --></value>
-      <value>save <!-- Commit data or system state to memory. #jadn_opts:{"field": 24} --></value>
-      <value>throttle <!-- Adjust the rate of a process, function, or activity. #jadn_opts:{"field": 25} --></value>
-      <value>delay <!-- Stop or hold up an activity or data transmittal. #jadn_opts:{"field": 26} --></value>
-      <value>substitute <!-- Replace all or part of the data, content or payload. #jadn_opts:{"field": 27} --></value>
-      <value>copy <!-- Duplicate a file or data flow. #jadn_opts:{"field": 28} --></value>
-      <value>sync <!-- Synchronize a sensor or actuator with other system components. #jadn_opts:{"field": 29} --></value>
-      <value>investigate <!-- Task the recipient to aggregate and report information as it pertains to a security event or incident. #jadn_opts:{"field": 30} --></value>
-      <value>mitigate <!-- Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point. #jadn_opts:{"field": 31} --></value>
-      <value>remediate <!-- Task the recipient to eliminate a vulnerability or attack point. #jadn_opts:{"field": 32} --></value>
+      <value>
+        <!-- Systematic examination of some aspect of the target entity or its environment in order to obtain information. #jadn_opts:{"field": 1} -->
+        scan
+      </value>
+      <value>
+        <!-- Find the target object physically, logically, functionally, or by organization. #jadn_opts:{"field": 2} -->
+        locate
+      </value>
+      <value>
+        <!-- Initiate a request for information. #jadn_opts:{"field": 3} -->
+        query
+      </value>
+      <value>
+        <!-- Task an entity to provide information to a designated recipient. #jadn_opts:{"field": 4} -->
+        report
+      </value>
+      <value>
+        <!-- Set an entity's alerting preferences. #jadn_opts:{"field": 5} -->
+        notify
+      </value>
+      <value>
+        <!-- Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access. #jadn_opts:{"field": 6} -->
+        deny
+      </value>
+      <value>
+        <!-- Isolate a file, process, or entity so that it cannot modify or access other assets or processes. #jadn_opts:{"field": 7} -->
+        contain
+      </value>
+      <value>
+        <!-- Permit access to or execution of a target. #jadn_opts:{"field": 8} -->
+        allow
+      </value>
+      <value>
+        <!-- Initiate a process, application, system, or activity. #jadn_opts:{"field": 9} -->
+        start
+      </value>
+      <value>
+        <!-- Halt a system or end an activity. #jadn_opts:{"field": 10} -->
+        stop
+      </value>
+      <value>
+        <!-- Stop then start a system or activity. #jadn_opts:{"field": 11} -->
+        restart
+      </value>
+      <value>
+        <!-- Cease a system or activity while maintaining state. #jadn_opts:{"field": 12} -->
+        pause
+      </value>
+      <value>
+        <!-- Start a system or activity from a paused state. #jadn_opts:{"field": 13} -->
+        resume
+      </value>
+      <value>
+        <!-- Invalidate a previously issued action. #jadn_opts:{"field": 14} -->
+        cancel
+      </value>
+      <value>
+        <!-- Change a value, configuration, or state of a managed entity. #jadn_opts:{"field": 15} -->
+        set
+      </value>
+      <value>
+        <!-- Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update. #jadn_opts:{"field": 16} -->
+        update
+      </value>
+      <value>
+        <!-- Change the location of a file, subnet, network, or process. #jadn_opts:{"field": 17} -->
+        move
+      </value>
+      <value>
+        <!-- Change the flow of traffic to a destination other than its original destination. #jadn_opts:{"field": 18} -->
+        redirect
+      </value>
+      <value>
+        <!-- Add a new entity of a known type (e.g., data, files, directories). #jadn_opts:{"field": 19} -->
+        create
+      </value>
+      <value>
+        <!-- Remove an entity (e.g., data, files, flows. #jadn_opts:{"field": 20} -->
+        delete
+      </value>
+      <value>
+        <!-- Record and store the state of a target at an instant in time. #jadn_opts:{"field": 21} -->
+        snapshot
+      </value>
+      <value>
+        <!-- Execute and observe the behavior of a target (e.g., file, hyperlink) in an isolated environment. #jadn_opts:{"field": 22} -->
+        detonate
+      </value>
+      <value>
+        <!-- Return the system to a previously known state. #jadn_opts:{"field": 23} -->
+        restore
+      </value>
+      <value>
+        <!-- Commit data or system state to memory. #jadn_opts:{"field": 24} -->
+        save
+      </value>
+      <value>
+        <!-- Adjust the rate of a process, function, or activity. #jadn_opts:{"field": 25} -->
+        throttle
+      </value>
+      <value>
+        <!-- Stop or hold up an activity or data transmittal. #jadn_opts:{"field": 26} -->
+        delay
+      </value>
+      <value>
+        <!-- Replace all or part of the data, content or payload. #jadn_opts:{"field": 27} -->
+        substitute
+      </value>
+      <value>
+        <!-- Duplicate a file or data flow. #jadn_opts:{"field": 28} -->
+        copy
+      </value>
+      <value>
+        <!-- Synchronize a sensor or actuator with other system components. #jadn_opts:{"field": 29} -->
+        sync
+      </value>
+      <value>
+        <!-- Task the recipient to aggregate and report information as it pertains to a security event or incident. #jadn_opts:{"field": 30} -->
+        investigate
+      </value>
+      <value>
+        <!-- Task the recipient to circumvent a problem without necessarily eliminating the vulnerability or attack point. #jadn_opts:{"field": 31} -->
+        mitigate
+      </value>
+      <value>
+        <!-- Task the recipient to eliminate a vulnerability or attack point. #jadn_opts:{"field": 32} -->
+        remediate
+      </value>
     </choice>
   </define>
   <define name="Target">
@@ -258,7 +354,7 @@
       </optional>
       <element name="unknown">
         <!-- Data or extended status information that was requested from an OpenC2 command #jadn_opts:{"field": 4, "type": "Results"} -->
-        <Results/>
+        <ref name="Results"/>
       </element>
     </interleave>
   </define>
@@ -278,14 +374,38 @@
   <define name="Status_Code">
     <!-- #jadn_opts:{"type": "Enumerated", "options": {"compact": true}} -->
     <choice>
-      <value>Unknown_Status_Code_102 <!-- Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it. #jadn_opts:{"field": 102} --></value>
-      <value>Unknown_Status_Code_200 <!-- OK - the request has succeeded. #jadn_opts:{"field": 200} --></value>
-      <value>Unknown_Status_Code_301 <!-- Moved Permanently - the target resource has been assigned a new permanent URI #jadn_opts:{"field": 301} --></value>
-      <value>Unknown_Status_Code_400 <!-- Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.) #jadn_opts:{"field": 400} --></value>
-      <value>Unknown_Status_Code_401 <!-- Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials. #jadn_opts:{"field": 401} --></value>
-      <value>Unknown_Status_Code_403 <!-- Forbidden - the server understood the request but refuses to authorize it. #jadn_opts:{"field": 403} --></value>
-      <value>Unknown_Status_Code_500 <!-- Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request. #jadn_opts:{"field": 500} --></value>
-      <value>Unknown_Status_Code_501 <!-- Not Implemented - the server does not support the functionality required to fulfill the request. #jadn_opts:{"field": 501} --></value>
+      <value>
+        <!-- Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it. #jadn_opts:{"field": 102} -->
+        Unknown_Status_Code_102
+      </value>
+      <value>
+        <!-- OK - the request has succeeded. #jadn_opts:{"field": 200} -->
+        Unknown_Status_Code_200
+      </value>
+      <value>
+        <!-- Moved Permanently - the target resource has been assigned a new permanent URI #jadn_opts:{"field": 301} -->
+        Unknown_Status_Code_301
+      </value>
+      <value>
+        <!-- Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.) #jadn_opts:{"field": 400} -->
+        Unknown_Status_Code_400
+      </value>
+      <value>
+        <!-- Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials. #jadn_opts:{"field": 401} -->
+        Unknown_Status_Code_401
+      </value>
+      <value>
+        <!-- Forbidden - the server understood the request but refuses to authorize it. #jadn_opts:{"field": 403} -->
+        Unknown_Status_Code_403
+      </value>
+      <value>
+        <!-- Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request. #jadn_opts:{"field": 500} -->
+        Unknown_Status_Code_500
+      </value>
+      <value>
+        <!-- Not Implemented - the server does not support the functionality required to fulfill the request. #jadn_opts:{"field": 501} -->
+        Unknown_Status_Code_501
+      </value>
     </choice>
   </define>
   <define name="artifact">
@@ -325,7 +445,7 @@
     </choice>
   </define>
   <define name="openc2">
-    <!-- A target used to query Actuator for its supported capabilities#jadn_opts:{"type": "ArrayOf", "options": {"aetype": "Query-Item", "max": 3, "min": 0}} -->
+    <!-- A target used to query Actuator for its supported capabilities #jadn_opts:{"type": "ArrayOf", "options": {"aetype": "Query-Item", "max": 3, "min": 0}} -->
     <list>
       <ref name="Query_Item"/>
     </list>
@@ -333,9 +453,18 @@
   <define name="Query_Item">
     <!-- Results to be included in response to query openc2 command #jadn_opts:{"type": "Enumerated"} -->
     <choice>
-      <value>versions <!-- OpenC2 language versions supported by this actuator #jadn_opts:{"field": 1} --></value>
-      <value>profiles <!-- List of profiles supported by this actuator #jadn_opts:{"field": 2} --></value>
-      <value>schema <!-- Definition of the command syntax supported by this actuator #jadn_opts:{"field": 3} --></value>
+      <value>
+        <!-- OpenC2 language versions supported by this actuator #jadn_opts:{"field": 1} -->
+        versions
+      </value>
+      <value>
+        <!-- List of profiles supported by this actuator #jadn_opts:{"field": 2} -->
+        profiles
+      </value>
+      <value>
+        <!-- Definition of the command syntax supported by this actuator #jadn_opts:{"field": 3} -->
+        schema
+      </value>
     </choice>
   </define>
   <define name="ip_connection">
@@ -376,10 +505,22 @@
   <define name="layer4_protocol">
     <!-- protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237 #jadn_opts:{"type": "Enumerated"} -->
     <choice>
-      <value>icmp <!-- Internet Control Message Protocol - RFC 792 #jadn_opts:{"field": 1} --></value>
-      <value>tcp <!-- Transmission Control Protocol - RFC 793 #jadn_opts:{"field": 6} --></value>
-      <value>udp <!-- User Datagram Protocol - RFC 768 #jadn_opts:{"field": 17} --></value>
-      <value>sctp <!-- Stream Control Transmission Protocol - RFC 4960 #jadn_opts:{"field": 132} --></value>
+      <value>
+        <!-- Internet Control Message Protocol - RFC 792 #jadn_opts:{"field": 1} -->
+        icmp
+      </value>
+      <value>
+        <!-- Transmission Control Protocol - RFC 793 #jadn_opts:{"field": 6} -->
+        tcp
+      </value>
+      <value>
+        <!-- User Datagram Protocol - RFC 768 #jadn_opts:{"field": 17} -->
+        udp
+      </value>
+      <value>
+        <!-- Stream Control Transmission Protocol - RFC 4960 #jadn_opts:{"field": 132} -->
+        sctp
+      </value>
     </choice>
   </define>
   <define name="file">
@@ -408,9 +549,18 @@
   <define name="Response_Type">
     <!-- #jadn_opts:{"type": "Enumerated"} -->
     <choice>
-      <value>None <!-- No response #jadn_opts:{"field": 0} --></value>
-      <value>Ack <!-- Respond when command received #jadn_opts:{"field": 1} --></value>
-      <value>Complete <!-- Respond when all aspects of command completed #jadn_opts:{"field": 2} --></value>
+      <value>
+        <!-- No response #jadn_opts:{"field": 0} -->
+        None
+      </value>
+      <value>
+        <!-- Respond when command received #jadn_opts:{"field": 1} -->
+        Ack
+      </value>
+      <value>
+        <!-- Respond when all aspects of command completed #jadn_opts:{"field": 2} -->
+        Complete
+      </value>
     </choice>
   </define>
   <define name="Process">

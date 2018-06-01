@@ -1,12 +1,17 @@
 import json
 import re
-import lxml
+import sys
+import xml.dom.minidom as md
 
 from datetime import datetime
-from lxml import objectify
 
 from ..codec.codec_utils import fopts_s2d, topts_s2d
-from ..utils import toStr
+from ..utils import toStr, Utils
+
+primitives = [str, int, float]
+
+if sys.version_info.major < 3:
+    primitives.append(unicode)
 
 
 class JADNtoRelaxNG(object):
@@ -26,8 +31,6 @@ class JADNtoRelaxNG(object):
 
         else:
             raise TypeError('JADN improperly formatted')
-
-        self.indent = '  '
 
         self._fieldMap = {
             'Binary': 'base64Binary',
@@ -66,32 +69,29 @@ class JADNtoRelaxNG(object):
     def relax_dump(self):
         records = [self._formatTag('element', self._fieldType(r), name='message') for r in self._records]
 
-        root_start = self._formatTag(
-            'start',
-            self._formatTag('choice', records)
-        )
+        root_cont = [
+            self._formatTag(
+                'start',
+                self._formatTag('choice', records)
+            )
+        ]
+
+        root_cont.extend(self.makeStructures())
+
+        root_cont.append(self._formatComment('Custom Defined Types'))
+
+        root_cont.extend(self.makeCustom())
 
         root = self._formatTag(
             'grammar',
-            root_start,
+            root_cont,
             datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes",
             xmlns="http://relaxng.org/ns/structure/1.0"
         )
 
-        for itm in self.makeStructures():
-            root.append(itm)
-
-        root.append(lxml.etree.Comment(' Custom Defined Types '))
-
-        for itm in self.makeCustom():
-            root.append(itm)
-
-        objectify.deannotate(root)
-        lxml.etree.cleanup_namespaces(root)
-
-        return '{header}{root}'.format(
+        return '{header}{root}\n'.format(
             header=self.makeHeader(),
-            root=toStr(lxml.etree.tostring(root, pretty_print=True, xml_declaration=False))
+            root=self._formatPretty(root)
         )
 
     def formatStr(self, s):
@@ -113,7 +113,7 @@ class JADNtoRelaxNG(object):
         :return: header for schema
         :rtype str
         """
-        header = ['<!-- {} - {} -->'.format(k, v) for k, v in self._meta.items()]
+        header = ['<!-- meta: {} - {} -->'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()]
 
         return '\n'.join(header) + '\n\n'
 
@@ -152,42 +152,62 @@ class JADNtoRelaxNG(object):
 
         return defs
 
+    def _formatPretty(self, xml, indent=1):
+        idn = '  ' * indent
+        rtn_xml = '\n'.join([line for line in md.parseString(xml).toprettyxml(indent=idn).split('\n') if line.strip()])
+        rtn_xml = re.sub(r'^<\?xml.*?\?>\n', '', rtn_xml)
+        return rtn_xml
+
     def _formatTag(self, tag, contents='', com='', **kargs):
-        # print(contents)
-        # print(com)
-        # print(kargs)
+        ign = ['', None]
 
-        elm = objectify.Element(tag, )
-        for k, v in kargs.items():
-            elm.set(k, v)
-
-        if com != '':
-            elm.append(lxml.etree.Comment(' {c} '.format(c=com)))
-
-        if type(contents) is lxml.objectify.ObjectifiedElement:
-            # print('element')
-            elm.append(contents)
-
-        elif type(contents) is list:
-            # print('list')
-            for itm in contents:
-                if type(itm) is lxml.objectify.ObjectifiedElement:
-                    elm.append(itm)
-
-        elif type(contents) is dict:
-            # print('dict')
-            for k, v in contents.items():
-                elm.append(self._formatTag(k, v))
-
-        elif contents not in ['', None]:
-            # print(type(contents), contents, 'oops...')
-            elm = objectify.fromstring('<{tag}>{cont}{com}</{tag}>'.format(
+        if contents in ign and com in ign:
+            elm = '<{tag}{attrs}/>'.format(
                 tag=tag,
-                com='' if com == '' else ' <!-- {c} -->'.format(c=com),
-                cont=self.formatStr(contents)
-            ))
-            for k, v in kargs.items():
-                elm.set(k, v)
+                attrs=''.join([' {k}={v}'.format(k=k, v=json.dumps(v)) for k, v in kargs.items()])
+            )
+        else:
+            elm = '<{tag}{attrs}>'.format(
+                tag=tag,
+                attrs=''.join([' {k}={v}'.format(k=k, v=json.dumps(v)) for k, v in kargs.items()])
+            )
+            if com != '' and re.match(r'^<!--.*?-->', com):
+                elm += com
+            elif com != '':
+                elm += self._formatComment(com)
+
+            if type(contents) in primitives:
+                elm += toStr(contents)
+
+            elif type(contents) is list:
+                for itm in contents:
+                    if type(itm) is str:
+                        elm += itm
+
+            elif type(contents) is dict:
+                # print('dict')
+                for k, v in contents.items():
+                    elm.append(self._formatTag(k, v))
+            else:
+                print('unprepared type: {}'.format(type(contents)))
+
+            elm += '</{tag}>'.format(tag=tag)
+
+        return elm
+
+    def _formatComment(self, msg, **kargs):
+
+        elm = '<!--'
+        if msg not in ['', None, ' ']:
+            elm += ' {msg}'.format(msg=msg)
+
+        for k, v in kargs.items():
+            elm += ' #{k}:{v}'.format(
+                k=k,
+                v=json.dumps(v)
+            )
+
+        elm += ' -->'
 
         return elm
 
@@ -227,10 +247,7 @@ class JADNtoRelaxNG(object):
                 'element',
                 self._fieldType(l[2]),
                 name=self.formatStr(l[1]),
-                com='{com}#jadn_opts:{opts}'.format(
-                    com='' if l[-1] == '' else l[-1] + ' ',
-                    opts=json.dumps(opts)
-                )
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             )
 
             if '[0' in l[-2]:
@@ -245,10 +262,7 @@ class JADNtoRelaxNG(object):
         return self._formatTag(
             'define',
             self._formatTag('interleave', defs),
-            com='{com}#jadn_opts:{opts}'.format(
-                com='' if itm[-2] == '' else itm[-2] + ' ',
-                opts=json.dumps(opts)
-            ),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             name=self.formatStr(itm[0])
         )
 
@@ -267,9 +281,7 @@ class JADNtoRelaxNG(object):
             defs.append(self._formatTag(
                 'element',
                 self._fieldType(l[2]),
-                com='{com}#jadn_opts:{opts}'.format(
-                    com='' if l[-1] == '' else l[-1] + ' ',
-                    opts=json.dumps(opts)),
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts),
                 name=n
             ))
 
@@ -279,10 +291,7 @@ class JADNtoRelaxNG(object):
         return self._formatTag(
             'define',
             self._formatTag('choice', defs),
-            com='{com}#jadn_opts:{opts}'.format(
-                com='' if itm[-2] == '' else itm[-2] + ' ',
-                opts=json.dumps(opts)
-            ),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             name=self.formatStr(itm[0])
         )
 
@@ -303,10 +312,7 @@ class JADNtoRelaxNG(object):
                 'element',
                 self._fieldType(l[2]),
                 name=self.formatStr(l[1]),
-                com='{com}#jadn_opts:{opts}'.format(
-                    com='' if l[-1] == '' else l[-1] + ' ',
-                    opts=json.dumps(opts)
-                )
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             )
 
             if '[0' in l[-2]:
@@ -321,10 +327,7 @@ class JADNtoRelaxNG(object):
         return self._formatTag(
             'define',
             self._formatTag('interleave', defs),
-            com='{com}#jadn_opts:{opts}'.format(
-                com='' if itm[-2] == '' else itm[-2] + ' ',
-                opts=json.dumps(opts)
-            ),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             name=self.formatStr(itm[0])
         )
 
@@ -341,10 +344,7 @@ class JADNtoRelaxNG(object):
             defs.append(self._formatTag(
                 'value',
                 self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
-                com='{com}#jadn_opts:{opts}'.format(
-                    com='' if l[-1] == '' else l[-1] + ' ',
-                    opts=json.dumps(opts)
-                )
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
 
         opts = {'type': itm[1]}
@@ -353,10 +353,7 @@ class JADNtoRelaxNG(object):
         return self._formatTag(
             'define',
             self._formatTag('choice', defs),
-            com='{com}#jadn_opts:{opts}'.format(
-                com='' if itm[-2] == '' else itm[-2] + ' ',
-                opts=json.dumps(opts)
-            ),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             name=self.formatStr(itm[0])
         )
 
@@ -367,8 +364,20 @@ class JADNtoRelaxNG(object):
         :return: formatted array
         :rtype str
         """
-        print('Array: {}'.format(itm))
-        return ''
+        field_opts = topts_s2d(itm[2])
+
+        opts = {'type': itm[1]}
+        if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
+
+        return self._formatTag(
+            'define',
+            self._formatTag(
+                'list',
+                self._fieldType(field_opts['aetype'])
+            ),
+            com=self._formatComment(itm[-1], jadn_opts=opts),
+            name=self.formatStr(itm[0])
+        )
 
     def _formatArrayOf(self, itm):  # TODO: what should this do??
         """
@@ -388,10 +397,7 @@ class JADNtoRelaxNG(object):
                 'list',
                 self._fieldType(field_opts['aetype'])
             ),
-            com='{com}#jadn_opts:{opts}'.format(
-                com=itm[-1],
-                opts=json.dumps(opts)
-            ),
+            com=self._formatComment(itm[-1], jadn_opts=opts),
             name=self.formatStr(itm[0])
         )
 

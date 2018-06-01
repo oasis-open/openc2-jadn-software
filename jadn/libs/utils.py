@@ -61,7 +61,7 @@ class Utils(object):
                     tmp.append(Utils.defaultDecode(k))
 
                 else:
-                    print('not prepared type')
+                    print('not prepared type: {}'.format(type(tmp)))
 
         else:
             tmp = str(itm)

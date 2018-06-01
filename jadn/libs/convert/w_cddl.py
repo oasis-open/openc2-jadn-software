@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from ..codec.codec_utils import fopts_s2d, topts_s2d
+from ..utils import Utils
 
 
 class JADNtoCDDL(object):
@@ -83,7 +84,7 @@ class JADNtoCDDL(object):
         :return: header for schema
         :rtype str
         """
-        header = ['; {} - {}'.format(k, v) for k, v in self._meta.items()]
+        header = ['; {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()]
 
         return '\n'.join(header) + '\n\n'
 
@@ -132,6 +133,19 @@ class JADNtoCDDL(object):
         # print(f, rtn)
         return rtn
 
+    def _formatComment(self, msg, **kargs):
+        com = ';'
+        if msg not in ['', None, ' ']:
+            com += ' {msg}'.format(msg=msg)
+
+        for k, v in kargs.items():
+            com += ' #{k}:{v}'.format(
+                k=k,
+                v=json.dumps(v)
+            )
+
+        return com
+
     # Structure Formats
     def _formatRecord(self, itm):
         """
@@ -146,23 +160,21 @@ class JADNtoCDDL(object):
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
-            lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
+            lines.append('{idn}{pre_opts}{name}: {fType}{c} {com}\n'.format(
                 idn=self.indent,
                 pre_opts='? ' if '[0' in l[-2] else '',
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
                 c=',' if i < len(itm[-1]) else '',
-                com='' if l[-1] == '' else l[-1]+' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
             i += 1
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\n{name} = {{ ; {com}#jadn_opts:{opts}\n{req}}}\n'.format(
+        return '\n{name} = {{ {com}\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2]+' ',
-            opts=json.dumps(opts),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             req=''.join(lines)
         )
 
@@ -179,22 +191,20 @@ class JADNtoCDDL(object):
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
-            lines.append('{name}: {type}{c} ; {com}#jadn_opts:{opts}'.format(
+            lines.append('{name}: {type}{c} {com}'.format(
                 name=self.formatStr(l[1]),
                 type=self._fieldType(l[2]),
                 c=' //' if i < len(itm[-1]) else '',
-                com='' if l[-1] == '' else l[-1]+' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
             i += 1
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\n{name} = ( ; {com}#jadn_opts:{opts}\n{idn}{defs}\n)\n'.format(
+        return '\n{name} = ( {com}\n{idn}{defs}\n)\n'.format(
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             idn=self.indent,
             defs='\n{}'.format(self.indent).join(lines)
         )
@@ -212,24 +222,22 @@ class JADNtoCDDL(object):
             opts = {'type': l[2], 'field': l[0]}
             if len(l[-2]) > 0: opts['options'] = fopts_s2d(l[-2])
 
-            lines.append('{idn}{pre_opts}{name}: {fType}{c} ; {com}#jadn_opts:{opts}\n'.format(
+            lines.append('{idn}{pre_opts}{name}: {fType}{c} {com}\n'.format(
                 idn=self.indent,
                 pre_opts='? ' if '[0' in l[-2] else '',
                 name=self.formatStr(l[1]),
                 fType=self._fieldType(l[2]),
                 c=',' if i < len(itm[-1]) else '',
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
             i += 1
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\n{name} = [ ; {com}#jadn_opts:{opts}\n{defs}]\n'.format(
+        return '\n{name} = [ {com}\n{defs}]\n'.format(
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             defs=''.join(lines)
         )
 
@@ -244,18 +252,16 @@ class JADNtoCDDL(object):
         for l in itm[-1]:
             opts = {'field': l[0]}
 
-            lines.append('\"{name}\" ; {com}#jadn_opts:{opts}\n'.format(
+            lines.append('\"{name}\" {com}\n'.format(
                 name=self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
-                com='' if l[-1] == '' else l[-1] + ' ',
-                opts=json.dumps(opts)
+                com=self._formatComment('' if l[-1] == '' else l[-1], jadn_opts=opts)
             ))
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\n; {com}#jadn_opts:{opts}\n{init}{rem}'.format(
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+        return '\n{com}\n{init}{rem}'.format(
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             init='{} = '.format(self.formatStr(itm[0])),
             rem='{} /= '.format(self.formatStr(itm[0])).join(lines)
         )
@@ -267,8 +273,19 @@ class JADNtoCDDL(object):
         :return: formatted array
         :rtype str
         """
-        print('Array: {}'.format(itm))
-        return ''
+        field_opts = topts_s2d(itm[2])
+
+        field_type = '[{min}*{max} {type}]'.format(
+            min=field_opts['min'],
+            max=field_opts['max'],
+            type=self.formatStr(field_opts['aetype'])
+        )
+
+        return '\n{name} = {type} {com}\n'.format(
+            name=self.formatStr(itm[0]),
+            type=field_type,
+            com=self._formatComment(itm[-1])
+        )
 
     def _formatArrayOf(self, itm):  # TODO: what should this do??
         """
@@ -285,12 +302,10 @@ class JADNtoCDDL(object):
             type=self.formatStr(field_opts['aetype'])
         )
 
-        #print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
-
-        return '\n{name} = {type} ; {com}\n'.format(
+        return '\n{name} = {type} {com}\n'.format(
             name=self.formatStr(itm[0]),
             type=field_type,
-            com=itm[-1]
+            com=self._formatComment(itm[-1])
         )
 
 

@@ -130,6 +130,7 @@ def opts_d2s(opts):     # TODO: Refactor to use TYPE_OPTIONS / FIELD_OPTIONS as 
     """
     ostr = []
     for k, v in opts.items():
+        print(k, v)
         if k == "optional" and v:
             ostr.append("?")
         elif k == "atfield":

@@ -1,4 +1,4 @@
-<!-- Generated from schema\jadn.jadn, Wed May 30 16:28:17 2018-->
+<!-- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018-->
 ## Schema
  . | . 
 ---|---
@@ -30,6 +30,7 @@ ID|Name|Type|#|Description
 4|description|String|0..1|Description
 5|imports|Import|0..n|Imported modules
 6|exports|String|0..n|Exported datatype names
+7|bounds|Bounds|0..1|Schema-wide upper bounds
 ###3.2.3 Import
 Imported module id and unique name
 
@@ -37,9 +38,20 @@ Imported module id and unique name
 
 ID|Type|#|Description
 ---|---|---|---
-1|Nsid|1|Local ID used within this module to refer to the imported module
-2|Uname|1|Unique name of imported module
-###3.2.4 Type
+1|Nsid|1|"nsid": Local ID used within this module to refer to the imported module
+2|Uname|1|"uname": Unique name of imported module
+###3.2.4 Bounds
+Schema-wide upper bounds.  Overrides codec defaults, overridden by type definitions
+
+**Bounds (Array)**
+
+ID|Type|#|Description
+---|---|---|---
+1|Integer|1|"max_msg": Maximum serialized message size in octets or characters
+2|Integer|1|"max_str": Maximum string length in characters
+3|Integer|1|"max_bin": Maximum binary length in octets
+4|Integer|1|"max_fields": Maximum number of elements in ArrayOf
+###3.2.5 Type
 
 
 **Type (Array)**
@@ -51,7 +63,7 @@ ID|Type|#|Description
 3|Option|1..n|"opts": Type options
 4|String|1|"desc": Type description
 5|JADN-Type|1..n|"fields": List of fields (for compound types)
-###3.2.5 JADN-Type
+###3.2.6 JADN-Type
 
 
 **JADN-Type (Choice)**
@@ -70,7 +82,7 @@ ID|Name|Type|Description
 10|Enumerated|EnumField|One of a set of id:name pairs
 11|Map|FullField|Unordered set of named fields
 12|Record|FullField|Ordered list of named fields
-###3.2.6 EnumField
+###3.2.7 EnumField
 Item definition for Enumerated types
 
 **EnumField (Array)**
@@ -80,7 +92,7 @@ ID|Type|#|Description
 1|Integer|1|Item ID
 2|String|1|Item name
 3|String|1|Item description
-###3.2.7 FullField
+###3.2.8 FullField
 Field definition for other compound types
 
 **FullField (Array)**

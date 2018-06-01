@@ -1,4 +1,4 @@
-<!-- Generated from schema\jadn.jadn, Wed May 30 16:28:17 2018-->
+<!-- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,38 +19,47 @@
 
 <h3>3.2.1 Schema</h3>
 Definition of a JADN file
-<table><caption>Schema (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>Schema (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">meta</td><td class="s">Meta</td><td class="n">1</td><td class="s">Information about the schema module</td></tr>
 <tr><td class="n">2</td><td class="s">types</td><td class="s">Type</td><td class="n">1..n</td><td class="s">Type definitions</td></tr>
 </table>
 <h3>3.2.2 Meta</h3>
 Meta-information about this schema
-<table><caption>Meta (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>Meta (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">module</td><td class="s">Uname</td><td class="n">1</td><td class="s">Module unique name</td></tr>
 <tr><td class="n">2</td><td class="s">title</td><td class="s">String</td><td class="n">0..1</td><td class="s">Title</td></tr>
 <tr><td class="n">3</td><td class="s">version</td><td class="s">String</td><td class="n">0..1</td><td class="s">Module version</td></tr>
 <tr><td class="n">4</td><td class="s">description</td><td class="s">String</td><td class="n">0..1</td><td class="s">Description</td></tr>
 <tr><td class="n">5</td><td class="s">imports</td><td class="s">Import</td><td class="n">0..n</td><td class="s">Imported modules</td></tr>
 <tr><td class="n">6</td><td class="s">exports</td><td class="s">String</td><td class="n">0..n</td><td class="s">Exported datatype names</td></tr>
+<tr><td class="n">7</td><td class="s">bounds</td><td class="s">Bounds</td><td class="n">0..1</td><td class="s">Schema-wide upper bounds</td></tr>
 </table>
 <h3>3.2.3 Import</h3>
 Imported module id and unique name
-<table><caption>Import (Array)</caption><thead><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
-<tr><td class="n">1</td><td class="s">Nsid</td><td class="n">1</td><td class="s">Local ID used within this module to refer to the imported module</td></tr>
-<tr><td class="n">2</td><td class="s">Uname</td><td class="n">1</td><td class="s">Unique name of imported module</td></tr>
+<table><caption>Import (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<tr><td class="n">1</td><td class="s">Nsid</td><td class="n">1</td><td class="s">"nsid": Local ID used within this module to refer to the imported module</td></tr>
+<tr><td class="n">2</td><td class="s">Uname</td><td class="n">1</td><td class="s">"uname": Unique name of imported module</td></tr>
 </table>
-<h3>3.2.4 Type</h3>
+<h3>3.2.4 Bounds</h3>
+Schema-wide upper bounds.  Overrides codec defaults, overridden by type definitions
+<table><caption>Bounds (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_msg": Maximum serialized message size in octets or characters</td></tr>
+<tr><td class="n">2</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_str": Maximum string length in characters</td></tr>
+<tr><td class="n">3</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_bin": Maximum binary length in octets</td></tr>
+<tr><td class="n">4</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_fields": Maximum number of elements in ArrayOf</td></tr>
+</table>
+<h3>3.2.5 Type</h3>
 
-<table><caption>Type (Array)</caption><thead><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>Type (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">Identifier</td><td class="n">1</td><td class="s">"tname": Name of this datatype</td></tr>
 <tr><td class="n">2</td><td class="s">JADN-Type</td><td class="n">1</td><td class="s">"btype": Base type</td></tr>
 <tr><td class="n">3</td><td class="s">Option</td><td class="n">1..n</td><td class="s">"opts": Type options</td></tr>
 <tr><td class="n">4</td><td class="s">String</td><td class="n">1</td><td class="s">"desc": Type description</td></tr>
 <tr><td class="n">5</td><td class="s">JADN-Type</td><td class="n">1..n</td><td class="s">"fields": List of fields (for compound types)</td></tr>
 </table>
-<h3>3.2.5 JADN-Type</h3>
+<h3>3.2.6 JADN-Type</h3>
 
-<table><caption>JADN-Type (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><caption>JADN-Type (Choice)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">Binary</td><td class="s">Null</td><td class="s">Octet sequence</td></tr>
 <tr><td class="n">2</td><td class="s">Boolean</td><td class="s">Null</td><td class="s">True or False</td></tr>
 <tr><td class="n">3</td><td class="s">Integer</td><td class="s">Null</td><td class="s">Whole number</td></tr>
@@ -64,16 +73,16 @@ Imported module id and unique name
 <tr><td class="n">11</td><td class="s">Map</td><td class="s">FullField</td><td class="s">Unordered set of named fields</td></tr>
 <tr><td class="n">12</td><td class="s">Record</td><td class="s">FullField</td><td class="s">Ordered list of named fields</td></tr>
 </table>
-<h3>3.2.6 EnumField</h3>
+<h3>3.2.7 EnumField</h3>
 Item definition for Enumerated types
-<table><caption>EnumField (Array)</caption><thead><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>EnumField (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">Item ID</td></tr>
 <tr><td class="n">2</td><td class="s">String</td><td class="n">1</td><td class="s">Item name</td></tr>
 <tr><td class="n">3</td><td class="s">String</td><td class="n">1</td><td class="s">Item description</td></tr>
 </table>
-<h3>3.2.7 FullField</h3>
+<h3>3.2.8 FullField</h3>
 Field definition for other compound types
-<table><caption>FullField (Array)</caption><thead><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>FullField (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">Field ID or ordinal position</td></tr>
 <tr><td class="n">2</td><td class="s">Identifier</td><td class="n">1</td><td class="s">Field name</td></tr>
 <tr><td class="n">3</td><td class="s">Identifier</td><td class="n">1</td><td class="s">Field type</td></tr>
@@ -81,7 +90,7 @@ Field definition for other compound types
 <tr><td class="n">5</td><td class="s">String</td><td class="n">1</td><td class="s">Field description</td></tr>
 </table>
 <h2>3.3 Primitive Types</h2>
-<table><thead><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><begin_type><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="s">Identifier</td><td class="s">String</td><td class="s">A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars</td></tr>
 <tr><td class="s">Nsid</td><td class="s">String</td><td class="s">Namespace ID - a short identifier</td></tr>
 <tr><td class="s">Uname</td><td class="s">String</td><td class="s">Unique name of imported module</td></tr>

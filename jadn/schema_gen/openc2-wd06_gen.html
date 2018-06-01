@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd06.jadn, Wed May 30 16:28:17 2018-->
+<!-- Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +21,7 @@ jadn: oasis-open.org/openc2/v1.0/jadn</td></tr>
 
 <h3>3.2.1 OpenC2-Command</h3>
 The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context.
-<table><caption>OpenC2-Command (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>OpenC2-Command (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">action</td><td class="s">Action</td><td class="n">1</td><td class="s">The task or activity to be performed (i.e., the 'verb')</td></tr>
 <tr><td class="n">2</td><td class="s">target</td><td class="s">Target</td><td class="n">1</td><td class="s">The object of the action. The action is performed on the target</td></tr>
 <tr><td class="n">3</td><td class="s">actuator</td><td class="s">Actuator</td><td class="n">0..1</td><td class="s">The subject of the action. The actuator executes the action on the target</td></tr>
@@ -30,7 +30,7 @@ The OpenC2 Command describes an action performed on a target. It can be directiv
 </table>
 <h3>3.2.2 Action</h3>
 
-<table><caption>Action (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<table><caption>Action (Enumerated)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">scan</td><td class="s">Systematic examination of some aspect of the target entity or its environment in order to obtain information.</td></tr>
 <tr><td class="n">2</td><td class="s">locate</td><td class="s">Find the target object physically, logically, functionally, or by organization.</td></tr>
 <tr><td class="n">3</td><td class="s">query</td><td class="s">Initiate a request for information.</td></tr>
@@ -66,7 +66,7 @@ The OpenC2 Command describes an action performed on a target. It can be directiv
 </table>
 <h3>3.2.3 Target</h3>
 OpenC2 Target datatypes
-<table><caption>Target (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><caption>Target (Choice)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">artifact</td><td class="s">artifact</td><td class="s">An array of bytes representing a file-like object or a link to that object.</td></tr>
 <tr><td class="n">2</td><td class="s">command</td><td class="s">command-id</td><td class="s">A reference to a previously issued OpenC2 command</td></tr>
 <tr><td class="n">3</td><td class="s">device</td><td class="s">device</td><td class="s"></td></tr>
@@ -95,19 +95,19 @@ OpenC2 Target datatypes
 </table>
 <h3>3.2.4 Actuator</h3>
 
-<table><caption>Actuator (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><caption>Actuator (Choice)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">generic</td><td class="s">ActuatorSpecifiers</td><td class="s"></td></tr>
 <tr><td class="n">1024</td><td class="s">slpff</td><td class="s">slpff:Specifiers</td><td class="s">Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff</td></tr>
 </table>
 <h3>3.2.5 ActuatorSpecifiers</h3>
 
-<table><caption>ActuatorSpecifiers (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>ActuatorSpecifiers (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">actuator_id</td><td class="s">uri</td><td class="n">0..1</td><td class="s"></td></tr>
 <tr><td class="n">2</td><td class="s">asset_id</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 </table>
 <h3>3.2.6 Args</h3>
 
-<table><caption>Args (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>Args (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">start_time</td><td class="s">Date-Time</td><td class="n">0..1</td><td class="s">The specific date/time to initiate the action</td></tr>
 <tr><td class="n">2</td><td class="s">end_time</td><td class="s">Date-Time</td><td class="n">0..1</td><td class="s">The specific date/time to terminate the action</td></tr>
 <tr><td class="n">3</td><td class="s">duration</td><td class="s">Duration</td><td class="n">0..1</td><td class="s">The length of time for an action to be in effect</td></tr>
@@ -116,7 +116,7 @@ OpenC2 Target datatypes
 </table>
 <h3>3.2.7 OpenC2-Response</h3>
 
-<table><caption>OpenC2-Response (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>OpenC2-Response (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">id</td><td class="s">Command-ID</td><td class="n">1</td><td class="s">Id of the ommand that induced this response</td></tr>
 <tr><td class="n">2</td><td class="s">status</td><td class="s">Status-Code</td><td class="n">1</td><td class="s">An integer status code</td></tr>
 <tr><td class="n">3</td><td class="s">status_text</td><td class="s">String</td><td class="n">0..1</td><td class="s">A free-form human-readable description of the response status</td></tr>
@@ -124,7 +124,7 @@ OpenC2 Target datatypes
 </table>
 <h3>3.2.8 Status-Code</h3>
 
-<table><caption>Status-Code (Enumerated.Tag)</caption><thead><th class="n">Value</th><th class="s">Description</th></thead>
+<table><caption>Status-Code (Enumerated.Tag)</caption><begin_type><th class="n">Value</th><th class="s">Description</th></begin_type>
 <tr><td class="n">102</td><td class="s">Processing -- An interim response used to inform the client that the server has accepted the request but not yet completed it.</td></tr>
 <tr><td class="n">200</td><td class="s">OK -- The request has succeeded.</td></tr>
 <tr><td class="n">301</td><td class="s">Moved Permanently -- The target resource has been assigned a new permanent URI</td></tr>
@@ -136,31 +136,31 @@ OpenC2 Target datatypes
 </table>
 <h3>3.2.9 artifact</h3>
 
-<table><caption>artifact (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>artifact (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">mime_type</td><td class="s">String</td><td class="n">0..1</td><td class="s">Permitted values specified in the IANA Media Types registry</td></tr>
 <tr><td class="n">2</td><td class="s">*</td><td class="s">payload</td><td class="n">0..1</td><td class="s">choice of literal content or URL to obtain content</td></tr>
 <tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">Specifies a dictionary of hashes for the contents of the payload</td></tr>
 </table>
 <h3>3.2.10 payload</h3>
 
-<table><caption>payload (Choice)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><caption>payload (Choice)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">payload_bin</td><td class="s">Binary</td><td class="s">Specifies the data contained in the artifact.</td></tr>
 <tr><td class="n">2</td><td class="s">url</td><td class="s">uri</td><td class="s">MUST be a valid URL that resolves to the un-encoded content</td></tr>
 </table>
 <h3>3.2.11 openc2</h3>
 A target used to query Actuator for its supported capabilities
-<table><caption>openc2 (ArrayOf.Query-Item)</caption><thead></thead>
+<table><caption>openc2 (ArrayOf.Query-Item ['max', 'min'])</caption><begin_type></begin_type>
 </table></table>
 <h3>3.2.12 Query-Item</h3>
 Results to be included in response to query openc2 command
-<table><caption>Query-Item (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<table><caption>Query-Item (Enumerated)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">versions</td><td class="s">OpenC2 language versions supported by this actuator</td></tr>
 <tr><td class="n">2</td><td class="s">profiles</td><td class="s">List of profiles supported by this actuator</td></tr>
 <tr><td class="n">3</td><td class="s">schema</td><td class="s">Definition of the command syntax supported by this actuator</td></tr>
 </table>
 <h3>3.2.13 ip-connection</h3>
 5-tuple that specifies a tcp/ip connection
-<table><caption>ip-connection (Record)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>ip-connection (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">src_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">source address</td></tr>
 <tr><td class="n">2</td><td class="s">src_port</td><td class="s">port</td><td class="n">0..1</td><td class="s">source TCP/UDP port number</td></tr>
 <tr><td class="n">3</td><td class="s">dst_addr</td><td class="s">ip-addr</td><td class="n">0..1</td><td class="s">destination address</td></tr>
@@ -169,7 +169,7 @@ Results to be included in response to query openc2 command
 </table>
 <h3>3.2.14 layer4-protocol</h3>
 protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
-<table><caption>layer4-protocol (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<table><caption>layer4-protocol (Enumerated)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">icmp</td><td class="s">Internet Control Message Protocol - RFC 792</td></tr>
 <tr><td class="n">6</td><td class="s">tcp</td><td class="s">Transmission Control Protocol - RFC 793</td></tr>
 <tr><td class="n">17</td><td class="s">udp</td><td class="s">User Datagram Protocol - RFC 768</td></tr>
@@ -177,21 +177,21 @@ protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 </table>
 <h3>3.2.15 file</h3>
 
-<table><caption>file (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>file (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s">The name of the file as defined in the file system</td></tr>
 <tr><td class="n">2</td><td class="s">path</td><td class="s">String</td><td class="n">0..1</td><td class="s">The absolute path to the location of the file in the file system</td></tr>
 <tr><td class="n">3</td><td class="s">hashes</td><td class="s">hashes</td><td class="n">0..1</td><td class="s">One or more cryptographic hash codes of the file contents</td></tr>
 </table>
 <h3>3.2.16 Response-Type</h3>
 
-<table><caption>Response-Type (Enumerated)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></thead>
+<table><caption>Response-Type (Enumerated)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Description</th></begin_type>
 <tr><td class="n">0</td><td class="s">None</td><td class="s">No response</td></tr>
 <tr><td class="n">1</td><td class="s">Ack</td><td class="s">Respond when command received</td></tr>
 <tr><td class="n">2</td><td class="s">Complete</td><td class="s">Respond when all aspects of command completed</td></tr>
 </table>
 <h3>3.2.17 Process</h3>
 
-<table><caption>Process (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>Process (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">pid</td><td class="s">Integer</td><td class="n">0..1</td><td class="s">Process ID of the process</td></tr>
 <tr><td class="n">2</td><td class="s">name</td><td class="s">String</td><td class="n">0..1</td><td class="s">Name of the process</td></tr>
 <tr><td class="n">3</td><td class="s">cwd</td><td class="s">String</td><td class="n">0..1</td><td class="s">Current working directory of the process</td></tr>
@@ -201,14 +201,14 @@ protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 </table>
 <h3>3.2.18 hashes</h3>
 Cryptographic Hash values
-<table><caption>hashes (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>hashes (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">md5</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded MD5 hash as defined in RFC3121</td></tr>
 <tr><td class="n">4</td><td class="s">sha1</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA1 hash as defined in RFC3174</td></tr>
 <tr><td class="n">6</td><td class="s">sha256</td><td class="s">Binary</td><td class="n">0..1</td><td class="s">Hex-encoded SHA256 as defined in RFC6234</td></tr>
 </table>
 <h3>3.2.19 device</h3>
 TODO: Add inventory device-id?
-<table><caption>device (Map)</caption><thead><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></thead>
+<table><caption>device (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
 <tr><td class="n">1</td><td class="s">description</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 <tr><td class="n">2</td><td class="s">device_type</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 <tr><td class="n">3</td><td class="s">manufacturer</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
@@ -218,7 +218,7 @@ TODO: Add inventory device-id?
 <tr><td class="n">7</td><td class="s">system_details</td><td class="s">String</td><td class="n">0..1</td><td class="s"></td></tr>
 </table>
 <h2>3.3 Primitive Types</h2>
-<table><thead><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></thead>
+<table><begin_type><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
 <tr><td class="s">command-id</td><td class="s">String</td><td class="s">Uniquely identifies a particular command - TBD syntax</td></tr>
 <tr><td class="s">date-time</td><td class="s">String (date-time)</td><td class="s">RFC 3339 date-time</td></tr>
 <tr><td class="s">duration</td><td class="s">String (duration)</td><td class="s">RFC 3339 / ISO 8601 duration</td></tr>

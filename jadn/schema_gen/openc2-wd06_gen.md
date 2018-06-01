@@ -1,4 +1,4 @@
-<!-- Generated from schema\openc2-wd06.jadn, Wed May 30 16:28:17 2018-->
+<!-- Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018-->
 ## Schema
  . | . 
 ---|---
@@ -170,7 +170,7 @@ ID|Name|Type|Description
 ###3.2.11 openc2
 A target used to query Actuator for its supported capabilities
 
-**openc2 (ArrayOf.Query-Item)**
+**openc2 (ArrayOf.Query-Item ['max', 'min'])**
 
 
 

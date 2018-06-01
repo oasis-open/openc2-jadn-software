@@ -1,4 +1,4 @@
--- Generated from schema\jadn.jadn, Wed May 30 16:28:17 2018
+-- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018
 
 /*
 module:        oasis-open.org/openc2/v1.0/jadn
@@ -19,12 +19,20 @@ Meta ::= MAP {    -- Meta-information about this schema
     version      [3] STRING OPTIONAL,    -- Module version
     description  [4] STRING OPTIONAL,    -- Description
     imports      [5] Import OPTIONAL,    -- Imported modules ***{u'max': 0}
-    exports      [6] STRING OPTIONAL     -- Exported datatype names ***{u'max': 0}
+    exports      [6] STRING OPTIONAL,    -- Exported datatype names ***{u'max': 0}
+    bounds       [7] Bounds OPTIONAL     -- Schema-wide upper bounds
 }
 
 Import ::= ARRAY {    -- Imported module id and unique name
-                 [1] Nsid,    -- Local ID used within this module to refer to the imported module
-                 [2] Uname     -- Unique name of imported module
+    nsid         [1] Nsid,    -- Local ID used within this module to refer to the imported module
+    uname        [2] Uname     -- Unique name of imported module
+}
+
+Bounds ::= ARRAY {    -- Schema-wide upper bounds.  Overrides codec defaults, overridden by type definitions
+    max_msg      [1] INTEGER,    -- Maximum serialized message size in octets or characters
+    max_str      [2] INTEGER,    -- Maximum string length in characters
+    max_bin      [3] INTEGER,    -- Maximum binary length in octets
+    max_fields   [4] INTEGER     -- Maximum number of elements in ArrayOf
 }
 
 Type ::= ARRAY {

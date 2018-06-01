@@ -2,7 +2,7 @@
 Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JADN) schemas
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import json
 import jsonschema

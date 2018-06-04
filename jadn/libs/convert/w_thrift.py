@@ -182,7 +182,7 @@ class JADNtoThrift(object):
         :return: formatted choice
         :rtype str
         """
-        # Thrift does not use maps, using struct
+        # Thrift does not use choice, using struct
         lines = []
         for l in itm[-1]:
             opts = {'type': l[2]}
@@ -215,7 +215,7 @@ class JADNtoThrift(object):
         :return: formatted map
         :rtype str
         """
-        # Thrift does not use maps, using struct
+        # Thrift does not use maps in same way, using struct
 
         return self._formatChoice(itm)
 

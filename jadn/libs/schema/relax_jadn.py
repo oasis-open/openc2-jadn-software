@@ -79,7 +79,6 @@ class Relax2Jadn(object):
 
             else:
                 c = self._children(children)
-                # print(c)
                 tmp_type.append(c)
 
             types.append(tmp_type)

@@ -139,7 +139,7 @@ class JADNtoRelaxNG(object):
             com = '' if field[-1] == '' else field[-1]
 
             if len(field[-2]) >= 1:
-                opts = {'opts': field[-2]}
+                opts = {'options': field[-2]}
                 com += ' #jadn_opts:{}'.format(json.dumps(opts))
 
             c = self._formatTag(
@@ -276,7 +276,7 @@ class JADNtoRelaxNG(object):
         defs = []
         for l in itm[-1]:
             n = self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0]))
-            opts = {'field': l[0]}
+            opts = {'field': l[0], 'type': l[2]}
 
             defs.append(self._formatTag(
                 'element',

@@ -11,6 +11,7 @@ convert = True
 
 if convert:
     from libs.convert import base_dump, cddl_dump, proto_dump, relax_dump, thrift_dump
+    from libs.schema import relax2jadn_dump
 
     schema = 'schema/openc2-wd06_functional.jadn'
     test_dir = 'schema_gen_test'
@@ -25,6 +26,8 @@ if convert:
     cddl_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.cddl'))
 
     relax_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.rng'))
+
+    relax2jadn_dump(open(os.path.join(test_dir, 'openc2-wd06.rng'), 'rb').read(), os.path.join(test_dir, 'openc2-wd06.rng.jadn'))
 
     thrift_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.thrift'))
 

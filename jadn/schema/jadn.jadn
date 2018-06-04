@@ -20,20 +20,28 @@
             [3, "version", "String", ["[0"], "Module version"],
             [4, "description", "String", ["[0"], "Description"],
             [5, "imports", "Import", ["[0", "]0"], "Imported modules"],
-            [6, "exports", "String", ["[0", "]0"], "Exported datatype names"]]
+            [6, "exports", "String", ["[0", "]0"], "Exported datatype names"],
+            [7, "bounds", "Bounds", ["[0"], "Schema-wide upper bounds"]]
         ],
 
         ["Import", "Array", [], "Imported module id and unique name", [
-            [1, "", "Nsid", [], "Local ID used within this module to refer to the imported module"],
-            [2, "", "Uname", [], "Unique name of imported module" ]]
+            [1, "nsid", "Nsid", [], "Local ID used within this module to refer to the imported module"],
+            [2, "uname", "Uname", [], "Unique name of imported module" ]]
+        ],
+
+        ["Bounds", "Array", [], "Schema-wide upper bounds.  Overrides codec defaults, overridden by type definitions", [
+            [1, "max_msg", "Integer", [], "Maximum serialized message size in octets or characters"],
+            [2, "max_str", "Integer", [], "Maximum string length in characters"],
+            [3, "max_bin", "Integer", [], "Maximum binary length in octets"],
+            [4, "max_fields", "Integer", [], "Maximum number of elements in ArrayOf"]]
         ],
 
         ["Type", "Array", [], "", [
-            [1, "", "Identifier", [], "Name of this datatype"],
-            [2, "", "JADN-Type", [], "Base type"],
-            [3, "", "Option", ["]0"], "Type options"],
-            [4, "", "String", [], "Type description"],
-            [5, "", "JADN-Type", ["&type", "]0"], "List of fields (for compound types)"]]
+            [1, "tname", "Identifier", [], "Name of this datatype"],
+            [2, "btype", "JADN-Type", [], "Base type"],
+            [3, "opts", "Option", ["]0"], "Type options"],
+            [4, "desc", "String", [], "Type description"],
+            [5, "fields", "JADN-Type", ["&btype", "]0"], "List of fields (for compound types)"]]
         ],
 
         ["JADN-Type", "Choice", [], "", [

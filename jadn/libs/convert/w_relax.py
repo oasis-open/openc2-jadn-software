@@ -373,7 +373,7 @@ class JADNtoRelaxNG(object):
             'define',
             self._formatTag(
                 'list',
-                self._fieldType(field_opts['aetype'])
+                self._fieldType(field_opts['rtype'])
             ),
             com=self._formatComment(itm[-1], jadn_opts=opts),
             name=self.formatStr(itm[0])
@@ -395,7 +395,7 @@ class JADNtoRelaxNG(object):
             'define',
             self._formatTag(
                 'list',
-                self._fieldType(field_opts['aetype'])
+                self._fieldType(field_opts['rtype'])
             ),
             com=self._formatComment(itm[-1], jadn_opts=opts),
             name=self.formatStr(itm[0])

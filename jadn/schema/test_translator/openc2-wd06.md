@@ -1,3 +1,7 @@
+<<<<<<< HEAD:jadn/schema/test_translator/openc2-wd06.md
+=======
+<!-- Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018-->
+>>>>>>> 2876311c769d1d4fa11c1105c397cbe8d8633f45:jadn/schema_gen/openc2-wd06_gen.md
 ## Schema
  . | . 
 ---|---
@@ -90,7 +94,7 @@ ID|Name|Type|Description
 22|volume|volume|
 23|windows_registry_key|windows-registry-key|
 24|x509_certificate|x509-certificate|
-1024|slpff|Slpff-Targets|Targets defined in the Stateless Packet Filter Firewall profile
+1024|slpff|slpff:Target|Target imported from the Stateless Packet Filter Firewall profile
 ###3.2.4 Actuator
 
 
@@ -98,8 +102,18 @@ ID|Name|Type|Description
 
 ID|Name|Type|Description
 ---|---|---|---
-1024|slpff|Slpff-Specifiers|Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
-###3.2.5 Args
+1|generic|ActuatorSpecifiers|
+1024|slpff|slpff:Specifiers|Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
+###3.2.5 ActuatorSpecifiers
+
+
+**ActuatorSpecifiers (Map)**
+
+ID|Name|Type|#|Description
+---|---|---|---|---
+1|actuator_id|uri|0..1|
+2|asset_id|String|0..1|
+###3.2.6 Args
 
 
 **Args (Map)**
@@ -110,8 +124,8 @@ ID|Name|Type|#|Description
 2|end_time|date-time|0..1|The specific date/time to terminate the action
 3|duration|duration|0..1|The length of time for an action to be in effect
 4|response_requested|Response-Type|0..1|The type of response required for the action
-1024|slpff|Slpff-Args|0..1|Command arguments defined in the Stateless Packet Filtering Firewall profile
-###3.2.6 OpenC2-Response
+1024|slpff|slpff:Args|0..1|Command arguments defined in the Stateless Packet Filtering Firewall profile
+###3.2.7 OpenC2-Response
 
 
 **OpenC2-Response (Record)**
@@ -122,6 +136,7 @@ ID|Name|Type|#|Description
 2|status|Status-Code|1|An integer status code
 3|status_text|String|0..1|A free-form human-readable description of the response status
 4|*|Results|1|Data or extended status information that was requested from an OpenC2 command
+<<<<<<< HEAD:jadn/schema/test_translator/openc2-wd06.md
 ###3.2.7 Results
 
 
@@ -146,6 +161,23 @@ Value|Description
 403|Forbidden - the server understood the request but refuses to authorize it.
 500|Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
 501|Not Implemented - the server does not support the functionality required to fulfill the request.
+=======
+###3.2.8 Status-Code
+
+
+**Status-Code (Enumerated.Tag)**
+
+Value|Description
+---|---
+102|Processing -- An interim response used to inform the client that the server has accepted the request but not yet completed it.
+200|OK -- The request has succeeded.
+301|Moved Permanently -- The target resource has been assigned a new permanent URI
+400|Bad Request -- The server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+401|Unauthorized -- The request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+403|Forbidden -- The server understood the request but refuses to authorize it.
+500|Server Error -- The server encountered an unexpected condition that prevented it from fulfilling the request.
+501|Not Implemented -- The server does not support the functionality required to fulfill the request.
+>>>>>>> 2876311c769d1d4fa11c1105c397cbe8d8633f45:jadn/schema_gen/openc2-wd06_gen.md
 ###3.2.9 artifact
 
 
@@ -167,7 +199,15 @@ ID|Name|Type|Description
 2|url|uri|MUST be a valid URL that resolves to the un-encoded content
 ###3.2.11 openc2
 A target used to query Actuator for its supported capabilities
+<<<<<<< HEAD:jadn/schema/test_translator/openc2-wd06.md
 (arrayof definition)
+=======
+
+**openc2 (ArrayOf.Query-Item ['max', 'min'])**
+
+
+
+>>>>>>> 2876311c769d1d4fa11c1105c397cbe8d8633f45:jadn/schema_gen/openc2-wd06_gen.md
 ###3.2.12 Query-Item
 Results to be included in response to query openc2 command
 

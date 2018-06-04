@@ -81,7 +81,7 @@ def topts_s2d(ostr):
         "compact": lambda x: True,
         "min": lambda x: int(x),
         "max": lambda x: int(x),
-        "aetype": lambda x: x,
+        "rtype": lambda x: x,
         "pattern": lambda x: x,
         "format": lambda x: x,
     }
@@ -105,6 +105,7 @@ def fopts_s2d(ostr):
         "min": lambda x: int(x),
         "max": lambda x: int(x),
         "atfield": lambda x: x,
+        "rtype": lambda x: x,
         "etype": lambda x: x,
         "default": lambda x: x
     }
@@ -141,8 +142,8 @@ def opts_d2s(opts):     # TODO: Refactor to use TYPE_OPTIONS / FIELD_OPTIONS as 
             ostr.append(">" + v)
         elif k == "format":
             ostr.append("@" + v)
-        elif k == "aetype":
-            ostr.append("#" + v)
+        elif k == "rtype":
+            ostr.append("*" + v)
         else:
             print("Unknown option '", o, "'")
     return ostr

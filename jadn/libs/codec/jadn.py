@@ -2,7 +2,7 @@
 Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JADN) schemas
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import json
 import jsonschema
@@ -95,7 +95,7 @@ def jadn_check(schema):
         'Null': [],
         'String': ['min', 'max', 'pattern', 'format'],
         'Array': ['min', 'max'],
-        'ArrayOf': ['min', 'max', 'aetype'],
+        'ArrayOf': ['min', 'max', 'rtype'],
         'Choice': [],
         'Enumerated': ['compact'],
         'Map': [],
@@ -123,7 +123,7 @@ def jadn_check(schema):
         vop = {k for k in topts} - {k for k in valid_topts[t[TTYPE]]}
         if vop:
             print("Error:", t[TNAME], "type", t[TTYPE], "invalid option", str(vop))
-        if t[TTYPE] == 'ArrayOf' and 'aetype' not in topts:
+        if t[TTYPE] == 'ArrayOf' and 'rtype' not in topts:
             print("Error:", t[TNAME], "- Missing array element type")
         if is_primitive(t[TTYPE]) or t[TTYPE] == 'ArrayOf':
             if len(t) != 4:    # TODO: trace back to base type
@@ -178,9 +178,9 @@ def build_jadn_deps(schema):
     for tdef in schema["types"]:
         deps = []
         if tdef[TTYPE] == "ArrayOf":
-            aetype = topts_s2d(tdef[TOPTS])["aetype"]
-            if not is_builtin(aetype):
-                deps.append(aetype)
+            rtype = topts_s2d(tdef[TOPTS])["rtype"]
+            if not is_builtin(rtype):
+                deps.append(rtype)
         if len(tdef) > FIELDS and tdef[TTYPE] != "Enumerated":
             for f in tdef[FIELDS]:
                 if not is_builtin(f[FTYPE]):

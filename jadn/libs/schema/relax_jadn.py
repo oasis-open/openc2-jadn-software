@@ -275,10 +275,10 @@ class Relax2Jadn(object):
             if re.match(r'^\s*?\[', defs):
                 defs = "[\n{defs}\n{idn}{idn}]".format(idn=idn, defs=re.sub(re.compile(r'^', re.MULTILINE), '{idn}'.format(idn=idn*3), defs))
 
-            type_defs.append("\n{idn}{idn}[{header}, {defs}]".format(
+            type_defs.append("\n{idn}{idn}[{header}{defs}]".format(
                 idn=idn,
                 header=', '.join(header),
-                defs=defs
+                defs='' if defs == '' else ', {}'.format(defs)
             ))
 
         types = "[{obj}\n{idn}]".format(idn=idn, obj=','.join(type_defs))
@@ -306,8 +306,8 @@ class Relax2Jadn(object):
                 ostr.append(">{}".format(v))
             elif k == "format":
                 ostr.append("@{}".format(v))
-            elif k == "aetype":
-                ostr.append("#{}".format(v))
+            elif k == "rtype":
+                ostr.append("*{}".format(v))
 
             # Additional options from original function
             elif k == "min":

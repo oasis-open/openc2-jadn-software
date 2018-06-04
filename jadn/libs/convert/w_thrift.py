@@ -269,7 +269,7 @@ class JADNtoThrift(object):
             req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
                 idn=self.indent,
                 choice='optional',
-                type=self.formatStr(field_opts['aetype']),
+                type=self.formatStr(field_opts['rtype']),
                 name='item',
                 num='1',
             ),
@@ -295,7 +295,7 @@ class JADNtoThrift(object):
                 idn=self.indent,
                 num='1',
                 choice='optional',
-                type=self.formatStr(field_opts['aetype']),
+                type=self.formatStr(field_opts['rtype']),
                 name='item',
             ),
         )

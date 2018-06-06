@@ -52,7 +52,7 @@ class Proto2JADN(object):
             'types': self.makeTypes() + self.makeCustom()
         }
 
-        jadn_str = Utils.jadnFormat(jadn, indent=1)
+        jadn_str = Utils.jadnFormat(jadn, indent=2)
 
         print(len(json.dumps(jadn, indent=2).split('\n')), len(jadn_str.split('\n')))
 
@@ -78,10 +78,10 @@ class Proto2JADN(object):
         :rtype dict
         """
         tmp = {}
-        meta = re.search(r'\/\*\s*?meta(.*|\n)*?\*\/', toStr(self._proto))
+        meta = re.search(r'\/\*\s*?meta(.|\n)*?\*\/', toStr(self._proto))
         if meta:
             for meta_line in meta.group().split('\n')[1:-1]:
-                line = re.sub(r'^\s+\*\s+', '', meta_line).split(' - ')
+                line = re.sub(r'^\s+\*\s+(?P<meta>.*?)(\n|\r|\r\n)', '\g<meta>', meta_line).split(' - ')
                 try:
                     tmp[line[0]] = json.loads(' - '.join(line[1:]))
                 except Exception as e:
@@ -95,8 +95,10 @@ class Proto2JADN(object):
         :return: type definitions for the schema
         :rtype list
         """
+        # print(toStr(self._proto))
         tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}$)', toStr(self._proto), flags=re.MULTILINE):
+        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}(\r|\n)?$)', toStr(self._proto), flags=re.MULTILINE):
+            print('derp2')
             tmp_type = []
             def_lines = type_def[0].split('\n')
 
@@ -212,6 +214,7 @@ class Proto2JADN(object):
         return ft
 
     def _loadOpts(self, com):
+        com = re.sub(r'(\r|\n)', '', com)
         c = com or ''
         com = com or ''
 

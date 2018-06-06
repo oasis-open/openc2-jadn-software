@@ -244,4 +244,7 @@ def proto2jadn_dump(proto, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(proto2jadn_dumps(proto))
+
+        jadn_str = proto2jadn_dumps(proto)
+        print(len(jadn_str.split('\n')))
+        f.write(jadn_str)

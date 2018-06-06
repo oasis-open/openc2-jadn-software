@@ -34,9 +34,9 @@ class Proto2JADN(object):
         ]
 
         self._fieldRegex = {
-            'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'message': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'array': re.compile(r'\s+(?P<repeat>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?')
+            'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?[\r\n]?'),
+            'message': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?[\r\n]?'),
+            'array': re.compile(r'\s+(?P<repeat>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?[\r\n]?')
         }
         self._fieldRegex['oneof'] = self._fieldRegex['message']
         self._fieldRegex['arrayof'] = self._fieldRegex['array']
@@ -78,10 +78,12 @@ class Proto2JADN(object):
         :rtype dict
         """
         tmp = {}
-        meta = re.search(r'\/\*\s*?meta(.|\n)*?\*\/', toStr(self._proto))
+        meta = re.search(r'\/\s?\*\s*?meta(.|\n)*?\*\/', toStr(self._proto))
+
         if meta:
             for meta_line in meta.group().split('\n')[1:-1]:
-                line = re.sub(r'^\s+\*\s+(?P<meta>.*?)(\n|\r|\r\n)', '\g<meta>', meta_line).split(' - ')
+                line = re.sub(r'^\s*?\*\s?(?P<meta>.*?)(\n|\r|\r\n)?', '\g<meta>', toStr(meta_line)).split(' - ')
+
                 try:
                     tmp[line[0]] = json.loads(' - '.join(line[1:]))
                 except Exception as e:
@@ -95,14 +97,12 @@ class Proto2JADN(object):
         :return: type definitions for the schema
         :rtype list
         """
-        # print(toStr(self._proto))
         tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}(\r|\n)?$)', toStr(self._proto), flags=re.MULTILINE):
-            print('derp2')
+        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}[\r\n]?$)', toStr(self._proto), flags=re.MULTILINE):
             tmp_type = []
-            def_lines = type_def[0].split('\n')
+            def_lines = [l for l in type_def[0].split('\n') if l != '']
 
-            if re.match(r'.*{\n\s+(repeated).*\n}', type_def[0]):
+            if re.match(r'.*{[\r\n]\s+(repeated).*[\r\n]}', type_def[0]):
                 proto_type, field_name = def_lines[0].split(r'{')[0].split()
                 parts = self._fieldRegex['arrayof'].match(def_lines[1]).groupdict()
                 com, opts = self._loadOpts(parts['comment'])
@@ -182,7 +182,7 @@ class Proto2JADN(object):
         return tmp
 
     def makeCustom(self):
-        customFields = re.search(r'/\* JADN Custom Fields\n(?P<custom>[\w\W]+?)\n\*/', toStr(self._proto))
+        customFields = re.search(r'/\* JADN Custom Fields\n(?P<custom>[\w\W]+?)[\r\n]\*/', toStr(self._proto))
         fields = []
 
         if customFields:
@@ -214,15 +214,14 @@ class Proto2JADN(object):
         return ft
 
     def _loadOpts(self, com):
-        com = re.sub(r'(\r|\n)', '', com)
         c = com or ''
         com = com or ''
 
-        com = re.sub(r'\s*?#jadn_opts:\s?{.*?}+\n?', '', com)
+        com = re.sub(r'\s*?#jadn_opts:\s?{.*?}+[\r\n]?', '', com)
         if c == com:
             return com, {}
 
-        opts = re.match(r'\s*?#jadn_opts:\s?(?P<opts>{.*?}+)\n?', c.replace(com, ''))
+        opts = re.match(r'\s*?#jadn_opts:\s?(?P<opts>{.*?}+)[\r\n]?', c.replace(com, ''))
         if opts:
             try:
                 opts = json.loads(opts.group('opts'))

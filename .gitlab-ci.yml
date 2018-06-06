@@ -16,14 +16,30 @@ before_script:
   - workon $PYTHON_ENV || mkvirtualenv $PYTHON_ENV
   - pip install -r $PKG_DIR/requirements.txt
 
+Translate-Schemas:
+  stage: test
+
+  script:
+    - cd jadn
+    - python schema-translators.py
+    - mv ./schema_gen_test/openc2-* ../
+    - deactivate
+
+  artifacts:
+    name: "JADN_Translations.${CI_PIPELINE_ID}_${CI_COMMIT_SHA:0:8}"
+    expire_in: 2 weeks
+    paths:
+     - ./openc2-*
+
+
 Build-Wheel:
-  stage: build
+  stage: deploy
 
   script:
     - cd $PKG_DIR
     - rsync -rh --delete ../jadn/libs/* ./$PKG_NAME
     - pip wheel . -w ./dist
-    - ln -s ./dist/*.whl ../
+    - mv ./dist/*.whl ../
     - deactivate
 
   artifacts:

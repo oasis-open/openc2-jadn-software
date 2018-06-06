@@ -1,9 +1,9 @@
-<!-- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018-->
+<!-- Generated from schema\jadn.jadn, Wed Jun  6 15:53:45 2018-->
 ## Schema
- . | . 
----|---
+ .  | .
+ ---:|:---
 title: |JADN Syntax
-module: |oasis-open.org/openc2/v1.0/jadn
+module: |/oasis-open.org/openc2/v1.0/jadn
 version: |wd01
 description: |Syntax of a JSON Abstract Data Notation (JADN) module.
 exports: |Schema
@@ -14,7 +14,7 @@ Definition of a JADN file
 **Schema (Record)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|meta|Meta|1|Information about the schema module
 2|types|Type|1..n|Type definitions
 ###3.2.2 Meta
@@ -23,7 +23,7 @@ Meta-information about this schema
 **Meta (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|module|Uname|1|Module unique name
 2|title|String|0..1|Title
 3|version|String|0..1|Module version
@@ -37,7 +37,7 @@ Imported module id and unique name
 **Import (Array)**
 
 ID|Type|#|Description
----|---|---|---
+---:|:---|---:|:---
 1|Nsid|1|"nsid": Local ID used within this module to refer to the imported module
 2|Uname|1|"uname": Unique name of imported module
 ###3.2.4 Bounds
@@ -46,7 +46,7 @@ Schema-wide upper bounds.  Overrides codec defaults, overridden by type definiti
 **Bounds (Array)**
 
 ID|Type|#|Description
----|---|---|---
+---:|:---|---:|:---
 1|Integer|1|"max_msg": Maximum serialized message size in octets or characters
 2|Integer|1|"max_str": Maximum string length in characters
 3|Integer|1|"max_bin": Maximum binary length in octets
@@ -57,7 +57,7 @@ ID|Type|#|Description
 **Type (Array)**
 
 ID|Type|#|Description
----|---|---|---
+---:|:---|---:|:---
 1|Identifier|1|"tname": Name of this datatype
 2|JADN-Type|1|"btype": Base type
 3|Option|1..n|"opts": Type options
@@ -69,7 +69,7 @@ ID|Type|#|Description
 **JADN-Type (Choice)**
 
 ID|Name|Type|Description
----|---|---|---
+---:|:---|:---|:---
 1|Binary|Null|Octet sequence
 2|Boolean|Null|True or False
 3|Integer|Null|Whole number
@@ -88,7 +88,7 @@ Item definition for Enumerated types
 **EnumField (Array)**
 
 ID|Type|#|Description
----|---|---|---
+---:|:---|---:|:---
 1|Integer|1|Item ID
 2|String|1|Item name
 3|String|1|Item description
@@ -98,7 +98,7 @@ Field definition for other compound types
 **FullField (Array)**
 
 ID|Type|#|Description
----|---|---|---
+---:|:---|---:|:---
 1|Integer|1|Field ID or ordinal position
 2|Identifier|1|Field name
 3|Identifier|1|Field type
@@ -108,8 +108,8 @@ ID|Type|#|Description
 
 
 Name|Type|Description
----|---|---
+:---|:---|:---
 Identifier|String|A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars
 Nsid|String|Namespace ID - a short identifier
-Uname|String|Unique name of imported module
+Uname|String|Unique name (e.g., of a schema) - a set of Identifiers separated by forward slashes
 Option|String|Option string: 1st char = option id

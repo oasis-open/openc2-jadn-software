@@ -1,14 +1,14 @@
-"Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018"
+"Generated from schema\openc2-wd06.jadn, Wed Jun  6 15:53:45 2018"
 
 {
  "meta": {
   "description": "Datatypes that define the content of OpenC2 commands and responses.",
   "exports": ["OpenC2-Command", "OpenC2-Response", "OpenC2-Message"],
   "imports": [
-   ["slpff", "oasis-open.org/openc2/v1.0/ap-slpff"],
-   ["jadn", "oasis-open.org/openc2/v1.0/jadn"]]
+   ["slpff", "/oasis-open.org/openc2/v1.0/ap-slpff"],
+   ["jadn", "/oasis-open.org/openc2/v1.0/jadn"]]
 ,
-  "module": "oasis-open.org/openc2/v1.0/openc2-lang",
+  "module": "/oasis-open.org/openc2/v1.0/openc2-lang",
   "title": "OpenC2 Language Objects",
   "version": "wd06"
  },

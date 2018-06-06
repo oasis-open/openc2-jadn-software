@@ -1,12 +1,12 @@
--- Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018
+-- Generated from schema\openc2-wd06.jadn, Wed Jun  6 15:53:45 2018
 
 /*
-module:        oasis-open.org/openc2/v1.0/openc2-lang
+module:        /oasis-open.org/openc2/v1.0/openc2-lang
 title:         OpenC2 Language Objects
 version:       wd06
 description:   Datatypes that define the content of OpenC2 commands and
                responses.
-imports:       [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+imports:       [[u'slpff', u'/oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'/oasis-open.org/openc2/v1.0/jadn']]
 exports:       [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
 */
 

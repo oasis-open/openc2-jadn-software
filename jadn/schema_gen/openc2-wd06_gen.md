@@ -1,13 +1,13 @@
-<!-- Generated from schema\openc2-wd06.jadn, Fri Jun  1 16:32:15 2018-->
+<!-- Generated from schema\openc2-wd06.jadn, Wed Jun  6 15:53:45 2018-->
 ## Schema
- . | . 
----|---
+ .  | .
+ ---:|:---
 title: |OpenC2 Language Objects
-module: |oasis-open.org/openc2/v1.0/openc2-lang
+module: |/oasis-open.org/openc2/v1.0/openc2-lang
 version: |wd06
 description: |Datatypes that define the content of OpenC2 commands and responses.
 exports: |OpenC2-Command, OpenC2-Response, OpenC2-Message
-imports: |**slpff**:&nbsp;oasis-open.org/openc2/v1.0/ap-slpff **jadn**:&nbsp;oasis-open.org/openc2/v1.0/jadn
+imports: |**slpff**:&nbsp;/oasis-open.org/openc2/v1.0/ap-slpff **jadn**:&nbsp;/oasis-open.org/openc2/v1.0/jadn
 ##3.2 Structure Types
 ###3.2.1 OpenC2-Command
 The OpenC2 Command describes an action performed on a target. It can be directive or descriptive depending on the context.
@@ -15,7 +15,7 @@ The OpenC2 Command describes an action performed on a target. It can be directiv
 **OpenC2-Command (Record)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|action|Action|1|The task or activity to be performed (i.e., the 'verb')
 2|target|Target|1|The object of the action. The action is performed on the target
 3|actuator|Actuator|0..1|The subject of the action. The actuator executes the action on the target
@@ -27,7 +27,7 @@ ID|Name|Type|#|Description
 **Action (Enumerated)**
 
 ID|Name|Description
----|---|---
+---:|:---|:---
 1|scan|Systematic examination of some aspect of the target entity or its environment in order to obtain information.
 2|locate|Find the target object physically, logically, functionally, or by organization.
 3|query|Initiate a request for information.
@@ -66,7 +66,7 @@ OpenC2 Target datatypes
 **Target (Choice)**
 
 ID|Name|Type|Description
----|---|---|---
+---:|:---|:---|:---
 1|artifact|artifact|An array of bytes representing a file-like object or a link to that object.
 2|command|command-id|A reference to a previously issued OpenC2 command
 3|device|device|
@@ -98,7 +98,7 @@ ID|Name|Type|Description
 **Actuator (Choice)**
 
 ID|Name|Type|Description
----|---|---|---
+---:|:---|:---|:---
 1|generic|ActuatorSpecifiers|
 1024|slpff|slpff:Specifiers|Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff
 ###3.2.5 ActuatorSpecifiers
@@ -107,7 +107,7 @@ ID|Name|Type|Description
 **ActuatorSpecifiers (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|actuator_id|uri|0..1|
 2|asset_id|String|0..1|
 ###3.2.6 Args
@@ -116,7 +116,7 @@ ID|Name|Type|#|Description
 **Args (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|start_time|Date-Time|0..1|The specific date/time to initiate the action
 2|end_time|Date-Time|0..1|The specific date/time to terminate the action
 3|duration|Duration|0..1|The length of time for an action to be in effect
@@ -128,7 +128,7 @@ ID|Name|Type|#|Description
 **OpenC2-Response (Record)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|id|Command-ID|1|Id of the ommand that induced this response
 2|status|Status-Code|1|An integer status code
 3|status_text|String|0..1|A free-form human-readable description of the response status
@@ -139,7 +139,7 @@ ID|Name|Type|#|Description
 **Status-Code (Enumerated.Tag)**
 
 Value|Description
----|---
+---:|:---
 102|Processing -- An interim response used to inform the client that the server has accepted the request but not yet completed it.
 200|OK -- The request has succeeded.
 301|Moved Permanently -- The target resource has been assigned a new permanent URI
@@ -154,7 +154,7 @@ Value|Description
 **artifact (Record)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|mime_type|String|0..1|Permitted values specified in the IANA Media Types registry
 2|*|payload|0..1|choice of literal content or URL to obtain content
 3|hashes|hashes|0..1|Specifies a dictionary of hashes for the contents of the payload
@@ -164,7 +164,7 @@ ID|Name|Type|#|Description
 **payload (Choice)**
 
 ID|Name|Type|Description
----|---|---|---
+---:|:---|:---|:---
 1|payload_bin|Binary|Specifies the data contained in the artifact.
 2|url|uri|MUST be a valid URL that resolves to the un-encoded content
 ###3.2.11 openc2
@@ -180,7 +180,7 @@ Results to be included in response to query openc2 command
 **Query-Item (Enumerated)**
 
 ID|Name|Description
----|---|---
+---:|:---|:---
 1|versions|OpenC2 language versions supported by this actuator
 2|profiles|List of profiles supported by this actuator
 3|schema|Definition of the command syntax supported by this actuator
@@ -190,7 +190,7 @@ ID|Name|Description
 **ip-connection (Record)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|src_addr|ip-addr|0..1|source address
 2|src_port|port|0..1|source TCP/UDP port number
 3|dst_addr|ip-addr|0..1|destination address
@@ -202,7 +202,7 @@ protocol (IPv4) or next header (IPv6) field - any IANA value, RFC 5237
 **layer4-protocol (Enumerated)**
 
 ID|Name|Description
----|---|---
+---:|:---|:---
 1|icmp|Internet Control Message Protocol - RFC 792
 6|tcp|Transmission Control Protocol - RFC 793
 17|udp|User Datagram Protocol - RFC 768
@@ -213,7 +213,7 @@ ID|Name|Description
 **file (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|name|String|0..1|The name of the file as defined in the file system
 2|path|String|0..1|The absolute path to the location of the file in the file system
 3|hashes|hashes|0..1|One or more cryptographic hash codes of the file contents
@@ -223,7 +223,7 @@ ID|Name|Type|#|Description
 **Response-Type (Enumerated)**
 
 ID|Name|Description
----|---|---
+---:|:---|:---
 0|None|No response
 1|Ack|Respond when command received
 2|Complete|Respond when all aspects of command completed
@@ -233,7 +233,7 @@ ID|Name|Description
 **Process (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|pid|Integer|0..1|Process ID of the process
 2|name|String|0..1|Name of the process
 3|cwd|String|0..1|Current working directory of the process
@@ -246,7 +246,7 @@ Cryptographic Hash values
 **hashes (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|md5|Binary|0..1|Hex-encoded MD5 hash as defined in RFC3121
 4|sha1|Binary|0..1|Hex-encoded SHA1 hash as defined in RFC3174
 6|sha256|Binary|0..1|Hex-encoded SHA256 as defined in RFC6234
@@ -256,7 +256,7 @@ TODO: Add inventory device-id?
 **device (Map)**
 
 ID|Name|Type|#|Description
----|---|---|---|---
+---:|:---|:---|---:|:---
 1|description|String|0..1|
 2|device_type|String|0..1|
 3|manufacturer|String|0..1|
@@ -268,7 +268,7 @@ ID|Name|Type|#|Description
 
 
 Name|Type|Description
----|---|---
+:---|:---|:---
 command-id|String|Uniquely identifies a particular command - TBD syntax
 date-time|String (date-time)|RFC 3339 date-time
 duration|String (duration)|RFC 3339 / ISO 8601 duration

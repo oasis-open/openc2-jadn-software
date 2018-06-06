@@ -1,7 +1,7 @@
--- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018
+-- Generated from schema\jadn.jadn, Wed Jun  6 15:53:45 2018
 
 /*
-module:        oasis-open.org/openc2/v1.0/jadn
+module:        /oasis-open.org/openc2/v1.0/jadn
 title:         JADN Syntax
 version:       wd01
 description:   Syntax of a JSON Abstract Data Notation (JADN) module.
@@ -76,6 +76,6 @@ Identifier ::= STRING(PATTERN "^[a-zA-Z][\w-]*$")    -- A string starting with a
 
 Nsid ::= STRING(PATTERN "^[a-zA-Z][\w-]*$")    -- Namespace ID - a short identifier
 
-Uname ::= STRING    -- Unique name of imported module
+Uname ::= STRING    -- Unique name (e.g., of a schema) - a set of Identifiers separated by forward slashes
 
 Option ::= STRING    -- Option string: 1st char = option id

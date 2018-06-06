@@ -114,7 +114,7 @@ class Codec:
                 amin = opts['min'] if 'min' in opts and opts['min'] > 1 else 1      # Array cannot be empty
                 amax = opts['max'] if opts['max'] > 0 else self.max_array           # Inherit max length if 0
                 aa = ['', 'ArrayOf', [], '']        # Anonymous JADN type definition
-                aas = [aa, enctab['ArrayOf'], list, {'aetype': fs[S_FDEF][FTYPE], 'min': amin, 'max': amax}]
+                aas = [aa, enctab['ArrayOf'], list, {'rtype': fs[S_FDEF][FTYPE], 'min': amin, 'max': amax}]
                 aname = '$'  + str(len(self.arrays))
                 self.arrays.update({aname: aas})
                 fs[S_FDEF] = fld[:]             # Make a copy to modify
@@ -142,6 +142,8 @@ class Codec:
             elif t[TTYPE] in ["Choice", "Map", "Record"]:
                 symval[S_FLD] = {str(f[fx]): symf(f) for f in t[FIELDS]}
                 symval[S_EMAP] = {f[FNAME]: str(f[fx]) for f in t[FIELDS]}
+            elif t[TTYPE] == "Array":
+                symval[S_FLD] = {str(f[FTAG]): symf(f) for f in t[FIELDS]}
             elif t[TTYPE] == "ArrayOf":
                 opts = symval[S_TOPT]
                 amin = opts['min'] if 'min' in opts else 1
@@ -182,13 +184,13 @@ def _extra_value(ts, val, fld):
 def _decode_array_of(ts, val, codec):
     codec._check_type(ts, val, list)
     codec._check_array_len(ts, val)
-    return [codec.decode(ts[S_TOPT]["aetype"], v) for v in val]
+    return [codec.decode(ts[S_TOPT]["rtype"], v) for v in val]
 
 
 def _encode_array_of(ts, val, codec):
     codec._check_type(ts, val, list)
     codec._check_array_len(ts, val)
-    return [codec.encode(ts[S_TOPT]["aetype"], v) for v in val]
+    return [codec.encode(ts[S_TOPT]["rtype"], v) for v in val]
 
 
 def _decode_binary(ts, val, codec):
@@ -344,35 +346,48 @@ def _encode_maprec(ts, val, codec):
     return encval
 
 
-def _decode_array(ts, val, codec):          # Ordered list of types, no names in API
+def _decode_array(ts, val, codec):          # Ordered list of types, returned as a list
     codec._check_type(ts, val, list)
     apival = list()
     extra = len(val) > len(ts[S_FLD])
     if extra:
-        _extra_value(ts, val, extra)
+        _extra_value(ts, val, extra)        # TODO: write sensible display of excess values
     for f in ts[S_TDEF][FIELDS]:
-        fopts = ts[S_FLD][str(f[FTAG])][S_FOPT]
         fx = f[FTAG] - 1
+        fopts = ts[S_FLD][str(fx+1)][S_FOPT]
         av = val[fx] if len(val) > fx else None
         if av is not None:
             ftype = apival[fopts["atfield"]] if "atfield" in fopts else f[FTYPE]
             apival.append(codec.decode(ftype, av))
         else:
             apival.append(None)
-            if fopts["min"] > 0:
+            if 'min' not in fopts or fopts['min'] > 0:
                 _bad_value(ts, val, f)
+    while apival and apival[-1] is None:    # Strip non-populated trailing optional values
+        apival.pop()
     return apival
 
 
 def _encode_array(ts, val, codec):
     codec._check_type(ts, val, list)
-    apival = list()
+    encval = list()
     extra = len(val) > len(ts[S_FLD])
     if extra:
         _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
-        pass        # TODO: Write encoder, Write unit tests for Array
-    return apival
+        fx = f[FTAG] - 1
+        fopts = ts[S_FLD][str(fx+1)][S_FOPT]
+        av = val[fx] if len(val) > fx else None
+        if av is not None:
+            ftype = encval[fopts["atfield"]] if "atfield" in fopts else f[FTYPE]
+            encval.append(codec.encode(ftype, av))
+        else:
+            encval.append(None)
+            if 'min' not in fopts or fopts['min'] > 0:
+                _bad_value(ts, val, f)
+    while encval and encval[-1] is None:    # Strip non-populated trailing optional values
+        encval.pop()
+    return encval
 
 
 def _decode_null(ts, val, codec):

@@ -1,31 +1,31 @@
-<!-- Generated from schema\jadn.jadn, Fri Jun  1 16:32:15 2018-->
+<!-- Generated from schema\jadn.jadn, Wed Jun  6 15:53:45 2018-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="theme.css">
-<title>oasis-open.org/openc2/v1.0/jadn v.wd01</title>
+<title>/oasis-open.org/openc2/v1.0/jadn v.wd01</title>
 </head>
 <body>
 <h2>Schema</h2>
 <table>
-<tr><td class="h">title: </td><td class="s">JADN Syntax</td></tr>
-<tr><td class="h">module: </td><td class="s">oasis-open.org/openc2/v1.0/jadn</td></tr>
-<tr><td class="h">version: </td><td class="s">wd01</td></tr>
-<tr><td class="h">description: </td><td class="s">Syntax of a JSON Abstract Data Notation (JADN) module.</td></tr>
-<tr><td class="h">exports: </td><td class="s">Schema</td></tr>
-</table>
+<tr><td class="h">title:</td><td class="s">JADN Syntax</td></tr>
+<tr><td class="h">module:</td><td class="s">/oasis-open.org/openc2/v1.0/jadn</td></tr>
+<tr><td class="h">version:</td><td class="s">wd01</td></tr>
+<tr><td class="h">description:</td><td class="s">Syntax of a JSON Abstract Data Notation (JADN) module.</td></tr>
+<tr><td class="h">exports:</td><td class="s">Schema</td></tr>
+
 <h2>3.2 Structure Types</h2>
 
 <h3>3.2.1 Schema</h3>
 Definition of a JADN file
-<table><caption>Schema (Record)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>Schema (Record)</caption><type_begin><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">meta</td><td class="s">Meta</td><td class="n">1</td><td class="s">Information about the schema module</td></tr>
 <tr><td class="n">2</td><td class="s">types</td><td class="s">Type</td><td class="n">1..n</td><td class="s">Type definitions</td></tr>
 </table>
 <h3>3.2.2 Meta</h3>
 Meta-information about this schema
-<table><caption>Meta (Map)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>Meta (Map)</caption><type_begin><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">module</td><td class="s">Uname</td><td class="n">1</td><td class="s">Module unique name</td></tr>
 <tr><td class="n">2</td><td class="s">title</td><td class="s">String</td><td class="n">0..1</td><td class="s">Title</td></tr>
 <tr><td class="n">3</td><td class="s">version</td><td class="s">String</td><td class="n">0..1</td><td class="s">Module version</td></tr>
@@ -36,13 +36,13 @@ Meta-information about this schema
 </table>
 <h3>3.2.3 Import</h3>
 Imported module id and unique name
-<table><caption>Import (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>Import (Array)</caption><type_begin><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Nsid</td><td class="n">1</td><td class="s">"nsid": Local ID used within this module to refer to the imported module</td></tr>
 <tr><td class="n">2</td><td class="s">Uname</td><td class="n">1</td><td class="s">"uname": Unique name of imported module</td></tr>
 </table>
 <h3>3.2.4 Bounds</h3>
 Schema-wide upper bounds.  Overrides codec defaults, overridden by type definitions
-<table><caption>Bounds (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>Bounds (Array)</caption><type_begin><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_msg": Maximum serialized message size in octets or characters</td></tr>
 <tr><td class="n">2</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_str": Maximum string length in characters</td></tr>
 <tr><td class="n">3</td><td class="s">Integer</td><td class="n">1</td><td class="s">"max_bin": Maximum binary length in octets</td></tr>
@@ -50,7 +50,7 @@ Schema-wide upper bounds.  Overrides codec defaults, overridden by type definiti
 </table>
 <h3>3.2.5 Type</h3>
 
-<table><caption>Type (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>Type (Array)</caption><type_begin><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Identifier</td><td class="n">1</td><td class="s">"tname": Name of this datatype</td></tr>
 <tr><td class="n">2</td><td class="s">JADN-Type</td><td class="n">1</td><td class="s">"btype": Base type</td></tr>
 <tr><td class="n">3</td><td class="s">Option</td><td class="n">1..n</td><td class="s">"opts": Type options</td></tr>
@@ -59,7 +59,7 @@ Schema-wide upper bounds.  Overrides codec defaults, overridden by type definiti
 </table>
 <h3>3.2.6 JADN-Type</h3>
 
-<table><caption>JADN-Type (Choice)</caption><begin_type><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
+<table><caption>JADN-Type (Choice)</caption><type_begin><th class="n">ID</th><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Binary</td><td class="s">Null</td><td class="s">Octet sequence</td></tr>
 <tr><td class="n">2</td><td class="s">Boolean</td><td class="s">Null</td><td class="s">True or False</td></tr>
 <tr><td class="n">3</td><td class="s">Integer</td><td class="s">Null</td><td class="s">Whole number</td></tr>
@@ -75,14 +75,14 @@ Schema-wide upper bounds.  Overrides codec defaults, overridden by type definiti
 </table>
 <h3>3.2.7 EnumField</h3>
 Item definition for Enumerated types
-<table><caption>EnumField (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>EnumField (Array)</caption><type_begin><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">Item ID</td></tr>
 <tr><td class="n">2</td><td class="s">String</td><td class="n">1</td><td class="s">Item name</td></tr>
 <tr><td class="n">3</td><td class="s">String</td><td class="n">1</td><td class="s">Item description</td></tr>
 </table>
 <h3>3.2.8 FullField</h3>
 Field definition for other compound types
-<table><caption>FullField (Array)</caption><begin_type><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></begin_type>
+<table><caption>FullField (Array)</caption><type_begin><th class="n">ID</th><th class="s">Type</th><th class="n">#</th><th class="s">Description</th></type_begin>
 <tr><td class="n">1</td><td class="s">Integer</td><td class="n">1</td><td class="s">Field ID or ordinal position</td></tr>
 <tr><td class="n">2</td><td class="s">Identifier</td><td class="n">1</td><td class="s">Field name</td></tr>
 <tr><td class="n">3</td><td class="s">Identifier</td><td class="n">1</td><td class="s">Field type</td></tr>
@@ -90,9 +90,9 @@ Field definition for other compound types
 <tr><td class="n">5</td><td class="s">String</td><td class="n">1</td><td class="s">Field description</td></tr>
 </table>
 <h2>3.3 Primitive Types</h2>
-<table><begin_type><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></begin_type>
+<table><type_begin><th class="s">Name</th><th class="s">Type</th><th class="s">Description</th></type_begin>
 <tr><td class="s">Identifier</td><td class="s">String</td><td class="s">A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars</td></tr>
 <tr><td class="s">Nsid</td><td class="s">String</td><td class="s">Namespace ID - a short identifier</td></tr>
-<tr><td class="s">Uname</td><td class="s">String</td><td class="s">Unique name of imported module</td></tr>
+<tr><td class="s">Uname</td><td class="s">String</td><td class="s">Unique name (e.g., of a schema) - a set of Identifiers separated by forward slashes</td></tr>
 <tr><td class="s">Option</td><td class="s">String</td><td class="s">Option string: 1st char = option id</td></tr>
 </table></body>

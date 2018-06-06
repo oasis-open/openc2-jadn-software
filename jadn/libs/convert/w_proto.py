@@ -114,7 +114,7 @@ class JADNtoProto3(object):
         for t in self._types:
             df = self._structFormats.get(t[1], None)
 
-            if df is not None and t[1] in ['Record', 'Enumerated', 'Map']:
+            if df is not None and t[1] in ['Record', 'Enumerated', 'Map', 'Array', 'ArrayOf']:
                 tmp += df(t)
 
             elif df is not None:
@@ -225,7 +225,7 @@ class JADNtoProto3(object):
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\noneof {name} {{ // {com}\n{req}}}\n'.format(
+        return '\noneof {name} {{ {com}\n{req}}}\n'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
             com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
@@ -252,21 +252,20 @@ class JADNtoProto3(object):
         default = True
         for l in itm[-1]:
             if l[0] == 0: default = False
-            lines.append('{idn}{name} = {num};{com}\n'.format(
+            lines.append('{idn}{name} = {num}; {com}\n'.format(
                 idn=self.indent,
                 name=self.formatStr(l[1] or 'Unknown_{}_{}'.format(self.formatStr(itm[0]), l[0])),
                 num=l[0],
-                com='' if l[-1] == '' else ' // {}'.format(l[-1])
+                com='' if l[-1] == '' else self._formatComment(l[-1])
             ))
 
         opts = {'type': itm[1]}
         if len(itm[2]) > 0: opts['options'] = topts_s2d(itm[2])
 
-        return '\nenum {name} {{ // {com}#jadn_opts:{opts}\n{default}{enum}}}\n'.format(
+        return '\nenum {name} {{ {com}\n{default}{enum}}}\n'.format(
             idn=self.indent,
             name=self.formatStr(itm[0]),
-            com='' if itm[-2] == '' else itm[-2] + ' ',
-            opts=json.dumps(opts),
+            com=self._formatComment('' if itm[-2] == '' else itm[-2], jadn_opts=opts),
             default='{}Unknown_{} = 0; // required starting enum number for protobuf3\n'.format(self.indent, itm[0].replace('-', '_')) if default else '',
             enum=''.join(lines)
         )
@@ -288,11 +287,19 @@ class JADNtoProto3(object):
         :return: formatted arrayof
         :rtype str
         """
-        field_opts = topts_s2d(itm[2])
 
-        #print('ArrayOf {aetype} - min:{min}, max:{max}'.format(**field_opts))
-
-        return ''
+        opts = {
+            'type': 'arrayOf',
+            'options': topts_s2d(itm[2])
+        }
+        
+        return '\nmessage {name} {{\n{idn}repeated {type} {field} = 1; {com}\n}}\n'.format(
+            idn=self.indent,
+            name=self.formatStr(itm[0]),
+            type=self.formatStr(opts['options']['rtype']),
+            field=self.formatStr(opts['options']['rtype']).lower(),
+            com=self._formatComment('' if itm[-1] == '' else itm[-1], jadn_opts=opts)
+        )
 
 
 def proto_dumps(jadn):

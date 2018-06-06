@@ -9,7 +9,7 @@
       ["jadn", "oasis-open.org/openc2/v1.0/jadn"]
     ],
     "exports": [
-      "Open C2-Command",
+      "OpenC2-Command",
       "OpenC2-Response",
       "OpenC2-Message"
     ]

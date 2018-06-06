@@ -1,10 +1,13 @@
 import json
 import re
 
-from ..utils import Utils
+from datetime import datetime
+
+from ..codec.codec_utils import opts_d2s
+from ..utils import toStr, Utils
 
 
-class Proto3toJADN(object):
+class Proto2JADN(object):
     def __init__(self, proto):
         """
         Schema Converter for ProtoBuf3 to JADN
@@ -32,9 +35,11 @@ class Proto3toJADN(object):
 
         self._fieldRegex = {
             'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'message': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?')
+            'message': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
+            'array': re.compile(r'\s+(?P<repeat>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?')
         }
         self._fieldRegex['oneof'] = self._fieldRegex['message']
+        self._fieldRegex['arrayof'] = self._fieldRegex['array']
 
     def jadn_dump(self):
         """
@@ -42,26 +47,12 @@ class Proto3toJADN(object):
         :return: JADN schema
         :rtype str
         """
-        meta = "{idn}\"meta\": {{\n{meta}\n{idn}}}".format(
-            idn=self.indent,
-            meta=',\n'.join(["{idn}{idn}\"{mk}\": \"{mv}\"".format(idn=self.indent, mk=k, mv=v) for k, v in self.makeHeader().items()])
-        )
+        jadn = {
+            'meta': self.makeMeta(),
+            'types': self.makeTypes()
+        }
 
-        types = "[\n{obj},\n{custom}\n{idn}]".format(
-            idn=self.indent,
-            obj=',\n'.join([
-                self._formatType(t) for t in self.makeTypes()
-            ]),
-            custom=',\n'.join([
-                '{idn}{idn}{field}'.format(idn=self.indent, field=f.__str__().replace('\'', '\"')) for f in self.makeCustom()
-            ])
-        )
-
-        return "{{\n{meta},\n{idn}\"types\": {types}\n}}".format(
-            idn=self.indent,
-            meta=meta,
-            types=types
-        )
+        return Utils.jadnFormat(jadn, indent=2)
 
     def formatStr(self, s):
         """
@@ -76,18 +67,21 @@ class Proto3toJADN(object):
         else:
             return re.sub(r'[\- ]', '_', s)
 
-    def makeHeader(self):
+    def makeMeta(self):
         """
         Create the header for the schema
         :return: header for schema
         :rtype dict
         """
         tmp = {}
-        meta = re.search(r'/\* meta[\n\w\d\-*. ]+\*/', self._proto)
+        meta = re.search(r'\/\*\s*?meta(.*|\n)*?\*\/', toStr(self._proto))
         if meta:
             for meta_line in meta.group().split('\n')[1:-1]:
                 line = re.sub(r'^\s+\*\s+', '', meta_line).split(' - ')
-                tmp[line[0]] = ' - '.join(line[1:])
+                try:
+                    tmp[line[0]] = json.loads(' - '.join(line[1:]))
+                except Exception as e:
+                    tmp[line[0]] = ' - '.join(line[1:])
 
         return tmp
 
@@ -98,69 +92,87 @@ class Proto3toJADN(object):
         :rtype list
         """
         tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}$)', self._proto, flags=re.MULTILINE):
+        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}$)', toStr(self._proto), flags=re.MULTILINE):
             tmp_type = []
             def_lines = type_def[0].split('\n')
-            if re.match(r'^\s+(oneof)', def_lines[1]):
-                def_lines = def_lines[1:-1]
 
-            proto_type, field_name = def_lines[0].split(r'{')[0].split()
+            if re.match(r'.*{\n\s+(repeated).*\n}', type_def[0]):
+                proto_type, field_name = def_lines[0].split(r'{')[0].split()
+                parts = self._fieldRegex['arrayof'].match(def_lines[1]).groupdict()
+                com, opts = self._loadOpts(parts['comment'])
 
-            c = def_lines[0].split('//')
-            c = (c[1][1:] if c[1].startswith(' ') else c[1]) if len(c) > 1 else ''
-            opts, c = self._loadOpts(c)
+                proto_type = list(map(lambda s: s.lower() == opts['type'].lower(), self._structs))
+                proto_type = self._structs[proto_type.index(True)] if True in proto_type else 'Array'
 
-            jadn_type = self._fieldMap.get(proto_type, 'Record')
-            jadn_type = jadn_type if jadn_type == opts.get('type', jadn_type) else opts['type']
+                tmp.append([field_name, proto_type, Utils.opts_d2s(opts['options']), com])
 
-            tmp_type.extend([
-                field_name,
-                jadn_type,
-                opts.get('options', []),  # options ??
-                c
-            ])
+            else:
+                if re.match(r'^\s+(oneof)', def_lines[1]):
+                    def_lines = def_lines[1:-1]
 
-            tmp_defs = []
-            for def_var in def_lines[1:-1]:
-                def_var = re.sub(r'^\s+', '', def_var)
-                parts = self._fieldRegex.get(proto_type, self._fieldRegex['message']).match(def_var)
+                proto_type, field_name = def_lines[0].split(r'{')[0].split()
 
-                if parts:
-                    parts = parts.groupdict()
-                    opts, parts['comment'] = self._loadOpts(parts['comment'])
+                com = def_lines[0].split('//')
+                com = (com[1][1:] if com[1].startswith(' ') else com[1]) if len(com) > 1 else ''
 
-                    if proto_type == 'enum':
-                        if parts['name'] == 'Unknown_{}'.format(field_name): continue
+                com, opts = self._loadOpts(com)
 
-                        # id, name, comment
-                        tmp_defs.append([
-                            int(parts['id']) if parts['id'].isdigit() else parts['id'],
-                            parts['name'],
-                            parts['comment'] or ''
-                        ])
+                jadn_type = self._fieldMap.get(proto_type, 'Record')
+                jadn_type = jadn_type if jadn_type == opts.get('type', jadn_type) else opts['type']
 
-                    elif proto_type in ['message', 'oneof']:
-                        field_type = self._fieldType(parts['type'])
-                        field_type = field_type if field_type == opts.get('type', field_type) else opts['type']
+                tmp_type.extend([
+                    field_name,
+                    jadn_type,
+                    Utils.opts_d2s(opts.get('options', {})),  # options ??
+                    com
+                ])
 
-                        # id, name, type, opts, comment
-                        tmp_defs.append([
-                            int(parts['id']) if parts['id'].isdigit() else parts['id'],
-                            parts['name'],
-                            field_type,
-                            opts.get('options', []),
-                            parts['comment'] or ''
-                        ])
+                tmp_defs = []
+                for def_var in def_lines[1:-1]:
+                    def_var = re.sub(r'^\s+', '', def_var)
+                    parts = self._fieldRegex.get(proto_type, self._fieldRegex['message']).match(def_var)
 
+                    if parts:
+                        parts = parts.groupdict()
+                        parts['comment'], opts = self._loadOpts(parts['comment'])
+
+                        if proto_type == 'enum':
+                            if parts['name'] == 'Unknown_{}'.format(field_name): continue
+
+                            # id, name, comment
+                            tmp_defs.append([
+                                int(parts['id']) if parts['id'].isdigit() else parts['id'],
+                                parts['name'],
+                                parts['comment'] or ''
+                            ])
+
+                        elif proto_type in ['array', 'arrayof']:
+                            print('Array/ArrayOf')
+
+                        elif proto_type in ['message', 'oneof']:
+                            field_type = self._fieldType(parts['type'])
+                            field_type = field_type if field_type == opts.get('type', field_type) else opts['type']
+
+                            # id, name, type, opts, comment
+                            tmp_defs.append([
+                                int(parts['id']) if parts['id'].isdigit() else parts['id'],
+                                parts['name'],
+                                field_type,
+                                Utils.opts_d2s(opts.get('options', {}), field=True),
+                                parts['comment'] or ''
+                            ])
+
+                        else:
+                            print('Something...')
+                            # tmp_defs.append([])
+                            pass
                     else:
-                        # tmp_defs.append([])
-                        pass
-                else:
-                    print('{} - {}'.format(proto_type, def_var))
-                    print('Something Happened....')
+                        print('{} - {}'.format(proto_type, def_var))
+                        print('Something Happened....')
 
-            tmp_type.append(tmp_defs)
-            tmp.append(tmp_type)
+                tmp_type.append(tmp_defs)
+                tmp.append(tmp_type)
+
         return tmp
 
     def makeCustom(self):
@@ -197,20 +209,39 @@ class Proto3toJADN(object):
 
     def _loadOpts(self, com):
         c = com or ''
-        comment = re.sub(r'\s?#jadn_opts:(?P<opts>{.*?})\n?', '', c)
-        if c == comment:
-            return {}, comment
+        com = com or ''
 
-        opts = re.match(r'\s*?#jadn_opts:(?P<opts>{.*?})\n?', c.replace(comment, ''))
+        com = re.sub(r'\s*?#jadn_opts:\s?{.*?}+\n?', '', com)
+        if c == com:
+            return com, {}
+
+        opts = re.match(r'\s*?#jadn_opts:\s?(?P<opts>{.*?}+)\n?', c.replace(com, ''))
         if opts:
             try:
                 opts = json.loads(opts.group('opts'))
-                opts['type'] = str(opts['type'])
-                if 'options' in opts: opts['options'] = [str(o) for o in opts['options']]
-            except Exception:
-                print('oops...')
+
+            except Exception as e:
+                # print('Err: {}'.format(opts))
                 opts = {}
         else:
             opts = {}
 
-        return opts, comment
+        return com, opts
+
+
+def proto2jadn_dumps(proto):
+    """
+    Produce jadn schema from proto3 schema
+    :arg proto: Proto3 Schema to convert
+    :type proto: str
+    :return: jadn schema
+    :rtype str
+    """
+    return Proto2JADN(proto).jadn_dump()
+
+
+def proto2jadn_dump(proto, fname, source=""):
+    with open(fname, "w") as f:
+        if source:
+            f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
+        f.write(proto2jadn_dumps(proto))

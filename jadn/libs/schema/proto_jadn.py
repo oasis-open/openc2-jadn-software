@@ -49,10 +49,14 @@ class Proto2JADN(object):
         """
         jadn = {
             'meta': self.makeMeta(),
-            'types': self.makeTypes()
+            'types': self.makeTypes() + self.makeCustom()
         }
 
-        return Utils.jadnFormat(jadn, indent=2)
+        jadn_str = Utils.jadnFormat(jadn, indent=1)
+
+        print(len(json.dumps(jadn, indent=2).split('\n')), len(jadn_str.split('\n')))
+
+        return jadn_str
 
     def formatStr(self, s):
         """
@@ -176,14 +180,14 @@ class Proto2JADN(object):
         return tmp
 
     def makeCustom(self):
-        customFields = re.search(r'/\* JADN Custom Fields\n(?P<custom>[\w\W]+?)\n\*/', self._proto)
+        customFields = re.search(r'/\* JADN Custom Fields\n(?P<custom>[\w\W]+?)\n\*/', toStr(self._proto))
+        fields = []
 
         if customFields:
             try:
                 fields = Utils.defaultDecode(json.loads(customFields.group('custom').replace('\'', '\"')))
             except Exception as e:
-                fields = []
-                print('oops....')
+                print('Custom Fields Load Error: {}'.format(e))
 
         return fields
 
@@ -244,7 +248,4 @@ def proto2jadn_dump(proto, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-
-        jadn_str = proto2jadn_dumps(proto)
-        print(len(jadn_str.split('\n')))
-        f.write(jadn_str)
+        f.write(proto2jadn_dumps(proto))

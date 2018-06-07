@@ -3,7 +3,6 @@ import re
 
 from datetime import datetime
 
-from ..codec.codec_utils import opts_d2s
 from ..utils import toStr, Utils
 
 
@@ -14,7 +13,7 @@ class CDDL2JADN(object):
         :param proto: str or dict of the JADN schema
         :type proto: str
         """
-        self._cddl = cddl.replace('\r', '')  # replace windows line terminators with unix style
+        self._cddl = toStr(cddl).replace('\r', '')  # replace windows line terminators with unix style
         self.indent = '  '
 
         self._fieldMap = {

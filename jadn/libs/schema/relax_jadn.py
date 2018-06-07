@@ -180,8 +180,9 @@ class Relax2Jadn(object):
                 tmp_defs.append(tmp_def)
 
             else:
-                print('Unknown tag function: {}'.format(child.name))
+                # print('Unknown tag function: {}'.format(child.name))
                 pass
+
         tmp_count += 1
 
         return tmp_defs

@@ -95,10 +95,10 @@ class JADNtoProto3(object):
             '',
             'package {};'.format(self._meta['module'] or 'ProtoBuf_Schema'),
             '',
-            '/* meta'
+            '/*'
         ])
 
-        header.extend([' * {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
+        header.extend([' * meta: {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
 
         header.append('*/')
 

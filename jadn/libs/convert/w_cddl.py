@@ -84,7 +84,7 @@ class JADNtoCDDL(object):
         :return: header for schema
         :rtype str
         """
-        header = ['; {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()]
+        header = ['; meta: {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()]
 
         return '\n'.join(header) + '\n\n'
 

@@ -7,14 +7,14 @@ from ..codec.codec_utils import opts_d2s
 from ..utils import toStr, Utils
 
 
-class Proto2JADN(object):
-    def __init__(self, proto):
+class CDDL2JADN(object):
+    def __init__(self, cddl):
         """
         Schema Converter for ProtoBuf3 to JADN
         :param proto: str or dict of the JADN schema
         :type proto: str
         """
-        self._proto = proto.replace('\r', '')  # replace windows line terminators with unix style
+        self._cddl = cddl.replace('\r', '')  # replace windows line terminators with unix style
         self.indent = '  '
 
         self._fieldMap = {
@@ -49,7 +49,7 @@ class Proto2JADN(object):
         """
         jadn = {
             'meta': self.makeMeta(),
-            'types': self.makeTypes() + self.makeCustom()
+            'types': self.makeTypes()  #  + self.makeCustom()
         }
 
         return Utils.jadnFormat(jadn, indent=2)
@@ -74,10 +74,8 @@ class Proto2JADN(object):
         :rtype dict
         """
         tmp = {}
-        # meta = re.search(r'\s?\*\s*?meta(.*|\n)*?\*\/', toStr(self._proto))
-
-        for line in re.findall(r'\s+\*\s+meta:\s+.*?\n', toStr(self._proto), flags=re.MULTILINE):
-            line = re.sub(r'(\s+\*\s+meta:\s+|\n)', '', line).split(' - ')
+        for meta_line in re.findall(r'^\s*?;\s?meta:\s?(.*)$', toStr(self._cddl), re.MULTILINE):
+            line = re.sub(r'^\s+\*\s+', '', meta_line).split(' - ')
 
             try:
                 tmp[line[0]] = json.loads(' - '.join(line[1:]))
@@ -93,7 +91,8 @@ class Proto2JADN(object):
         :rtype list
         """
         tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}?$)', toStr(self._proto), flags=re.MULTILINE):
+
+        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}?$)', toStr(self._cddl), flags=re.MULTILINE):
             tmp_type = []
             def_lines = [l for l in type_def[0].split('\n') if l != '']
 
@@ -188,6 +187,18 @@ class Proto2JADN(object):
 
         return fields
 
+    def _formatType(self, t):
+        tmp = ','.join(['\n{idn}{idn}{idn}{defn}'.format(idn=self.indent, defn=td.__str__()) for td in t[-1]])
+
+        if tmp != '':
+            tmp += '\n{idn}{idn}'.format(idn=self.indent)
+
+        return '{idn}{idn}{head}, [{defs}]]'.format(
+            idn=self.indent,
+            head=t[:-1].__str__()[:-1],
+            defs=tmp
+        ).replace('\'', '\"')
+
     def _fieldType(self, f):
         if re.match(r'^google', f):
             ft = 'String'
@@ -218,19 +229,19 @@ class Proto2JADN(object):
         return com, opts
 
 
-def proto2jadn_dumps(proto):
+def cddl2jadn_dumps(cddl):
     """
-    Produce jadn schema from proto3 schema
-    :arg proto: Proto3 Schema to convert
-    :type proto: str
+    Produce jadn schema from cddl schema
+    :arg cdds: CDDL Schema to convert
+    :type cddl: str
     :return: jadn schema
     :rtype str
     """
-    return Proto2JADN(proto).jadn_dump()
+    return CDDL2JADN(cddl).jadn_dump()
 
 
-def proto2jadn_dump(proto, fname, source=""):
+def cddl2jadn_dump(proto, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(proto2jadn_dumps(proto))
+        f.write(cddl2jadn_dumps(proto))

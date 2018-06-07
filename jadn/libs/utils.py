@@ -66,7 +66,7 @@ class Utils(object):
                     print('not prepared type: {}'.format(type(tmp)))
 
         else:
-            tmp = str(itm)
+            tmp = toStr(itm)
 
         return tmp
 

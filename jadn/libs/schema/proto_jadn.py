@@ -3,7 +3,6 @@ import re
 
 from datetime import datetime
 
-from ..codec.codec_utils import opts_d2s
 from ..utils import toStr, Utils
 
 
@@ -14,7 +13,7 @@ class Proto2JADN(object):
         :param proto: str or dict of the JADN schema
         :type proto: str
         """
-        self._proto = proto.replace('\r', '')  # replace windows line terminators with unix style
+        self._proto = toStr(proto).replace('\r', '')  # replace windows line terminators with unix style
         self.indent = '  '
 
         self._fieldMap = {
@@ -146,9 +145,6 @@ class Proto2JADN(object):
                                 parts['name'],
                                 parts['comment'] or ''
                             ])
-
-                        elif proto_type in ['array', 'arrayof']:
-                            print('Array/ArrayOf')
 
                         elif proto_type in ['message', 'oneof']:
                             field_type = self._fieldType(parts['type'])

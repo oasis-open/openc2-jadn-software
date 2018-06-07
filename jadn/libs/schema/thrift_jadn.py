@@ -12,7 +12,7 @@ class Thrift2JADN(object):
         :param thrift: str or dict of the JADN schema
         :type thrift: str
         """
-        self._thrift = thrift.replace('\r', '')  # replace windows line terminators with unix style
+        self._thrift = toStr(thrift).replace('\r', '')  # replace windows line terminators with unix style
         self.indent = '  '
 
         self._fieldMap = {

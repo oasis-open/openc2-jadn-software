@@ -12,8 +12,7 @@ from ..utils import toStr, Utils
 class Relax2Jadn(object):
     def __init__(self, relax):
         if type(relax) in [str, bytes]:
-            relax = toStr(relax)
-            relax = relax.replace('\n', '')
+            relax = toStr(relax).replace('\n', '')
             relax = re.sub(r'>\s*?<', '><', relax)
             self.schema = BeautifulSoup(relax, 'lxml')
 

@@ -130,6 +130,8 @@ class Thrift2JADN(object):
                     if parts:
                         parts = parts.groupdict()
                         parts['comment'], opts = self._loadOpts(parts['comment'])
+                        if parts['name'] == 'unknown':
+                            parts['name'] = '*'
 
                         if thrift_type == 'enum':
                             if parts['name'] == 'Unknown_{}'.format(field_name): continue

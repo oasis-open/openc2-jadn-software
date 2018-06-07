@@ -32,8 +32,8 @@ class Thrift2JADN(object):
 
         self._fieldRegex = {
             'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'struct': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'array': re.compile(r'\s+(?P<repeat>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?')
+            'struct': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?'''),
+            'array': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+(?P<type>(?<=\<).*?(?=\>))\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?''')
         }
         self._fieldRegex['arrayof'] = self._fieldRegex['array']
 
@@ -90,11 +90,11 @@ class Thrift2JADN(object):
         :rtype list
         """
         tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}?$)', toStr(self._thrift), flags=re.MULTILINE):
+        for type_def in re.findall(r'^((enum|struct)(.|\n)*?^\}?$)', toStr(self._thrift), flags=re.MULTILINE):
             tmp_type = []
             def_lines = [l for l in type_def[0].split('\n') if l != '']
 
-            if re.match(r'.*{[\r\n]\s+(repeated).*\n}', type_def[0]):
+            if re.match(r'.*{[\r\n]\s+(list).*\n}', type_def[0]):
                 thrift_type, field_name = def_lines[0].split(r'{')[0].split()
                 parts = self._fieldRegex['arrayof'].match(def_lines[1]).groupdict()
                 com, opts = self._loadOpts(parts['comment'])
@@ -127,7 +127,6 @@ class Thrift2JADN(object):
                 for def_var in def_lines[1:-1]:
                     def_var = re.sub(r'^\s+', '', def_var)
                     parts = self._fieldRegex.get(thrift_type, self._fieldRegex['struct']).match(def_var)
-
                     if parts:
                         parts = parts.groupdict()
                         parts['comment'], opts = self._loadOpts(parts['comment'])
@@ -142,8 +141,19 @@ class Thrift2JADN(object):
                                 parts['comment'] or ''
                             ])
 
-                        elif thrift_type in ['array', 'arrayof']:
-                            print('Array/ArrayOf')
+                        elif thrift_type == 'struct':
+                            field_type = self._fieldType(parts['type'])
+                            field_type = field_type if field_type == opts.get('type', field_type) else opts['type']
+
+                            # id, name, type, opts, comment
+                            tmp_defs.append([
+                                int(parts['id']) if parts['id'].isdigit() else parts['id'],
+                                parts['name'],
+                                field_type,
+                                Utils.opts_d2s(opts.get('options', {}), field=True),
+                                parts['comment'] or ''
+                            ])
+
                         else:
                             print('Something...')
                             # tmp_defs.append([])
@@ -151,6 +161,7 @@ class Thrift2JADN(object):
                     else:
                         print('{} - {}'.format(thrift_type, def_var))
                         print('Something Happened....')
+
 
                 tmp_type.append(tmp_defs)
                 tmp.append(tmp_type)

@@ -22,31 +22,22 @@ if convert:
         schema_json = json.loads(r.read())
 
     proto_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.proto'))
-    print('Proto ^')
 
     proto2jadn_dump(open(os.path.join(test_dir, 'openc2-wd06.proto'), 'rb').read(), os.path.join(test_dir, 'openc2-wd06.proto.jadn'))
-    print('Proto2Jadn ^')
 
     cddl_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.cddl'))
-    print('Cddl ^')
 
     relax_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.rng'))
-    print('Relax ^')
 
     relax2jadn_dump(open(os.path.join(test_dir, 'openc2-wd06.rng'), 'rb').read(), os.path.join(test_dir, 'openc2-wd06.rng.jadn'))
-    print('Relax2Jadn ^')
 
     thrift_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.thrift'))
-    #print('Thrift ^')
 
     thrift2jadn_dump(open(os.path.join(test_dir, 'openc2-wd06.thrift'), 'rb').read(), os.path.join(test_dir, 'openc2-wd06.thrift.jadn'))
-    print('Thrift2Jadn^')
 
     base_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.md'), form='markdown')
-    print('MD ^')
 
     base_dump(schema_json, os.path.join(test_dir, 'openc2-wd06.html'), form='html')
-    print('HTMl ^')
 
 else:
     if sys.version_info.major >= 3:

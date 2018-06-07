@@ -32,8 +32,8 @@ class Thrift2JADN(object):
 
         self._fieldRegex = {
             'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'struct': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?'''),
-            'array': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+(?P<type>(?<=\<).*?(?=\>))\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?''')
+            'struct': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?'),
+            'array': re.compile(r'(?P<id>\d+):\s+(?P<option>.*?)\s+list\<(?P<type>.*?)\>\s+(?P<name>.*?);(\s+//\s+(?P<comment>.*))?\n?')
         }
         self._fieldRegex['arrayof'] = self._fieldRegex['array']
 
@@ -94,9 +94,9 @@ class Thrift2JADN(object):
             tmp_type = []
             def_lines = [l for l in type_def[0].split('\n') if l != '']
 
-            if re.match(r'.*{[\r\n]\s+(list).*\n}', type_def[0]):
+            if re.match(r'(.|\r?\n)*list<[\w\d]+>', type_def[0]):
                 thrift_type, field_name = def_lines[0].split(r'{')[0].split()
-                parts = self._fieldRegex['arrayof'].match(def_lines[1]).groupdict()
+                parts = self._fieldRegex['arrayof'].match(re.sub(r'^\s+', '', def_lines[1])).groupdict()
                 com, opts = self._loadOpts(parts['comment'])
 
                 thrift_type = list(map(lambda s: s.lower() == opts['type'].lower(), self._structs))

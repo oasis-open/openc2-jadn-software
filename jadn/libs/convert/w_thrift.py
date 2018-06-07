@@ -93,7 +93,7 @@ class JADNtoThrift(object):
             '/* meta'
         ])
 
-        header.extend([' * {} - {}'.format(k, v) for k, v in self._meta.items()])
+        header.extend([' * {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
 
         header.append('*/')
 
@@ -259,21 +259,7 @@ class JADNtoThrift(object):
         """
         # Best method for creating some type of array
 
-        field_opts = topts_s2d(itm[2])
-        opts = {'type': itm[1]}
-
-        return '\nstruct {name} {{ // {com} #jadn_opts:{opts}\n{req}}}\n'.format(
-            name=self.formatStr(itm[0]),
-            com=itm[3],
-            opts=json.dumps(opts),
-            req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
-                idn=self.indent,
-                choice='optional',
-                type=self.formatStr(field_opts['rtype']),
-                name='item',
-                num='1',
-            ),
-        )
+        return self._formatArrayOf(itm)
 
     def _formatArrayOf(self, itm):
         """
@@ -285,18 +271,21 @@ class JADNtoThrift(object):
         # Best method for creating some type of array
 
         field_opts = topts_s2d(itm[2])
-        opts = {'type': itm[1]}
+        opts = {
+            'type': itm[1],
+            'options': topts_s2d(itm[2])
+        }
 
-        return '\nstruct {name} {{ // {com} #jadn_opts:{opts}\n{req}}}\n'.format(
+        return '\nstruct {name} {{\n{req}}}\n'.format(
             name=self.formatStr(itm[0]),
-            com=itm[3],
-            opts=json.dumps(opts),
-            req='{idn}{num}: {choice} list<{type}> {name};\n'.format(
+            req='{idn}{num}: {choice} list<{type}> {name};  // {com} #jadn_opts:{opts}\n'.format(
                 idn=self.indent,
                 num='1',
                 choice='optional',
                 type=self.formatStr(field_opts['rtype']),
                 name='item',
+                com=itm[3],
+                opts=json.dumps(opts)
             ),
         )
 

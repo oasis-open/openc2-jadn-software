@@ -1,8 +1,8 @@
 /* meta
- * exports - [u'OpenC2-Command', u'OpenC2-Response', u'OpenC2-Message']
+ * exports - ["OpenC2-Command", "OpenC2-Response", "OpenC2-Message"]
  * description - Datatypes that define the content of OpenC2 commands and responses.
  * title - OpenC2 Language Objects
- * imports - [[u'slpff', u'oasis-open.org/openc2/v1.0/ap-slpff'], [u'jadn', u'oasis-open.org/openc2/v1.0/jadn']]
+ * imports - [["slpff", "oasis-open.org/openc2/v1.0/ap-slpff"], ["jadn", "oasis-open.org/openc2/v1.0/jadn"]]
  * module - oasis-open.org/openc2/v1.0/openc2-lang
  * version - wd06
 */
@@ -80,7 +80,13 @@ struct Target { // OpenC2 Target datatypes #jadn_opts:{"type": "Choice"}
 }
 
 struct Actuator { // #jadn_opts:{"type": "Choice"}
-    1024: optional string slpff; // Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff #jadn_opts:{"type": "Slpff-Specifiers"}
+    1: optional ActuatorSpecifiers generic; // #jadn_opts:{"type": "ActuatorSpecifiers"}
+    1024: optional string slpff; // Specifiers as defined in the Stateless Packet Filtering Firewall profile, oasis-open.org/openc2/v1.0/ap-slpff #jadn_opts:{"type": "slpff:Specifiers"}
+}
+
+struct ActuatorSpecifiers { // #jadn_opts:{"type": "Map"}
+    1: optional string actuator_id; // #jadn_opts:{"type": "uri", "options": {"min": 0}}
+    2: optional string asset_id; // #jadn_opts:{"type": "String", "options": {"min": 0}}
 }
 
 struct Args { // #jadn_opts:{"type": "Map"}
@@ -88,7 +94,7 @@ struct Args { // #jadn_opts:{"type": "Map"}
     2: optional string end_time; // The specific date/time to terminate the action #jadn_opts:{"type": "date-time", "options": {"min": 0}}
     3: optional string duration; // The length of time for an action to be in effect #jadn_opts:{"type": "duration", "options": {"min": 0}}
     4: optional Response_Type response_requested; // The type of response required for the action #jadn_opts:{"type": "Response-Type", "options": {"min": 0}}
-    1024: optional string slpff; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "Slpff-Args", "options": {"min": 0}}
+    1024: optional string slpff; // Command arguments defined in the Stateless Packet Filtering Firewall profile #jadn_opts:{"type": "slpff:Args", "options": {"min": 0}}
 }
 
 struct OpenC2_Response { // #jadn_opts:{"type": "Record"}
@@ -104,14 +110,14 @@ struct Results { // #jadn_opts:{"type": "Choice"}
 }
 
 enum Status_Code { // #jadn_opts:{"type": "Enumerated", "options": {"compact": true}}
-    Processing = 102; // Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it.
-    OK = 200; // OK - the request has succeeded.
-    Moved_Permanently = 301; // Moved Permanently - the target resource has been assigned a new permanent URI
-    Bad_Request = 400; // Bad Request - the server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
-    Unauthorized = 401; // Unauthorized - the request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
-    Forbidden = 403; // Forbidden - the server understood the request but refuses to authorize it.
-    Server_Error = 500; // Server Error - the server encountered an unexpected condition that prevented it from fulfilling the request.
-    Not_Implemented = 501; // Not Implemented - the server does not support the functionality required to fulfill the request.
+    Processing = 102; // An interim response used to inform the client that the server has accepted the request but not yet completed it.
+    OK = 200; // The request has succeeded.
+    Moved_Permanently = 301; // The target resource has been assigned a new permanent URI
+    Bad_Request = 400; // The server cannot process the request due to something that is perceived to be a client error (e.g., malformed request syntax.)
+    Unauthorized = 401; // The request lacks valid authentication credentials for the target resources or authorization has been refused for the submitted credentials.
+    Forbidden = 403; // The server understood the request but refuses to authorize it.
+    Server_Error = 500; // The server encountered an unexpected condition that prevented it from fulfilling the request.
+    Not_Implemented = 501; // The server does not support the functionality required to fulfill the request.
 }
 
 struct artifact { // #jadn_opts:{"type": "Record"}
@@ -125,8 +131,8 @@ struct payload { // #jadn_opts:{"type": "Choice"}
     2: optional string url; // MUST be a valid URL that resolves to the un-encoded content #jadn_opts:{"type": "uri"}
 }
 
-struct openc2 { // A target used to query Actuator for its supported capabilities #jadn_opts:{"type": "ArrayOf"}
-    1: optional list<Query_Item> item;
+struct openc2 {
+    1: optional list<Query_Item> item;  // A target used to query Actuator for its supported capabilities #jadn_opts:{"type": "ArrayOf", "options": {"max": 3, "min": 0, "rtype": "Query-Item"}}
 }
 
 enum Query_Item { // Results to be included in response to query openc2 command #jadn_opts:{"type": "Enumerated"}

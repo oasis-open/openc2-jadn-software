@@ -4,11 +4,11 @@ import json
 import os
 import re
 
-from arpeggio import EOF, Optional, OneOrMore, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, OrderedChoice, UnorderedGroup, ZeroOrMore
+from arpeggio import EOF, Optional, OneOrMore, OrderedChoice, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, UnorderedGroup, ZeroOrMore
 
 from libs.utils import toStr, Utils
 
-lineSep = '\r?\n'
+lineSep = '\\r?\\n'
 
 
 def ProtoRules():
@@ -18,30 +18,37 @@ def ProtoRules():
     def number():
         return RegExMatch(r'\d*\.\d*|\d+')
 
+    def string():
+        return RegExMatch(r'[\'\"].*?[\'\"]')
+
+    def commentBlock():
+        return RegExMatch(r'\/\*(.|{})*?\*\/'.format(lineSep)),
+
+    def commentLine():
+        return '//', RegExMatch(r'.*')
+
     def syntax():
         return RegExMatch(r'syntax\s?=\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
 
     def package():
         return RegExMatch(r'package\s?[\'\"]?.*[\'\"]?\;?'), OneOrMore(endLine)
 
-    def headerComment():
-        return (
-            RegExMatch(r'\/\*'),
-            OneOrMore(OrderedChoice(
-                RegExMatch(r'\s?\*\s?meta:.*')),
-                RegExMatch(r'\s?\*.*')
-            ),
-            RegExMatch(r'\*\/'),
-        )
-
     def pkgImports():
         return RegExMatch(r'import\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
+
+    def headerComments():
+        return (
+            OrderedChoice(
+                ZeroOrMore(commentBlock),
+                ZeroOrMore(commentLine)
+            )
+        )
 
     def header():
         return UnorderedGroup(
             syntax,
             package,
-            ZeroOrMore(headerComment),
+            headerComments,
             ZeroOrMore(pkgImports)
         )
 
@@ -50,7 +57,8 @@ def ProtoRules():
             RegExMatch(r'[\w\d]+'),  # name
             "{ //",
             Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
-            Optional(RegExMatch(r'jadn_opts:{{.*}}+({})?'.format(lineSep)))  # jadn options
+            Optional(RegExMatch(r'jadn_opts:{.*}+')),  # jadn options
+            OneOrMore(endLine)
         )
 
     def defField():
@@ -65,7 +73,7 @@ def ProtoRules():
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
-            RegExMatch('({})?'.format(lineSep))
+            OneOrMore(endLine)
         )
 
     def messageDef():
@@ -81,9 +89,13 @@ def ProtoRules():
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
-            '; //',
-            Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
-            Optional(RegExMatch(r'jadn_opts:.*({})'.format(lineSep)))  # jadn options
+            ';',
+            Optional(
+                '//',
+                RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
+            ),
+            OneOrMore(endLine)
         )
 
     def enumDef():
@@ -162,12 +174,8 @@ class ProtoVisitor(PTNodeVisitor):
         'array': 'Array'
     }
 
-    def visit__default__(self, node, children):
-        # if node.rule_name != '': print(node.rule_name)
-        if node.rule_name == 'ProtoRules':
-            return self.data
-
-        return PTNodeVisitor.visit__default__(self, node, children)
+    def visit_ProtoRules(self, node, children):
+        return self.data
 
     def visit_number(self, node, children):
         try:
@@ -177,18 +185,32 @@ class ProtoVisitor(PTNodeVisitor):
 
         return node.value
 
-    def visit_headerComment(self, node, children):
+    def visit_string(self, node, children):
+        return node.value.strip('\'\"')
+
+    def visit_commentBlock(self, node, children):
+        com = re.split(r'{}'.format(lineSep), node.value)
+        com = com[1:] if com[0] == '/*' else com
+        com = com[:-1] if com[-1] == '*/' else com
+        return com
+
+    def visit_commentLine(self, node, children):
+        return re.sub(r'^//\s*?', '', node.value)
+
+    def visit_headerComments(self, node, children):
         if 'meta' not in self.data:
             self.data['meta'] = {}
 
         for child in children:
-            if re.match(r'^\s?\*\s?meta:', child):
-                line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', child).split(' - ')
+            if type(child) is list:
+                for c in child:
+                    if re.match(r'^\s?\*\s?meta:', c):
+                        line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', c).split(' - ')
 
-                try:
-                    self.data['meta'][line[0]] = json.loads(' - '.join(line[1:]))
-                except Exception as e:
-                    self.data['meta'][line[0]] = ' - '.join(line[1:])
+                        try:
+                            self.data['meta'][line[0]] = json.loads(' - '.join(line[1:]))
+                        except Exception as e:
+                            self.data['meta'][line[0]] = ' - '.join(line[1:])
 
     def visit_typeDefs(self, node, children):
         if 'types' not in self.data:

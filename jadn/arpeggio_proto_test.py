@@ -4,12 +4,11 @@ import json
 import os
 import re
 
-from arpeggio import Optional, ZeroOrMore, OneOrMore, EOF, ParserPython, PTNodeVisitor, visit_parse_tree
-from arpeggio import RegExMatch, UnorderedGroup, OrderedChoice
+from arpeggio import EOF, Optional, OneOrMore, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, OrderedChoice, UnorderedGroup, ZeroOrMore
 
 from libs.utils import toStr, Utils
 
-lineSep = re.sub(r'[\'\"]', '', repr(os.linesep))
+lineSep = '\r?\n'
 
 
 def ProtoRules():
@@ -51,7 +50,7 @@ def ProtoRules():
             RegExMatch(r'[\w\d]+'),  # name
             "{ //",
             Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
-            Optional(RegExMatch(r'jadn_opts:.*({})'.format(lineSep)))  # jadn options
+            Optional(RegExMatch(r'jadn_opts:{{.*}}+({})?'.format(lineSep)))  # jadn options
         )
 
     def defField():
@@ -64,8 +63,9 @@ def ProtoRules():
             Optional(
                 '//',
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
-                Optional(RegExMatch(r'jadn_opts:{{.*}}+({})'.format(lineSep)))  # jadn options
-            )
+                Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
+            ),
+            RegExMatch('({})?'.format(lineSep))
         )
 
     def messageDef():
@@ -183,7 +183,7 @@ class ProtoVisitor(PTNodeVisitor):
 
         for child in children:
             if re.match(r'^\s?\*\s?meta:', child):
-                line = re.sub(r'(\s?\*\s?meta:\s+|\n)', '', child).split(' - ')
+                line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', child).split(' - ')
 
                 try:
                     self.data['meta'][line[0]] = json.loads(' - '.join(line[1:]))
@@ -226,7 +226,7 @@ class ProtoVisitor(PTNodeVisitor):
 
     def visit_defField(self, node, children):
         optDict = {
-            'type': 'string',
+            'type': 'String',
             'options': []
         }
         if re.match(r'^jadn_opts:', children[-1]):
@@ -234,7 +234,7 @@ class ProtoVisitor(PTNodeVisitor):
 
             try:
                 optDict = json.loads(optStr)
-                optDict['type'] = optDict['type'] if 'type' in optDict else 'string'
+                optDict['type'] = optDict['type'] if 'type' in optDict else 'String'
                 optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
             except Exception as e:
                 print(e)

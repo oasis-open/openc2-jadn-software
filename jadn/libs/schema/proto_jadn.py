@@ -1,219 +1,339 @@
+from __future__ import unicode_literals, print_function
+
 import json
 import re
 
+from arpeggio import EOF, Optional, OneOrMore, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, OrderedChoice, UnorderedGroup, ZeroOrMore
 from datetime import datetime
 
 from ..utils import toStr, Utils
+lineSep = '\r?\n'
 
 
-class Proto2JADN(object):
-    def __init__(self, proto):
-        """
-        Schema Converter for ProtoBuf3 to JADN
-        :param proto: str or dict of the JADN schema
-        :type proto: str
-        """
-        self._proto = toStr(proto).replace('\r', '')  # replace windows line terminators with unix style
-        self.indent = '  '
+def ProtoRules():
+    def endLine():
+        return RegExMatch(r'({})?'.format(lineSep))
 
-        self._fieldMap = {
-            'enum': 'Enumerated',
-            'message': 'Record',
-            'oneof': 'Choice',
-            # primitives
-            'string': 'String'
+    def number():
+        return RegExMatch(r'\d*\.\d*|\d+')
+
+    def syntax():
+        return RegExMatch(r'syntax\s?=\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
+
+    def package():
+        return RegExMatch(r'package\s?[\'\"]?.*[\'\"]?\;?'), OneOrMore(endLine)
+
+    def headerComment():
+        return (
+            RegExMatch(r'\/\*'),
+            OneOrMore(OrderedChoice(
+                RegExMatch(r'\s?\*\s?meta:.*')),
+                RegExMatch(r'\s?\*.*')
+            ),
+            RegExMatch(r'\*\/'),
+        )
+
+    def pkgImports():
+        return RegExMatch(r'import\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
+
+    def header():
+        return UnorderedGroup(
+            syntax,
+            package,
+            ZeroOrMore(headerComment),
+            ZeroOrMore(pkgImports)
+        )
+
+    def defHeader():
+        return (
+            RegExMatch(r'[\w\d]+'),  # name
+            "{ //",
+            Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            Optional(RegExMatch(r'jadn_opts:{{.*}}+({})?'.format(lineSep)))  # jadn options
+        )
+
+    def defField():
+        return (
+            RegExMatch(r'\w[\w\d\.]*?\s'),  # type
+            RegExMatch(r'\w[\w\d]*?\s'),  # name
+            '=',
+            number,  # field number
+            ';',
+            Optional(
+                '//',
+                RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
+            ),
+            RegExMatch('({})?'.format(lineSep))
+        )
+
+    def messageDef():
+        return (
+            'message',
+            defHeader,
+            OneOrMore(defField),
+            '}'
+        )
+
+    def enumField():
+        return (
+            RegExMatch(r'\w[\w\d]*?\s'),  # name
+            '=',
+            number,  # field number
+            '; //',
+            Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            Optional(RegExMatch(r'jadn_opts:.*({})'.format(lineSep)))  # jadn options
+        )
+
+    def enumDef():
+        return (
+            'enum',
+            defHeader,
+            OneOrMore(enumField),
+            '}',
+        )
+
+    def repeatedDef():
+        return (
+            'repeated',
+            defField
+        )
+
+    def oneofDef():
+        return (
+            'oneof',
+            defHeader,
+            OneOrMore(defField),
+            '}'
+        )
+
+    def wrappedDef():
+        return (
+            'message',
+            RegExMatch(r'[\w\d]+'),
+            '{',
+            OrderedChoice(
+                Optional(oneofDef),
+                Optional(repeatedDef)
+            ),
+            '}'
+        )
+
+    def typeDefs():
+        return OneOrMore(
+            UnorderedGroup(
+                ZeroOrMore(messageDef),
+                ZeroOrMore(wrappedDef),
+                ZeroOrMore(enumDef),
+            )
+        )
+
+    def customField():
+        return (
+            RegExMatch(r'\[.*\]'),
+            Optional(',')
+        )
+
+    def customDef():
+        return (
+            RegExMatch(r'\/\*'),
+            'JADN Custom Fields',
+            Optional(RegExMatch(r'[^\[]*')),
+            '[',
+            OneOrMore(customField),
+            ']',
+            Optional(RegExMatch(r'[^\*]*')),
+            RegExMatch(r'\*\/'),
+        )
+
+    return (
+        header,
+        typeDefs,
+        Optional(customDef),
+        EOF
+    )
+
+
+class ProtoVisitor(PTNodeVisitor):
+    data = {}
+    repeatedTypes = {
+        'arrayOf': 'ArrayOf',
+        'array': 'Array'
+    }
+
+    def visit__default__(self, node, children):
+        # if node.rule_name != '': print(node.rule_name)
+        if node.rule_name == 'ProtoRules':
+            return self.data
+
+        return PTNodeVisitor.visit__default__(self, node, children)
+
+    def visit_number(self, node, children):
+        try:
+            return float(node.value) if '.' in node.value else int(node.value)
+        except Exception as e:
+            print(e)
+
+        return node.value
+
+    def visit_headerComment(self, node, children):
+        if 'meta' not in self.data:
+            self.data['meta'] = {}
+
+        for child in children:
+            if re.match(r'^\s?\*\s?meta:', child):
+                line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', child).split(' - ')
+
+                try:
+                    self.data['meta'][line[0]] = json.loads(' - '.join(line[1:]))
+                except Exception as e:
+                    self.data['meta'][line[0]] = ' - '.join(line[1:])
+
+    def visit_typeDefs(self, node, children):
+        if 'types' not in self.data:
+            self.data['types'] = []
+
+        for child in children:
+            if type(child) is list:
+                self.data['types'].append(child)
+            else:
+                print('type child is not type list')
+                print(child)
+
+    def visit_defHeader(self, node, children):
+        optDict = {
+            'type': 'Record',
+            'options': []
         }
-        self._structs = [
-            'Record',
-            'Choice',
-            'Map',
-            'Enumerated',
-            'Array',
-            'ArrayOf'
+        if re.match(r'^jadn_opts:', children[-1]):
+            optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', children[-1])
+
+            try:
+                optDict = json.loads(optStr)
+                optDict['type'] = optDict['type'] if 'type' in optDict else 'Record'
+                optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
+            except Exception as e:
+                print(e)
+                pass
+
+        return [
+            children[0],
+            optDict['type'],
+            optDict['options'],
+            re.sub(r'\s?#\S?$', '', children[1])
         ]
 
-        self._fieldRegex = {
-            'enum': re.compile(r'(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'message': re.compile(r'(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?'),
-            'array': re.compile(r'\s+(?P<repeat>.*?)\s+(?P<type>.*?)\s+(?P<name>.*?)\s+=\s+(?P<id>\d+);(\s+//\s+(?P<comment>.*))?\n?')
+    def visit_defField(self, node, children):
+        optDict = {
+            'type': 'String',
+            'options': []
         }
-        self._fieldRegex['oneof'] = self._fieldRegex['message']
-        self._fieldRegex['arrayof'] = self._fieldRegex['array']
-
-    def jadn_dump(self):
-        """
-        Converts the Protobuf3 schema to JADN
-        :return: JADN schema
-        :rtype str
-        """
-        jadn = {
-            'meta': self.makeMeta(),
-            'types': self.makeTypes() + self.makeCustom()
-        }
-
-        return Utils.jadnFormat(jadn, indent=2)
-
-    def formatStr(self, s):
-        """
-        Formats the string for use in schema
-        :param s: string to format
-        :type s: str
-        :return: formatted string
-        :rtype str
-        """
-        if s == '*':
-            return 'unknown'
-        else:
-            return re.sub(r'[\- ]', '_', s)
-
-    def makeMeta(self):
-        """
-        Create the header for the schema
-        :return: header for schema
-        :rtype dict
-        """
-        tmp = {}
-        # meta = re.search(r'\s?\*\s*?meta(.*|\n)*?\*\/', toStr(self._proto))
-
-        for line in re.findall(r'\s+\*\s+meta:\s+.*?\n', toStr(self._proto), flags=re.MULTILINE):
-            line = re.sub(r'(\s+\*\s+meta:\s+|\n)', '', line).split(' - ')
+        if re.match(r'^jadn_opts:', children[-1]):
+            optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', children[-1])
 
             try:
-                tmp[line[0]] = json.loads(' - '.join(line[1:]))
+                optDict = json.loads(optStr)
+                optDict['type'] = optDict['type'] if 'type' in optDict else 'String'
+                optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
             except Exception as e:
-                tmp[line[0]] = ' - '.join(line[1:])
+                print(e)
+                pass
 
-        return tmp
+        return [
+            children[2],  # field number
+            re.sub(r'(^\s+|\s+$)', '', children[1]),  # name
+            self.repeatedTypes.get(optDict['type'], optDict['type']),  # type
+            optDict['options'],  # options
+            re.sub(r'\s?#\S?$', '', children[3])  # comment
+        ]
 
-    def makeTypes(self):
-        """
-        Create the type definitions for the schema
-        :return: type definitions for the schema
-        :rtype list
-        """
-        tmp = []
-        for type_def in re.findall(r'^((enum|message)(.|\n)*?^\}?$)', toStr(self._proto), flags=re.MULTILINE):
-            tmp_type = []
-            def_lines = [l for l in type_def[0].split('\n') if l != '']
+    def visit_messageDef(self, node, children):
+        msgFields = []
 
-            if re.match(r'.*{[\r\n]\s+(repeated).*\n}', type_def[0]):
-                proto_type, field_name = def_lines[0].split(r'{')[0].split()
-                parts = self._fieldRegex['arrayof'].match(def_lines[1]).groupdict()
-                com, opts = self._loadOpts(parts['comment'])
-
-                proto_type = list(map(lambda s: s.lower() == opts['type'].lower(), self._structs))
-                proto_type = self._structs[proto_type.index(True)] if True in proto_type else 'Array'
-
-                tmp.append([field_name, proto_type, Utils.opts_d2s(opts['options']), com])
-
+        for child in children[1:]:
+            if type(child) is list:
+                msgFields.append(child)
             else:
-                if re.match(r'^\s+(oneof)', def_lines[1]):
-                    def_lines = def_lines[1:-1]
+                print('Message child not type list')
+                print(child)
 
-                proto_type, field_name = def_lines[0].split(r'{')[0].split()
+        children[0].append(msgFields)
+        return children[0]
 
-                com = def_lines[0].split('//')
-                com = (com[1][1:] if com[1].startswith(' ') else com[1]) if len(com) > 1 else ''
+    def visit_enumField(self, node, children):
+        if re.match(r'^required starting enum number for protobuf3', children[-1]):
+            return
 
-                com, opts = self._loadOpts(com)
+        return [
+            children[1],  # field number
+            re.sub(r'(^\s+|\s+$)', '', children[0]),  # name
+            re.sub(r'\s?(#|{})\S?$'.format(lineSep), '', children[2])  # comment
+        ]
 
-                jadn_type = self._fieldMap.get(proto_type, 'Record')
-                jadn_type = jadn_type if jadn_type == opts.get('type', jadn_type) else opts['type']
+    def visit_enumDef(self, node, children):
+        enumFields = []
 
-                tmp_type.extend([
-                    field_name,
-                    jadn_type,
-                    Utils.opts_d2s(opts.get('options', {})),  # options ??
-                    com
-                ])
+        for child in children[1:]:
+            if type(child) is list:
+                enumFields.append(child)
+            else:
+                print('Enumerated child not type list')
+                print(child)
 
-                tmp_defs = []
-                for def_var in def_lines[1:-1]:
-                    def_var = re.sub(r'^\s+', '', def_var)
-                    parts = self._fieldRegex.get(proto_type, self._fieldRegex['message']).match(def_var)
+        children[0].append(enumFields)
+        return children[0]
 
-                    if parts:
-                        parts = parts.groupdict()
-                        parts['comment'], opts = self._loadOpts(parts['comment'])
-                        if parts['name'] == 'unknown':
-                            parts['name'] = '*'
-
-                        if proto_type == 'enum':
-                            if parts['name'] == 'Unknown_{}'.format(field_name): continue
-
-                            # id, name, comment
-                            tmp_defs.append([
-                                int(parts['id']) if parts['id'].isdigit() else parts['id'],
-                                parts['name'],
-                                parts['comment'] or ''
-                            ])
-
-                        elif proto_type in ['message', 'oneof']:
-                            field_type = self._fieldType(parts['type'])
-                            field_type = field_type if field_type == opts.get('type', field_type) else opts['type']
-
-                            # id, name, type, opts, comment
-                            tmp_defs.append([
-                                int(parts['id']) if parts['id'].isdigit() else parts['id'],
-                                parts['name'],
-                                field_type,
-                                Utils.opts_d2s(opts.get('options', {}), field=True),
-                                parts['comment'] or ''
-                            ])
-
-                        else:
-                            print('Something...')
-                            # tmp_defs.append([])
-                            pass
-                    else:
-                        print('{} - {}'.format(proto_type, def_var))
-                        print('Something Happened....')
-
-                tmp_type.append(tmp_defs)
-                tmp.append(tmp_type)
-
-        return tmp
-
-    def makeCustom(self):
-        customFields = re.search(r'/\* JADN Custom Fields\n(?P<custom>[\w\W]+?)\n\*/', toStr(self._proto))
-        fields = []
-
-        if customFields:
-            try:
-                fields = Utils.defaultDecode(json.loads(customFields.group('custom').replace('\'', '\"')))
-            except Exception as e:
-                print('Custom Fields Load Error: {}'.format(e))
-
-        return fields
-
-    def _fieldType(self, f):
-        if re.match(r'^google', f):
-            ft = 'String'
+    def visit_repeatedDef(self, node, children):
+        if len(children) > 1:
+            print('RepeatedDef Error')
+            return
         else:
-            ft = self._fieldMap.get(f, f)
+            children = children[0]
 
-        return ft
+        return children[2:]
 
-    def _loadOpts(self, com):
-        c = com or ''
-        com = com or ''
+    def visit_oneofDef(self, node, children):
+        oneofFields = []
 
-        com = re.sub(r'\s*?#jadn_opts:\s?{.*?}+\n?', '', com)
-        if c == com:
-            return com, {}
+        for child in children[1:]:
+            if type(child) is list:
+                oneofFields.append(child)
+            else:
+                print('OneOf child not type list')
+                print(child)
 
-        opts = re.match(r'\s*?#jadn_opts:\s?(?P<opts>{.*?}+)\n?', c.replace(com, ''))
-        if opts:
-            try:
-                opts = json.loads(opts.group('opts'))
+        children[0].append(oneofFields)
+        return children[0]
 
-            except Exception as e:
-                # print('Err: {}'.format(opts))
-                opts = {}
+    def visit_wrappedDef(self, node, children):
+        if children[0] == children[1][0]:
+            return children[1]
+
+        elif children[1][0] in self.repeatedTypes.values():
+            repeated = [children[0]]
+            repeated.extend(children[1])
+            return repeated
+
         else:
-            opts = {}
+            print('Invalid Wrapped Def')
+            print(children[1])
 
-        return com, opts
+    def visit_customField(self, node, children):
+        try:
+            return json.loads(children[0])
+        except Exception as e:
+            print(e)
+
+    def visit_customDef(self, node, children):
+        if 'types' not in self.data:
+            self.data['types'] = []
+
+        for child in children[1:-1]:
+            if type(child) is list:
+                self.data['types'].append(child)
+            else:
+                print('Custom child not type list')
+                print(child)
 
 
 def proto2jadn_dumps(proto):
@@ -224,7 +344,11 @@ def proto2jadn_dumps(proto):
     :return: jadn schema
     :rtype str
     """
-    return Proto2JADN(proto).jadn_dump()
+    parser = ParserPython(ProtoRules)
+    parse_tree = parser.parse(toStr(proto))
+    result = visit_parse_tree(parse_tree, ProtoVisitor())
+
+    return Utils.jadnFormat(result, indent=2)
 
 
 def proto2jadn_dump(proto, fname, source=""):

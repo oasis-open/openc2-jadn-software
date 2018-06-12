@@ -1,12 +1,13 @@
 from __future__ import unicode_literals, print_function
 
 import json
+import os
 import re
 
 from arpeggio import EOF, Optional, OneOrMore, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, OrderedChoice, UnorderedGroup, ZeroOrMore
-from datetime import datetime
 
-from ..utils import toStr, Utils
+from libs.utils import toStr, Utils
+
 lineSep = '\r?\n'
 
 
@@ -336,23 +337,12 @@ class ProtoVisitor(PTNodeVisitor):
                 print(child)
 
 
-def proto2jadn_dumps(proto):
-    """
-    Produce jadn schema from proto3 schema
-    :arg proto: Proto3 Schema to convert
-    :type proto: str
-    :return: jadn schema
-    :rtype str
-    """
+if __name__ == '__main__':
     parser = ParserPython(ProtoRules)
-    parse_tree = parser.parse(toStr(proto))
+    schema = toStr(open(os.path.join('.', 'schema_gen_test', 'openc2-wd06.proto'), 'rb').read())
+    parse_tree = parser.parse(schema)
     result = visit_parse_tree(parse_tree, ProtoVisitor())
 
-    return Utils.jadnFormat(result, indent=2)
-
-
-def proto2jadn_dump(proto, fname, source=""):
-    with open(fname, "w") as f:
-        if source:
-            f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(proto2jadn_dumps(proto))
+    jadn = Utils.jadnFormat(result, indent=2)
+    # print(jadn)
+    open(os.path.join('.', 'schema_gen_test', 'openc2-wd06_arpeggio.proto.jadn'), 'w+').write(jadn)

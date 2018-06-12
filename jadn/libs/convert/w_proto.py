@@ -68,7 +68,7 @@ class JADNtoProto3(object):
             header=self.makeHeader(),
             defs=self.makeStructures(),
             imports=''.join(['import \"{}\";\n'.format(i) for i in self._imports]),
-            jadn_fields=',\n'.join([self.indent+f.__str__() for f in Utils.defaultDecode(self._custom)])
+            jadn_fields=',\n'.join([self.indent+json.dumps(f) for f in Utils.defaultDecode(self._custom)])
         )
 
     def formatStr(self, s):
@@ -95,10 +95,10 @@ class JADNtoProto3(object):
             '',
             'package {};'.format(self._meta['module'] or 'ProtoBuf_Schema'),
             '',
-            '/* meta'
+            '/*'
         ])
 
-        header.extend([' * {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
+        header.extend([' * meta: {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
 
         header.append('*/')
 

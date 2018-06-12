@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 from datetime import datetime
 
@@ -59,7 +60,7 @@ class JADNtoCDDL(object):
                 self._custom.append(t)
 
     def cddl_dump(self):
-        return '{header}{defs}\n; Custom Defined Types\n{custom}\n'.format(
+        return '; meta\n{header}; types{defs}\n; Custom Defined Types\n{custom}\n'.format(
             header=self.makeHeader(),
             defs=self.makeStructures(),
             custom=self.makeCustom()

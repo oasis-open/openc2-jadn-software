@@ -15,7 +15,7 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
         ["t_num", "Number", [], ""],
         ["t_str", "String", [], ""],
         ["t_bin", "Binary", [], ""],
-        ["t_array_of", "ArrayOf", ["#Integer"], ""],
+        ["t_array_of", "ArrayOf", ["*Integer"], ""],
         ["t_choice", "Choice", [], "", [
             [1, "type1", "String", [], ""],
             [4, "type2", "Boolean", [], ""],
@@ -31,6 +31,19 @@ schema_basic = {                # JADN schema for datatypes used in Basic Types 
             [15, "extra", ""],
             [8, "Chunk", ""]]
          ],
+        ["t_array", "Array", [], "", [
+            [1, "fbool", "Boolean", ["[0"], ""],
+            [2, "fint", "Integer", [], ""],
+            [3, "fnum", "Number", [], ""],
+            [4, "fstr", "String", ["[0"], ""],
+            [5, "farr", "t_arr", ["[0"], ""],
+            [6, "fao", "t_ao", ["[0"], ""]]
+         ],
+        ["t_arr", "Array", [], "", [
+            [1, "", "Integer", [], ""],
+            [2, "", "String", [], ""]]
+        ],
+        ["t_ao", "ArrayOf", ["*Integer"], ""],
         ["t_map", "Map", [], "", [
             [2, "red", "Integer", [], ""],
             [4, "green", "Integer", ["[0"], ""],
@@ -274,7 +287,7 @@ class BasicTypes(unittest.TestCase):            # TODO: Test Array
     Map_bad4m = {2: 24, 4: 120, 6: 240}
     Map_bad5m = [24, 120, 240]
 
-    Rec1m = [24, 120, 240]                          # Encoded values Record (minimized)
+    Rec1m = [24, 120, 240]                          # Encoded values Record (minimized) and API+encoded Array values
     Rec2m = [50, None, 100]
     Rec3m = [9, 80, 96, 128]
     Rec_bad1m = [24, 120]
@@ -447,19 +460,19 @@ class BasicTypes(unittest.TestCase):            # TODO: Test Array
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.Rec_bad3m)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad1a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad2a)
+            self.tc.encode("t_rec", self.RGB_bad2a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad5a)
+            self.tc.encode("t_rec", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad6a)
+            self.tc.encode("t_rec", self.RGB_bad6a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad7a)
+            self.tc.encode("t_rec", self.RGB_bad7a)
 
     def test_record_unused(self):
         self.tc.set_mode(True, False)
@@ -478,19 +491,19 @@ class BasicTypes(unittest.TestCase):            # TODO: Test Array
         with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.Rec_bad4n)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad1a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad2a)
+            self.tc.encode("t_rec", self.RGB_bad2a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad5a)
+            self.tc.encode("t_rec", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad6a)
+            self.tc.encode("t_rec", self.RGB_bad6a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad7a)
+            self.tc.encode("t_rec", self.RGB_bad7a)
 
     def test_record_concise(self):
         self.tc.set_mode(False, True)
@@ -507,19 +520,19 @@ class BasicTypes(unittest.TestCase):            # TODO: Test Array
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB_bad3c)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad1a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad2a)
+            self.tc.encode("t_rec", self.RGB_bad2a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad5a)
+            self.tc.encode("t_rec", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad6a)
+            self.tc.encode("t_rec", self.RGB_bad6a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad7a)
+            self.tc.encode("t_rec", self.RGB_bad7a)
 
     def test_record_verbose(self):
         self.tc.set_mode(True, True)
@@ -530,36 +543,82 @@ class BasicTypes(unittest.TestCase):            # TODO: Test Array
         self.assertDictEqual(self.tc.encode("t_rec", self.RGB2), self.RGB2)
         self.assertDictEqual(self.tc.encode("t_rec", self.RGB3), self.RGB3)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB_bad1a)
+            self.tc.decode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB_bad2a)
+            self.tc.decode("t_rec", self.RGB_bad2a)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB_bad3a)
+            self.tc.decode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_map", self.RGB_bad4a)
+            self.tc.decode("t_rec", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_map", self.RGB_bad5a)
+            self.tc.decode("t_rec", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB_bad6a)
+            self.tc.decode("t_rec", self.RGB_bad6a)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB_bad7a)
+            self.tc.decode("t_rec", self.RGB_bad7a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad1a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad2a)
+            self.tc.encode("t_rec", self.RGB_bad2a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB_bad5a)
+            self.tc.encode("t_rec", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad6a)
+            self.tc.encode("t_rec", self.RGB_bad6a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB_bad7a)
+            self.tc.encode("t_rec", self.RGB_bad7a)
 
-    def test_array(self):     # TODO: verbose and min, vector of unnamed fields
-        pass
+
+    Arr1 = [True, 3, 2.71828, "Red"]
+    Arr2 = [None, 3, 2.71828]
+    Arr3 = [True, 3, 2.71828, "Red", [1, "Blue"], [2, 3]]
+    Arr4 = [True, 3, 2.71828, None, [1, "Blue"], [2, 3]]
+    Arr_bad1 = [True, 3, None, "Red"]
+    Arr_bad2 = [True, 3, False, "Red"]
+    Arr_bad3 = [True, 3, 2.71828, "Red", []]
+    Arr_bad4 = [True, 3, 2.71828, "Red", None, []]
+
+    def test_array(self):
+
+        def ta():
+            self.assertListEqual(self.tc.encode("t_array", self.Arr1), self.Arr1)
+            self.assertListEqual(self.tc.decode("t_array", self.Arr1), self.Arr1)
+            self.assertListEqual(self.tc.encode("t_array", self.Arr2), self.Arr2)
+            self.assertListEqual(self.tc.decode("t_array", self.Arr2), self.Arr2)
+            self.assertListEqual(self.tc.encode("t_array", self.Arr3), self.Arr3)
+            self.assertListEqual(self.tc.decode("t_array", self.Arr3), self.Arr3)
+            self.assertListEqual(self.tc.encode("t_array", self.Arr4), self.Arr4)
+            self.assertListEqual(self.tc.decode("t_array", self.Arr4), self.Arr4)
+            with self.assertRaises(ValueError):
+                self.tc.encode("t_array", self.Arr_bad1)
+            with self.assertRaises(ValueError):
+                self.tc.decode("t_array", self.Arr_bad1)
+            with self.assertRaises(TypeError):
+                self.tc.encode("t_array", self.Arr_bad2)
+            with self.assertRaises(TypeError):
+                self.tc.decode("t_array", self.Arr_bad2)
+            with self.assertRaises(ValueError):
+                self.tc.encode("t_array", self.Arr_bad3)
+            with self.assertRaises(ValueError):
+                self.tc.decode("t_array", self.Arr_bad3)
+            with self.assertRaises(ValueError):
+                self.tc.encode("t_array", self.Arr_bad4)
+            with self.assertRaises(ValueError):
+                self.tc.decode("t_array", self.Arr_bad4)
+
+        # Ensure that mode has no effect on array serialization
+
+        self.tc.set_mode(False, False)
+        ta()
+        self.tc.set_mode(False, True)
+        ta()
+        self.tc.set_mode(True, False)
+        ta()
+        self.tc.set_mode(True, True)
+        ta()
 
 schema_compound = {
     "meta": {"module": "unittests-Compound"},
@@ -784,7 +843,7 @@ class Selectors(unittest.TestCase):         # TODO: bad schema - verify * field 
 schema_listfield = {                # JADN schema for fields with cardinality > 1 (e.g., list of x)
     "meta": {"module": "unittests-ListField"},
     "types": [
-        ["t_array", "ArrayOf", ["#String", "]2"], ""],  # Min array length default = 1, Max = 2
+        ["t_array", "ArrayOf", ["*String", "]2"], ""],  # Min array length default = 1, Max = 2
         ["t_opt_list", "Record", [], "", [
             [1, "string", "String", [], ""],
             [2, "list", "t_array", ["[0"], ""]]         # Min = 0, Max default = 1  (Array is optional)

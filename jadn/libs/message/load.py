@@ -1,3 +1,4 @@
+import binascii
 import collections
 import cbor2
 import json
@@ -68,10 +69,11 @@ def load_cbor(m):
     elif type(m) == str:
         try:
             rtn = cbor2.loads(m)
-            if type(rtn) is not dict:
-                rtn = cbor2.loads(''.join([m[i:i + 2].decode('hex') for i in range(0, len(m), 2)]))
-        except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e:
-            raise e
+        except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e1:
+            try:
+                rtn = cbor2.loads(binascii.unhexlify(m))
+            except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e2:
+                raise e2
     else:
         raise Exception('Cannot load cbor, improperly formatted')
 

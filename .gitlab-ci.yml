@@ -37,7 +37,7 @@ Build-Wheel:
 
   script:
     - cd $PKG_DIR
-    - rsync -rh --delete ../jadn/libs/* ./$PKG_NAME
+    - rsync -avz --delete ../jadn/libs/* ./$PKG_NAME
     - pip wheel . -w ./dist
     - mv ./dist/*.whl ../
     - deactivate

@@ -8,6 +8,11 @@ import xmltodict
 from ..enums import OpenC2MessageFormats
 from ..utils import Utils
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 
 def OpenC2MessageLoader(msg='', msgType=OpenC2MessageFormats.JSON):
     load = {
@@ -66,9 +71,10 @@ def load_cbor(m):
         except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e:
             raise e
 
-    elif type(m) == str:
+    elif type(m) in [str, bytes]:
+
         try:
-            rtn = cbor2.loads(m)
+            rtn = cbor2.load(StringIO(m))
         except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e1:
             try:
                 rtn = cbor2.loads(binascii.unhexlify(m))

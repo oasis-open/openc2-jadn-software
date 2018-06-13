@@ -1,6 +1,6 @@
 {
     "meta": {
-        "module": "oasis-open.org/openc2/v1.0/jadn",
+        "module": "/oasis-open.org/openc2/v1.0/jadn",
         "title": "JADN Syntax",
         "version": "wd01",
         "description": "Syntax of a JSON Abstract Data Notation (JADN) module.",
@@ -73,12 +73,12 @@
             [5, "", "String", [], "Field description"]]
         ],
 
-        ["Identifier", "String", ["$^[a-zA-Z][\\w-]*$", "]32"], "A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars"],
+        ["Identifier", "String", ["$^[a-zA-Z][\\w-]*$", "[1", "]32"], "A string starting with an alpha char followed by zero or more alphanumeric / underscore / dash chars"],
 
-        ["Nsid", "String", ["$^[a-zA-Z][\\w-]*$", "]12"], "Namespace ID - a short identifier"],
+        ["Nsid", "String", ["$^[a-zA-Z][\\w-]*$", "[1", "]8"], "Namespace ID - a short identifier"],
 
-        ["Uname", "String", ["]64"], "Unique name of imported module"],
+        ["Uname", "String", ["[1", "]100"], "Unique name (e.g., of a schema) - a set of Identifiers separated by forward slashes"],
 
-        ["Option", "String", ["]12"], "Option string: 1st char = option id"]
+        ["Option", "String", ["[1"], "Option string: 1st char = option id"]
     ]
 }

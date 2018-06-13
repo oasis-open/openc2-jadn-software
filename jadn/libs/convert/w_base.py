@@ -10,12 +10,12 @@ from datetime import datetime
 #--------- Markdown ouput -----------------
 
 
-def begin_doc_m(title):
+def doc_begin_m(title):
     text = '## Schema\n'
     return text
 
 
-def end_doc_m():
+def doc_end_m():
     return ''
 
 
@@ -23,33 +23,45 @@ def sect_m(num, name):
     return len(num)*'#' + '.'.join([str(n) for n in num]) + ' ' + name + '\n'
 
 
-def begin_type_m(tname, ttype, topts, headers, cls):
+def meta_begin_m():
+    return ' .  | .\n ---:|:---\n'
+
+
+def meta_item_m(h, val):
+    if h == "exports":
+        sval = ', '.join(val)
+    elif h == 'imports':
+        sval = ' '.join(['**' + i[0] + '**:&nbsp;' + i[1] for i in val])
+    else:
+        sval = val
+    return h + ': |' + sval + '\n'
+
+
+def meta_end_m():
+    return ''
+
+
+def type_begin_m(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
+    ch = {'n': '---:', 'h': '---:', 's': ':---'}
+    clh = [ch[c] if c in ch else '---' for c in cls]
     tc = '\n**' + (tname + ' (' + ttype) + topts + ')' + '**' if tname else ''
-    return tc + '\n\n' + '|'.join(headers) + '\n' + '|'.join(len(cls)*['---']) + '\n'
+    return tc + '\n\n' + '|'.join(headers) + '\n' + '|'.join(clh) + '\n'
 
 
-def trow_m(row, cls):
+def type_item_m(row, cls):
     assert len(row) == len(cls)
     return '|'.join(row) + '\n'
 
 
-def imps_m(imports):
-    return ' '.join(['**' + i[0] + '**:&nbsp;' + i[1] for i in imports])
-
-
-def begin_meta_m(cls):
-    return '|'.join(len(cls)*[' . ']) + '\n' + '|'.join(len(cls)*['---']) + '\n'
-
-
-def end_table_m():
+def type_end_m():
     return ''
 
 
 # ---------- HTML output ------------------
 
 
-def begin_doc_h(title):
+def doc_begin_h(title):
     text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
     text += '<link rel="stylesheet" type="text/css" href="theme.css">\n'
     text += '<title>' + title + '</title>\n</head>\n'
@@ -57,7 +69,7 @@ def begin_doc_h(title):
     return text
 
 
-def end_doc_h():
+def doc_end_h():
     return '</body>\n'
 
 
@@ -66,40 +78,55 @@ def sect_h(num, name):
     return '\n<' + hn + '>' + '.'.join([str(n) for n in num]) + ' ' + name + '</' + hn + '>\n'
 
 
-def begin_type_h(tname, ttype, topts, headers, cls):
+def meta_begin_h():
+    return '<table>\n'
+
+
+def meta_item_h(h, val):
+    if h == "exports":
+        sval = ', '.join(val)
+    elif h == 'imports':
+        sval = ' '.join(['**' + i[0] + '**:&nbsp;' + i[1] for i in val])
+    else:
+        sval = val
+    rc = [[h + ':', 'h'], [sval, 's']]
+    return '<tr>' + ''.join(['<td class="' + c[1] + '">' + c[0] + '</td>' for c in rc]) + '</tr>\n'
+
+
+def meta_imps_h(imports):
+    return '<br>\n'.join([i[0] + ': ' + i[1] for i in imports])
+
+
+def meta_end_h():
+    return ''
+
+
+def type_begin_h(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     tc = '<caption>' + (tname + ' (' + ttype) + topts + ')' + '</caption>' if tname else ''
     rc = zip(headers, cls)
-    return  '<table>' + tc + '<begin_type>' + ''.join(['<th class="' + c[1] + '">' + c[0] + '</th>' for c in rc]) + '</begin_type>\n'
+    return  '<table>' + tc + '<type_begin>' + ''.join(['<th class="' + c[1] + '">' + c[0] + '</th>' for c in rc]) + '</type_begin>\n'
 
 
-def trow_h(row, cls):
+def type_item_h(row, cls):
     assert len(row) == len(cls)
     rc = zip(row, cls)
     return '<tr>' + ''.join(['<td class="' + c[1] + '">' + c[0] + '</td>' for c in rc]) + '</tr>\n'
 
 
-def imps_h(imports):
-    return '<br>\n'.join([i[0] + ': ' + i[1] for i in imports])
-
-
-def begin_meta_h(cls):
-    return '<table>\n'
-
-
-def end_table_h():
+def type_end_h():
     return  '</table>'
 
 
 # ---------- JADN Source (JAS) output ------------------
 
 
-def begin_doc_s(title):
+def doc_begin_s(title):
     text = ''
     return text
 
 
-def end_doc_s():
+def doc_end_s():
     return ''
 
 
@@ -107,37 +134,41 @@ def sect_s(num, name):
     return ''
 
 
-def begin_type_s(tname, ttype, topts, headers, cls):
+def meta_begin_s():
+    return ''
+
+
+def meta_item_s(key, val):
+    return ''
+
+
+def meta_end_s():
+    return ''
+
+
+def type_begin_s(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     return ''
 
 
-def trow_s(row, cls):
+def type_item_s(row, cls):
     assert len(row) == len(cls)
     return ''
 
 
-def imps_s(imports):
-    return ''
-
-
-def begin_meta_s(cls):
-    return ''
-
-
-def end_table_s():
+def type_end_s():
     return  ''
 
 
 # ---------- JADN output ------------------
 
 
-def begin_doc_d(title):
+def doc_begin_d(title):
     text = ''
     return text
 
 
-def end_doc_d():
+def doc_end_d():
     return ''
 
 
@@ -145,37 +176,41 @@ def sect_d(num, name):
     return ''
 
 
-def begin_type_d(tname, ttype, topts, headers, cls):
+def meta_begin_d():
+    return ''
+
+
+def meta_item_d(key, val):
+    return ''
+
+
+def meta_end_d():
+    return ''
+
+
+def type_begin_d(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     return ''
 
 
-def trow_d(row, cls):
+def type_item_d(row, cls):
     assert len(row) == len(cls)
     return ''
 
 
-def imps_d(imports):
-    return ''
-
-
-def begin_meta_d(cls):
-    return ''
-
-
-def end_table_d():
+def type_end_d():
     return  ''
 
 
 # ---------- CDDL output ------------------
 
 
-def begin_doc_c(title):
+def doc_begin_c(title):
     text = ''
     return text
 
 
-def end_doc_c():
+def doc_end_c():
     return ''
 
 
@@ -183,37 +218,41 @@ def sect_c(num, name):
     return ''
 
 
-def begin_type_c(tname, ttype, topts, headers, cls):
+def meta_begin_c():
+    return ''
+
+
+def meta_item_c(key, val):
+    return ''
+
+
+def meta_end_c():
+    return ''
+
+
+def type_begin_c(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     return ''
 
 
-def trow_c(row, cls):
+def type_item_c(row, cls):
     assert len(row) == len(cls)
     return ''
 
 
-def imps_c(imports):
-    return ''
-
-
-def begin_meta_c(cls):
-    return ''
-
-
-def end_table_c():
+def type_end_c():
     return  ''
 
 
 # ---------- Thrift output ------------------
 
 
-def begin_doc_t(title):
+def doc_begin_t(title):
     text = ''
     return text
 
 
-def end_doc_t():
+def doc_end_t():
     return ''
 
 
@@ -221,37 +260,41 @@ def sect_t(num, name):
     return ''
 
 
-def begin_type_t(tname, ttype, topts, headers, cls):
+def meta_begin_t():
+    return ''
+
+
+def meta_item_t(key, val):
+    return ''
+
+
+def meta_end_t():
+    return ''
+
+
+def type_begin_t(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     return ''
 
 
-def trow_t(row, cls):
+def type_item_t(row, cls):
     assert len(row) == len(cls)
     return ''
 
 
-def imps_t(imports):
-    return ''
-
-
-def begin_meta_t(cls):
-    return ''
-
-
-def end_table_t():
+def type_end_t():
     return  ''
 
 
 # ---------- JSON Schema output ------------------
 
 
-def begin_doc_j(title):
+def doc_begin_j(title):
     text = ''
     return text
 
 
-def end_doc_j():
+def doc_end_j():
     return ''
 
 
@@ -259,50 +302,56 @@ def sect_j(num, name):
     return ''
 
 
-def begin_type_j(tname, ttype, topts, headers, cls):
+def meta_begin_j():
+    return ''
+
+
+def meta_item_j(key, val):
+    return ''
+
+
+def meta_end_j():
+    return ''
+
+
+def type_begin_j(tname, ttype, topts, headers, cls):
     assert len(headers) == len(cls)
     return ''
 
 
-def trow_j(row, cls):
+def type_item_j(row, cls):
     assert len(row) == len(cls)
     return ''
 
 
-def imps_j(imports):
-    return ''
-
-
-def begin_meta_j(cls):
-    return ''
-
-
-def end_table_j():
+def type_end_j():
     return  ''
 
 
 #----------------------------------------------
 
 """
-begin_doc - initial content
-end_doc - final closing content, if any
+doc_begin - initial content
+doc_end - closing content, if any
 sect - section heading for human document formats, nothing for machine-readable schemas
-begin_meta - begin meta content
-begin_type - begin type definition
-trow - add field to type definition or most meta items
-imps - special handling for imports meta statement
-end_table - close meta section or type definition
+meta_begin - begin meta content
+meta_item - most meta items
+meta_imps - special handling for imports meta statement
+meta_end - close meta content
+type_begin - begin type definition
+type_item - add field to type definition
+type_end - close type definition
 """
 # TODO: refactor into base and sub classes to support instance context
 
 wtab = {
-    'jas': (begin_doc_s, end_doc_s, sect_s, begin_type_s, trow_s, imps_s, begin_meta_s, end_table_s),
-    'jadn': (begin_doc_d, end_doc_d, sect_d, begin_type_d, trow_d, imps_d, begin_meta_d, end_table_d),
-    'cddl': (begin_doc_c, end_doc_c, sect_c, begin_type_c, trow_c, imps_c, begin_meta_c, end_table_c),
-    'html': (begin_doc_h, end_doc_h, sect_h, begin_type_h, trow_h, imps_h, begin_meta_h, end_table_h),
-    'thrift': (begin_doc_t, end_doc_t, sect_t, begin_type_t, trow_t, imps_t, begin_meta_t, end_table_t),
-    'markdown': (begin_doc_m, end_doc_m, sect_m, begin_type_m, trow_m, imps_m, begin_meta_m, end_table_m),
-    'jsonschema': (begin_doc_j, end_doc_j, sect_j, begin_type_j, trow_j, imps_j, begin_meta_j, end_table_j)
+    'jas': (doc_begin_s, doc_end_s, sect_s, meta_begin_s, meta_item_s, meta_end_s, type_begin_s, type_item_s, type_end_s),
+    'jadn': (doc_begin_d, doc_end_d, sect_d, meta_begin_d, meta_item_d, meta_end_d, type_begin_d, type_item_d, type_end_d),
+    'cddl': (doc_begin_c, doc_end_c, sect_c, meta_begin_c, meta_item_c, meta_end_c, type_begin_c, type_item_c, type_end_c),
+    'html': (doc_begin_h, doc_end_h, sect_h, meta_begin_h, meta_item_h, meta_end_h, type_begin_h, type_item_h, type_end_h),
+    'thrift': (doc_begin_t, doc_end_t, sect_t, meta_begin_t, meta_item_t, meta_end_t, type_begin_t, type_item_t, type_end_t),
+    'markdown': (doc_begin_m, doc_end_m, sect_m, meta_begin_m, meta_item_m, meta_end_m, type_begin_m, type_item_m, type_end_m),
+    'jsonschema': (doc_begin_j, doc_end_j, sect_j, meta_begin_j, meta_item_j, meta_end_j, type_begin_j, type_item_j, type_end_j)
 }
 
 DEFAULT_SECTION = (3, 2)
@@ -314,23 +363,15 @@ def base_dumps(jadn, form=DEFAULT_FORMAT, section=DEFAULT_SECTION):
     Translate JADN schema into other formats
     """
 
-    assert form in wtab
-    begin_doc, end_doc, sect, begin_type, trow, format_imp, begin_meta, end_table = wtab[form]
+    doc_begin, doc_end, sect, meta_begin, meta_item, meta_end, type_begin, type_item, type_end = wtab[form]
     meta = jadn['meta']
     title = meta['module'] + (' v.' + meta['version']) if 'version' in meta else ''
-    text = begin_doc(title)
-    cls = ['h', 's']
-    text += begin_meta(cls)
+    text = doc_begin(title)
+    text += meta_begin()
     meta_list = ['title', 'module', 'version', 'description', 'exports', 'imports', 'bounds']
     for h in meta_list + list(set(meta) - set(meta_list)):
-        if h in meta:
-            if h == "exports":
-                text += trow([h + ': ', ', '.join(meta[h])], cls)
-            elif h == 'imports':
-                text += trow([h + ': ', format_imp(meta[h])], cls)
-            else:
-                text += trow([h + ': ', meta[h]], cls)
-    text += end_table()
+        text += meta_item(h, meta[h]) if h in meta else ''
+    text += meta_end()
 
     sub = 1
     sec = list(section)
@@ -345,62 +386,62 @@ def base_dumps(jadn, form=DEFAULT_FORMAT, section=DEFAULT_SECTION):
                 tor = set(to) - {'rtype',}
                 tos = ' ' + str([str(k) for k in tor]) if tor else ''
                 rtype = '.' + to['rtype']
-                text += begin_type(td[TNAME], td[TTYPE] + rtype, tos, [], [])
-                text += end_table()
+                text += type_begin(td[TNAME], td[TTYPE] + rtype, tos, [], [])
+                text += type_end()
             elif td[TTYPE] == 'Enumerated':
                 tor = set(to) - {'compact',}
                 tos = ' ' + str([str(k) for k in tor]) if tor else ''
                 if 'rtype' in to:
                     tt = '.Tag' if 'compact' in to else ''
                     rtype = '.*' + to['rtype']
-                    text += begin_type(td[TNAME], td[TTYPE] + tt + rtype, tos, [], [])
-                    text += end_table()
+                    text += type_begin(td[TNAME], td[TTYPE] + tt + rtype, tos, [], [])
+                    text += type_end()
                 else:
                     if 'compact' in to:
                         cls = ['n', 's']
-                        text += begin_type(td[TNAME], td[TTYPE] + '.Tag', tos, ['Value', 'Description'], cls)
+                        text += type_begin(td[TNAME], td[TTYPE] + '.Tag', tos, ['Value', 'Description'], cls)
                         for fd in td[FIELDS]:
                             name = fd[FNAME] + ' -- ' if fd[FNAME] else ''
-                            text += trow([str(fd[FTAG]), name + fd[EDESC]], cls)
+                            text += type_item([str(fd[FTAG]), name + fd[EDESC]], cls)
                     else:
                         cls = ['n', 's', 's']
-                        text += begin_type(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Description'], cls)
+                        text += type_begin(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Description'], cls)
                         for fd in td[FIELDS]:
-                            text += trow([str(fd[FTAG]), fd[FNAME], fd[EDESC]], cls)
+                            text += type_item([str(fd[FTAG]), fd[FNAME], fd[EDESC]], cls)
             elif td[TTYPE] == 'Choice':            # same as above but without cardinality column
                 cls = ['n', 's', 's', 's']
-                text += begin_type(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', 'Description'], cls)
+                text += type_begin(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', 'Description'], cls)
                 for fd in td[FIELDS]:
-                    text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], fd[FDESC]], cls)
+                    text += type_item([str(fd[FTAG]), fd[FNAME], fd[FTYPE], fd[FDESC]], cls)
             elif td[TTYPE] == 'Array':
                 cls = ['n', 's', 'n', 's']
-                text += begin_type(td[TNAME], td[TTYPE], tos, ['ID', 'Type', '#', 'Description'], cls)
+                text += type_begin(td[TNAME], td[TTYPE], tos, ['ID', 'Type', '#', 'Description'], cls)
                 for fd in td[FIELDS]:
                     fo = {'min': 1, 'max': 1}
                     fo.update(fopts_s2d(fd[FOPTS]))
                     fn = '"' + fd[FNAME] + '": ' if fd[FNAME] else ''
-                    text += trow([str(fd[FTAG]), fd[FTYPE], cardinality(fo['min'], fo['max']), fn + fd[FDESC]], cls)
+                    text += type_item([str(fd[FTAG]), fd[FTYPE], cardinality(fo['min'], fo['max']), fn + fd[FDESC]], cls)
             else:
                 cls = ['n', 's', 's', 'n', 's']
-                text += begin_type(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', '#', 'Description'], cls)
+                text += type_begin(td[TNAME], td[TTYPE], tos, ['ID', 'Name', 'Type', '#', 'Description'], cls)
                 for fd in td[FIELDS]:
                     fo = {'min': 1, 'max': 1}
                     fo.update(fopts_s2d(fd[FOPTS]))
-                    text += trow([str(fd[FTAG]), fd[FNAME], fd[FTYPE], cardinality(fo['min'], fo['max']), fd[FDESC]], cls)
+                    text += type_item([str(fd[FTAG]), fd[FNAME], fd[FTYPE], cardinality(fo['min'], fo['max']), fd[FDESC]], cls)
             sub += 1
-            text += end_table()
+            text += type_end()
 
     sec[-1] += 1
     text += sect(sec, 'Primitive Types')
     cls = ['s', 's', 's']
-    text += begin_type(None, None, None, ['Name', 'Type', 'Description'], cls)
+    text += type_begin(None, None, None, ['Name', 'Type', 'Description'], cls)
     for td in jadn['types']:                    # 0:type name, 1:base type, 2:type opts, 3:type desc, 4:fields
         if td[TTYPE] in PRIMITIVE_TYPES:
             to = topts_s2d(td[TOPTS])
             rng = ''            # TODO: format min-max into string length or number range
             fmt = ' (' + to['format'] + ')' if 'format' in to else ''
-            text += trow([td[TNAME], td[TTYPE] + rng + fmt, td[TDESC]], cls)
-    text += end_table() + end_doc()
+            text += type_item([td[TNAME], td[TTYPE] + rng + fmt, td[TDESC]], cls)
+    text += type_end() + doc_end()
 
     return text
 

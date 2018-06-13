@@ -90,10 +90,10 @@ class JADNtoThrift(object):
         :rtype str
         """
         header = list([
-            '/* meta'
+            '/*'
         ])
 
-        header.extend([' * {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
+        header.extend([' * meta: {} - {}'.format(k, re.sub(r'(^\"|\"$)', '', json.dumps(Utils.defaultDecode(v)))) for k, v in self._meta.items()])
 
         header.append('*/')
 

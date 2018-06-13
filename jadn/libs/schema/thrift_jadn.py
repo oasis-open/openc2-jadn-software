@@ -216,7 +216,6 @@ class Thrift2JADN(object):
                 opts = json.loads(opts.group('opts'))
 
             except Exception as e:
-                # print('Err: {}'.format(opts))
                 opts = {}
         else:
             opts = {}

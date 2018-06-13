@@ -9,6 +9,7 @@ from datetime import datetime
 from ..utils import toStr, Utils
 lineSep = '\\r?\\n'
 
+
 def ProtoRules():
     def endLine():
         return RegExMatch(r'({})?'.format(lineSep))
@@ -341,7 +342,7 @@ class ProtoVisitor(PTNodeVisitor):
         for child in children:
             if type(child) is list and 'JADN Custom Fields' in child[0]:
                 try:
-                    self.data['types'].append(json.loads(''.join(child[1:])))
+                    self.data['types'].extend(json.loads(''.join(child[1:])))
                 except Exception as e:
                     print(e)
             else:

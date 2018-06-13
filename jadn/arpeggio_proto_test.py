@@ -344,7 +344,7 @@ class ProtoVisitor(PTNodeVisitor):
         for child in children:
             if type(child) is list and 'JADN Custom Fields' in child[0]:
                 try:
-                    self.data['types'].append(json.loads(''.join(child[1:])))
+                    self.data['types'].extend(json.loads(''.join(child[1:])))
                 except Exception as e:
                     print(e)
             else:
@@ -358,9 +358,9 @@ if __name__ == '__main__':
     debugDraw = (debug and False)
     schemaFile = 'openc2-wd06.proto'
 
-    parser = ParserPython(ProtoRules, reduce_tree=True, debug=debug)
-    schema = toStr(open(os.path.join('.', 'schema_gen_test', schemaFile), 'rb').read())
-    parse_tree = parser.parse(schema)
+    parser = ParserPython(ProtoRules, debug=debug)
+    schema = open(os.path.join('.', 'schema_gen_test', schemaFile), 'rb').read()
+    parse_tree = parser.parse(toStr(schema))
     result = visit_parse_tree(parse_tree, ProtoVisitor())
 
     if debugDraw:

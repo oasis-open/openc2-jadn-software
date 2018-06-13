@@ -9,7 +9,6 @@ from datetime import datetime
 from ..utils import toStr, Utils
 lineSep = '\\r?\\n'
 
-
 def ProtoRules():
     def endLine():
         return RegExMatch(r'({})?'.format(lineSep))
@@ -21,7 +20,7 @@ def ProtoRules():
         return RegExMatch(r'[\'\"].*?[\'\"]')
 
     def commentBlock():
-        return RegExMatch(r'\/\*(.|{})*?(\*\/)'.format(lineSep)),
+        return RegExMatch(r'\/\*(.|{})*?\*\/'.format(lineSep)),
 
     def commentLine():
         return '//', RegExMatch(r'.*')
@@ -54,9 +53,9 @@ def ProtoRules():
     def defHeader():
         return (
             RegExMatch(r'[\w\d]+'),  # name
-            "{ //",
-            Optional(RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
-            Optional(RegExMatch(r'jadn_opts:{.*}+')),  # jadn options
+            "{",
+            Optional('//', RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            Optional(RegExMatch(r'#?jadn_opts:{.*}+')),  # jadn options
             OneOrMore(endLine)
         )
 
@@ -140,22 +139,10 @@ def ProtoRules():
             )
         )
 
-    def customField():
-        return (
-            RegExMatch(r'\[.*\]'),
-            Optional(',')
-        )
-
     def customDef():
-        return (
-            RegExMatch(r'\/\*'),
-            'JADN Custom Fields',
-            Optional(RegExMatch(r'[^\[]*')),
-            '[',
-            OneOrMore(customField),
-            ']',
-            Optional(RegExMatch(r'[^\*]*')),
-            RegExMatch(r'\*\/'),
+        return OrderedChoice(
+            ZeroOrMore(commentBlock),
+            ZeroOrMore(commentLine)
         )
 
     return (
@@ -173,6 +160,28 @@ class ProtoVisitor(PTNodeVisitor):
         'array': 'Array'
     }
 
+    def load_jadnOpts(self, jadnString, defaultDict):
+        jadnString = toStr(jadnString)
+        defType = defaultDict['type'] if 'type' in defaultDict else 'String'
+        optDict = {
+            'type': 'String',
+            'options': []
+        }
+        optDict.update(defaultDict)
+
+        if re.match(r'^jadn_opts:', jadnString):
+            optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', jadnString)
+
+            try:
+                optDict = json.loads(optStr)
+                optDict['type'] = optDict['type'] if 'type' in optDict else defType
+                optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
+            except Exception as e:
+                print('Oops, cant load jadn')
+                print(e)
+
+        return optDict
+
     def visit_ProtoRules(self, node, children):
         return self.data
 
@@ -188,9 +197,10 @@ class ProtoVisitor(PTNodeVisitor):
         return node.value.strip('\'\"')
 
     def visit_commentBlock(self, node, children):
-        com = re.split(r'{}'.format(lineSep), node.value)
-        com = com[1:] if com[0] == '/*' else com
-        com = com[:-1] if com[-1] == '*/' else com
+        com = re.compile(r'(^(/\*)?(\s+)?|(\s+)?(\*/)?$)', re.MULTILINE).sub('', node.value)
+        com = re.split(r'{}'.format(lineSep), com)
+        com = com[1:] if com[0] == '' else com
+        com = com[:-1] if com[-1] == '' else com
         return com
 
     def visit_commentLine(self, node, children):
@@ -223,50 +233,30 @@ class ProtoVisitor(PTNodeVisitor):
                 print(child)
 
     def visit_defHeader(self, node, children):
-        optDict = {
+        optDict = self.load_jadnOpts(children[-1], {
             'type': 'Record',
             'options': []
-        }
-        if re.match(r'^jadn_opts:', children[-1]):
-            optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', children[-1])
-
-            try:
-                optDict = json.loads(optStr)
-                optDict['type'] = optDict['type'] if 'type' in optDict else 'Record'
-                optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
-            except Exception as e:
-                print(e)
-                pass
+        })
 
         return [
-            children[0],
-            optDict['type'],
-            optDict['options'],
-            re.sub(r'\s?#\S?$', '', children[1])
+            children[0],  # Type Name
+            optDict['type'],  # Type
+            optDict['options'],  # Options
+            re.sub(r'\s?#\S?$', '', children[1]) if len(children) >= 2 else ''  # comment
         ]
 
     def visit_defField(self, node, children):
-        optDict = {
+        optDict = self.load_jadnOpts(children[-1], {
             'type': 'String',
             'options': []
-        }
-        if re.match(r'^jadn_opts:', children[-1]):
-            optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', children[-1])
-
-            try:
-                optDict = json.loads(optStr)
-                optDict['type'] = optDict['type'] if 'type' in optDict else 'String'
-                optDict['options'] = Utils.opts_d2s(optDict['options']) if 'options' in optDict else []
-            except Exception as e:
-                print(e)
-                pass
+        })
 
         return [
             children[2],  # field number
             re.sub(r'(^\s+|\s+$)', '', children[1]),  # name
             self.repeatedTypes.get(optDict['type'], optDict['type']),  # type
             optDict['options'],  # options
-            re.sub(r'\s?#\S?$', '', children[3])  # comment
+            re.sub(r'\s?#\S?$', '', children[3]) if len(children) >= 4 else ''  # comment
         ]
 
     def visit_messageDef(self, node, children):
@@ -283,23 +273,27 @@ class ProtoVisitor(PTNodeVisitor):
         return children[0]
 
     def visit_enumField(self, node, children):
-        if re.match(r'^required starting enum number for protobuf3', children[-1]):
+        if len(children) >= 3 and re.match(r'^required starting enum number for protobuf3', children[-1]):
             return
 
         return [
             children[1],  # field number
             re.sub(r'(^\s+|\s+$)', '', children[0]),  # name
-            re.sub(r'\s?(#|{})\S?$'.format(lineSep), '', children[2])  # comment
+            re.sub(r'\s?(#|{})\S?$'.format(lineSep), '', children[2]) if len(children) >= 3 else ''  # comment
         ]
 
     def visit_enumDef(self, node, children):
         enumFields = []
+        name = children[0][0]
 
         for child in children[1:]:
-            if type(child) is list:
+            if type(child) is list and not (child[0] == 0 and re.match(r'^Unknown_{}'.format(name), child[1])):
                 enumFields.append(child)
+            elif child[0] == 0 and re.match(r'^Unknown_{}'.format(name), child[1]):
+                print('Enumerated field is placeholder')
+                print(child)
             else:
-                print('Enumerated child not type list')
+                print('Enumerated field not type list')
                 print(child)
 
         children[0].append(enumFields)
@@ -340,21 +334,18 @@ class ProtoVisitor(PTNodeVisitor):
             print('Invalid Wrapped Def')
             print(children[1])
 
-    def visit_customField(self, node, children):
-        try:
-            return json.loads(children[0])
-        except Exception as e:
-            print(e)
-
     def visit_customDef(self, node, children):
         if 'types' not in self.data:
             self.data['types'] = []
 
-        for child in children[1:-1]:
-            if type(child) is list:
-                self.data['types'].append(child)
+        for child in children:
+            if type(child) is list and 'JADN Custom Fields' in child[0]:
+                try:
+                    self.data['types'].append(json.loads(''.join(child[1:])))
+                except Exception as e:
+                    print(e)
             else:
-                print('Custom child not type list')
+                print('Custom Something..')
                 print(child)
 
 

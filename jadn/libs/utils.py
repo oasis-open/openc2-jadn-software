@@ -8,7 +8,7 @@ primitives = [
     bytes,
     str
 ]
-defaultDecode_ign = [
+defaultDecode_itr = [
     str,
     int,
     float
@@ -23,7 +23,7 @@ if sys.version_info.major >= 3:
 
 elif sys.version_info.major < 3:
     primitives.append(unicode)
-    defaultDecode_ign.append(basestring)
+    defaultDecode_itr.append(basestring)
 
     def toUnicode(s):
         return unicode(s)
@@ -54,7 +54,7 @@ class Utils(object):
     def defaultDecode(itm):
         tmp = type(itm)()
 
-        if hasattr(tmp, '__iter__') and type(tmp) not in defaultDecode_ign:
+        if hasattr(tmp, '__iter__') and type(tmp) not in defaultDecode_itr:
             for k in itm:
                 if type(tmp) == dict:
                     tmp[Utils.defaultDecode(k)] = Utils.defaultDecode(itm[k])
@@ -63,7 +63,7 @@ class Utils(object):
                     tmp.append(Utils.defaultDecode(k))
 
                 else:
-                    print('not prepared type: {}'.format(type(tmp)))
+                    print('not prepared type: {}-{}'.format(type(tmp), tmp))
 
         else:
             tmp = toStr(itm)

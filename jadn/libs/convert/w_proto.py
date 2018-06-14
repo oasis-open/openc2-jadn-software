@@ -93,7 +93,7 @@ class JADNtoProto3(object):
         header = list([
             'syntax = "proto3";',
             '',
-            'package {};'.format(self._meta['module'] or 'ProtoBuf_Schema'),
+            'package {};'.format(re.sub(r'[.\-/]+', '_', self._meta['module']) or 'JADN_ProtoBuf_Schema'),
             '',
             '/*'
         ])

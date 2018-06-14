@@ -75,6 +75,8 @@ def load_cbor(m):
 
         try:
             rtn = cbor2.load(StringIO(m))
+            if rtn is not dict:
+                rtn = cbor2.loads(binascii.unhexlify(m))
         except (SyntaxError, ValueError, cbor2.decoder.CBORDecodeError) as e1:
             try:
                 rtn = cbor2.loads(binascii.unhexlify(m))
@@ -89,7 +91,7 @@ def load_cbor(m):
 def load_protobuf(m):
     """
     :param m: ProtoBuf Encoded message
-    :type m: str ??
+    :type m: str
     """
     if os.path.isfile(m):
         if os.path.isfile(m):

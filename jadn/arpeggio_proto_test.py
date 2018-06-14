@@ -14,27 +14,35 @@ lineSep = '\\r?\\n'
 
 def ProtoRules():
     def endLine():
+        # match - Line terminator (windows and unix style)
         return RegExMatch(r'({})?'.format(lineSep))
 
     def number():
+        # match - numbers with and without decimals
         return RegExMatch(r'\d*\.\d*|\d+')
 
     def string():
+        # match - any characters enclosed with single/double quotes
         return RegExMatch(r'[\'\"].*?[\'\"]')
 
     def commentBlock():
+        # match - any characters (line terminators included) enclosed with block quote signifier (/* and */)
         return RegExMatch(r'\/\*(.|{})*?\*\/'.format(lineSep)),
 
     def commentLine():
+        # match - any character, non line terminator
         return '//', RegExMatch(r'.*')
 
     def syntax():
+        # match - syntax = ['"]SYNTAX['"](;)
         return RegExMatch(r'syntax\s?=\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
 
     def package():
+        # match - package ('")PACKAGE('")(;)
         return RegExMatch(r'package\s?[\'\"]?.*[\'\"]?\;?'), OneOrMore(endLine)
 
     def pkgImports():
+        # match - import ['"]PACKAGE['"](;)
         return RegExMatch(r'import\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
 
     def headerComments():
@@ -55,23 +63,35 @@ def ProtoRules():
 
     def defHeader():
         return (
+            # match - word or digit character one or more times
             RegExMatch(r'[\w\d]+'),  # name
             "{",
-            Optional('//', RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            Optional(
+                '//',
+                # match - any character (except line terminator) until # or line terminator
+                RegExMatch(r'.*?(#|{})'.format(lineSep))  # comment
+            ),
+            # match - (#)jadn_opts:{JADN OPTS}
+            # last } is matched one or more times
             Optional(RegExMatch(r'#?jadn_opts:{.*}+')),  # jadn options
             OneOrMore(endLine)
         )
 
     def defField():
         return (
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d\.]*?\s'),  # type
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
             ';',
             Optional(
                 '//',
+                # match - any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - (#)jadn_opts:{JADN OPTS}
+                # last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -87,13 +107,17 @@ def ProtoRules():
 
     def enumField():
         return (
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
             ';',
             Optional(
                 '//',
+                # match - any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - (#)jadn_opts:{JADN OPTS}
+                # last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -124,6 +148,7 @@ def ProtoRules():
     def wrappedDef():
         return (
             'message',
+            # match - any word or digit character one or more word or digit characters until a non word/digit character
             RegExMatch(r'[\w\d]+'),
             '{',
             OrderedChoice(
@@ -172,7 +197,9 @@ class ProtoVisitor(PTNodeVisitor):
         }
         optDict.update(defaultDict)
 
+        # string starts with 'jadn_opts:'
         if re.match(r'^jadn_opts:', jadnString):
+            # match - match what is enclosed in { } and replace the string with the match
             optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', jadnString)
 
             try:
@@ -200,6 +227,9 @@ class ProtoVisitor(PTNodeVisitor):
         return node.value.strip('\'\"')
 
     def visit_commentBlock(self, node, children):
+        # replace starting (/*)(SPACE ONE OR MORE) with nothing
+        # OR
+        # replace ending (SPACE ONE OR MORE)(*/) with nothing
         com = re.compile(r'(^(/\*)?(\s+)?|(\s+)?(\*/)?$)', re.MULTILINE).sub('', node.value)
         com = re.split(r'{}'.format(lineSep), com)
         com = com[1:] if com[0] == '' else com
@@ -207,6 +237,7 @@ class ProtoVisitor(PTNodeVisitor):
         return com
 
     def visit_commentLine(self, node, children):
+        # replace starting //(SPACE ONE OR MORE)
         return re.sub(r'^//\s*?', '', node.value)
 
     def visit_headerComments(self, node, children):
@@ -216,7 +247,11 @@ class ProtoVisitor(PTNodeVisitor):
         for child in children:
             if type(child) is list:
                 for c in child:
+                    # match - starting (SPACE)*(SPACE)meta:
                     if re.match(r'^\s?\*\s?meta:', c):
+                        # replace (SPACE)*(SPACE)meta:(SPACE ONE OR MORE) with nothing
+                        # OR
+                        # replace line terminator with nothing
                         line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', c).split(' - ')
 
                         try:
@@ -245,6 +280,7 @@ class ProtoVisitor(PTNodeVisitor):
             children[0],  # Type Name
             optDict['type'],  # Type
             optDict['options'],  # Options
+            # replace ending (SPACE)#(SPACE) with nothing
             re.sub(r'\s?#\S?$', '', children[1]) if len(children) >= 2 else ''  # comment
         ]
 
@@ -256,9 +292,11 @@ class ProtoVisitor(PTNodeVisitor):
 
         return [
             children[2],  # field number
+            # replace starting or ending (SPACE ONE OR MORE) with nothing
             re.sub(r'(^\s+|\s+$)', '', children[1]),  # name
             self.repeatedTypes.get(optDict['type'], optDict['type']),  # type
             optDict['options'],  # options
+            # replace ending (SPACE)#(SPACE)
             re.sub(r'\s?#\S?$', '', children[3]) if len(children) >= 4 else ''  # comment
         ]
 
@@ -281,8 +319,12 @@ class ProtoVisitor(PTNodeVisitor):
 
         return [
             children[1],  # field number
+            # replace ending (SPACE)#(SPACE)
             re.sub(r'(^\s+|\s+$)', '', children[0]),  # name
-            re.sub(r'\s?(#|{})\S?$'.format(lineSep), '', children[2]) if len(children) >= 3 else ''  # comment
+            # replace (SPACE)#(SPACE) with nothing
+            # OR
+            # replace (SPACE)LINE TERMINATOR(SPACE) with nothign
+            re.sub(r'\s?(#|{})\s?$'.format(lineSep), '', children[2]) if len(children) >= 3 else ''  # comment
         ]
 
     def visit_enumDef(self, node, children):

@@ -36,17 +36,19 @@ class Utils(object):
     @staticmethod
     def defaultEncode(itm):
         tmp = type(itm)()
-        for k in itm:
-            ks = toUnicode(k)
-            if type(itm[k]) in [dict, list]:
-                tmp[ks] = Utils.defaultEncode(itm[k])
+        if hasattr(tmp, '__iter__') and type(tmp) not in defaultDecode_itr:
+            for k in itm:
+                ks = toUnicode(k)
+                if type(itm) is dict:
+                    tmp[ks] = Utils.defaultEncode(itm[k])
 
-            elif type(itm[k]) in primitives:
-                tmp[ks] = toUnicode(itm[k])
+                elif type(itm) is list:
+                    tmp.append(Utils.defaultEncode(itm[k]))
 
-            else:
-                print('Not prepared type: {}'.format(type(itm[k])))
-                tmp[ks] = itm[k]
+                else:
+                    print('Not prepared type: {}-{}'.format(type(itm[k]), itm[k]))
+        else:
+            tmp = toUnicode(itm)
 
         return tmp
 

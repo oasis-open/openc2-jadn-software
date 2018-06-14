@@ -235,9 +235,15 @@ class ThriftVisitor(PTNodeVisitor):
 
     def visit_structDef(self, node, children):
         msgFields = []
-
         for child in children[1:]:
             if type(child) is list:
+                if child[2] in ['ArrayOf', 'Array']:
+                    return [
+                        children[0][0],  # name
+                        child[2],  # type
+                        child[3],  # options
+                        child[4]   # comment
+                    ]
                 msgFields.append(child)
             else:
                 print('Struct child not type list')

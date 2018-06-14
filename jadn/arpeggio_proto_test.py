@@ -372,4 +372,4 @@ if __name__ == '__main__':
 
     jadn = Utils.jadnFormat(result, indent=2)
     # print(jadn)
-    open(os.path.join('.', 'schema_gen_test', schemaFile + '.jadn'), 'w+').write(jadn)
+    open(os.path.join('.', 'schema_gen_test', schemaFile + 'arpeggio.jadn'), 'w+').write(jadn)

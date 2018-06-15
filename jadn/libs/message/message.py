@@ -19,10 +19,25 @@ class OpenC2Message(object):
         :type msg: dict
         :raise TypeError: Dictionary not given
         """
+        self._msgType = msgType
         if msgType in OpenC2MessageFormats.values():
             self._msg = OpenC2MessageLoader(msg, msgType)
         else:
             raise ValueError("Message Type is not a Valid OpenC2 Message Format")
+
+    def original_dump(self):
+        """
+        returns the formatted original message
+        :return: original version of message
+        :rtype: dict/str
+        """
+        original = {
+            'json': self.json_dump,
+            'cbor': self.cbor_dump,
+            'proto': self.protobuf_dump,
+            'xml': self.xml_dump
+        }
+        return original.get(self._msgType, lambda: 'Error')()
 
     def json_dump(self):
         """

@@ -60,7 +60,7 @@ class JADNtoCDDL(object):
                 self._custom.append(t)
 
     def cddl_dump(self):
-        return '{header}; types{defs}\n; Custom Defined Types\n{custom}\n'.format(
+        return '{header}{defs}\n; Custom Defined Types\n{custom}\n'.format(
             header=self.makeHeader(),
             defs=self.makeStructures(),
             custom=self.makeCustom()

@@ -2,7 +2,7 @@ from __future__ import unicode_literals, print_function
 
 import json
 import re
-from datetime import datetime
+import os
 
 from arpeggio import EOF, Optional, OneOrMore, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, OrderedChoice, UnorderedGroup, ZeroOrMore
 
@@ -322,25 +322,15 @@ class CddlVisitor(PTNodeVisitor):
                 print('type child is not type list')
 
 
-def cddl2jadn_dumps(cddl):
-    """
-    Produce JADN schema from cddl schema
-    :param cddl: CUDDL schema to convert
-    :return: CUDDL schema
-    :rtype str
-    """
-    try:
-        parser = ParserPython(CddlRules)
-        parse_tree = parser.parse(toStr(cddl))
-        result = visit_parse_tree(parse_tree, CddlVisitor())
-        return Utils.jadnFormat(result, indent=2)
+if __name__ == '__main__':
+    debug = False
+    debugDraw = (debug and False)
+    schemaFile = 'openc2-wd06.cddl'
 
-    except Exception as e:
-        raise Exception('Proto parsing error has occurred: {}'.format(e))
+    parser = ParserPython(CddlRules, debug=False)
+    schema = open(os.path.join('.', 'schema_gen_test', schemaFile), 'rb').read()
+    parse_tree = parser.parse(toStr(schema))
+    result = visit_parse_tree(parse_tree, CddlVisitor())
 
-
-def cddl2jadn_dump(cddl, fname, source=""):
-    with open(fname, "w") as f:
-        if source:
-            f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(cddl2jadn_dumps(cddl))
+    jadn = Utils.jadnFormat(result, indent=2)
+    open(os.path.join('.', 'schema_gen_test', schemaFile + '.jadn'), 'w+').write(jadn)

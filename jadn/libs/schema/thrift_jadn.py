@@ -7,20 +7,25 @@ from arpeggio import EOF, Optional, OneOrMore, OrderedChoice, ParserPython, PTNo
 from datetime import datetime
 from ..utils import toStr, Utils
 
+# For windows
 lineSep = '\\r?\\n'
 
 
 def ThriftRules():
     def endLine():
+        # match - Line terminator
         return RegExMatch(r'({})?'.format(lineSep))
 
     def number():
+        # match - Numbers
         return RegExMatch(r'\d*\.\d*|\d+')
 
     def commentBlock():
+        # match - Any group of characters that are commented (/* & * & */)
         return RegExMatch(r'\/\*(.|{})*?\*\/'.format(lineSep)),
 
     def commentLine():
+        # match - Any character, non line terminator
         return '//', RegExMatch(r'.*')
 
     def headerComments():
@@ -39,9 +44,12 @@ def ThriftRules():
 
     def defHeader():
         return (
+            # match - word or digit character one or more times
             RegExMatch(r'[\w\d]+'),  # name
             "{",
+            # match - Any character (except line terminator) until # or line terminator
             Optional('//', RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            # match - Capture jadn_opts within comment, last } is matched one or more times
             Optional(RegExMatch(r'#?jadn_opts:{.*}+')),  # jadn options
             OneOrMore(endLine)
         )
@@ -50,12 +58,17 @@ def ThriftRules():
         return (
             number,  # field number
             ':',
+            # match - Any group until space
             RegExMatch(r'\w[\w\d\.]*?\s'),  # option
+            # match - Any group until space OR any group enclosed within 'list<>'
             RegExMatch(r'\w[\w\d\.]*?\s|list\<([\w\d]+)\>*?\s'),  # type
+            # match - Any group until space
             RegExMatch(r'(\w[\w\d]*?);'),  # name
             Optional(
                 '//',
+                # match - Any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - Capture jadn_opts within comment, last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -71,13 +84,16 @@ def ThriftRules():
 
     def enumField():
         return (
+            # match - Any group until space
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
             ';',
             Optional(
                 '//',
+                # match - Any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - Capture jadn_opts within comment, last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -100,6 +116,7 @@ def ThriftRules():
     def wrappedDef():
         return (
             'struct',
+            # match - Any group until a non word/digit
             RegExMatch(r'[\w\d]+'),
             '{',
             Optional(repeatedDef),
@@ -146,6 +163,7 @@ class ThriftVisitor(PTNodeVisitor):
         optDict.update(defaultDict)
 
         if re.match(r'^jadn_opts:', jadnString):
+            # match - All information enclosed in {} from jadn_opts:
             optStr = re.sub(r'jadn_opts:(?P<opts>{.*?}+)', '\g<opts>', jadnString)
 
             try:
@@ -179,6 +197,7 @@ class ThriftVisitor(PTNodeVisitor):
         return com
 
     def visit_commentLine(self, node, children):
+        # replace starting //(SPACE ONE OR MORE)
         return re.sub(r'^//\s*?', '', node.value)
 
     def visit_headerComments(self, node, children):
@@ -187,7 +206,9 @@ class ThriftVisitor(PTNodeVisitor):
         for child in children:
             if type(child) is list:
                 for c in child:
+                    # match - Starting (space)*(space)meta:
                     if re.match(r'^\s?\*\s?meta:', c):
+                        # remove comment header so only the meta information is captured
                         line = re.sub(r'(\s?\*\s?meta:\s+|{})'.format(lineSep), '', c).split(' - ')
                         try:
                             self.data['meta'][line[0]] = json.loads(' - '.join(line[1:]))
@@ -215,6 +236,7 @@ class ThriftVisitor(PTNodeVisitor):
             children[0],  # Type Name
             optDict['type'],  # Type
             optDict['options'],  # Options
+            # Replace ending (space)#(space) with nothing
             re.sub(r'\s?#\S?$', '', children[1]) if len(children) >= 2 else ''  # comment
         ]
 
@@ -226,9 +248,11 @@ class ThriftVisitor(PTNodeVisitor):
 
         return [
             children[0],  # field number
+            # Replace starting or ending (space) with nothing
             re.sub(r'(^\s+|\s+$)', '', children[3].strip(';')),  # name
             self.repeatedTypes.get(optDict['type'], optDict['type']),  # type
             optDict['options'],  # options
+            # Replace ending (space)#(space)
             re.sub(r'\s?#\S?$', '', children[4]) if len(children) >= 5 else ''  # comment
         ]
 
@@ -257,7 +281,9 @@ class ThriftVisitor(PTNodeVisitor):
 
         return [
             children[1],  # field number
+            # Replace ending (space)#(space)
             re.sub(r'(^\s+|\s+$)', '', children[0]),  # name
+            # Replace (space)#(space) or (space)LINE TERMINATOR(space) with nothing
             re.sub(r'\s?(#|{})\S?$'.format(lineSep), '', children[2]) if len(children) >= 3 else ''  # comment
         ]
 

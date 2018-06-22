@@ -16,6 +16,13 @@ before_script:
   - workon $PYTHON_ENV || mkvirtualenv $PYTHON_ENV
   - pip install -r $PKG_DIR/requirements.txt
 
+Copy-Code:
+  stage: build
+
+  script:
+    - rsync -avz --delete ./jadn/libs/* ./$PKG_DIR/$PKG_NAME
+
+# Copy and edit this stage for Unit/Code Testing
 Translate-Schemas:
   stage: test
 
@@ -37,7 +44,6 @@ Build-Wheel:
 
   script:
     - cd $PKG_DIR
-    - rsync -avz --delete ../jadn/libs/* ./$PKG_NAME
     - pip wheel . -w ./dist
     - mv ./dist/*.whl ../
     - deactivate

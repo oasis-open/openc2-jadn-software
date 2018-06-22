@@ -8,7 +8,6 @@ import re
 from arpeggio import EOF, Optional, OneOrMore, OrderedChoice, ParserPython, PTNodeVisitor, visit_parse_tree, RegExMatch, UnorderedGroup, ZeroOrMore
 
 from libs.utils import toStr, Utils
-
 lineSep = '\\r?\\n'
 
 

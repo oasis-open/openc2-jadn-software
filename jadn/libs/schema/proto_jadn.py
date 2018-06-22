@@ -12,27 +12,35 @@ lineSep = '\\r?\\n'
 
 def ProtoRules():
     def endLine():
+        # match - Line terminator (windows and unix style)
         return RegExMatch(r'({})?'.format(lineSep))
 
     def number():
+        # match - numbers with and without decimals
         return RegExMatch(r'\d*\.\d*|\d+')
 
     def string():
+        # match - any characters enclosed with single/double quotes
         return RegExMatch(r'[\'\"].*?[\'\"]')
 
     def commentBlock():
+        # match - any characters (line terminators included) enclosed with block quote signifier (/* and */)
         return RegExMatch(r'\/\*(.|{})*?\*\/'.format(lineSep)),
 
     def commentLine():
+        # match - any character, non line terminator
         return '//', RegExMatch(r'.*')
 
     def syntax():
+        # match - syntax = ['"]SYNTAX['"](;)
         return RegExMatch(r'syntax\s?=\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
 
     def package():
+        # match - package ('")PACKAGE('")(;)
         return RegExMatch(r'package\s?[\'\"]?.*[\'\"]?\;?'), OneOrMore(endLine)
 
     def pkgImports():
+        # match - import ['"]PACKAGE['"](;)
         return RegExMatch(r'import\s?[\'\"].*[\'\"]\;?'), OneOrMore(endLine)
 
     def headerComments():
@@ -53,23 +61,35 @@ def ProtoRules():
 
     def defHeader():
         return (
+            # match - word or digit character one or more times
             RegExMatch(r'[\w\d]+'),  # name
             "{",
-            Optional('//', RegExMatch(r'.*?(#|{})'.format(lineSep))),  # comment
+            Optional(
+                '//',
+                # match - any character (except line terminator) until # or line terminator
+                RegExMatch(r'.*?(#|{})'.format(lineSep))  # comment
+            ),
+            # match - (#)jadn_opts:{JADN OPTS}
+            # last } is matched one or more times
             Optional(RegExMatch(r'#?jadn_opts:{.*}+')),  # jadn options
             OneOrMore(endLine)
         )
 
     def defField():
         return (
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d\.]*?\s'),  # type
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
             ';',
             Optional(
                 '//',
+                # match - any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - (#)jadn_opts:{JADN OPTS}
+                # last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -85,13 +105,17 @@ def ProtoRules():
 
     def enumField():
         return (
+            # match - any word character followed by one or more word or digit characters until a space
             RegExMatch(r'\w[\w\d]*?\s'),  # name
             '=',
             number,  # field number
             ';',
             Optional(
                 '//',
+                # match - any character (except line terminator) until # or line terminator
                 RegExMatch(r'.*?(#|{})'.format(lineSep)),  # comment
+                # match - (#)jadn_opts:{JADN OPTS}
+                # last } is matched one or more times
                 Optional(RegExMatch(r'jadn_opts:{.*}+'))  # jadn options
             ),
             OneOrMore(endLine)
@@ -122,6 +146,7 @@ def ProtoRules():
     def wrappedDef():
         return (
             'message',
+            # match - any word or digit character one or more word or digit characters until a non word/digit character
             RegExMatch(r'[\w\d]+'),
             '{',
             OrderedChoice(

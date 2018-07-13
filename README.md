@@ -42,6 +42,7 @@
 <p><b><a id="currentMaintainers">Current Maintainers of this TC Open Repository</a></b></p>
 
 <ul>
+<li><a href="mailto:pavel.gutin@g2-inc.com">Pavel Gutin</a>; GitHub ID: <a href="https://github.com/pavel-gutin">https://github.com/pavel-gutin</a>; WWW: <a href="https://www.g2-inc.com/">G2, Inc</a></li>
 <li><a href="mailto:dpkemp@radium.ncsc.mil">Dave Kemp</a>; GitHub ID: <a href="https://github.com/davaya">https://github.com/davaya</a>; WWW: <a href="http://www.nsa.gov/">Department of Defense</a></li>
 </ul>
 

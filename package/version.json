@@ -1,0 +1,14 @@
+{
+  "name" : "OpenC2",
+  "pkg_name": "oc2",
+  "version" : {
+    "number" : {
+      "major": 0,
+      "minor": 0,
+      "bugfix": 1
+    },
+    "pipe_number" : "",
+    "hash" : "",
+    "date" : ""
+  }
+}

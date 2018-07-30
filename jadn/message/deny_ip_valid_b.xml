@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message id="101" action="deny">
+    <target>
+        <ip_connection
+            dst_addr="2001:0db8:85a3:0000:0000:8a2e:0370:8911"
+            dst_port="https"
+            layer4_protocol="tcp"
+            src_addr="2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+            src_port="10996"
+        />
+    </target>
+    <args
+        duration="PT2M30S"
+        start_time="2016-11-25T08:10:31-04:00"
+    />
+</message>

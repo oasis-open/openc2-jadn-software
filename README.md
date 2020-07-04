@@ -4,11 +4,8 @@ language than that presented by OASIS for public review in November 2018 and is
 
       NOT CONSISTENT WITH THE VERSION UNDERGOING PUBLIC REVIEW.
 
-Any implementer of OpenC2 using this code should be aware that it will require updating
-to align with the current OpenC2 Language Specification.
-
-Development code consistent with the latest version of OpenC2 is available from
-https://github.com/davaya/jadn.
+Current JADN software, used in the latest version of OpenC2, is available from
+https://github.com/davaya/jadn-pypkg.
 ```
 
 ## JADN

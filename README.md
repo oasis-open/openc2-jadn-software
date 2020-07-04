@@ -4,9 +4,10 @@ language than that presented by OASIS for public review in November 2018 and is
 
       NOT CONSISTENT WITH THE VERSION UNDERGOING PUBLIC REVIEW.
 
-Current JADN software, used in the latest version of OpenC2, is available from
-[https://github.com/davaya/jadn-pypkg](https://github.com/davaya/jadn-pypkg).
+Current JADN software, used in the latest version of OpenC2, is available from:
 ```
+[https://github.com/davaya/jadn-pypkg](https://github.com/davaya/jadn-pypkg).
+
 
 ## JADN
 JSON Abstract Data Notation (JADN) is a JSON document format for defining abstract schemas.

@@ -1,23 +1,24 @@
-```
-NOTE: This repository contains code developed against an earlier version of the OpenC2
-language than that presented by OASIS for public review in November 2018 and is
+# Information Modeling Tools
+This repo contains software to:
+* Process [JADN](https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/jadn-v1.0-cs01.html)
+information models (abstract schemas) used to define the
+[OpenC2 Language Specification](http://docs.oasis-open.org/openc2/oc2ls/v1.0/oc2ls-v1.0.html)
+and associated actuator profiles
+* Validate OpenC2 data against an information model.
 
-      NOT CONSISTENT WITH THE VERSION UNDERGOING PUBLIC REVIEW.
+## Process Information Models
+### Prerequisite
+Install JADN software into a Python 3.8 or newer environment: `pip install jadn`
 
-Current JADN software, used in the latest version of OpenC2, is available from:
-```
-[https://github.com/davaya/jadn-pypkg](https://github.com/davaya/jadn-pypkg).
+### Translate Information Models into Multiple Formats
+The `make-artifacts.py` script 
+### Resolve Namespaced References
+### Create Device Schema
 
+## Validate
 
-## JADN
-JSON Abstract Data Notation (JADN) is a JSON document format for defining abstract schemas.
-Unlike concrete schema languages such as XSD and JSON Schema, JADN defines the structure of datatypes independently
-of the serialization used to communicate and store data objects.  An encoder/decoder (codec) validates the structure
-of data objects against the JADN schema and serializes/deserializes objects using a specified message format.  The
-codec currently supports four JSON-based serialization formats, and can be extended to support XML and binary (CBOR,
-Protocol Buffers, etc) serializations.
+--------------------------- obsolete below --------------------------------
 
-## JAS
 JADN Abstract Syntax (or perhaps JADN Source -- JAS) is a source format used to create JADN files.  Although a JADN
 schema is a human-readable JSON document and can be edited directly, JAS is simpler to read and write, eliminating
 the boilerplate (quotes, braces, brackets) inherent to JSON.  A converter utility translates a schema bidirectionally

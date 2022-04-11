@@ -4,7 +4,7 @@
   "title": "OpenC2 Language and Device Template",
   "description": "Template for creating OpenC2 v1.1 device schemas",
   "comment": "To use, delete unused Action/Target/Args/Results, update package, and assign id, name, and nsid for each profile",
-  "exports": ["OpenC2-Command", "OpenC2-Response"],
+  "exports": ["Message"],
   "namespaces": {
    "ls": "https://oasis-open.org/openc2/oc2ls-types/v1.1",
    "nsid1": "https://example.org/profile1",

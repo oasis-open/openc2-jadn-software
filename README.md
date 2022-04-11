@@ -33,10 +33,12 @@ package.  The result is a single self-contained package stored in the Out folder
 "-resolved" appended to the filename.
 
 The OpenC2 language specification contains two kinds of content: the language framework
-(Message, Command, Response structures) defined in a Language schema package, and common
-types that are shared across actuator profiles defined in a Types package. The Language
-package references to common Types can be resolved into a single file containing all
-definitions in the language specification.
+(Message, Command, Response structures) defined in a "Language" schema package 
+[oc2ls-v1.1-lang.jadn](Schemas/oc2ls-v1.1-lang.jadn),
+and common types that are shared across actuator profiles defined in a Types package
+[oc2ls-v1.1-types.jadn](Schemas/oc2ls-v1.1-types.jadn).
+The Language references to common Types can be resolved into a single file containing all
+definitions in the language specification with `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
 ### Create Device Schema
 The process to create a device schema is:

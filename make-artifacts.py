@@ -6,6 +6,7 @@ import jadn
 import os
 import shutil
 from typing import NoReturn
+from markdown import markdown_dump
 
 SCHEMA_DIR = 'Schemas'
 OUTPUT_DIR = 'Out'
@@ -24,7 +25,7 @@ def translate(filename: str, sdir: str, odir: str) -> NoReturn:
     jadn.convert.plant_dump(schema, os.path.join(odir, fn + '.puml'), style={'links': True, 'detail': 'information'})
     jadn.convert.jidl_dump(schema, os.path.join(odir, fn + '.jidl'), style={'desc': 50})
     jadn.convert.html_dump(schema, os.path.join(odir, fn + '.html'))
-    jadn.convert.table_dump(schema, os.path.join(odir, fn + '.md'))
+    markdown_dump(schema, os.path.join(odir, fn + '.md'))
     jadn.translate.json_schema_dump(schema, os.path.join(odir, fn + '.json'))
 
 

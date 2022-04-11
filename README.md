@@ -32,12 +32,15 @@ and replaces namespaced type references with the full type definition from the r
 package.  The result is a single self-contained package stored in the Out folder with
 "-resolved" appended to the filename.
 
-The OpenC2 language specification contains two kinds of content: the language framework
-(Message, Command, Response structures) defined in a "Language" schema package 
+The OpenC2 language specification contains two content sections: language framework
+([3.2, 3.3](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#32-message))
+(Message, Command, Response) defined in a "Language" schema package 
 [oc2ls-v1.1-lang.jadn](Schemas/oc2ls-v1.1-lang.jadn),
-and common types that are shared across actuator profiles defined in a Types package
+and common types
+([3.4](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#34-type-definitions))
+that are shared across actuator profiles defined in a Types package
 [oc2ls-v1.1-types.jadn](Schemas/oc2ls-v1.1-types.jadn).
-The Language references to common Types can be resolved into a single file containing all
+The Language references to Types can be resolved into a single schema file containing all
 definitions in the language specification with `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
 ### Create Device Schema

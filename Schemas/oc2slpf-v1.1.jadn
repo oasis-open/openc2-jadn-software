@@ -1,10 +1,10 @@
 {
  "info": {
-  "package": "https://oasis-open.org/openc2/oc2slpf/v1.1",
+  "package": "http://oasis-open.org/openc2/oc2slpf/v1.1",
   "version": "0-wd01",
   "title": "Stateless Packet Filtering Profile",
   "description": "Data definitions for Stateless Packet Filtering (SLPF) functions",
-  "namespaces": {"ls": "https://oasis-open.org/openc2/oc2ls-types/v1.1"},
+  "namespaces": {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
  },
 

@@ -25,7 +25,8 @@ p_desc = r'\s*(?:\/\/\s*(.*?)\s*)?'  # Field description, including field name i
 
 def markdown_style() -> dict:
     return {
-        'pad': True   # Use one space horizontal padding
+        'pad': True,    # Use one space horizontal padding
+        'links': True   # Retain Markdown links: [text](link)
     }
 
 
@@ -46,13 +47,12 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
     info = schema['info'] if 'info' in schema else {}
     mlist = [k for k in INFO_ORDER if k in info]
     for k in mlist + list(set(info) - set(mlist)):      # Display info elements in fixed order
-        text += f'{k:>14}: {json.dumps(info[k])}\n'     # TODO: wrap to page width, continuation-line parser
+        text += f'{k:>14}: {json.dumps(info[k])}\n'     # TODO: wrap to width, continuation-line parser
 
     for td in schema['types']:
         if len(td) > Fields and td[Fields]:
             tdef = f'{td[TypeName]} ({jadn2typestr(td[BaseType], td[TypeOptions])})'
-            tdesc = ' // ' + td[TypeDesc] if td[TypeDesc] else ''
-            text += '\n**Type: ' + tdef.replace("*", "\*") + f'**{tdesc}\n'
+            text += f'\n{td[TypeDesc]}\n\n**Type: ' + tdef.replace("*", "\*") + '**\n'
             idt = td[BaseType] == 'Array' or get_optx(td[TypeOptions], 'id') is not None
             table_type = (0 if td[BaseType] == 'Enumerated' else 2) + (0 if idt else 1)
             table = [

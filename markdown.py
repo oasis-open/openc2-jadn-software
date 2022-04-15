@@ -52,7 +52,8 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
     for td in schema['types']:
         if len(td) > Fields and td[Fields]:
             tdef = f'{td[TypeName]} ({jadn2typestr(td[BaseType], td[TypeOptions])})'
-            text += f'\n{td[TypeDesc]}\n\n**Type: ' + tdef.replace("*", "\*") + '**\n'
+            tdesc = f'\n{td[TypeDesc]}\n' if td[TypeDesc] else ''
+            text += f'{tdesc}\n**Type: ' + tdef.replace("*", "\*") + '**\n'
             idt = td[BaseType] == 'Array' or get_optx(td[TypeOptions], 'id') is not None
             table_type = (0 if td[BaseType] == 'Enumerated' else 2) + (0 if idt else 1)
             table = [
@@ -63,6 +64,7 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
             ][table_type]
             for fd in td[Fields]:
                 fname, fdef, fmult, fdesc = jadn2fielddef(fd, td)
+                fdef = fdef.replace('*', '\*')
                 fmult = fmult.replace('*', '\*')
                 dsc = fdesc.split('::', maxsplit=2)
                 fdesc = f'**{dsc[0]}** - {dsc[1].strip()}' if len(dsc) == 2 else fdesc

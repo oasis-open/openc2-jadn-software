@@ -26,6 +26,14 @@ Output formats are:
 The script also creates a JSON Schema file corresponding to the JADN information model.
 
 ### Resolve Namespaced References
+The OpenC2 language specification and actuator profiles each have their own schemas.
+But as described in the OpenC2 architecture, OpenC2 producers and consumers are "devices",
+each of which supports the core language plus a combination of one or more actuator profiles.
+The process of combining multiple published schemas into a single device schema is called
+"resolving".
+
+![Architecture Example](Images/Arch-Example-1.drawio.png)
+
 A JADN package (file) can import type definitions from other packages using a namespace.
 The `resolve-references.py` script reads a specified package from the Schemas folder
 and replaces namespaced type references with the full type definition from the referenced
@@ -44,6 +52,7 @@ The Language references to Types can be resolved into a single schema file conta
 definitions in the language specification with `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
 ### Create Device Schema
+
 The process to create a device schema is:
 1. Create a device template starting with the language schema oc2ls-v1.1-lang.jadn
    1. edit the package, version, title, etc to reflect the name of the device

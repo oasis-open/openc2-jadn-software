@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from typing import NoReturn, Tuple, Union
 from jadn.definitions import TypeName, BaseType, TypeOptions, TypeDesc, Fields, ItemID, FieldID, INFO_ORDER
-from jadn.utils import cleanup_tagid, get_optx, fielddef2jadn, jadn2fielddef, jadn2typestr, raise_error, typestr2jadn, etrunc
+from jadn.utils import cleanup_tagid, get_optx, fielddef2jadn, jadn2fielddef, jadn2typestr, raise_error, typestr2jadn
 
 # MARKDOWN -> JADN Type regexes
 p_tname = r'\s*([-$\w]+)'               # Type Name
@@ -24,8 +24,9 @@ p_desc = r'\s*(?:\/\/\s*(.*?)\s*)?'  # Field description, including field name i
 
 
 def markdown_style() -> dict:
-    # No style options defined yet
     return {
+        'pad': True,    # Use one space horizontal padding
+        'links': True   # Retain Markdown links: [text](link)
     }
 
 
@@ -34,8 +35,8 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
     Convert JADN schema to Markdown Tables
 
     :param dict schema: JADN schema
-    :param dict style: Override default column widths if specified
-    :return: JADN-IDL text
+    :param dict style: Override default options if specified
+    :return: Markdown tables
     :rtype: str
     """
     w = markdown_style()
@@ -45,39 +46,44 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
     text = ''
     info = schema['info'] if 'info' in schema else {}
     mlist = [k for k in INFO_ORDER if k in info]
-    for k in mlist + list(set(info) - set(mlist)):              # Display info elements in fixed order
-        text += f'{k:>{w["info"]}}: {json.dumps(info[k])}\n'    # TODO: wrap to page width, continuation-line parser
+    for k in mlist + list(set(info) - set(mlist)):      # Display info elements in fixed order
+        text += f'{k:>14}: {json.dumps(info[k])}\n'     # TODO: wrap to width, continuation-line parser
 
     for td in schema['types']:
-        tdef = f'{td[TypeName]} = {jadn2typestr(td[BaseType], td[TypeOptions])}'
-        tdesc = '// ' + td[TypeDesc] if td[TypeDesc] else ''
-        text += f'\n{tdef:<14}{tdesc}'[:w['page']].rstrip() + '\n'
-        idt = td[BaseType] == 'Array' or get_optx(td[TypeOptions], 'id') is not None
-        for fd in td[Fields] if len(td) > Fields else []:       # TODO: constant-length types
-            fname, fdef, fmult, fdesc = jadn2fielddef(fd, td)
-            if td[BaseType] == 'Enumerated':
-                fdesc = '// ' + fdesc if fdesc else ''
-                fs = f'{fd[ItemID]:>{w["id"]}} {fname}'
-                wf = w['id'] + w['name'] + 2
-            else:
-                fdef += '' if fmult == '1' else ' optional' if fmult == '0..1' else ' [' + fmult + ']'
-                fdesc = '// ' + fdesc if fdesc else ''
-                wn = 0 if idt else w['name']
-                fs = f'{fd[FieldID]:>{w["id"]}} {fname:<{wn}} {fdef}'
-            wf = w['desc']
-            text += etrunc(f'{fs:{wf}}{fdesc}'.rstrip(), w['page']) + '\n'
+        if len(td) > Fields and td[Fields]:
+            tdef = f'{td[TypeName]} ({jadn2typestr(td[BaseType], td[TypeOptions])})'
+            tdesc = f'\n{td[TypeDesc]}\n' if td[TypeDesc] else ''
+            text += f'{tdesc}\n**Type: ' + tdef.replace("*", "\*") + '**\n'
+            idt = td[BaseType] == 'Array' or get_optx(td[TypeOptions], 'id') is not None
+            table_type = (0 if td[BaseType] == 'Enumerated' else 2) + (0 if idt else 1)
+            table = [
+                [['ID', 'Description']],
+                [['ID', 'Item', 'Description']],
+                [['ID', 'Type', '\#', 'Description']],
+                [['ID', 'Name', 'Type', '\#', 'Description']]
+            ][table_type]
+            for fd in td[Fields]:
+                fname, fdef, fmult, fdesc = jadn2fielddef(fd, td)
+                fdef = fdef.replace('*', '\*')
+                fmult = fmult.replace('*', '\*')
+                dsc = fdesc.split('::', maxsplit=2)
+                fdesc = f'**{dsc[0]}** - {dsc[1].strip()}' if len(dsc) == 2 else fdesc
+                if table_type == 0:
+                    table.append([str(fd[ItemID]), fdesc])
+                elif table_type == 1:
+                    table.append([str(fd[ItemID]), f'**{fname}**', fdesc])
+                elif table_type == 2:
+                    table.append([str(fd[FieldID]), fdef, fmult, fdesc])
+                elif table_type == 3:
+                    table.append([str(fd[FieldID]), f'**{fname}**', fdef, fmult, fdesc])
+        else:
+            table = [['Type Name', 'Type Definition', 'Description'],
+                     [f'**{td[TypeName]}**', jadn2typestr(td[BaseType], td[TypeOptions]), td[TypeDesc]]]
+        text += f'\n{format_table(table)}\n\n**********\n'
     return text
 
 
-tb = [
-    ['foo', 'bar', 'baz'],
-    ['a', 'b', 'a long comment'],
-    ['lots of stuff', 'b', 'c']
-]
-
-
-# text += f'{k:>{w["info"]}}: {json.dumps(info[k])}\n' # nested f-string expression
-def format_table(rows: list[list[str]]) -> str:
+def format_table(rows: list) -> str:
     cwidth = [len(data.strip()) for data in rows[0]]
     for row in rows[1:]:
         for c in range(len(row)):

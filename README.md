@@ -16,21 +16,43 @@ creates an `Out` folder, and converts each schema into multiple output formats.
 Source schemas can be in JADN, JADN IDL, or HTML format.
 Output formats are:
 * JADN - native JSON data
-* JADN IDL - plain text information definition language
+* JADN IDL - plain text information definition language, easier to edit than JSON or Markdown
 * Markdown tables - the format used in current OpenC2 documentation
 * HTML tables - themeable tables (an example style is included in the Out folder)
 * PlantUML diagram - viewable at http://www.plantuml.com
 * Dot diagram - viewable at https://sketchviz.com/new
 * JADN Core - native JSON data with all extensions removed
 
-The script also creates a JSON Schema file corresponding to the JADN information model.
+As an alternative to validating data directly using the JADN abstract schema,
+the script also creates concrete schemas for each supported data format:
+* JSON Schema - used to validate JSON data files
+
+To check an actuator profile, run `make-artifacts` to generate a markdown version of
+the profile schema, then compare differences between the generated table and the document.
+In this example for language spec types, most tables are identical but there is a typo
+("Consumer") to be fixed in the schema. Once `make-artifacts` reads the schema without
+errors and the tables are identical, the profile is known to be valid.
+
+To create an actuator profile, add custom type definitions to the actuator profile
+template, then generate tables from the schema for use as the initial draft of 
+the profile document.
+
+![Table Diff](Images/types-diff.jpg)
 
 ### Resolve Namespaced References
-A JADN package (file) can import type definitions from other packages using a namespace.
+The OpenC2 language specification and actuator profiles all have individual schema packages.
+But as described in the OpenC2 architecture, OpenC2 producers and consumers are *devices*,
+each of which supports the core language plus a combination of one or more actuator profiles.
+Before they can be used in a device, a device developer must *resolve* multiple
+published schemas into a single device schema.
+
+![Profile Architecture](Images/Arch-Example-1.drawio.png)
+
+A JADN schema package imports type definitions from other packages using namespaces.
 The `resolve-references.py` script reads a specified package from the Schemas folder
 and replaces namespaced type references with the full type definition from the referenced
 package.  The result is a single self-contained package stored in the Out folder with
-"-resolved" appended to the filename.
+`-resolved` appended to the filename.
 
 The OpenC2 language specification contains two content sections: language framework
 ([3.2, 3.3](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#32-message))
@@ -44,6 +66,7 @@ The Language references to Types can be resolved into a single schema file conta
 definitions in the language specification with `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
 ### Create Device Schema
+
 The process to create a device schema is:
 1. Create a device template starting with the language schema oc2ls-v1.1-lang.jadn
    1. edit the package, version, title, etc to reflect the name of the device

@@ -10,14 +10,14 @@ To get started, install the JADN and Fire packages into a Python 3.8 or newer en
 * `pip install jadn`
 * `pip install fire`
 
-### Translate Information Models into Multiple Formats
-Schemas:
-* **oc2ls-v1.1-lang** - The OpenC2 language framework and Device template
+The following schemas are included:
+* **oc2ls-v1.1-lang** - OpenC2 language framework and Device template
 * **oc2ls-v1.1-types** - OpenC2 common types
 * **oc2ls-v1.1-ap-template** - Actuator profile template
 * **oc2slpf-v1.1** - SLPF actuator profile
 * **device-slpf-v1.1** - Device template for consumer that supports SLPF profile
 
+### Translate Information Models into Multiple Formats
 The `make-artifacts.py` script reads each source schema stored in the `Schemas` folder,
 creates an `Out` folder, and converts each schema into multiple output formats.
 Source schemas can be in JADN, JADN IDL, or HTML format.

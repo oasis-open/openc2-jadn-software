@@ -35,8 +35,8 @@ def markdown_dumps(schema: dict, style: dict = None) -> str:
     Convert JADN schema to Markdown Tables
 
     :param dict schema: JADN schema
-    :param dict style: Override default column widths if specified
-    :return: JADN-IDL text
+    :param dict style: Override default options if specified
+    :return: Markdown tables
     :rtype: str
     """
     w = markdown_style()

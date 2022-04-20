@@ -26,9 +26,56 @@ Environment variable "GitHubToken" must have a Personal Access Token to prevent 
      ...
 """
 
-base = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
-auth = {'Authorization': f'token {os.environ["GitHubToken"]}'}
+ROOT_DIR = 'Test'
+ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
+TEST_ROOT = ROOT_REPO           # Select root of device test tree
+
+AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
 # auth = {}
+
+
+class WebDirEntry:
+    """
+    Fake os.DirEntry type for GitHub filesystem
+    """
+    def __init__(self, name, path, url):
+        self.name = name
+        self.path = path
+        self.url = url
+
+
+def list_dir(dirname: str) -> dict:
+    """
+    Return a dict listing the files and directories in a directory on local filesystem or GitHub repo.
+
+    :param dirname: str - a filesystem path or GitHub API URL
+    :return: dict {files: [DirEntry*], dirs: [DirEntry*]}
+    Local Filesystem: Each list item is an os.DirEntry structure containing name and path attributes
+    GitHub Filesystem: Each list item has name, path, and url (download URL) attributes
+    """
+
+    files, dirs = [], []
+    if dirname.startswith('https://'):
+        with urlopen(Request(dirname, headers=AUTH)) as d:
+            for dl in json.loads(d.read().decode()):
+                url = 'url' if dl['type'] == 'dir' else 'download_url'
+                entry = WebDirEntry(dl['name'], dl[url], dl['url'])
+                (dirs if dl['type'] == 'dir' else files).append(entry)
+    else:
+        with os.scandir(dirname) as dlist:
+            for entry in dlist:
+                (dirs if os.path.isdir(entry) else files).append(entry)
+    return {'files': files, 'dirs': dirs}
+
+
+def read_file(path: str) -> str:
+    if path.startswith('https://'):
+        with urlopen(Request(path, headers=AUTH)) as fp:
+            doc = fp.read().decode()
+    else:
+        with open(path) as fp:
+            doc = fp.read()
+    return doc
 
 
 def gh_get(url):            # Read contents from GitHub API
@@ -37,10 +84,10 @@ def gh_get(url):            # Read contents from GitHub API
     return entry
 
 
-def find_tests(api_url):    # Search for GitHub folders containing schemas and test data
+def find_tests(dname):    # Search for GitHub folders containing schemas and test data
     def _ft(url, tests):    # Internal recursive search
-        gdir = gh_get(url)
-        dirs = {e['name']: e['url'] for e in gdir if e['type'] == 'dir'}
+        dl = list_dir(dname)
+        dirs = {d.name: d.url for d in dl['dirs']}
         if 'Good-command' in dirs:      # Directory name indicates test data
             files = {e['name']: e['download_url'] for e in gdir if e['type'] == 'file'}
             json_url = [u for f, u in files.items() if os.path.splitext(f)[1] == '.json']
@@ -53,7 +100,7 @@ def find_tests(api_url):    # Search for GitHub folders containing schemas and t
                 _ft(child, tests)
 
     test_list = []          # Initialize, build test list, and return it
-    _ft(api_url, test_list)
+    _ft(dname, test_list)
     return test_list
 
 
@@ -88,6 +135,6 @@ def run_test(tdir):         # Check correct validation of good and bad commands 
     print('\nValidation Errors:', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
-print(f'Test Data: {base}, Auth: {auth["Authorization"][-4:]}')
-for test in find_tests(base):
+print(f'Test Data: {TEST_ROOT}, Auth: {AUTH["Authorization"][-4:]}')
+for test in find_tests(TEST_ROOT):
     run_test(test)

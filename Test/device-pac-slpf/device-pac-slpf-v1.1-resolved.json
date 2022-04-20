@@ -1,0 +1,990 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://acme.com/schemas/template/pacf/v2.4",
+  "title": "OpenC2 Device Template for the PACE collection service and packet filter",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "openc2_command": {
+      "$ref": "#/definitions/OpenC2-Command"
+    },
+    "openc2_response": {
+      "$ref": "#/definitions/OpenC2-Response"
+    }
+  },
+  "definitions": {
+    "OpenC2-Command": {
+      "title": "OpenC2 Command",
+      "type": "object",
+      "description": "The Command defines an Action to be performed on a Target",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The task or activity to be performed (i.e., the 'verb')."
+        },
+        "target": {
+          "$ref": "#/definitions/Target",
+          "description": "The object of the Action. The Action is performed on the Target."
+        },
+        "args": {
+          "$ref": "#/definitions/Args",
+          "description": "Additional information that applies to the Command."
+        },
+        "actuator": {
+          "$ref": "#/definitions/Actuator",
+          "description": "The subject of the Action. The Actuator executes the Action on the Target."
+        },
+        "command_id": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "An identifier of this Command."
+        }
+      }
+    },
+    "OpenC2-Response": {
+      "title": "OpenC2 Response",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/Status-Code",
+          "description": "An integer status code."
+        },
+        "status_text": {
+          "type": "string",
+          "description": "A free-form human-readable description of the Response status.",
+          "maxLength": 255
+        },
+        "results": {
+          "$ref": "#/definitions/Results",
+          "description": "Map of key:value pairs that contain additional results based on the invoking Command."
+        }
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "string",
+      "enum": [
+        "scan",
+        "query",
+        "deny",
+        "allow",
+        "cancel",
+        "update",
+        "delete",
+        "copy"
+      ]
+    },
+    "Target": {
+      "title": "Target",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "command": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "A reference to a previously issued Command."
+        },
+        "device": {
+          "$ref": "#/definitions/Device",
+          "description": "The properties of a hardware device."
+        },
+        "domain_name": {
+          "$ref": "#/definitions/Domain-Name",
+          "description": "A network domain name."
+        },
+        "features": {
+          "$ref": "#/definitions/Features",
+          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+        },
+        "file": {
+          "$ref": "#/definitions/File",
+          "description": "Properties of a file."
+        },
+        "ipv4_net": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "An IPv4 address range including CIDR prefix length."
+        },
+        "ipv6_net": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "An IPv6 address range including prefix length."
+        },
+        "ipv4_connection": {
+          "$ref": "#/definitions/IPv4-Connection",
+          "description": "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."
+        },
+        "ipv6_connection": {
+          "$ref": "#/definitions/IPv6-Connection",
+          "description": "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."
+        },
+        "mac_addr": {
+          "$ref": "#/definitions/MAC-Addr",
+          "description": "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."
+        },
+        "slpf": {
+          "$ref": "#/definitions/AP-Target$slpf",
+          "description": "SLPF-defined targets"
+        },
+        "pac": {
+          "$ref": "#/definitions/AP-Target$pac",
+          "description": "PAC-defined targets"
+        }
+      }
+    },
+    "Args": {
+      "title": "Args",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slpf",
+        "pac"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "start_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to initiate the Command"
+        },
+        "stop_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to terminate the Command"
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration",
+          "description": "The length of time for an Command to be in effect"
+        },
+        "response_requested": {
+          "$ref": "#/definitions/Response-Type",
+          "description": "The type of Response required for the Command: none, ack, status, complete"
+        },
+        "slpf": {
+          "$ref": "#/definitions/AP-Args$slpf",
+          "description": "SLPF-defined command arguments"
+        },
+        "pac": {
+          "$ref": "#/definitions/AP-Args$pac",
+          "description": "PAC-defined command arguments"
+        }
+      }
+    },
+    "Actuator": {
+      "title": "Actuator",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "slpf": {
+          "$ref": "#/definitions/AP-Specifiers$slpf",
+          "description": "SLPF-defined actuator specifiers"
+        },
+        "pac": {
+          "$ref": "#/definitions/AP-Specifiers$pac",
+          "description": "PAC-defined actuator specifiers"
+        }
+      }
+    },
+    "Results": {
+      "title": "Results",
+      "type": "object",
+      "description": "Response Results",
+      "additionalProperties": false,
+      "required": [
+        "slpf",
+        "pac"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "List of OpenC2 language versions supported by this Actuator",
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/definitions/Version",
+            "description": "List of OpenC2 language versions supported by this Actuator"
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "description": "List of profiles supported by this Actuator",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Nsid",
+            "description": "List of profiles supported by this Actuator"
+          }
+        },
+        "pairs": {
+          "$ref": "#/definitions/Action-Targets",
+          "description": "DEPRECATED: targets applicable to each supported Action"
+        },
+        "rate_limit": {
+          "type": "number",
+          "description": "Maximum number of requests per minute supported by design or policy",
+          "minimum": 0.0
+        },
+        "slpf": {
+          "$ref": "#/definitions/AP-Results$slpf",
+          "description": "SLPF-defined results"
+        },
+        "pac": {
+          "$ref": "#/definitions/AP-Results$pac",
+          "description": "PAC-defined results"
+        }
+      }
+    },
+    "Action-Targets": {
+      "title": "Action Targets",
+      "type": "object",
+      "description": "Targets applicable to each action supported by this device",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "scan": {
+          "$ref": "#/definitions/Targets"
+        },
+        "query": {
+          "$ref": "#/definitions/Targets"
+        },
+        "deny": {
+          "$ref": "#/definitions/Targets"
+        },
+        "allow": {
+          "$ref": "#/definitions/Targets"
+        },
+        "cancel": {
+          "$ref": "#/definitions/Targets"
+        },
+        "update": {
+          "$ref": "#/definitions/Targets"
+        },
+        "delete": {
+          "$ref": "#/definitions/Targets"
+        },
+        "copy": {
+          "$ref": "#/definitions/Targets"
+        }
+      }
+    },
+    "Targets": {
+      "title": "Targets",
+      "type": "array",
+      "description": "Target pointers",
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "enum": [
+          "command",
+          "device",
+          "domain_name",
+          "features",
+          "file",
+          "ipv4_net",
+          "ipv6_net",
+          "ipv4_connection",
+          "ipv6_connection",
+          "mac_addr",
+          "slpf",
+          "pac"
+        ]
+      }
+    },
+    "Device": {
+      "title": "Device",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "hostname": {
+          "$ref": "#/definitions/Hostname",
+          "description": "A hostname that can be used to connect to this device over a network"
+        },
+        "idn_hostname": {
+          "$ref": "#/definitions/IDN-Hostname",
+          "description": "An internationalized hostname that can be used to connect to this device over a network"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "An identifier that refers to this device within an inventory or management system",
+          "maxLength": 255
+        }
+      }
+    },
+    "Domain-Name": {
+      "title": "Domain Name",
+      "type": "string",
+      "description": "[[RFC1034]](#rfc1034), Section 3.5",
+      "format": "hostname",
+      "maxLength": 255
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "File": {
+      "title": "File",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the file as defined in the file system",
+          "maxLength": 255
+        },
+        "path": {
+          "type": "string",
+          "description": "The absolute path to the location of the file in the file system",
+          "maxLength": 255
+        },
+        "hashes": {
+          "$ref": "#/definitions/Hashes",
+          "description": "One or more cryptographic hash codes of the file contents"
+        }
+      }
+    },
+    "IPv4-Net": {
+      "title": "IPv4 Net",
+      "type": "string",
+      "description": "IPv4 address and prefix length",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
+    },
+    "IPv4-Connection": {
+      "title": "IPv4 Connection",
+      "type": "object",
+      "description": "5-tuple that specifies a tcp/ip connection",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "src_addr": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "IPv4 source address range"
+        },
+        "src_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Source service per [[RFC6335]](#rfc6335)"
+        },
+        "dst_addr": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "IPv4 destination address range"
+        },
+        "dst_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Destination service per [[RFC6335]](#rfc6335)"
+        },
+        "protocol": {
+          "$ref": "#/definitions/L4-Protocol",
+          "description": "Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)"
+        }
+      }
+    },
+    "IPv6-Net": {
+      "title": "IPv6 Net",
+      "type": "string",
+      "description": "IPv6 address and prefix length",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
+    },
+    "IPv6-Connection": {
+      "title": "IPv6 Connection",
+      "type": "object",
+      "description": "5-tuple that specifies a tcp/ip connection",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "src_addr": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "IPv6 source address range"
+        },
+        "src_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Source service per [[RFC6335]](#rfc6335)"
+        },
+        "dst_addr": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "IPv6 destination address range"
+        },
+        "dst_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Destination service per [[RFC6335]](#rfc6335)"
+        },
+        "protocol": {
+          "$ref": "#/definitions/L4-Protocol",
+          "description": "Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"
+        }
+      }
+    },
+    "MAC-Addr": {
+      "title": "MAC Addr",
+      "type": "string",
+      "description": "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI](#eui)",
+      "pattern": "^([0-9a-fA-F]{2}[:-]){5}[0-9A-Fa-f]{2}(([:-][0-9A-Fa-f]{2}){2})?$"
+    },
+    "URI": {
+      "title": "URI",
+      "type": "string",
+      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
+      "format": "uri",
+      "maxLength": 255
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "Hashes": {
+      "title": "Hashes",
+      "type": "object",
+      "description": "Cryptographic hash values",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "md5": {
+          "type": "string",
+          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
+          "contentEncoding": "base16"
+        },
+        "sha1": {
+          "type": "string",
+          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        }
+      }
+    },
+    "Hostname": {
+      "title": "Hostname",
+      "type": "string",
+      "description": "Internet host name as specified in [[RFC1123]](#rfc1123)",
+      "format": "hostname",
+      "maxLength": 255
+    },
+    "IDN-Hostname": {
+      "title": "IDN Hostname",
+      "type": "string",
+      "description": "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.",
+      "format": "idn-hostname",
+      "maxLength": 255
+    },
+    "IPv4-Addr": {
+      "title": "IPv4 Addr",
+      "type": "string",
+      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
+    },
+    "IPv6-Addr": {
+      "title": "IPv6 Addr",
+      "type": "string",
+      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
+    },
+    "L4-Protocol": {
+      "title": "L4 Protocol",
+      "type": "string",
+      "description": "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)",
+      "enum": [
+        "icmp",
+        "tcp",
+        "udp",
+        "sctp"
+      ]
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Port": {
+      "title": "Port",
+      "type": "integer",
+      "description": "Transport Protocol Port Number, [[RFC6335]](#rfc6335)",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "Version": {
+      "title": "Version",
+      "type": "string",
+      "description": "Major.Minor version number",
+      "maxLength": 255
+    },
+    "AP-Target$pac": {
+      "title": "AP Target$pac",
+      "type": "object",
+      "description": "Profile-defined targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "props": {
+          "type": "array",
+          "description": "List of property names to query",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/ResultName$pac",
+            "description": "List of property names to query"
+          }
+        }
+      }
+    },
+    "AP-Args$pac": {
+      "title": "AP Args$pac",
+      "type": "object",
+      "description": "Profile-defined command arguments",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "foo": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "AP-Specifiers$pac": {
+      "title": "AP Specifiers$pac",
+      "type": "object",
+      "description": "Profile-defined actuator specifiers",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "foo": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "AP-Results$pac": {
+      "title": "AP Results$pac",
+      "type": "object",
+      "description": "Profile-defined response results",
+      "additionalProperties": false,
+      "required": [
+        "os_version",
+        "sbom"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "os_version": {
+          "$ref": "#/definitions/OS-Version$pac",
+          "description": ""
+        },
+        "sbom": {
+          "$ref": "#/definitions/SBOM$pac",
+          "description": ""
+        }
+      }
+    },
+    "ResultName$pac": {
+      "title": "ResultName$pac",
+      "type": "string",
+      "enum": [
+        "os_version",
+        "sbom"
+      ]
+    },
+    "OS-Version$pac": {
+      "title": "OS Version$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Distribution or product name",
+          "maxLength": 255
+        },
+        "version": {
+          "type": "string",
+          "description": "Suitable for presentation OS version",
+          "maxLength": 255
+        },
+        "major": {
+          "type": "integer",
+          "description": "Major release version"
+        },
+        "patch": {
+          "type": "integer",
+          "description": "Patch release"
+        },
+        "build": {
+          "type": "string",
+          "description": "Build-specific or variant string",
+          "maxLength": 255
+        },
+        "platform": {
+          "type": "string",
+          "description": "OS Platform or ID",
+          "maxLength": 255
+        },
+        "platform_like": {
+          "type": "array",
+          "description": "Closely-related platforms",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Closely-related platforms",
+            "maxLength": 255
+          }
+        },
+        "arch": {
+          "$ref": "#/definitions/OS-Arch$pac",
+          "description": "OS Architecture"
+        },
+        "install_date": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "Install date of the OS"
+        }
+      }
+    },
+    "OS-Arch$pac": {
+      "title": "OS Arch$pac",
+      "type": "string",
+      "description": "Win: wmic os get osarchitecture, or Unix: uname -m",
+      "enum": [
+        "32-bit",
+        "64-bit",
+        "x86_32",
+        "x86_64"
+      ]
+    },
+    "SBOM$pac": {
+      "title": "SBOM$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "uri": {
+          "$ref": "#/definitions/URI",
+          "description": "Unique identifier or locator of the SBOM"
+        },
+        "summary": {
+          "$ref": "#/definitions/SBOM-Elements$pac",
+          "description": "NTIA Minimumum Elements of an SBOM"
+        },
+        "content": {
+          "$ref": "#/definitions/SBOM-Content$pac",
+          "description": "SBOM structured data"
+        },
+        "blob": {
+          "$ref": "#/definitions/SBOM-Blob$pac",
+          "description": "Uninterpreted SBOM bytes"
+        }
+      }
+    },
+    "SBOM-Elements$pac": {
+      "title": "SBOM Elements$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supplier",
+        "component",
+        "version",
+        "author",
+        "timestamp"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "supplier": {
+          "type": "array",
+          "description": "Name of entity that creates, defines, and identifies components",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Name of entity that creates, defines, and identifies components",
+            "maxLength": 255
+          }
+        },
+        "component": {
+          "type": "array",
+          "description": "Designation(s) assigned to a unit of software defined by the original supplier",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Designation(s) assigned to a unit of software defined by the original supplier",
+            "maxLength": 255
+          }
+        },
+        "version": {
+          "type": "string",
+          "description": "Identifier used by supplier to specify a change from a previously identified version",
+          "maxLength": 255
+        },
+        "component_ids": {
+          "type": "array",
+          "description": "Other identifiers used to identify a component, or serve as a look-yp key",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Other identifiers used to identify a component, or serve as a look-yp key",
+            "maxLength": 255
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "Upstream component(s)",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Upstream component(s)",
+            "maxLength": 255
+          }
+        },
+        "author": {
+          "type": "string",
+          "description": "Name of the entity that creates SBOM data for this component",
+          "maxLength": 255
+        },
+        "timestamp": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "Record of the date and time of the SBOM data assembly"
+        }
+      }
+    },
+    "SBOM-Content$pac": {
+      "title": "SBOM Content$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "cyclonedx": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "spdx2": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "spdx3": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "SBOM-Blob$pac": {
+      "title": "SBOM Blob$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "data"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "cyclonedx",
+            "spdx2",
+            "spdx3"
+          ]
+        },
+        "data": {
+          "type": "string",
+          "contentEncoding": "base64url"
+        }
+      }
+    },
+    "AP-Target$slpf": {
+      "title": "AP Target$slpf",
+      "type": "object",
+      "description": "SLPF targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "rule_number": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"
+        }
+      }
+    },
+    "AP-Args$slpf": {
+      "title": "AP Args$slpf",
+      "type": "object",
+      "description": "SLPF command arguments",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "drop_process": {
+          "$ref": "#/definitions/Drop-Process$slpf",
+          "description": "Specifies how to handle denied packets"
+        },
+        "persistent": {
+          "type": "boolean",
+          "description": "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"
+        },
+        "direction": {
+          "$ref": "#/definitions/Direction$slpf",
+          "description": "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"
+        },
+        "insert_rule": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Specifies the identifier of the rule within a list, typically used in a top-down rule list"
+        }
+      }
+    },
+    "AP-Specifiers$slpf": {
+      "title": "AP Specifiers$slpf",
+      "type": "object",
+      "description": "SLPF actuator specifiers (may be empty)",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "hostname": {
+          "type": "string",
+          "description": "RFC 1123 hostname (can be a domain name or IP address) for a particular device with SLPF functionality",
+          "maxLength": 255
+        },
+        "named_group": {
+          "type": "string",
+          "description": "User defined collection of devices with SLPF functionality",
+          "maxLength": 255
+        },
+        "asset_id": {
+          "type": "string",
+          "description": "Unique identifier for a particular SLPF",
+          "maxLength": 255
+        },
+        "asset_tuple": {
+          "type": "array",
+          "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
+            "maxLength": 255
+          }
+        }
+      }
+    },
+    "AP-Results$slpf": {
+      "title": "AP Results$slpf",
+      "type": "object",
+      "description": "SLPF results defined in this profile",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "rule_number": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Rule identifier returned from allow or deny Command."
+        }
+      }
+    },
+    "Drop-Process$slpf": {
+      "title": "Drop Process$slpf",
+      "type": "string",
+      "enum": [
+        "none",
+        "reject",
+        "false_ack"
+      ]
+    },
+    "Direction$slpf": {
+      "title": "Direction$slpf",
+      "type": "string",
+      "enum": [
+        "both",
+        "ingress",
+        "egress"
+      ]
+    },
+    "Rule-ID$slpf": {
+      "title": "Rule ID$slpf",
+      "type": "integer",
+      "description": "Access rule identifier"
+    }
+  }
+}

@@ -38,11 +38,11 @@ Results = Enumerated
 1035 pac
 
 Pairs = Enumerated
-   1 scan
-   3 query: features
-  14 cancel
-  16 update
-  28 copy
+   1 scan: device,mac_addr
+   3 query: device,features,mac_addr,properties,pac/os_version
+  14 cancel: command
+  16 update: file
+  28 copy: file
 
 AP-Target = Choice                                // Profile-defined targets
    1 os_version     OS-Version
@@ -54,22 +54,46 @@ AP-Specifiers = Map                               // Profile-defined actuator sp
    1 foo              String optional
 
 AP-Results = Map{1..*}                            // Profile-defined response results
-   1 foo              String optional
+   1 os_version       OS-Version
+   2 sbom             SBOM
 
 OS-Version = Record
    1 name   String      // Distribution or product name
    2 version String     // Suitable for presentation OS version
    3 major  Integer optional     // Major release version
-   4 minor  Integer optional    // Minor release version
-   5 patch  Integer optional    // Patch release
-   6 build  String optional     // Build-specific or variant string
-   7 platform String optional   // OS Platform or ID
-   8 platform_like String [0..*]    // Closely-related platforms
-   9 arch   OS-Arch optional        // OS Architecture
-  10 install_date   DateTime optional   // Install date of the OS
+   4 patch  Integer optional    // Patch release
+   5 build  String optional     // Build-specific or variant string
+   6 platform String optional   // OS Platform or ID
+   7 platform_like String [0..*]    // Closely-related platforms
+   8 arch   OS-Arch optional        // OS Architecture
+   9 install_date   DateTime optional   // Install date of the OS
 
 OS-Arch = Enumerated    // Win: wmic os get osarchitecture, or Unix: uname -m
    1 32-bit
    2 64-bit
    3 x86_32
    4 x86_64
+
+SBOM = Choice
+   1 uri ls:URI     // Unique identifier or locator of the SBOM
+   2 summary SBOM-Elements      // NTIA Minimumum Elements of an SBOM
+   3 content SBOM-Content     // Full SBOM data
+
+SBOM-Elements = Record
+   1 supplier String [1..*]     // Name of entity that creates, defines, and identifies components
+   2 component String [1..*]    // Designation(s) assigned to a unit of software defined by the original supplier
+   3 version String             // Identifier used by supplier to specify a change from a previously identified version
+   4 component_ids String [0..*]    // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies String [0..*]     // Upstream component(s)
+   6 author String                  // Name of the entity that creates SBOM data for this component
+   7 timestamp Date-Time            // Record of the date and time of the SBOM data assembly
+
+SBOM-Content = Choice
+   1 blob SBOM-Blob
+   2 cyclonedx cdx:Sbom
+   3 spdx2 spdx2:Sbom
+   4 spdx3 spdx3:Sbom
+
+SBOM-Blob = Record
+   1 format SBOM-Format
+   2 data Binary

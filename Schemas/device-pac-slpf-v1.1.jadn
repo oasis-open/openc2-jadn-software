@@ -1,11 +1,12 @@
 {
  "info": {
-  "package": "http://acme.com/schemas/template/slpf2000/v2.4",
-  "title": "OpenC2 Device Template for the SLPF-2000 packet filter",
-  "exports": ["Message"],
+  "package": "http://acme.com/schemas/template/pacf/v2.4",
+  "title": "OpenC2 Device Template for the PACE collection service and packet filter",
+  "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
    "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "slpf": "http://oasis-open.org/openc2/oc2slpf/v1.1"
+   "slpf": "http://oasis-open.org/openc2/oc2slpf/v1.1",
+   "pac": "http://oasis-open.org/openc2/oc2pac/v1.1"
   }
  },
 
@@ -40,12 +41,6 @@
     [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
   ]],
 
-  ["OpenC2-Response", "Record", [], "", [
-    [1, "status", "ls:Status-Code", [], "An integer status code."],
-    [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status."],
-    [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
-  ]],
-
   ["Action", "Enumerated", [], "", [
     [3, "query", "Initiate a request for information."],
     [6, "deny", "Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access."],
@@ -61,7 +56,8 @@
     [14, "ipv6_net", "ls:IPv6-Net", [], "An IPv6 address range including prefix length."],
     [15, "ipv4_connection", "ls:IPv4-Connection", [], "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."],
     [16, "ipv6_connection", "ls:IPv6-Connection", [], "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."],
-    [1024, "slpf", "slpf:AP-Target", ["<"], "Profile-defined targets"]
+    [1024, "slpf", "slpf:AP-Target", ["<"], "SLPF-defined targets"],
+    [1035, "pac", "pac:AP-Target", ["<"], "PAC-defined targets"]
   ]],
 
   ["Args", "Map", ["{1"], "", [
@@ -69,11 +65,19 @@
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
     [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-    [1024, "slpf", "slpf:AP-Args", ["<"], "Profile-defined command arguments"]
+    [1024, "slpf", "slpf:AP-Args", ["<"], "SLPF-defined command arguments"],
+    [1035, "pac", "pac:AP-Args", ["<"], "PAC-defined command arguments"]
   ]],
 
   ["Actuator", "Choice", [], "", [
-    [1024, "slpf", "slpf:AP-Specifiers", ["<"], "Profile-defined actuator specifiers"]
+    [1024, "slpf", "slpf:AP-Specifiers", ["<"], "SLPF-defined actuator specifiers"],
+    [1035, "pac", "pac:AP-Specifiers", ["<"], "PAC-defined actuator specifiers"]
+  ]],
+
+  ["OpenC2-Response", "Record", [], "", [
+    [1, "status", "ls:Status-Code", [], "An integer status code."],
+    [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status."],
+    [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
   ]],
 
   ["Results", "Map", ["{1"], "Response Results", [
@@ -82,7 +86,8 @@
     [3, "pairs", "Action-Targets", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
     [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
     [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"],
-    [1024, "slpf", "slpf:AP-Results", ["<"], "Profile-defined results"]
+    [1024, "slpf", "slpf:AP-Results", ["<"], "SLPF-defined results"],
+    [1035, "pac", "pac:AP-Results", ["<"], "PAC-defined results"]
   ]],
 
   ["Action-Targets", "MapOf", ["+Action", "*Targets", "{1"], "Targets applicable to each action supported by this device", []],

@@ -15,6 +15,7 @@ Environment variable "GitHubToken" must have a Personal Access Token to prevent 
 
 /
 |-- profile-A
+|   |-- schema-A.jadn
 |   |-- schema-A.json
 |   |-- Good-command
 |   |   |-- command.json
@@ -26,14 +27,16 @@ Environment variable "GitHubToken" must have a Personal Access Token to prevent 
 |   |-- Bad-response
 |   |   |-- response.json
 |-- profile-B
+|   |-- schema-B.jadn
 |   |-- schema-B.json
      ...
 """
 
-VALIDATE_JADN = False    # Use JAON schema if True, JSON schema if False
+VALIDATE_JADN = True    # Use JAON schema if True, JSON schema if False
 
 ROOT_DIR = 'Test'
-ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
+# ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
+ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/contents/'
 TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}

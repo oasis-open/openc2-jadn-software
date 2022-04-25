@@ -50,16 +50,16 @@ the script also creates concrete schemas for each supported data format:
 To check an actuator profile, run `make-artifacts` to generate a markdown version of
 the profile schema, then compare differences between the generated markdown tables and the
 profile document.
-In this language spec example, most tables are identical but there is a typo
-("Consumer") to be fixed in the schema. Once `make-artifacts` reads the schema without
+In this example, most tables are identical but there is a typo ("Consumer")
+to be fixed in the schema. Once `make-artifacts` reads the schema without
 errors and the tables are identical, the document tables are known to be valid.
+
+![Table Diff](Images/types-diff.jpg)
 
 To create a new actuator profile, add custom type definitions to the actuator profile
 template, then generate tables from the schema for use as the initial draft of 
 the profile document.  Always generating tables from the schema rather than editing
 them by hand ensures that they remain valid as the profile evolves.
-
-![Table Diff](Images/types-diff.jpg)
 
 ### Resolve Namespaced References
 

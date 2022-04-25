@@ -6,15 +6,14 @@ import jadn
 import os
 import shutil
 from typing import NoReturn
-from markdown import markdown_dump
 
 SCHEMA_DIR = 'Schemas'
 OUTPUT_DIR = 'Out'
 
 
 def translate(filename: str, sdir: str, odir: str) -> NoReturn:
-    if not (schema := jadn.load_any(os.path.join(sdir, filename))):
-        return
+    with open(os.path.join(sdir, filename)) as fp:
+        schema = jadn.load_any(fp)
     print(f'{filename}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))
 
     fn, ext = os.path.splitext(filename)
@@ -25,7 +24,7 @@ def translate(filename: str, sdir: str, odir: str) -> NoReturn:
     jadn.convert.plant_dump(schema, os.path.join(odir, fn + '.puml'), style={'links': True, 'detail': 'information'})
     jadn.convert.jidl_dump(schema, os.path.join(odir, fn + '.jidl'), style={'desc': 50})
     jadn.convert.html_dump(schema, os.path.join(odir, fn + '.html'))
-    markdown_dump(schema, os.path.join(odir, fn + '.md'))
+    jadn.convert.markdown_dump(schema, os.path.join(odir, fn + '.md'))
     jadn.translate.json_schema_dump(schema, os.path.join(odir, fn + '.json'))
 
 

@@ -1,15 +1,19 @@
 from collections import defaultdict
+from io import TextIOWrapper
+from typing import TextIO
 from urllib.request import urlopen, Request
+from urllib.parse import urlparse
+import jadn
 import json
 from jsonschema import validate, draft7_format_checker
 from jsonschema.exceptions import ValidationError
 import os
 
 """
-Validate OpenC2 commands and responses for profiles stored on GitHub under "base"
+Validate OpenC2 commands and responses for profiles stored in local ROOT_DIR or GitHub under ROOT_REPO
 Environment variable "GitHubToken" must have a Personal Access Token to prevent rate limiting
 
-/base
+/
 |-- profile-A
 |   |-- schema-A.json
 |   |-- Good-command
@@ -26,9 +30,11 @@ Environment variable "GitHubToken" must have a Personal Access Token to prevent 
      ...
 """
 
+VALIDATE_JADN = False    # Use JAON schema if True, JSON schema if False
+
 ROOT_DIR = 'Test'
 ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
-TEST_ROOT = ROOT_DIR           # Select root of device test tree
+TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
 # auth = {}
@@ -55,7 +61,8 @@ def list_dir(dirpath: str) -> dict:
     """
 
     files, dirs = [], []
-    if dirpath.startswith('https://'):
+    u = urlparse(dirpath)
+    if all([u.scheme, u.netloc]):
         with urlopen(Request(dirpath, headers=AUTH)) as d:
             for dl in json.loads(d.read().decode()):
                 url = 'url' if dl['type'] == 'dir' else 'download_url'
@@ -68,27 +75,17 @@ def list_dir(dirpath: str) -> dict:
     return {'files': files, 'dirs': dirs}
 
 
-def read_file(filepath: str) -> str:
-    if filepath.startswith('https://'):
-        with urlopen(Request(filepath, headers=AUTH)) as fp:
-            doc = fp.read().decode()
-    else:
-        with open(filepath) as fp:
-            doc = fp.read()
-    return doc
-
-"""
-def gh_get(url):            # Read contents from GitHub API
-    with urlopen(Request(url, headers=auth)) as e:
-        entry = json.loads(e.read().decode())
-    return entry
-"""
+def open_file(fileentry: os.DirEntry) -> TextIO:
+    u = urlparse(fileentry.path)
+    if all([u.scheme, u.netloc]):
+        return TextIOWrapper(urlopen(Request(fileentry.path, headers=AUTH)), encoding='utf8')
+    return open(fileentry.path, 'r', encoding='utf8')
 
 
-def find_tests(dirpath):    # Search for GitHub folders containing schemas and test data
-    def _ft(dpath, tests):    # Internal recursive search
-        dl = list_dir(dpath)
-        if 'Good-command' in {d.name for d in dl['dirs']}:      # Directory name indicates test data
+def find_tests(dirpath):        # Search for folders containing schemas and test data
+    def _ft(dpath, tests):      # Internal recursive search
+        dl = list_dir(dpath)    # Get local or web directory listing
+        if 'Good-command' in {d.name for d in dl['dirs']}:      # Test data directory found
             tests.append(dpath)
         else:
             for dp in dl['dirs']:
@@ -101,35 +98,51 @@ def find_tests(dirpath):    # Search for GitHub folders containing schemas and t
 
 def run_test(dpath):         # Check correct validation of good and bad commands and responses
     dl = list_dir(dpath)
-    json_files = [f for f in dl['files'] if os.path.splitext(f.name)[1] == '.json']
-    if len(json_files) != 1:  # Must have exactly one .json file
-        print(f'Err: {len(json_files)} .json files in', dpath)
+    try:
+        if VALIDATE_JADN:
+            schemas = [f for f in dl['files'] if os.path.splitext(f.name)[1] in ('.jadn', '.jidl')]
+            with open_file(schemas[0]) as fp:
+                schema = jadn.load_any(fp)
+                codec = jadn.codec.Codec(schema, verbose_rec=True, verbose_str=True)
+        else:
+            schemas = [f for f in dl['files'] if os.path.splitext(f.name)[1] == '.json']
+            with open_file(schemas[0]) as fp:
+                schema = json.load(fp)
+    except IndexError:
+        print(f'No schemas found in {dpath}')
         return
-
-    json_schema = json.loads(read_file(json_files[0].path))
-    # json_schema = gh_get(tdir['schema'])
-    print(f'\nSchema: {json_files[0].path}\nNamespace: {json_schema["$id"]}')
+    except ValueError as e:
+        print(e)
+        return
     tcount = defaultdict(int)       # Total instances tested
     ecount = defaultdict(int)       # Error instances
+    tdirs = {d.name: d for d in dl['dirs']}
     for cr in ('command', 'response'):
         for gb in ('Good', 'Bad'):
             pdir = f'{gb}-{cr}'
-            if pdir in tdir['dirs']:
+            if pdir in tdirs:
                 print(pdir)
-                fdir = gh_get(tdir['dirs'][pdir])
-                files = {e['name']: e['download_url'] for e in fdir if e['type'] == 'file'}
-                for n, (fn, url) in enumerate(files.items(), start=1):
-                    print(f'{n:>4} {fn:<50}', end='')
+                dl2 = list_dir(tdirs[pdir].path)
+                for n, f in enumerate(dl2['files'], start=1):
+                    print(f'{n:>4} {f.name:<50}', end='')
                     try:
-                        instance = {'openc2_' + cr: gh_get(url)}  # Read message, wrap it as command or response
-                        validate(instance, json_schema, format_checker=draft7_format_checker)
+                        if VALIDATE_JADN:
+                            crtype = 'OpenC2-Command' if cr == 'command' else 'OpenC2-Response'
+                            codec.decode(crtype, json.load(open_file(f)))
+                        else:
+                            validate({'openc2_' + cr: json.load(open_file(f))}, schema,
+                                     format_checker=draft7_format_checker)
                         tcount[pdir] += 1
                         ecount[pdir] += 1 if gb == 'Bad' else 0
                         print()
-                    except ValidationError as e:
+                    except ValidationError as e:    # JSON Schema validation error
                         tcount[pdir] += 1
                         ecount[pdir] += 1 if gb == 'Good' else 0
                         print(f' Fail: {e.message}')
+                    except ValueError as e:         # JADN validation error
+                        tcount[pdir] += 1
+                        ecount[pdir] += 1 if gb == 'Good' else 0
+                        print(f' Fail: {e}')
                     except json.decoder.JSONDecodeError as e:
                         print(f' Bad JSON: {e.msg} "{e.doc}"')
             else:
@@ -137,6 +150,6 @@ def run_test(dpath):         # Check correct validation of good and bad commands
     print('\nValidation Errors:', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
-print(f'Test Data: {TEST_ROOT}, Auth: {AUTH["Authorization"][-4:]}')
+print(f'Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')
 for test in find_tests(TEST_ROOT):
     run_test(test)

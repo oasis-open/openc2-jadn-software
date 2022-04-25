@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "results": {
+    "versions": ["1.1"],
+    "profiles": ["par", "slpf"],
+    "pairs": {
+      "query": ["features"]
+    },
+    "rate_limit": 15.0,
+    "slpf": {},
+    "pac": {
+      "scan": ["device", "mac_addr"],
+      "query": ["device", "mac_addr", "os_version", "sbom"],
+      "cancel": ["command"],
+      "update": ["file"],
+      "copy": ["file"]
+    }
+  }
+}

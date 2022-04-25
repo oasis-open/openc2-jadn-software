@@ -1,4 +1,13 @@
-# Information Modeling Tools
+# Actuator Profile Schema Design
+Developers typically use two approaches when creating a new OpenC2 actuator profile:
+1) start with an existing profile and modify it to address new requirements
+2) start with use case requirements and identify the data needed to satisfy them
+
+The incremental approach can be effective when the new profile is similar
+in purpose and capabilities to an existing one, but when faced with novel requirements
+new data structures are needed.
+
+### Software
 This repo contains software to:
 * Process [JADN](https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/jadn-v1.0-cs01.html)
 information models (abstract schemas) used to define 
@@ -44,7 +53,8 @@ errors and the tables are identical, the document tables are known to be valid.
 
 To create a new actuator profile, add custom type definitions to the actuator profile
 template, then generate tables from the schema for use as the initial draft of 
-the profile document.
+the profile document.  Always generating tables from the schema rather than editing
+them by hand ensures that they remain valid as the profile evolves.
 
 ![Table Diff](Images/types-diff.jpg)
 

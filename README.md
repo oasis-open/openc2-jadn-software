@@ -4,15 +4,18 @@ Developers typically use two approaches when creating a new OpenC2 actuator prof
 2) start with use case requirements and identify the data needed to satisfy them
 
 The incremental approach can be effective when the new profile is similar
-in purpose and capabilities to an existing one, but when faced with novel requirements
-new data structures are needed.
+in purpose and capabilities to an existing one, but when faced with new requirements
+it is more straightforward to design new data definitions directly from the use cases,
+then fill in the text of a profile document around the data definitions.  A schema
+can be used with both approaches to ensure that data type definitions and data
+examples are both valid and consistent with each other.
 
 ### Software
 This repo contains software to:
 * Process [JADN](https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/jadn-v1.0-cs01.html)
 information models (abstract schemas) used to define 
 [OpenC2](http://docs.oasis-open.org/openc2/oc2ls/v1.0/oc2ls-v1.0.html)
-content as well as other types of structured data, e.g., Software Bill of Materials (SBOM) files
+content as well as other types of structured data, e.g., Software Bill of Materials (SBOM) documents
 * Validate data against an information model
 
 To get started, install the JADN and Fire packages into a Python 3.8 or newer environment:

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/template/pacf/v2.4",
-  "title": "OpenC2 Device for the PACE collection service and packet filter",
+  "$id": "http://acme.com/schemas/devices/pacf/v3",
+  "title": "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter",
   "type": "object",
   "additionalProperties": false,
   "properties": {

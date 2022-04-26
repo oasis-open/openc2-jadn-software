@@ -27,7 +27,7 @@ The following schemas are included:
 * **oc2ls-v1.1-types** - OpenC2 common types
 * **oc2ls-v1.1-ap-template** - Actuator profile template
 * **oc2slpf-v1.1** - SLPF actuator profile
-* **device-slpf-v1.1** - Device template for consumer that supports SLPF profile
+* **device-slpf-base** - Unresolved device schema for consumer that supports SLPF profile
 
 ### Translate Information Models into Multiple Formats
 The `make-artifacts.py` script reads each source schema stored in the `Schemas` folder,
@@ -35,16 +35,18 @@ creates an `Out` folder, and converts each schema into multiple output formats.
 Source schemas can be in JADN, JADN IDL, or HTML format.
 
 Output formats are:
-* JADN - native JSON data
-* JADN IDL - plain text information definition language, easier to edit than JSON or Markdown
+* JADN - the normative JSON format for JADN information models
 * Markdown tables - the format used in current OpenC2 documentation
+* JADN IDL - plain text information definition language, easier to edit than JSON or Markdown
 * HTML tables - themeable tables (an example style is included in the Out folder)
 * PlantUML diagram - viewable at http://www.plantuml.com
 * Dot diagram - viewable at https://sketchviz.com/new
-* JADN Core - native JSON data with all extensions removed
+* JADN Core - JSON data with all
+[extensions](https://github.com/oasis-tcs/openc2-jadn/blob/published/jadn-v1.0-cs01.md#33-jadn-extensions)
+converted to core definitions
 
-As an alternative to validating data directly using the JADN abstract schema,
-the script also creates concrete schemas for each supported data format:
+As an alternative to validating data directly using the JADN schema,
+the script also creates concrete schemas specific to each supported data format:
 * JSON Schema - used to validate JSON data files
 
 To check an actuator profile, run `make-artifacts` to generate a markdown version of
@@ -69,20 +71,18 @@ and replaces namespaced type references with the full type definition from the r
 package.  The result is a single self-contained package stored in the Out folder with
 `-resolved` appended to the filename.
 
-The OpenC2 language specification contains two content sections: language framework
-([3.2, 3.3](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#32-message))
-(Message, Command, Response) defined in the language framework and device template schema 
+The OpenC2 language specification contains two content sections and corresponding schemas:
+1. Language framework and device template
+([Sections 3.2, 3.3](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#32-message))
+that define Message, Command, and Response:
 [oc2ls-v1.1-lang.jadn](Schemas/oc2ls-v1.1-lang.jadn),
-and common types
-([3.4](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#34-type-definitions))
-that are shared across actuator profiles defined in the types schema
+2. Common types
+([Section 3.4](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#34-type-definitions))
+that are shared across actuator profiles:
 [oc2ls-v1.1-types.jadn](Schemas/oc2ls-v1.1-types.jadn).
-The Language references to Types can be resolved into a single schema file containing all
-definitions in the language specification with `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
-References to actuator profiles and common types can be resolved into a device template
-using `resolve-references.py device-slpf-v1.1.jadn`, resulting in the device schema
-`device-slpf-v1.1-resolved.jadn`.
+The Language references to Types can be resolved into a single schema file containing all
+definitions in the language specification using `resolve-references.py oc2ls-v1.1-lang.jadn`.
 
 ### Create Device Schema
 The OpenC2 language specification and actuator profiles all have individual schema packages.

@@ -2,18 +2,27 @@
   "status": 200,
   "results": {
     "versions": ["1.1"],
-    "profiles": ["par", "slpf"],
+    "profiles": ["pac", "slpf"],
     "pairs": {
       "query": ["features"]
     },
     "rate_limit": 15.0,
-    "slpf": {},
+    "slpf": {
+      "pairs": {
+        "allow": ["ipv6_net", "ipv6_connection"],
+        "deny": ["ipv6_net", "ipv6_connection"],
+        "delete": ["slpf/rule_number"],
+        "update": ["file"]
+      }
+    },
     "pac": {
-      "scan": ["device", "mac_addr"],
-      "query": ["device", "mac_addr", "os_version", "sbom"],
-      "cancel": ["command"],
-      "update": ["file"],
-      "copy": ["file"]
+      "pairs": {
+        "scan": ["device", "mac_addr"],
+        "query": ["device", "mac_addr", "pac/os_version", "pac/sbom"],
+        "cancel": ["command"],
+        "update": ["file"],
+        "copy": ["file"]
+      }
     }
   }
 }

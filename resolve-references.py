@@ -12,7 +12,7 @@ SCHEMA_DIR = 'Schemas'
 OUTPUT_DIR = 'Out'
 
 
-def resolve(schema: str = 'device-pac-slpf-v1.1-template.jadn', reference_dir: str = SCHEMA_DIR, output_dir: str = OUTPUT_DIR) -> None:
+def resolve(schema: str = 'device-pac-slpf-base.jadn', reference_dir: str = SCHEMA_DIR, output_dir: str = OUTPUT_DIR) -> None:
     print(f'Installed JADN version: {jadn.__version__}\n')
     print(f'{reference_dir}/{schema} -> {output_dir}')
     os.makedirs(output_dir, exist_ok=True)

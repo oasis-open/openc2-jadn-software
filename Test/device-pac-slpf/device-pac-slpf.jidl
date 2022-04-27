@@ -1,5 +1,5 @@
-       title: "OpenC2 Device for the PACE collection service and packet filter"
-     package: "http://acme.com/schemas/template/pacf/v2.4"
+       title: "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter"
+     package: "http://acme.com/schemas/devices/pacf/v3"
      exports: ["OpenC2-Command", "OpenC2-Response"]
 
 OpenC2-Command = Record                           // The Command defines an Action to be performed on a Target
@@ -100,6 +100,8 @@ IPv6-Connection = Record{1..*}                    // 5-tuple that specifies a tc
 
 MAC-Addr = Binary /eui                            // Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI](#eui)
 
+URI = String /uri                                 // Uniform Resource Identifier, [[RFC3986]](#rfc3986).
+
 Date-Time = Integer{0..*}                         // Date and Time
 
 Duration = Integer{0..*}                          // A length of time
@@ -154,6 +156,62 @@ Status-Code = Enumerated.ID
 Command-ID = String{pattern="^\S{0,36}$"}         // Command Identifier
 
 Version = String                                  // Major.Minor version number
+
+AP-Target$pac = Choice                            // Profile-defined targets
+   1 props            ResultName$pac unique [1..*]// List of property names to query
+
+AP-Args$pac = Map{1..*}                           // Profile-defined command arguments
+   1 foo              String optional
+
+AP-Specifiers$pac = Map                           // Profile-defined actuator specifiers
+   1 foo              String optional
+
+AP-Results$pac = Map{1..*}                        // Profile-defined response results
+   1 os_version       OS-Version$pac
+   2 sbom             SBOM$pac
+
+ResultName$pac = Enumerated(Enum[AP-Results$pac])
+
+OS-Version$pac = Record
+   1 name             String                      // Distribution or product name
+   2 version          String                      // Suitable for presentation OS version
+   3 major            Integer optional            // Major release version
+   4 patch            Integer optional            // Patch release
+   5 build            String optional             // Build-specific or variant string
+   6 platform         String optional             // OS Platform or ID
+   7 platform_like    String [0..*]               // Closely-related platforms
+   8 arch             OS-Arch$pac optional        // OS Architecture
+   9 install_date     Date-Time optional          // Install date of the OS
+
+OS-Arch$pac = Enumerated                          // Win: wmic os get osarchitecture, or Unix: uname -m
+   1 32-bit
+   2 64-bit
+   3 x86_32
+   4 x86_64
+
+SBOM$pac = Choice
+   1 uri              URI                         // Unique identifier or locator of the SBOM
+   2 summary          SBOM-Elements$pac           // NTIA Minimumum Elements of an SBOM
+   3 content          SBOM-Content$pac            // SBOM structured data
+   4 blob             SBOM-Blob$pac               // Uninterpreted SBOM bytes
+
+SBOM-Elements$pac = Record
+   1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
+   2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
+   3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
+   4 component_ids    String [0..*]               // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies     String [0..*]               // Upstream component(s)
+   6 author           String                      // Name of the entity that creates SBOM data for this component
+   7 timestamp        Date-Time                   // Record of the date and time of the SBOM data assembly
+
+SBOM-Content$pac = Choice
+   1 cyclonedx        String
+   2 spdx2            String
+   3 spdx3            String
+
+SBOM-Blob$pac = Record
+   1 format           Enumerated(Enum[SBOM-Content$pac])
+   2 data             Binary
 
 AP-Target$slpf = Choice                           // SLPF targets
    1 rule_number      Rule-ID$slpf                // Immutable identifier assigned when a rule is created. Identifies a rule to be deleted

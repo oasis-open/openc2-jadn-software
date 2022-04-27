@@ -14,9 +14,9 @@ Validate OpenC2 commands and responses for profiles stored in local ROOT_DIR or 
 Environment variable "GitHubToken" must have a Personal Access Token to prevent rate limiting
 
 /
-|-- profile-A
-|   |-- schema-A.jadn
-|   |-- schema-A.json
+|-- device-A
+|   |-- device-A-schema.jadn
+|   |-- device-A-schema.json
 |   |-- Good-command
 |   |   |-- command.json
 |   |   |-- command.json
@@ -26,9 +26,9 @@ Environment variable "GitHubToken" must have a Personal Access Token to prevent 
 |   |   |-- response.json
 |   |-- Bad-response
 |   |   |-- response.json
-|-- profile-B
-|   |-- schema-B.jadn
-|   |-- schema-B.json
+|-- device-B
+|   |-- device-B-schema.jadn
+|   |-- device-B-schema.json
      ...
 """
 
@@ -105,12 +105,11 @@ def run_test(dpath):         # Check correct validation of good and bad commands
         if VALIDATE_JADN:
             schemas = [f for f in dl['files'] if os.path.splitext(f.name)[1] in ('.jadn', '.jidl')]
             with open_file(schemas[0]) as fp:
-                schema = jadn.load_any(fp)
-                codec = jadn.codec.Codec(schema, verbose_rec=True, verbose_str=True)
+                codec = jadn.codec.Codec(jadn.load_any(fp), verbose_rec=True, verbose_str=True)
         else:
             schemas = [f for f in dl['files'] if os.path.splitext(f.name)[1] == '.json']
             with open_file(schemas[0]) as fp:
-                schema = json.load(fp)
+                json_schema = json.load(fp)
     except IndexError:
         print(f'No schemas found in {dpath}')
         return
@@ -133,7 +132,7 @@ def run_test(dpath):         # Check correct validation of good and bad commands
                             crtype = 'OpenC2-Command' if cr == 'command' else 'OpenC2-Response'
                             codec.decode(crtype, json.load(open_file(f)))
                         else:
-                            validate({'openc2_' + cr: json.load(open_file(f))}, schema,
+                            validate({'openc2_' + cr: json.load(open_file(f))}, json_schema,
                                      format_checker=draft7_format_checker)
                         tcount[pdir] += 1
                         ecount[pdir] += 1 if gb == 'Bad' else 0

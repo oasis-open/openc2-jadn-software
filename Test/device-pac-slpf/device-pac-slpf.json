@@ -74,14 +74,11 @@
       "title": "Action",
       "type": "string",
       "enum": [
-        "scan",
         "query",
         "deny",
         "allow",
-        "cancel",
         "update",
-        "delete",
-        "copy"
+        "delete"
       ]
     },
     "Target": {
@@ -91,18 +88,6 @@
       "minProperties": 1,
       "maxProperties": 1,
       "properties": {
-        "command": {
-          "$ref": "#/definitions/Command-ID",
-          "description": "A reference to a previously issued Command."
-        },
-        "device": {
-          "$ref": "#/definitions/Device",
-          "description": "The properties of a hardware device."
-        },
-        "domain_name": {
-          "$ref": "#/definitions/Domain-Name",
-          "description": "A network domain name."
-        },
         "features": {
           "$ref": "#/definitions/Features",
           "description": "A set of items used with the query Action to determine an Actuator's capabilities."
@@ -126,10 +111,6 @@
         "ipv6_connection": {
           "$ref": "#/definitions/IPv6-Connection",
           "description": "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."
-        },
-        "mac_addr": {
-          "$ref": "#/definitions/MAC-Addr",
-          "description": "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."
         },
         "slpf": {
           "$ref": "#/definitions/AP-Target$slpf",
@@ -247,9 +228,6 @@
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "scan": {
-          "$ref": "#/definitions/Targets"
-        },
         "query": {
           "$ref": "#/definitions/Targets"
         },
@@ -259,16 +237,10 @@
         "allow": {
           "$ref": "#/definitions/Targets"
         },
-        "cancel": {
-          "$ref": "#/definitions/Targets"
-        },
         "update": {
           "$ref": "#/definitions/Targets"
         },
         "delete": {
-          "$ref": "#/definitions/Targets"
-        },
-        "copy": {
           "$ref": "#/definitions/Targets"
         }
       }
@@ -282,49 +254,16 @@
       "maxItems": 100,
       "items": {
         "enum": [
-          "command",
-          "device",
-          "domain_name",
           "features",
           "file",
           "ipv4_net",
           "ipv6_net",
           "ipv4_connection",
           "ipv6_connection",
-          "mac_addr",
           "slpf",
           "pac"
         ]
       }
-    },
-    "Device": {
-      "title": "Device",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "$ref": "#/definitions/Hostname",
-          "description": "A hostname that can be used to connect to this device over a network"
-        },
-        "idn_hostname": {
-          "$ref": "#/definitions/IDN-Hostname",
-          "description": "An internationalized hostname that can be used to connect to this device over a network"
-        },
-        "device_id": {
-          "type": "string",
-          "description": "An identifier that refers to this device within an inventory or management system",
-          "maxLength": 255
-        }
-      }
-    },
-    "Domain-Name": {
-      "title": "Domain Name",
-      "type": "string",
-      "description": "[[RFC1034]](#rfc1034), Section 3.5",
-      "format": "hostname",
-      "maxLength": 255
     },
     "Features": {
       "title": "Features",
@@ -431,12 +370,6 @@
         }
       }
     },
-    "MAC-Addr": {
-      "title": "MAC Addr",
-      "type": "string",
-      "description": "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI](#eui)",
-      "pattern": "^([0-9a-fA-F]{2}[:-]){5}[0-9A-Fa-f]{2}(([:-][0-9A-Fa-f]{2}){2})?$"
-    },
     "URI": {
       "title": "URI",
       "type": "string",
@@ -491,20 +424,6 @@
           "contentEncoding": "base16"
         }
       }
-    },
-    "Hostname": {
-      "title": "Hostname",
-      "type": "string",
-      "description": "Internet host name as specified in [[RFC1123]](#rfc1123)",
-      "format": "hostname",
-      "maxLength": 255
-    },
-    "IDN-Hostname": {
-      "title": "IDN Hostname",
-      "type": "string",
-      "description": "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.",
-      "format": "idn-hostname",
-      "maxLength": 255
     },
     "IPv4-Addr": {
       "title": "IPv4 Addr",

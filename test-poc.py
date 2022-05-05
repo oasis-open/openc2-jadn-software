@@ -37,7 +37,7 @@ VALIDATE_JADN = True    # Use JAON schema if True, JSON schema if False
 ROOT_DIR = 'Test'
 # ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
 ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/contents/'
-TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
+TEST_ROOT = ROOT_REPO          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
 # auth = {}

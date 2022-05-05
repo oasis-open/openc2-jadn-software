@@ -4,98 +4,86 @@
      exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
 
 Action = Enumerated
-   1 scan
    3 query
-  14 cancel
-  16 update
-  28 copy
 
 Target = Enumerated
-   2 command
-   3 device
-   7 domain_name
    9 features
-  10 file
-  17 mac_addr
-  25 properties
-1035 pac
+1035 pac/
 
 Args = Enumerated
    1 start_time
    2 stop_time
    3 duration
    4 response_requested
-1035 pac
+1035 pac/
 
 Actuator = Enumerated
-1035 pac
+1035 pac/
 
 Results = Enumerated
    1 versions
    2 profiles
    3 pairs
    4 rate_limit
-1035 pac
+1035 pac/
 
-Pairs = Enumerated
-   1 scan: device,mac_addr
-   3 query: device,features,mac_addr,properties,pac/os_version
-  14 cancel: command
-  16 update: file
-  28 copy: file
+AP-Pairs = Enumerated
+   3 query: pac/attrs
 
 AP-Target = Choice                                // Profile-defined targets
-   1 props ResultName unique [1..*]     // List of property names to query
+   1 attrs            PostureAttributeName unique [1..*]// List of posture attribute names to query
 
 AP-Args = Map{1..*}                               // Profile-defined command arguments
-   1 foo              String optional
+   1 foo              String optional             // Delete from Args if none
 
 AP-Specifiers = Map                               // Profile-defined actuator specifiers
-   1 foo              String optional
+   1 foo              String optional             // Delete from Actuator if none
 
 AP-Results = Map{1..*}                            // Profile-defined response results
    1 os_version       OS-Version
    2 sbom             SBOM
 
-ResultName = Enumerated(Enum[AP-Results])
+PostureAttributeName = Enumerated
+   1 os_version                                   // Return OS-Version results
+   2 sbom                                         // Return SBOM
 
 OS-Version = Record
-   1 name   String      // Distribution or product name
-   2 version String     // Suitable for presentation OS version
-   3 major  Integer optional     // Major release version
-   4 patch  Integer optional    // Patch release
-   5 build  String optional     // Build-specific or variant string
-   6 platform String optional   // OS Platform or ID
-   7 platform_like String [0..*]    // Closely-related platforms
-   8 arch   OS-Arch optional        // OS Architecture
-   9 install_date   ls:Date-Time optional   // Install date of the OS
+   1 name             String                      // Distribution or product name
+   2 version          String                      // Suitable for presentation OS version
+   3 major            Integer optional            // Major release version
+   4 patch            Integer optional            // Patch release
+   5 build            String optional             // Build-specific or variant string
+   6 platform         String optional             // OS Platform or ID
+   7 platform_like    String [0..*]               // Closely-related platforms
+   8 arch             OS-Arch optional            // OS Architecture
+   9 install_date     ls:Date-Time optional       // Install date of the OS
 
-OS-Arch = Enumerated    // Win: wmic os get osarchitecture, or Unix: uname -m
+OS-Arch = Enumerated                              // Win: wmic os get osarchitecture, or Unix: uname -m
    1 32-bit
    2 64-bit
    3 x86_32
    4 x86_64
 
 SBOM = Choice
-   1 uri ls:URI     // Unique identifier or locator of the SBOM
-   2 summary SBOM-Elements      // NTIA Minimumum Elements of an SBOM
-   3 content SBOM-Content       // SBOM structured data
-   4 blob SBOM-Blob             // Uninterpreted SBOM bytes
+   1 uri              ls:URI                      // Unique identifier or locator of the SBOM
+   2 summary          SBOM-Elements               // NTIA Minimumum Elements of an SBOM
+   3 content          SBOM-Content                // SBOM structured data
+   4 blob             SBOM-Blob                   // Uninterpreted SBOM bytes
 
 SBOM-Elements = Record
-   1 supplier String [1..*]     // Name of entity that creates, defines, and identifies components
-   2 component String [1..*]    // Designation(s) assigned to a unit of software defined by the original supplier
-   3 version String             // Identifier used by supplier to specify a change from a previously identified version
-   4 component_ids String [0..*]    // Other identifiers used to identify a component, or serve as a look-yp key
-   5 dependencies String [0..*]     // Upstream component(s)
-   6 author String                  // Name of the entity that creates SBOM data for this component
-   7 timestamp ls:Date-Time         // Record of the date and time of the SBOM data assembly
+   1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
+   2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
+   3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
+   4 component_ids    String [0..*]               // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies     String [0..*]               // Upstream component(s)
+   6 author           String                      // Name of the entity that creates SBOM data for this component
+   7 timestamp        ls:Date-Time                // Record of the date and time of the SBOM data assembly
 
 SBOM-Content = Choice
-   1 cyclonedx String
-   2 spdx2 String
-   3 spdx3 String
+   1 cyclonedx        String                      // Placeholder for CycloneDX data model
+   2 spdx2            String                      // Placeholder for SPDX v2.x data model
+   3 spdx3            String                      // Placeholder for SPDX v3 data model
 
 SBOM-Blob = Record
-   1 format Enumerated(Enum[SBOM-Content])
-   2 data Binary
+   1 format           Enumerated(Enum[SBOM-Content])
+   2 data             Binary

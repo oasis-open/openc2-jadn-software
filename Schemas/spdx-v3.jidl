@@ -1,0 +1,237 @@
+package: "http://spdx.org/spdx/v3/document"
+exports: ["TransferUnit"]
+title: "SPDX v3"
+description: "This information model defines the serialized structure of SPDXv3 logical model types"
+license: "CC0-1.0"
+
+TransferUnit = Record         // Serialized data bytes ("document"), not an Element (e.g. BOM/SBOM, Document)
+  1 namespace Key(IRI)                  // document id = namespace = unique id of this document
+  2 specVersion SemVer                  // document property (required)
+  3 created Created                     // document property (required)
+  4 profiles ProfileIdentifier [1..*]   // document property (required)
+  5 dataLicense LicenseId               // document property (required)
+  6 elements Element [1..*]             // Element values, defined or copied, serialized in this document
+  7 documentRefs ExternalMap [0..*]     // Info about referenced documents containing element values
+  8 namespaceMap NamespaceMap optional  // Prefixes = namespace abbreviations
+
+Element = Map
+  1 id Key(IRI)
+  2 type ElementType
+  3 name String optional
+  4 summary String optional
+  5 description String optional
+  6 comment String optional
+  7 specVersion SemVer optional         // explicit or default from document
+  8 created Created optional            // explicit or default from document
+  9 profiles ProfileIdentifier [0..*]   // explicit or default from document
+ 10 dataLicense LicenseId optional      // explicit or default from document
+ 11 verifiedUsing IntegrityMethod optional    // Only valid for Artifact types - move to Artifact/verifiedUsing
+ 12 externalReferences ExternalReference [0..*]
+ 13 extensions Extension [0..*]         // Or use extension point "..."
+
+ExternalMap = Record                // Information about referenced documents (units of transfer)
+  1 namespace Key(IRI)                  // Namespace of referenced document
+  2 elements Link(Element) [1..*]       // Elements serialized in referenced document
+  3 artifactUri ArtifactUri optional    // URI of serialized document
+  4 verifiedUsing IntegrityMethod       // Verifies document containing the referenced Element
+
+NamespaceMap = MapOf(IRI, Prefix){1..*} // Prefixes = namespace abbreviations
+
+ElementType = Choice
+  1 annotation Annotation
+  2 relationship Relationship
+  3 identity Identity
+  4 document Document
+  5 contextualCollection ContextualCollection   // Synonym for Collection
+  6 bom BOM
+ 10 snippet Snippet     // pkg:Software
+ 11 file File           // pkg:Software
+ 12 package Package     // pkg:Software
+ 13 sbom SBOM           // pkg:Software
+
+Annotation = Record
+  1 type AnnotationType
+  2 subject Link(Element)
+  3 statement String optional
+
+Relationship = Record
+  1 type RelationshipType
+  2 from Link(Element)
+  3 to Link(Element) [1..*]
+  4 completeness RelationshipCompleteness optional
+
+Identity = Record
+  1 type IdentityType
+  2 email String /email optional
+  3 verifiedUsing IntegrityMethod optional  // Identity and Artifact entities are verified separately from Element properties
+
+Document = Record
+  1 elements Link(Element) [1..*]           // Serialized document contains these elementValues
+  2 artifactUri ArtifactUri optional        // <-Artifact
+  3 originator Link(Element) [0..*]         // <-Artifact
+  4 verifiedUsing IntegrityMethod optional  // <-Artifact(proposed), verifies referenced entity
+
+ContextualCollection = Record               // (not needed)
+  1 elements Link(Element) [1..*]           // <-Collection
+  2 rootElements Link(Element) [0..*]       // <-Collection
+
+BOM = Record
+  1 elements Link(Element) [1..*]           // <-Collection
+  2 rootElements Link(Element) [0..*]       // <-Collection
+
+File = Record
+  1 contentType MediaType optional
+  2 filePurpose SoftwarePurpose [0..*]
+  3 artifactUri ArtifactUri optional        // <-Artifact
+  4 originator Link(Element) [0..*]         // <-Artifact
+  5 verifiedUsing IntegrityMethod optional  // verifies referenced entity
+
+Snippet = Record
+  1 location SnippetLocation
+  2 snippetPurpose SoftwarePurpose [0..*]
+  3 artifactUri ArtifactUri [0..*]          // <-Artifact
+  4 originator Link(Element) [0..*]         // <-Artifact
+  5 verifiedUsing IntegrityMethod optional  // verifies referenced entity
+
+Package = Record
+  1 packagePurpose SoftwarePurpose [0..*]
+  2 artifactUri ArtifactUri [0..*]      // <-Artifact
+  3 originator Link(Element) [0..*]     // <-Artifact
+  4 verifiedUsing IntegrityMethod optional    // verifies referenced entity
+  5 contents Link(Element) [0..*]        // used for testing property vs. relationship
+
+SBOM = Record
+  1 elements Link(Element) [1..*]       // <-Collection
+  2 rootElements Link(Element) [0..*]   // <-Collection
+
+Created = Record
+  1 by Link(Element) [1..*]     // must be an Identity Element
+  2 when DateTime
+
+IdentityType = Choice
+  1 person Person
+  2 organization Organization
+  3 tool Tool
+
+Person = Record
+
+Organization = Record
+
+Tool = Record
+  1 userAgent String
+
+IntegrityMethod = Choice
+  1 hashes Hashes
+  2 signature PublicKeySignature    // A public key by itself is not a checksum
+
+Hashes = Map{1..*}
+  1 md5 Binary{16..16} /x optional
+  2 sha1 Binary{20..20} /x optional
+  3 sha256 Binary{32..32} /x optional
+
+PublicKeySignature = Record
+
+Extension = Record
+
+DateTime = String  // implement Integer /datetime_ms
+
+MediaType = String
+
+Prefix = String{1..16}   // Abbreviation for document namespace
+
+SemVer = String
+
+SnippetLocation = Record
+
+IRI = String   // Element id:  local, prefix:local, or absolute-IRI
+
+ArtifactUri = String /uri
+
+LicenseId = Enumerated  // From license list: referenceNumber, licenseId  // name
+ 451 Apache-2.0 // Apache License 2.0
+ 457 CC0-1.0 // Creative Commons Zero v1.0 Universal
+
+ExternalReference = Record
+  1 type ExternalReferenceType
+  2 artifactUri ArtifactUri optional    // called "locator" in logical model
+
+ExternalReferenceType = Enumerated      // Invalid without at least one defined value
+  1 FOO             // TBSL
+
+ProfileIdentifier = Enumerated      // Shown as "pkg" on logical model diagram, use upper case names?
+  1 Core
+  2 Software
+  3 License         // TBSL
+
+RelationshipCompleteness = Enumerated
+  1 KNOWN
+  2 INCOMPLETE
+  3 UNKNOWN
+
+SoftwarePurpose = Enumerated
+  1 APPLICATION
+  2 FRAMEWORK
+  3 LIBRARY
+  4 CONTAINER
+  5 OPERATING-SYSTEM
+  6 DEVICE
+  7 FIRMWARE
+  8 SOURCE
+  9 PATCH
+ 10 ARCHIVE
+ 11 DOCUMENTATION
+ 12 EXECUTABLE
+ 13 MODULE
+ 14 BOM
+ 99 OTHER
+
+AnnotationType = Enumerated
+  1 REVIEW
+  9 OTHER
+
+RelationshipType = Enumerated
+  0 NONE
+  1 DESCRIBES
+  2 DESCRIBED_BY
+  3 CONTAINS
+  4 CONTAINED_BY
+  5 DEPENDS_ON
+  6 DEPENDENCY_OF
+  7 DEPENDENCY_MANIFEST_OF
+  8 BUILD_DEPENDENCY_OF
+  9 DEV_DEPENDENCY_OF
+ 10 OPTIONAL_DEPENDENCY_OF
+ 11 PROVIDED_DEPENDENCY_OF
+ 12 TEST_DEPENDENCY_OF
+ 13 RUNTIME_DEPENDENCY_OF
+ 14 EXAMPLE_OF
+ 15 GENERATES
+ 16 GENERATED_FROM
+ 17 ANCESTOR_OF
+ 18 DESCENDANT_OF
+ 19 VARIANT_OF
+ 20 DISTRIBUTION_ARTIFACT
+ 21 PATCH_FOR
+ 22 PATCH_APPLIED
+ 23 COPY_OF
+ 24 FILE_ADDED
+ 25 FILE_DELETED
+ 26 FILE_MODIFIED
+ 27 EXPANDED_FROM_ARCHIVE
+ 28 DYNAMIC_LINK
+ 29 STATIC_LINK
+ 30 DATA_FILE_OF
+ 31 TEST_CASE_OF
+ 32 BUILD_TOOL_OF
+ 33 DEF_TOOL_OF
+ 34 TEST_OF
+ 35 TEST_TOOL_OF
+ 36 DOCUMENTATION_OF
+ 37 OPTIONAL_COMPONENT_OF
+ 38 METAFILE_OF
+ 39 PACKAGE_OF
+ 40 AMENDS
+ 41 PREREQUISITE_FOR
+ 42 HAS_PREREQUISITE
+ 98 NOASSERTION     // should deprecate
+ 99 OTHER

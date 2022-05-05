@@ -1,7 +1,7 @@
 {
  "info": {
-  "package": "http://acme.com/schemas/template/slpf2000/v2.4",
-  "title": "OpenC2 Device Template for the SLPF-2000 packet filter",
+  "package": "http://acme.com/schemas/device-base/slpf2000/v2.4",
+  "title": "OpenC2 base device schema for the SLPF-2000 packet filter",
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
    "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
@@ -63,7 +63,7 @@
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
     [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-    [1024, "slpf", "slpf:AP-Args", ["<"], "Profile-defined command arguments"]
+    [1024, "slpf", "slpf:AP-Args", ["[0", "<"], "Profile-defined command arguments"]
   ]],
 
   ["Actuator", "Choice", [], "", [
@@ -82,7 +82,7 @@
     [3, "pairs", "Action-Targets", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
     [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
     [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"],
-    [1024, "slpf", "slpf:AP-Results", ["<"], "Profile-defined results"]
+    [1024, "slpf", "slpf:AP-Results", ["[0", "<"], "Profile-defined results"]
   ]],
 
   ["Action-Targets", "MapOf", ["+Action", "*Targets", "{1"], "Targets applicable to each action supported by this device", []],

@@ -71,7 +71,7 @@
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
     [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-    [1035, "pac", "pac:AP-Args", ["<"], "PAC-defined command arguments"]
+    [1035, "pac", "pac:AP-Args", ["[0", "<"], "PAC-defined command arguments"]
   ]],
 
   ["Actuator", "Choice", [], "", [
@@ -89,7 +89,7 @@
     [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
     [3, "pairs", "Action-Targets", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
     [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-    [1035, "pac", "pac:AP-Results", ["<"], "PAC-defined results"]
+    [1035, "pac", "pac:AP-Results", ["[0", "<"], "PAC-defined results"]
   ]],
 
   ["Action-Targets", "MapOf", ["+Action", "*Targets", "{1"], "Targets applicable to each action supported by this device", []],

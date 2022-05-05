@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device/pacf/v3",
-  "title": "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter",
+  "$id": "http://acme.com/schemas/device/pac/v1.0",
+  "title": "OpenC2 device schema for the PACMaster PACE collection service",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -131,10 +131,6 @@
           "$ref": "#/definitions/MAC-Addr",
           "description": "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."
         },
-        "slpf": {
-          "$ref": "#/definitions/AP-Target$slpf",
-          "description": "SLPF-defined targets"
-        },
         "pac": {
           "$ref": "#/definitions/AP-Target$pac",
           "description": "PAC-defined targets"
@@ -164,10 +160,6 @@
           "$ref": "#/definitions/Response-Type",
           "description": "The type of Response required for the Command: none, ack, status, complete"
         },
-        "slpf": {
-          "$ref": "#/definitions/AP-Args$slpf",
-          "description": "SLPF-defined command arguments"
-        },
         "pac": {
           "$ref": "#/definitions/AP-Args$pac",
           "description": "PAC-defined command arguments"
@@ -181,10 +173,6 @@
       "minProperties": 1,
       "maxProperties": 1,
       "properties": {
-        "slpf": {
-          "$ref": "#/definitions/AP-Specifiers$slpf",
-          "description": "SLPF-defined actuator specifiers"
-        },
         "pac": {
           "$ref": "#/definitions/AP-Specifiers$pac",
           "description": "PAC-defined actuator specifiers"
@@ -228,10 +216,6 @@
           "type": "number",
           "description": "Maximum number of requests per minute supported by design or policy",
           "minimum": 0.0
-        },
-        "slpf": {
-          "$ref": "#/definitions/AP-Results$slpf",
-          "description": "SLPF-defined results"
         },
         "pac": {
           "$ref": "#/definitions/AP-Results$pac",
@@ -292,7 +276,6 @@
           "ipv4_connection",
           "ipv6_connection",
           "mac_addr",
-          "slpf",
           "pac"
         ]
       }
@@ -871,117 +854,6 @@
           "contentEncoding": "base64url"
         }
       }
-    },
-    "AP-Target$slpf": {
-      "title": "AP Target$slpf",
-      "type": "object",
-      "description": "SLPF targets",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "rule_number": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"
-        }
-      }
-    },
-    "AP-Args$slpf": {
-      "title": "AP Args$slpf",
-      "type": "object",
-      "description": "SLPF command arguments",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "drop_process": {
-          "$ref": "#/definitions/Drop-Process$slpf",
-          "description": "Specifies how to handle denied packets"
-        },
-        "persistent": {
-          "type": "boolean",
-          "description": "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"
-        },
-        "direction": {
-          "$ref": "#/definitions/Direction$slpf",
-          "description": "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"
-        },
-        "insert_rule": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Specifies the identifier of the rule within a list, typically used in a top-down rule list"
-        }
-      }
-    },
-    "AP-Specifiers$slpf": {
-      "title": "AP Specifiers$slpf",
-      "type": "object",
-      "description": "SLPF actuator specifiers (may be empty)",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "type": "string",
-          "description": "RFC 1123 hostname (can be a domain name or IP address) for a particular device with SLPF functionality",
-          "maxLength": 255
-        },
-        "named_group": {
-          "type": "string",
-          "description": "User defined collection of devices with SLPF functionality",
-          "maxLength": 255
-        },
-        "asset_id": {
-          "type": "string",
-          "description": "Unique identifier for a particular SLPF",
-          "maxLength": 255
-        },
-        "asset_tuple": {
-          "type": "array",
-          "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-          "minItems": 1,
-          "maxItems": 10,
-          "items": {
-            "type": "string",
-            "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-            "maxLength": 255
-          }
-        }
-      }
-    },
-    "AP-Results$slpf": {
-      "title": "AP Results$slpf",
-      "type": "object",
-      "description": "SLPF results defined in this profile",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "rule_number": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Rule identifier returned from allow or deny Command."
-        }
-      }
-    },
-    "Drop-Process$slpf": {
-      "title": "Drop Process$slpf",
-      "type": "string",
-      "enum": [
-        "none",
-        "reject",
-        "false_ack"
-      ]
-    },
-    "Direction$slpf": {
-      "title": "Direction$slpf",
-      "type": "string",
-      "enum": [
-        "both",
-        "ingress",
-        "egress"
-      ]
-    },
-    "Rule-ID$slpf": {
-      "title": "Rule ID$slpf",
-      "type": "integer",
-      "description": "Access rule identifier"
     }
   }
 }

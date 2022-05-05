@@ -37,7 +37,7 @@ VALIDATE_JADN = True    # Use JAON schema if True, JSON schema if False
 ROOT_DIR = 'Test'
 # ROOT_REPO = 'https://api.github.com/repos/oasis-tcs/openc2-usecases/contents/Actuator-Profile-Schemas/'
 ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/contents/'
-TEST_ROOT = ROOT_REPO          # Select local directory or GitHub root of test tree
+TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
 # auth = {}
@@ -100,6 +100,7 @@ def find_tests(dirpath):        # Search for folders containing schemas and test
 
 
 def run_test(dpath):         # Check correct validation of good and bad commands and responses
+    print(f'\n{dpath}:')
     dl = list_dir(dpath)
     try:
         if VALIDATE_JADN:
@@ -123,10 +124,10 @@ def run_test(dpath):         # Check correct validation of good and bad commands
         for gb in ('Good', 'Bad'):
             pdir = f'{gb}-{cr}'
             if pdir in tdirs:
-                print(pdir)
+                print(f'  {pdir}')
                 dl2 = list_dir(tdirs[pdir].path)
                 for n, f in enumerate(dl2['files'], start=1):
-                    print(f'{n:>4} {f.name:<50}', end='')
+                    print(f'{n:>6} {f.name:<50}', end='')
                     try:
                         if VALIDATE_JADN:
                             crtype = 'OpenC2-Command' if cr == 'command' else 'OpenC2-Response'
@@ -149,7 +150,7 @@ def run_test(dpath):         # Check correct validation of good and bad commands
                         print(f' Bad JSON: {e.msg} "{e.doc}"')
             else:
                 print(pdir, 'No tests')
-    print('\nValidation Errors:', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
+    print('Validation Errors:', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
 print(f'Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')

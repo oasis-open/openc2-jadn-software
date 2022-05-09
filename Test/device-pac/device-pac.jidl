@@ -10,26 +10,10 @@ OpenC2-Command = Record                           // The Command defines an Acti
    5 command_id       Command-ID optional         // An identifier of this Command.
 
 Action = Enumerated
-   1 scan                                         // Systematic examination of some aspect of the entity or its environment.
    3 query                                        // Initiate a request for information.
-   6 deny                                         // Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access.
-   8 allow                                        // Permit access to or execution of a Target.
-  14 cancel                                       // Invalidate a previously issued Action.
-  16 update                                       // Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
-  20 delete                                       // Remove an entity (e.g., data, files, flows).
-  28 copy                                         // Duplicate an object, file, data flow, or artifact.
 
 Target = Choice
-   2 command          Command-ID                  // A reference to a previously issued Command.
-   3 device           Device                      // The properties of a hardware device.
-   7 domain_name      Domain-Name                 // A network domain name.
    9 features         Features                    // A set of items used with the query Action to determine an Actuator's capabilities.
-  10 file             File                        // Properties of a file.
-  13 ipv4_net         IPv4-Net                    // An IPv4 address range including CIDR prefix length.
-  14 ipv6_net         IPv6-Net                    // An IPv6 address range including prefix length.
-  15 ipv4_connection  IPv4-Connection             // A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol.
-  16 ipv6_connection  IPv6-Connection             // A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol.
-  17 mac_addr         MAC-Addr                    // A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui).
 1035 pac/             AP-Target$pac               // PAC-defined targets
 
 Args = Map{1..*}
@@ -58,43 +42,7 @@ Action-Targets = MapOf(Action, Targets){1..*}     // Targets applicable to each 
 
 Targets = ArrayOf(Pointer[Target]){1..*} unique   // Target pointers
 
-Device = Map{1..*}
-   1 hostname         Hostname optional           // A hostname that can be used to connect to this device over a network
-   2 idn_hostname     IDN-Hostname optional       // An internationalized hostname that can be used to connect to this device over a network
-   3 device_id        String optional             // An identifier that refers to this device within an inventory or management system
-
-Domain-Name = String /hostname                    // [[RFC1034]](#rfc1034), Section 3.5
-
 Features = ArrayOf(Feature){0..10} unique         // An array of zero to ten names used to query a Consume for its supported capabilities.
-
-File = Map{1..*}
-   1 name             String optional             // The name of the file as defined in the file system
-   2 path             String optional             // The absolute path to the location of the file in the file system
-   3 hashes           Hashes optional             // One or more cryptographic hash codes of the file contents
-
-IPv4-Net = Array /ipv4-net                        // IPv4 address and prefix length
-   1  IPv4-Addr                                   // ipv4_addr:: IPv4 address as defined in [[RFC0791]](#rfc0791)
-   2  Integer optional                            // prefix_length:: CIDR prefix-length. If omitted, refers to a single host address.
-
-IPv4-Connection = Record{1..*}                    // 5-tuple that specifies a tcp/ip connection
-   1 src_addr         IPv4-Net optional           // IPv4 source address range
-   2 src_port         Port optional               // Source service per [[RFC6335]](#rfc6335)
-   3 dst_addr         IPv4-Net optional           // IPv4 destination address range
-   4 dst_port         Port optional               // Destination service per [[RFC6335]](#rfc6335)
-   5 protocol         L4-Protocol optional        // Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)
-
-IPv6-Net = Array /ipv6-net                        // IPv6 address and prefix length
-   1  IPv6-Addr                                   // ipv6_addr:: IPv6 address as defined in [[RFC8200]](#rfc8200)
-   2  Integer optional                            // prefix_length:: prefix length. If omitted, refers to a single host address
-
-IPv6-Connection = Record{1..*}                    // 5-tuple that specifies a tcp/ip connection
-   1 src_addr         IPv6-Net optional           // IPv6 source address range
-   2 src_port         Port optional               // Source service per [[RFC6335]](#rfc6335)
-   3 dst_addr         IPv6-Net optional           // IPv6 destination address range
-   4 dst_port         Port optional               // Destination service per [[RFC6335]](#rfc6335)
-   5 protocol         L4-Protocol optional        // Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)
-
-MAC-Addr = Binary /eui                            // Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI](#eui)
 
 URI = String /uri                                 // Uniform Resource Identifier, [[RFC3986]](#rfc3986).
 
@@ -108,28 +56,7 @@ Feature = Enumerated                              // Specifies the results to be
    3 pairs                                        // List of supported Actions and applicable Targets
    4 rate_limit                                   // Maximum number of Commands per minute supported by design or policy
 
-Hashes = Map{1..*}                                // Cryptographic hash values
-   1 md5              Binary{16..16} /x optional  // MD5 hash as defined in [[RFC1321]](#rfc1321)
-   2 sha1             Binary{20..20} /x optional  // SHA1 hash as defined in [[RFC6234]](#rfc6234)
-   3 sha256           Binary{32..32} /x optional  // SHA256 hash as defined in [[RFC6234]](#rfc6234)
-
-Hostname = String /hostname                       // Internet host name as specified in [[RFC1123]](#rfc1123)
-
-IDN-Hostname = String /idn-hostname               // Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.
-
-IPv4-Addr = Binary /ipv4-addr                     // 32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)
-
-IPv6-Addr = Binary /ipv6-addr                     // 128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)
-
-L4-Protocol = Enumerated                          // Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)
-   1 icmp                                         // Internet Control Message Protocol - [[RFC0792]](#rfc0792)
-   6 tcp                                          // Transmission Control Protocol - [[RFC0793]](#rfc0793)
-  17 udp                                          // User Datagram Protocol - [[RFC0768]](#rfc0768)
- 132 sctp                                         // Stream Control Transmission Protocol - [[RFC4960]](#rfc4960)
-
 Nsid = String{1..16}                              // A short identifier that refers to a namespace.
-
-Port = Integer{0..65535}                          // Transport Protocol Port Number, [[RFC6335]](#rfc6335)
 
 Response-Type = Enumerated
    0 none                                         // No response

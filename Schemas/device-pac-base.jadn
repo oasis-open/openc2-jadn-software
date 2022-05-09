@@ -5,7 +5,6 @@
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
    "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "slpf": "http://oasis-open.org/openc2/oc2slpf/v1.1",
    "pac": "http://oasis-open.org/openc2/oc2pac/v1.1"
   }
  },
@@ -42,27 +41,11 @@
   ]],
 
   ["Action", "Enumerated", [], "", [
-    [1, "scan", "Systematic examination of some aspect of the entity or its environment."],
-    [3, "query", "Initiate a request for information."],
-    [6, "deny", "Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access."],
-    [8, "allow", "Permit access to or execution of a Target."],
-    [14, "cancel", "Invalidate a previously issued Action."],
-    [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
-    [20, "delete", "Remove an entity (e.g., data, files, flows)."],
-    [28, "copy", "Duplicate an object, file, data flow, or artifact."]
+    [3, "query", "Initiate a request for information."]
   ]],
 
   ["Target", "Choice", [], "", [
-    [2, "command", "ls:Command-ID", [], "A reference to a previously issued Command."],
-    [3, "device", "ls:Device", [], "The properties of a hardware device."],
-    [7, "domain_name", "ls:Domain-Name", [], "A network domain name."],
     [9, "features", "ls:Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
-    [10, "file", "ls:File", [], "Properties of a file."],
-    [13, "ipv4_net", "ls:IPv4-Net", [], "An IPv4 address range including CIDR prefix length."],
-    [14, "ipv6_net", "ls:IPv6-Net", [], "An IPv6 address range including prefix length."],
-    [15, "ipv4_connection", "ls:IPv4-Connection", [], "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."],
-    [16, "ipv6_connection", "ls:IPv6-Connection", [], "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."],
-    [17, "mac_addr", "ls:MAC-Addr", [], "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."],
     [1035, "pac", "pac:AP-Target", ["<"], "PAC-defined targets"]
   ]],
 

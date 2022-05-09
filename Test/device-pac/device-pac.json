@@ -74,14 +74,7 @@
       "title": "Action",
       "type": "string",
       "enum": [
-        "scan",
-        "query",
-        "deny",
-        "allow",
-        "cancel",
-        "update",
-        "delete",
-        "copy"
+        "query"
       ]
     },
     "Target": {
@@ -91,45 +84,9 @@
       "minProperties": 1,
       "maxProperties": 1,
       "properties": {
-        "command": {
-          "$ref": "#/definitions/Command-ID",
-          "description": "A reference to a previously issued Command."
-        },
-        "device": {
-          "$ref": "#/definitions/Device",
-          "description": "The properties of a hardware device."
-        },
-        "domain_name": {
-          "$ref": "#/definitions/Domain-Name",
-          "description": "A network domain name."
-        },
         "features": {
           "$ref": "#/definitions/Features",
           "description": "A set of items used with the query Action to determine an Actuator's capabilities."
-        },
-        "file": {
-          "$ref": "#/definitions/File",
-          "description": "Properties of a file."
-        },
-        "ipv4_net": {
-          "$ref": "#/definitions/IPv4-Net",
-          "description": "An IPv4 address range including CIDR prefix length."
-        },
-        "ipv6_net": {
-          "$ref": "#/definitions/IPv6-Net",
-          "description": "An IPv6 address range including prefix length."
-        },
-        "ipv4_connection": {
-          "$ref": "#/definitions/IPv4-Connection",
-          "description": "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."
-        },
-        "ipv6_connection": {
-          "$ref": "#/definitions/IPv6-Connection",
-          "description": "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."
-        },
-        "mac_addr": {
-          "$ref": "#/definitions/MAC-Addr",
-          "description": "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."
         },
         "pac": {
           "$ref": "#/definitions/AP-Target$pac",
@@ -231,28 +188,7 @@
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "scan": {
-          "$ref": "#/definitions/Targets"
-        },
         "query": {
-          "$ref": "#/definitions/Targets"
-        },
-        "deny": {
-          "$ref": "#/definitions/Targets"
-        },
-        "allow": {
-          "$ref": "#/definitions/Targets"
-        },
-        "cancel": {
-          "$ref": "#/definitions/Targets"
-        },
-        "update": {
-          "$ref": "#/definitions/Targets"
-        },
-        "delete": {
-          "$ref": "#/definitions/Targets"
-        },
-        "copy": {
           "$ref": "#/definitions/Targets"
         }
       }
@@ -266,48 +202,10 @@
       "maxItems": 100,
       "items": {
         "enum": [
-          "command",
-          "device",
-          "domain_name",
           "features",
-          "file",
-          "ipv4_net",
-          "ipv6_net",
-          "ipv4_connection",
-          "ipv6_connection",
-          "mac_addr",
           "pac"
         ]
       }
-    },
-    "Device": {
-      "title": "Device",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "$ref": "#/definitions/Hostname",
-          "description": "A hostname that can be used to connect to this device over a network"
-        },
-        "idn_hostname": {
-          "$ref": "#/definitions/IDN-Hostname",
-          "description": "An internationalized hostname that can be used to connect to this device over a network"
-        },
-        "device_id": {
-          "type": "string",
-          "description": "An identifier that refers to this device within an inventory or management system",
-          "maxLength": 255
-        }
-      }
-    },
-    "Domain-Name": {
-      "title": "Domain Name",
-      "type": "string",
-      "description": "[[RFC1034]](#rfc1034), Section 3.5",
-      "format": "hostname",
-      "maxLength": 255
     },
     "Features": {
       "title": "Features",
@@ -318,107 +216,6 @@
       "items": {
         "$ref": "#/definitions/Feature"
       }
-    },
-    "File": {
-      "title": "File",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the file as defined in the file system",
-          "maxLength": 255
-        },
-        "path": {
-          "type": "string",
-          "description": "The absolute path to the location of the file in the file system",
-          "maxLength": 255
-        },
-        "hashes": {
-          "$ref": "#/definitions/Hashes",
-          "description": "One or more cryptographic hash codes of the file contents"
-        }
-      }
-    },
-    "IPv4-Net": {
-      "title": "IPv4 Net",
-      "type": "string",
-      "description": "IPv4 address and prefix length",
-      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
-    },
-    "IPv4-Connection": {
-      "title": "IPv4 Connection",
-      "type": "object",
-      "description": "5-tuple that specifies a tcp/ip connection",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "src_addr": {
-          "$ref": "#/definitions/IPv4-Net",
-          "description": "IPv4 source address range"
-        },
-        "src_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Source service per [[RFC6335]](#rfc6335)"
-        },
-        "dst_addr": {
-          "$ref": "#/definitions/IPv4-Net",
-          "description": "IPv4 destination address range"
-        },
-        "dst_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Destination service per [[RFC6335]](#rfc6335)"
-        },
-        "protocol": {
-          "$ref": "#/definitions/L4-Protocol",
-          "description": "Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)"
-        }
-      }
-    },
-    "IPv6-Net": {
-      "title": "IPv6 Net",
-      "type": "string",
-      "description": "IPv6 address and prefix length",
-      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
-    },
-    "IPv6-Connection": {
-      "title": "IPv6 Connection",
-      "type": "object",
-      "description": "5-tuple that specifies a tcp/ip connection",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "src_addr": {
-          "$ref": "#/definitions/IPv6-Net",
-          "description": "IPv6 source address range"
-        },
-        "src_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Source service per [[RFC6335]](#rfc6335)"
-        },
-        "dst_addr": {
-          "$ref": "#/definitions/IPv6-Net",
-          "description": "IPv6 destination address range"
-        },
-        "dst_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Destination service per [[RFC6335]](#rfc6335)"
-        },
-        "protocol": {
-          "$ref": "#/definitions/L4-Protocol",
-          "description": "Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"
-        }
-      }
-    },
-    "MAC-Addr": {
-      "title": "MAC Addr",
-      "type": "string",
-      "description": "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI](#eui)",
-      "pattern": "^([0-9a-fA-F]{2}[:-]){5}[0-9A-Fa-f]{2}(([:-][0-9A-Fa-f]{2}){2})?$"
     },
     "URI": {
       "title": "URI",
@@ -450,81 +247,12 @@
         "rate_limit"
       ]
     },
-    "Hashes": {
-      "title": "Hashes",
-      "type": "object",
-      "description": "Cryptographic hash values",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "md5": {
-          "type": "string",
-          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
-          "contentEncoding": "base16"
-        },
-        "sha1": {
-          "type": "string",
-          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        },
-        "sha256": {
-          "type": "string",
-          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        }
-      }
-    },
-    "Hostname": {
-      "title": "Hostname",
-      "type": "string",
-      "description": "Internet host name as specified in [[RFC1123]](#rfc1123)",
-      "format": "hostname",
-      "maxLength": 255
-    },
-    "IDN-Hostname": {
-      "title": "IDN Hostname",
-      "type": "string",
-      "description": "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.",
-      "format": "idn-hostname",
-      "maxLength": 255
-    },
-    "IPv4-Addr": {
-      "title": "IPv4 Addr",
-      "type": "string",
-      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
-      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
-    },
-    "IPv6-Addr": {
-      "title": "IPv6 Addr",
-      "type": "string",
-      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
-      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
-    },
-    "L4-Protocol": {
-      "title": "L4 Protocol",
-      "type": "string",
-      "description": "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)",
-      "enum": [
-        "icmp",
-        "tcp",
-        "udp",
-        "sctp"
-      ]
-    },
     "Nsid": {
       "title": "Nsid",
       "type": "string",
       "description": "A short identifier that refers to a namespace.",
       "minLength": 1,
       "maxLength": 16
-    },
-    "Port": {
-      "title": "Port",
-      "type": "integer",
-      "description": "Transport Protocol Port Number, [[RFC6335]](#rfc6335)",
-      "minimum": 0,
-      "maximum": 65535
     },
     "Response-Type": {
       "title": "Response Type",

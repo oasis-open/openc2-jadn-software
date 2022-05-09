@@ -40,7 +40,6 @@ ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/conten
 TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
-# auth = {}
 
 
 class WebDirEntry:

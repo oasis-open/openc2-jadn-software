@@ -150,7 +150,7 @@ def run_test(dpath):         # Check correct validation of good and bad commands
                         print(f' Bad JSON: {e.msg} "{e.doc}"')
             else:
                 print(pdir, 'No tests')
-    print('Validation Errors:', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
+    print(f'Validation Errors: {sum(k for k in ecount.values())}', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
 print(f'Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')

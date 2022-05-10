@@ -172,13 +172,9 @@ Specifies the results to be returned from a query features Command
 
 **********
 
-Profile-defined targets
-
-**Type: AP-Target$pac (Choice)**
-
-| ID | Name      | Type                            | \#    | Description                              |
-|----|-----------|---------------------------------|-------|------------------------------------------|
-| 1  | **attrs** | PostureAttributeName$pac unique | 1..\* | List of posture attribute names to query |
+| Type Name         | Type Definition                          | Description             |
+|-------------------|------------------------------------------|-------------------------|
+| **AP-Target$pac** | ArrayOf(PostureAttributeName$pac) unique | Profile-defined targets |
 
 **********
 
@@ -206,10 +202,10 @@ Profile-defined response results
 
 **Type: AP-Results$pac (Map{1..\*})**
 
-| ID | Name           | Type           | \# | Description |
-|----|----------------|----------------|----|-------------|
-| 1  | **os_version** | OS-Version$pac | 1  |             |
-| 2  | **sbom**       | SBOM$pac       | 1  |             |
+| ID | Name           | Type           | \#   | Description |
+|----|----------------|----------------|------|-------------|
+| 1  | **os_version** | OS-Version$pac | 0..1 |             |
+| 2  | **sbom**       | SBOM$pac       | 0..1 |             |
 
 **********
 
@@ -224,17 +220,19 @@ Profile-defined response results
 
 **Type: OS-Version$pac (Record)**
 
-| ID | Name              | Type        | \#    | Description                          |
-|----|-------------------|-------------|-------|--------------------------------------|
-| 1  | **name**          | String      | 1     | Distribution or product name         |
-| 2  | **version**       | String      | 1     | Suitable for presentation OS version |
-| 3  | **major**         | Integer     | 0..1  | Major release version                |
-| 4  | **patch**         | Integer     | 0..1  | Patch release                        |
-| 5  | **build**         | String      | 0..1  | Build-specific or variant string     |
-| 6  | **platform**      | String      | 0..1  | OS Platform or ID                    |
-| 7  | **platform_like** | String      | 0..\* | Closely-related platforms            |
-| 8  | **arch**          | OS-Arch$pac | 0..1  | OS Architecture                      |
-| 9  | **install_date**  | Date-Time   | 0..1  | Install date of the OS               |
+| ID | Name              | Type         | \#    | Description                          |
+|----|-------------------|--------------|-------|--------------------------------------|
+| 1  | **name**          | String       | 1     | Distribution or product name         |
+| 2  | **version**       | String       | 1     | Suitable for presentation OS version |
+| 3  | **major**         | Integer      | 0..1  | Major release version                |
+| 4  | **minor**         | Integer      | 0..1  |                                      |
+| 5  | **patch**         | Integer      | 0..1  | Patch release                        |
+| 6  | **build**         | String       | 0..1  | Build-specific or variant string     |
+| 7  | **platform**      | String       | 0..1  | OS Platform or ID                    |
+| 8  | **platform_like** | String       | 0..\* | Closely-related platforms            |
+| 9  | **codename**      | String       | 0..1  | OS Release codename                  |
+| 10 | **arch**          | OS-Arch$pac  | 0..1  | OS Architecture                      |
+| 11 | **install_date**  | DateTime$pac | 0..1  | Install date of the OS               |
 
 **********
 
@@ -264,15 +262,15 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 **Type: SBOM-Elements$pac (Record)**
 
-| ID | Name              | Type      | \#    | Description                                                                          |
-|----|-------------------|-----------|-------|--------------------------------------------------------------------------------------|
-| 1  | **supplier**      | String    | 1..\* | Name of entity that creates, defines, and identifies components                      |
-| 2  | **component**     | String    | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
-| 3  | **version**       | String    | 1     | Identifier used by supplier to specify a change from a previously identified version |
-| 4  | **component_ids** | String    | 0..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
-| 5  | **dependencies**  | String    | 0..\* | Upstream component(s)                                                                |
-| 6  | **author**        | String    | 1     | Name of the entity that creates SBOM data for this component                         |
-| 7  | **timestamp**     | Date-Time | 1     | Record of the date and time of the SBOM data assembly                                |
+| ID | Name              | Type         | \#    | Description                                                                          |
+|----|-------------------|--------------|-------|--------------------------------------------------------------------------------------|
+| 1  | **supplier**      | String       | 1..\* | Name of entity that creates, defines, and identifies components                      |
+| 2  | **component**     | String       | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
+| 3  | **version**       | String       | 1     | Identifier used by supplier to specify a change from a previously identified version |
+| 4  | **component_ids** | String       | 0..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
+| 5  | **dependencies**  | String       | 0..\* | Upstream component(s)                                                                |
+| 6  | **author**        | String       | 1     | Name of the entity that creates SBOM data for this component                         |
+| 7  | **timestamp**     | DateTime$pac | 1     | Record of the date and time of the SBOM data assembly                                |
 
 **********
 
@@ -292,5 +290,11 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 |----|------------|------------------------------------|----|-------------|
 | 1  | **format** | Enumerated(Enum[SBOM-Content$pac]) | 1  |             |
 | 2  | **data**   | Binary                             | 1  |             |
+
+**********
+
+| Type Name        | Type Definition                                                                                  | Description     |
+|------------------|--------------------------------------------------------------------------------------------------|-----------------|
+| **DateTime$pac** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
 
 **********

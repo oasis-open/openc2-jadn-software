@@ -30,8 +30,7 @@ Results = Enumerated
 AP-Pairs = Enumerated
    3 query: pac/attrs
 
-AP-Target = Choice                                // Profile-defined targets
-   1 attrs            PostureAttributeName unique [1..*]// List of posture attribute names to query
+AP-Target = ArrayOf(PostureAttributeName) unique  // Profile-defined targets
 
 AP-Args = Map{1..*}                               // Profile-defined command arguments
    1 foo              String optional             // Delete from Args if none
@@ -40,8 +39,8 @@ AP-Specifiers = Map                               // Profile-defined actuator sp
    1 foo              String optional             // Delete from Actuator if none
 
 AP-Results = Map{1..*}                            // Profile-defined response results
-   1 os_version       OS-Version
-   2 sbom             SBOM
+   1 os_version       OS-Version optional
+   2 sbom             SBOM optional
 
 PostureAttributeName = Enumerated
    1 os_version                                   // Return OS-Version results
@@ -51,12 +50,14 @@ OS-Version = Record
    1 name             String                      // Distribution or product name
    2 version          String                      // Suitable for presentation OS version
    3 major            Integer optional            // Major release version
-   4 patch            Integer optional            // Patch release
-   5 build            String optional             // Build-specific or variant string
-   6 platform         String optional             // OS Platform or ID
-   7 platform_like    String [0..*]               // Closely-related platforms
-   8 arch             OS-Arch optional            // OS Architecture
-   9 install_date     ls:Date-Time optional       // Install date of the OS
+   4 minor            Integer optional
+   5 patch            Integer optional            // Patch release
+   6 build            String optional             // Build-specific or variant string
+   7 platform         String optional             // OS Platform or ID
+   8 platform_like    String [0..*]               // Closely-related platforms
+   9 codename         String optional             // OS Release codename
+  10 arch             OS-Arch optional            // OS Architecture
+  11 install_date     DateTime optional           // Install date of the OS
 
 OS-Arch = Enumerated                              // Win: wmic os get osarchitecture, or Unix: uname -m
    1 32-bit
@@ -77,7 +78,7 @@ SBOM-Elements = Record
    4 component_ids    String [0..*]               // Other identifiers used to identify a component, or serve as a look-yp key
    5 dependencies     String [0..*]               // Upstream component(s)
    6 author           String                      // Name of the entity that creates SBOM data for this component
-   7 timestamp        ls:Date-Time                // Record of the date and time of the SBOM data assembly
+   7 timestamp        DateTime                    // Record of the date and time of the SBOM data assembly
 
 SBOM-Content = Choice
    1 cyclonedx        String                      // Placeholder for CycloneDX data model
@@ -87,3 +88,5 @@ SBOM-Content = Choice
 SBOM-Blob = Record
    1 format           Enumerated(Enum[SBOM-Content])
    2 data             Binary
+
+DateTime = String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} // RFC-3339 format

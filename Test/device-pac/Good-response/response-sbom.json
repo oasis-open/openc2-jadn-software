@@ -2,7 +2,17 @@
   "status": 200,
   "results": {
     "pac": {
-      "sbom": {}
+      "sbom": {
+        "summary": {
+          "supplier": ["acme.com"],
+          "component": ["package-foo"],
+          "version": "1.0",
+          "component_ids": ["foo.exe"],
+          "dependencies": ["time.dll"],
+          "author": "Acme Foundation",
+          "timestamp": "2021-10-12T07:20:50.52Z"
+        }
+      }
     }
   }
 }

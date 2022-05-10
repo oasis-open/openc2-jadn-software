@@ -10,7 +10,7 @@
         "patch": 1,
         "build": "21E258",
         "platform": "darwin",
-        "platform_like": "darwin",
+        "platform_like": ["darwin"],
         "codename": "",
         "arch": "x86_64"
       }

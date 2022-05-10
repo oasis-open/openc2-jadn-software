@@ -295,22 +295,12 @@
     },
     "AP-Target$pac": {
       "title": "AP Target$pac",
-      "type": "object",
+      "type": "array",
       "description": "Profile-defined targets",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "attrs": {
-          "type": "array",
-          "description": "List of posture attribute names to query",
-          "uniqueItems": true,
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/PostureAttributeName$pac",
-            "description": "List of posture attribute names to query"
-          }
-        }
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/PostureAttributeName$pac"
       }
     },
     "AP-Args$pac": {
@@ -347,10 +337,6 @@
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
-      "required": [
-        "os_version",
-        "sbom"
-      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
@@ -396,6 +382,9 @@
           "type": "integer",
           "description": "Major release version"
         },
+        "minor": {
+          "type": "integer"
+        },
         "patch": {
           "type": "integer",
           "description": "Patch release"
@@ -420,12 +409,17 @@
             "maxLength": 255
           }
         },
+        "codename": {
+          "type": "string",
+          "description": "OS Release codename",
+          "maxLength": 255
+        },
         "arch": {
           "$ref": "#/definitions/OS-Arch$pac",
           "description": "OS Architecture"
         },
         "install_date": {
-          "$ref": "#/definitions/Date-Time",
+          "$ref": "#/definitions/DateTime$pac",
           "description": "Install date of the OS"
         }
       }
@@ -530,7 +524,7 @@
           "maxLength": 255
         },
         "timestamp": {
-          "$ref": "#/definitions/Date-Time",
+          "$ref": "#/definitions/DateTime$pac",
           "description": "Record of the date and time of the SBOM data assembly"
         }
       }
@@ -582,6 +576,13 @@
           "contentEncoding": "base64url"
         }
       }
+    },
+    "DateTime$pac": {
+      "title": "DateTime$pac",
+      "type": "string",
+      "description": "RFC-3339 format",
+      "maxLength": 255,
+      "pattern": "^((?:(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?))(Z|[\\+-]\\d{2}:\\d{2})?)$"
     }
   }
 }

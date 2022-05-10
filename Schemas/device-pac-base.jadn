@@ -10,7 +10,6 @@
  },
 
  "types": [
-
   ["Message", "Record", [], "", [
     [1, "headers", "Headers", ["[0"], ""],
     [2, "body", "Body", [], ""]

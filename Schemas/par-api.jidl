@@ -4,20 +4,21 @@ exports: ["Device", "SBOM"]
 
 Device = Record
   1 id Key(String)
-  2 kind DeviceKind
-  3 manufacturer String
-  4 model String
-  5 serial String
-  6 assed_id String
-  7 attrs Attributes
-  8 sboms SBOM [0..*]
+  2 sboms Link(SBOM) [0..*]
+  3 kind DeviceKind
+  4 manufacturer String
+  5 model String
+  6 serial String
+  7 assed_id String
+  8 attrs Attributes
 
 SBOM = Record
   1 id Key(String)
-  2 uri String /uri
-  3 summary SBOM-Elements
-  4 content SBOM-Content
-  5 blob SBOM-Blob
+  2 devices Link(Device) [0..*]
+  3 uri String /uri
+  4 summary SBOM-Elements
+  5 content SBOM-Content
+  6 blob SBOM-Blob
 
 DeviceKind = Enumerated
   1 pc

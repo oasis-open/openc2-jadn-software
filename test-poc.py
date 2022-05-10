@@ -39,7 +39,7 @@ ROOT_DIR = 'Test'
 ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/contents/'
 TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
 
-AUTH = {'Authorization': f'token {os.environ["GitHubToken"]}'}
+AUTH = {'Authorization': f'token {os.environ["GitHubToken"] if TEST_ROOT == ROOT_REPO else "None"}'}
 
 
 class WebDirEntry:
@@ -152,6 +152,6 @@ def run_test(dpath):         # Check correct validation of good and bad commands
     print(f'Validation Errors: {sum(k for k in ecount.values())}', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
-print(f'Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')
+print(f'JADN Version: {jadn.__version__}, Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')
 for test in find_tests(TEST_ROOT):
     run_test(test)

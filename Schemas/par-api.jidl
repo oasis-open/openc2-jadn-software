@@ -1,31 +1,32 @@
 package: "https://pace.org/par"
 title: "Posture Attribute Repository API"
+description: "This is a schema for the GraphQL PAR API, not an OpenC2 Actuator Profile"
 exports: ["Device", "SBOM"]
 
 Device = Record
-  1 id Key(String)
-  2 sboms Link(SBOM) [0..*]
-  3 kind DeviceKind
-  4 manufacturer String
-  5 model String
-  6 serial String
-  7 assed_id String
-  8 attrs Attributes
+  1 id Key(String)                  // Primary key for Device table (@model)
+  2 sboms Link(SBOM) [0..*]         // Foreign keys for SBOMs on this Device
+  3 kind DeviceKind optional
+  4 manufacturer String optional
+  5 model String optional
+  6 serial String optional
+  7 asset_id String optional
+  8 attrs Attributes optional
 
 SBOM = Record
-  1 id Key(String)
-  2 devices Link(Device) [0..*]
-  3 uri String /uri
-  4 summary SBOM-Elements
-  5 content SBOM-Content
-  6 blob SBOM-Blob
+  1 id Key(String)                  // Primary key for SBOM table
+  2 devices Link(Device) [0..*]     // Foreign keys for Devices using this SBOM
+  3 uri String /uri optional
+  4 summary SBOM-Elements optional
+  5 content SBOM-Content optional
+  6 blob SBOM-Blob optional
 
 DeviceKind = Enumerated
-  1 pc
-  2 laptop
-  3 tablet
-  4 mobile
-  5 camera
+  1 PC
+  2 LAPTOP
+  3 TABLET
+  4 MOBILE
+  5 CAMERA
 
 Attributes = Map
   1 osVersion OS-Version
@@ -35,12 +36,14 @@ OS-Version = Record
   1 name String
   2 version String
   3 major Integer optional
-  4 patch Integer optional
-  5 build String optional
-  6 platform String
-  7 platform_like String [0..*]
-  8 arch OS-Arch
-  9 installDate DateTime
+  4 minor Integer optional
+  5 patch Integer optional
+  6 build String optional
+  7 platform String optional
+  8 platform_like String [0..*]
+  9 codename String optional
+ 10 arch OS-Arch optional
+ 11 installDate DateTime optional
 
 OS-Arch = Enumerated
   1 32_bit
@@ -64,8 +67,8 @@ SBOM-Content = Record
 
 SBOM-Blob = Record
   1 sbom_type SBOM-Type
-  2 data String
+  2 document Binary     // Serialized as Base64URL in JSON
 
 SBOM-Type = Enumerated(Enum[SBOM-Content])
 
-DateTime = Integer
+DateTime = String       // Migrate to Integer timestamp with RFC 3339 text format

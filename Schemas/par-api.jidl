@@ -3,23 +3,25 @@ title: "Posture Attribute Repository API"
 description: "This is a schema for the GraphQL PAR API, not an OpenC2 Actuator Profile"
 exports: ["Device", "SBOM"]
 
-Device = Record
+Device = Record{2..*}               // Must have at least one field in addition to id
   1 id Key(String)                  // Primary key for Device table (@model)
-  2 sboms Link(SBOM) [0..*]         // Foreign keys for SBOMs on this Device
-  3 kind DeviceKind optional
-  4 manufacturer String optional
-  5 model String optional
-  6 serial String optional
-  7 asset_id String optional
-  8 attrs Attributes optional
+  2 kind DeviceKind optional
+  3 manufacturer String optional
+  4 model String optional
+  5 serial String optional
+  6 asset_id String optional
+  7 attrs Attributes optional
 
-SBOM = Record
+SBOM = Record{2..*}                 // Must have at least one field in addition to id
   1 id Key(String)                  // Primary key for SBOM table
-  2 devices Link(Device) [0..*]     // Foreign keys for Devices using this SBOM
-  3 uri String /uri optional
-  4 summary SBOM-Elements optional
-  5 content SBOM-Content optional
-  6 blob SBOM-Blob optional
+  2 uri String /uri optional
+  3 summary SBOM-Elements optional
+  4 content SBOM-Content optional
+  5 blob SBOM-Blob optional
+
+Device-SBOM-Mapping = Record        // Bridge table for many-to-many relationship
+  1 device_id Link(Device)
+  2 sbom_id Link(SBOM)
 
 DeviceKind = Enumerated
   1 PC
@@ -28,9 +30,9 @@ DeviceKind = Enumerated
   4 MOBILE
   5 CAMERA
 
-Attributes = Map
-  1 osVersion OS-Version
-  2 passwordMin Integer
+Attributes = Map{1..*}
+  1 osVersion OS-Version optional
+  2 passwordMin Integer optional
 
 OS-Version = Record
   1 name String

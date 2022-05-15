@@ -27,12 +27,12 @@ Results = Enumerated
    4 rate_limit
 1035 pac/
 
-Pairs = Enumerated       // Enumerated item values are string literals, not data structures
+Pairs = Enumerated                                // Enumerated item values are string literals, not data structures
    3 query: [pac/attrs, pac/sbom]
 
 AP-Target = Choice
-   1 attrs Attribute-Specifiers
-   2 sbom SBOM-Specifiers
+   1 attrs            Attribute-Specifiers
+   2 sbom             SBOM-Specifiers
 
 AP-Args = Map{1..*}                               // Profile-defined command arguments
    1 foo              String optional             // Delete from Args if none
@@ -41,24 +41,28 @@ AP-Specifiers = Map                               // Profile-defined actuator sp
    1 foo              String optional             // Delete from Actuator if none
 
 AP-Results = Map{1..*}                            // Profile-defined response results
-   1 attrs       PostureAttributes optional
-   2 sbom             SBOM optional
+   1 attrs            PostureAttributes optional
+   2 sbom             SBOM-Info optional
 
 Attribute-Specifiers = Map{1..*}
-   1 osVersion Boolean optional
-   2 passwordMin Boolean optional
-   3 file FileSpecifiers optional
+   1 os_version       Boolean optional
+   2 password_min     Boolean optional
+   3 file             FileSpecifiers optional
+
+SBOM-Specifiers = Map
+   1 type             ArrayOf(Enum[SBOM-Info]) unique
+   2 content          ArrayOf(Enum[SBOM-Content]) unique
 
 PostureAttributes = Map{1..*}
-   1 osVersion OS-Version optional
-   2 passwordMin Integer optional
-   3 file File optional
+   1 os_version       OS-Version optional
+   2 password_min     Integer optional
+   3 file             File optional
 
 OS-Version = Record
    1 name             String                      // Distribution or product name
    2 version          String                      // Suitable for presentation OS version
    3 major            Integer optional            // Major release version
-   4 minor            Integer optional
+   4 minor            Integer optional            // Minor release version
    5 patch            Integer optional            // Patch release
    6 build            String optional             // Build-specific or variant string
    7 platform         String optional             // OS Platform or ID
@@ -73,38 +77,35 @@ OS-Arch = Enumerated                              // Win: wmic os get osarchitec
    3 x86_32
    4 x86_64
 
-FileSpecifiers = Map
-   1 path String
+FileSpecifiers = Map{1..*}
+   1 path             String optional
+   2 hash             ls:Hashes optional
 
 File = Record
-   1 data Binary
+   1 data             Binary
 
-SBOM-Specifiers = Map
-   1 type Enumerated(Enum[SBOM])
-   2 format ArrayOf(Enum[SBOM-Format])
-
-SBOM = Choice
-   1 uri              ls:URI                      // Unique identifier or locator of the SBOM
-   2 summary          SBOM-Elements               // NTIA Minimumum Elements of an SBOM
-   3 content          SBOM-Format                // SBOM structured data
-   4 blob             SBOM-Blob                   // Uninterpreted SBOM bytes
+SBOM-Info = Map{1..*}
+   1 uri              ls:URI optional             // Unique identifier or locator of the SBOM
+   2 summary          SBOM-Elements optional      // NTIA Minimumum Elements of an SBOM
+   3 content          SBOM-Content optional       // SBOM structured data
+   4 blob             SBOM-Blob optional          // Uninterpreted SBOM bytes
 
 SBOM-Elements = Record
    1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
    2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
    3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
-   4 component_ids    String [0..*]               // Other identifiers used to identify a component, or serve as a look-yp key
-   5 dependencies     String [0..*]               // Upstream component(s)
+   4 component_ids    String [1..*]               // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies     String [1..*]               // Upstream component(s)
    6 author           String                      // Name of the entity that creates SBOM data for this component
    7 timestamp        DateTime                    // Record of the date and time of the SBOM data assembly
 
-SBOM-Format = Choice
+SBOM-Content = Choice
    1 cyclonedx        String                      // Placeholder for CycloneDX data model
    2 spdx2            String                      // Placeholder for SPDX v2.x data model
    3 spdx3            String                      // Placeholder for SPDX v3 data model
 
 SBOM-Blob = Record
-   1 format           Enumerated(Enum[SBOM-Format])
+   1 format           Enumerated(Enum[SBOM-Content])
    2 data             Binary
 
 DateTime = String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} // RFC-3339 format

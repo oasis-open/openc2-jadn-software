@@ -1,6 +1,11 @@
 {
   "action": "query",
   "target": {
-    "pac": ["os_version"]
+    "pac": {
+      "attrs": {
+        "os_version": true,
+        "file": {"path": "/path/to/file"}
+      }
+    }
   }
 }

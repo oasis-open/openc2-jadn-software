@@ -137,7 +137,9 @@ Command-ID = String{pattern="^\S{0,36}$"}         // Command Identifier
 
 Version = String                                  // Major.Minor version number
 
-AP-Target$pac = ArrayOf(PostureAttributeName$pac) unique// Profile-defined targets
+AP-Target$pac = Choice
+   1 attrs            Attribute-Specifiers$pac
+   2 sbom             SBOM-Specifiers$pac
 
 AP-Args$pac = Map{1..*}                           // Profile-defined command arguments
    1 foo              String optional             // Delete from Args if none
@@ -146,18 +148,28 @@ AP-Specifiers$pac = Map                           // Profile-defined actuator sp
    1 foo              String optional             // Delete from Actuator if none
 
 AP-Results$pac = Map{1..*}                        // Profile-defined response results
-   1 os_version       OS-Version$pac optional
-   2 sbom             SBOM$pac optional
+   1 attrs            PostureAttributes$pac optional
+   2 sbom             SBOM-Info$pac optional
 
-PostureAttributeName$pac = Enumerated
-   1 os_version                                   // Return OS-Version results
-   2 sbom                                         // Return SBOM
+Attribute-Specifiers$pac = Map{1..*}
+   1 os_version       Boolean optional
+   2 password_min     Boolean optional
+   3 file             FileSpecifiers$pac optional
+
+SBOM-Specifiers$pac = Map
+   1 type             ArrayOf(Enum[SBOM-Info$pac]) unique
+   2 content          ArrayOf(Enum[SBOM-Content$pac]) unique
+
+PostureAttributes$pac = Map{1..*}
+   1 os_version       OS-Version$pac optional
+   2 password_min     Integer optional
+   3 file             File$pac optional
 
 OS-Version$pac = Record
    1 name             String                      // Distribution or product name
    2 version          String                      // Suitable for presentation OS version
    3 major            Integer optional            // Major release version
-   4 minor            Integer optional
+   4 minor            Integer optional            // Minor release version
    5 patch            Integer optional            // Patch release
    6 build            String optional             // Build-specific or variant string
    7 platform         String optional             // OS Platform or ID
@@ -172,18 +184,25 @@ OS-Arch$pac = Enumerated                          // Win: wmic os get osarchitec
    3 x86_32
    4 x86_64
 
-SBOM$pac = Choice
-   1 uri              URI                         // Unique identifier or locator of the SBOM
-   2 summary          SBOM-Elements$pac           // NTIA Minimumum Elements of an SBOM
-   3 content          SBOM-Content$pac            // SBOM structured data
-   4 blob             SBOM-Blob$pac               // Uninterpreted SBOM bytes
+FileSpecifiers$pac = Map{1..*}
+   1 path             String optional
+   2 hash             Hashes optional
+
+File$pac = Record
+   1 data             Binary
+
+SBOM-Info$pac = Map{1..*}
+   1 uri              URI optional                // Unique identifier or locator of the SBOM
+   2 summary          SBOM-Elements$pac optional  // NTIA Minimumum Elements of an SBOM
+   3 content          SBOM-Content$pac optional   // SBOM structured data
+   4 blob             SBOM-Blob$pac optional      // Uninterpreted SBOM bytes
 
 SBOM-Elements$pac = Record
    1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
    2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
    3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
-   4 component_ids    String [0..*]               // Other identifiers used to identify a component, or serve as a look-yp key
-   5 dependencies     String [0..*]               // Upstream component(s)
+   4 component_ids    String [1..*]               // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies     String [1..*]               // Upstream component(s)
    6 author           String                      // Name of the entity that creates SBOM data for this component
    7 timestamp        DateTime$pac                // Record of the date and time of the SBOM data assembly
 

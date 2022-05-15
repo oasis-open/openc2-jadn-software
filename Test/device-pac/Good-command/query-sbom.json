@@ -1,6 +1,11 @@
 {
   "action": "query",
   "target": {
-    "pac": ["sbom"]
+    "pac": {
+      "sbom": {
+        "type": ["uri", "summary"],
+        "content": ["spdx2"]
+      }
+    }
   }
 }

@@ -52,17 +52,22 @@
 
 **********
 
-**Type: AP-Pairs (Enumerated)**
+Enumerated item values are string literals, not data structures
 
-| ID | Item                 | Description |
-|----|----------------------|-------------|
-| 3  | **query: pac/attrs** |             |
+**Type: Pairs (Enumerated)**
+
+| ID | Item                             | Description |
+|----|----------------------------------|-------------|
+| 3  | **query: [pac/attrs, pac/sbom]** |             |
 
 **********
 
-| Type Name     | Type Definition                      | Description             |
-|---------------|--------------------------------------|-------------------------|
-| **AP-Target** | ArrayOf(PostureAttributeName) unique | Profile-defined targets |
+**Type: AP-Target (Choice)**
+
+| ID | Name      | Type                 | \# | Description |
+|----|-----------|----------------------|----|-------------|
+| 1  | **attrs** | Attribute-Specifiers | 1  |             |
+| 2  | **sbom**  | SBOM-Specifiers      | 1  |             |
 
 **********
 
@@ -90,19 +95,39 @@ Profile-defined response results
 
 **Type: AP-Results (Map{1..\*})**
 
-| ID | Name           | Type       | \#   | Description |
-|----|----------------|------------|------|-------------|
-| 1  | **os_version** | OS-Version | 0..1 |             |
-| 2  | **sbom**       | SBOM       | 0..1 |             |
+| ID | Name      | Type              | \#   | Description |
+|----|-----------|-------------------|------|-------------|
+| 1  | **attrs** | PostureAttributes | 0..1 |             |
+| 2  | **sbom**  | SBOM-Info         | 0..1 |             |
 
 **********
 
-**Type: PostureAttributeName (Enumerated)**
+**Type: Attribute-Specifiers (Map{1..\*})**
 
-| ID | Item           | Description               |
-|----|----------------|---------------------------|
-| 1  | **os_version** | Return OS-Version results |
-| 2  | **sbom**       | Return SBOM               |
+| ID | Name             | Type           | \#   | Description |
+|----|------------------|----------------|------|-------------|
+| 1  | **os_version**   | Boolean        | 0..1 |             |
+| 2  | **password_min** | Boolean        | 0..1 |             |
+| 3  | **file**         | FileSpecifiers | 0..1 |             |
+
+**********
+
+**Type: SBOM-Specifiers (Map)**
+
+| ID | Name        | Type                               | \# | Description |
+|----|-------------|------------------------------------|----|-------------|
+| 1  | **type**    | ArrayOf(Enum[SBOM-Info]) unique    | 1  |             |
+| 2  | **content** | ArrayOf(Enum[SBOM-Content]) unique | 1  |             |
+
+**********
+
+**Type: PostureAttributes (Map{1..\*})**
+
+| ID | Name             | Type       | \#   | Description |
+|----|------------------|------------|------|-------------|
+| 1  | **os_version**   | OS-Version | 0..1 |             |
+| 2  | **password_min** | Integer    | 0..1 |             |
+| 3  | **file**         | File       | 0..1 |             |
 
 **********
 
@@ -113,7 +138,7 @@ Profile-defined response results
 | 1  | **name**          | String   | 1     | Distribution or product name         |
 | 2  | **version**       | String   | 1     | Suitable for presentation OS version |
 | 3  | **major**         | Integer  | 0..1  | Major release version                |
-| 4  | **minor**         | Integer  | 0..1  |                                      |
+| 4  | **minor**         | Integer  | 0..1  | Minor release version                |
 | 5  | **patch**         | Integer  | 0..1  | Patch release                        |
 | 6  | **build**         | String   | 0..1  | Build-specific or variant string     |
 | 7  | **platform**      | String   | 0..1  | OS Platform or ID                    |
@@ -137,14 +162,31 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 **********
 
-**Type: SBOM (Choice)**
+**Type: FileSpecifiers (Map{1..\*})**
 
-| ID | Name        | Type          | \# | Description                              |
-|----|-------------|---------------|----|------------------------------------------|
-| 1  | **uri**     | ls:URI        | 1  | Unique identifier or locator of the SBOM |
-| 2  | **summary** | SBOM-Elements | 1  | NTIA Minimumum Elements of an SBOM       |
-| 3  | **content** | SBOM-Content  | 1  | SBOM structured data                     |
-| 4  | **blob**    | SBOM-Blob     | 1  | Uninterpreted SBOM bytes                 |
+| ID | Name     | Type      | \#   | Description |
+|----|----------|-----------|------|-------------|
+| 1  | **path** | String    | 0..1 |             |
+| 2  | **hash** | ls:Hashes | 0..1 |             |
+
+**********
+
+**Type: File (Record)**
+
+| ID | Name     | Type   | \# | Description |
+|----|----------|--------|----|-------------|
+| 1  | **data** | Binary | 1  |             |
+
+**********
+
+**Type: SBOM-Info (Map{1..\*})**
+
+| ID | Name        | Type          | \#   | Description                              |
+|----|-------------|---------------|------|------------------------------------------|
+| 1  | **uri**     | ls:URI        | 0..1 | Unique identifier or locator of the SBOM |
+| 2  | **summary** | SBOM-Elements | 0..1 | NTIA Minimumum Elements of an SBOM       |
+| 3  | **content** | SBOM-Content  | 0..1 | SBOM structured data                     |
+| 4  | **blob**    | SBOM-Blob     | 0..1 | Uninterpreted SBOM bytes                 |
 
 **********
 
@@ -155,8 +197,8 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 | 1  | **supplier**      | String   | 1..\* | Name of entity that creates, defines, and identifies components                      |
 | 2  | **component**     | String   | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
 | 3  | **version**       | String   | 1     | Identifier used by supplier to specify a change from a previously identified version |
-| 4  | **component_ids** | String   | 0..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
-| 5  | **dependencies**  | String   | 0..\* | Upstream component(s)                                                                |
+| 4  | **component_ids** | String   | 1..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
+| 5  | **dependencies**  | String   | 1..\* | Upstream component(s)                                                                |
 | 6  | **author**        | String   | 1     | Name of the entity that creates SBOM data for this component                         |
 | 7  | **timestamp**     | DateTime | 1     | Record of the date and time of the SBOM data assembly                                |
 
@@ -181,8 +223,8 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 **********
 
-| Type Name    | Type Definition                                                                                  | Description     |
-|--------------|--------------------------------------------------------------------------------------------------|-----------------|
-| **DateTime** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
+| Type Name    | Type Definition                                                           | Description     |
+|--------------|---------------------------------------------------------------------------|-----------------|
+| **DateTime** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z\|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
 
 **********

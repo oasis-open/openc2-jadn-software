@@ -288,9 +288,12 @@ Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IA
 
 **********
 
-| Type Name         | Type Definition                          | Description             |
-|-------------------|------------------------------------------|-------------------------|
-| **AP-Target$pac** | ArrayOf(PostureAttributeName$pac) unique | Profile-defined targets |
+**Type: AP-Target$pac (Choice)**
+
+| ID | Name      | Type                     | \# | Description |
+|----|-----------|--------------------------|----|-------------|
+| 1  | **attrs** | Attribute-Specifiers$pac | 1  |             |
+| 2  | **sbom**  | SBOM-Specifiers$pac      | 1  |             |
 
 **********
 
@@ -318,19 +321,39 @@ Profile-defined response results
 
 **Type: AP-Results$pac (Map{1..\*})**
 
-| ID | Name           | Type           | \#   | Description |
-|----|----------------|----------------|------|-------------|
-| 1  | **os_version** | OS-Version$pac | 0..1 |             |
-| 2  | **sbom**       | SBOM$pac       | 0..1 |             |
+| ID | Name      | Type                  | \#   | Description |
+|----|-----------|-----------------------|------|-------------|
+| 1  | **attrs** | PostureAttributes$pac | 0..1 |             |
+| 2  | **sbom**  | SBOM-Info$pac         | 0..1 |             |
 
 **********
 
-**Type: PostureAttributeName$pac (Enumerated)**
+**Type: Attribute-Specifiers$pac (Map{1..\*})**
 
-| ID | Item           | Description               |
-|----|----------------|---------------------------|
-| 1  | **os_version** | Return OS-Version results |
-| 2  | **sbom**       | Return SBOM               |
+| ID | Name             | Type               | \#   | Description |
+|----|------------------|--------------------|------|-------------|
+| 1  | **os_version**   | Boolean            | 0..1 |             |
+| 2  | **password_min** | Boolean            | 0..1 |             |
+| 3  | **file**         | FileSpecifiers$pac | 0..1 |             |
+
+**********
+
+**Type: SBOM-Specifiers$pac (Map)**
+
+| ID | Name        | Type                                   | \# | Description |
+|----|-------------|----------------------------------------|----|-------------|
+| 1  | **type**    | ArrayOf(Enum[SBOM-Info$pac]) unique    | 1  |             |
+| 2  | **content** | ArrayOf(Enum[SBOM-Content$pac]) unique | 1  |             |
+
+**********
+
+**Type: PostureAttributes$pac (Map{1..\*})**
+
+| ID | Name             | Type           | \#   | Description |
+|----|------------------|----------------|------|-------------|
+| 1  | **os_version**   | OS-Version$pac | 0..1 |             |
+| 2  | **password_min** | Integer        | 0..1 |             |
+| 3  | **file**         | File$pac       | 0..1 |             |
 
 **********
 
@@ -341,7 +364,7 @@ Profile-defined response results
 | 1  | **name**          | String       | 1     | Distribution or product name         |
 | 2  | **version**       | String       | 1     | Suitable for presentation OS version |
 | 3  | **major**         | Integer      | 0..1  | Major release version                |
-| 4  | **minor**         | Integer      | 0..1  |                                      |
+| 4  | **minor**         | Integer      | 0..1  | Minor release version                |
 | 5  | **patch**         | Integer      | 0..1  | Patch release                        |
 | 6  | **build**         | String       | 0..1  | Build-specific or variant string     |
 | 7  | **platform**      | String       | 0..1  | OS Platform or ID                    |
@@ -365,14 +388,31 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 **********
 
-**Type: SBOM$pac (Choice)**
+**Type: FileSpecifiers$pac (Map{1..\*})**
 
-| ID | Name        | Type              | \# | Description                              |
-|----|-------------|-------------------|----|------------------------------------------|
-| 1  | **uri**     | URI               | 1  | Unique identifier or locator of the SBOM |
-| 2  | **summary** | SBOM-Elements$pac | 1  | NTIA Minimumum Elements of an SBOM       |
-| 3  | **content** | SBOM-Content$pac  | 1  | SBOM structured data                     |
-| 4  | **blob**    | SBOM-Blob$pac     | 1  | Uninterpreted SBOM bytes                 |
+| ID | Name     | Type   | \#   | Description |
+|----|----------|--------|------|-------------|
+| 1  | **path** | String | 0..1 |             |
+| 2  | **hash** | Hashes | 0..1 |             |
+
+**********
+
+**Type: File$pac (Record)**
+
+| ID | Name     | Type   | \# | Description |
+|----|----------|--------|----|-------------|
+| 1  | **data** | Binary | 1  |             |
+
+**********
+
+**Type: SBOM-Info$pac (Map{1..\*})**
+
+| ID | Name        | Type              | \#   | Description                              |
+|----|-------------|-------------------|------|------------------------------------------|
+| 1  | **uri**     | URI               | 0..1 | Unique identifier or locator of the SBOM |
+| 2  | **summary** | SBOM-Elements$pac | 0..1 | NTIA Minimumum Elements of an SBOM       |
+| 3  | **content** | SBOM-Content$pac  | 0..1 | SBOM structured data                     |
+| 4  | **blob**    | SBOM-Blob$pac     | 0..1 | Uninterpreted SBOM bytes                 |
 
 **********
 
@@ -383,8 +423,8 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 | 1  | **supplier**      | String       | 1..\* | Name of entity that creates, defines, and identifies components                      |
 | 2  | **component**     | String       | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
 | 3  | **version**       | String       | 1     | Identifier used by supplier to specify a change from a previously identified version |
-| 4  | **component_ids** | String       | 0..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
-| 5  | **dependencies**  | String       | 0..\* | Upstream component(s)                                                                |
+| 4  | **component_ids** | String       | 1..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
+| 5  | **dependencies**  | String       | 1..\* | Upstream component(s)                                                                |
 | 6  | **author**        | String       | 1     | Name of the entity that creates SBOM data for this component                         |
 | 7  | **timestamp**     | DateTime$pac | 1     | Record of the date and time of the SBOM data assembly                                |
 

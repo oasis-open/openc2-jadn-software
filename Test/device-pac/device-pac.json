@@ -247,6 +247,31 @@
         "rate_limit"
       ]
     },
+    "Hashes": {
+      "title": "Hashes",
+      "type": "object",
+      "description": "Cryptographic hash values",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "md5": {
+          "type": "string",
+          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
+          "contentEncoding": "base16"
+        },
+        "sha1": {
+          "type": "string",
+          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        }
+      }
+    },
     "Nsid": {
       "title": "Nsid",
       "type": "string",
@@ -295,12 +320,19 @@
     },
     "AP-Target$pac": {
       "title": "AP Target$pac",
-      "type": "array",
-      "description": "Profile-defined targets",
-      "uniqueItems": true,
-      "maxItems": 100,
-      "items": {
-        "$ref": "#/definitions/PostureAttributeName$pac"
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "attrs": {
+          "$ref": "#/definitions/Attribute-Specifiers$pac",
+          "description": ""
+        },
+        "sbom": {
+          "$ref": "#/definitions/SBOM-Specifiers$pac",
+          "description": ""
+        }
       }
     },
     "AP-Args$pac": {
@@ -340,23 +372,91 @@
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "os_version": {
-          "$ref": "#/definitions/OS-Version$pac",
+        "attrs": {
+          "$ref": "#/definitions/PostureAttributes$pac",
           "description": ""
         },
         "sbom": {
-          "$ref": "#/definitions/SBOM$pac",
+          "$ref": "#/definitions/SBOM-Info$pac",
           "description": ""
         }
       }
     },
-    "PostureAttributeName$pac": {
-      "title": "PostureAttributeName$pac",
-      "type": "string",
-      "enum": [
-        "os_version",
-        "sbom"
-      ]
+    "Attribute-Specifiers$pac": {
+      "title": "Attribute Specifiers$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "os_version": {
+          "type": "boolean"
+        },
+        "password_min": {
+          "type": "boolean"
+        },
+        "file": {
+          "$ref": "#/definitions/FileSpecifiers$pac",
+          "description": ""
+        }
+      }
+    },
+    "SBOM-Specifiers$pac": {
+      "title": "SBOM Specifiers$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "content"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "type": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "enum": [
+              "uri",
+              "summary",
+              "content",
+              "blob"
+            ]
+          }
+        },
+        "content": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "enum": [
+              "cyclonedx",
+              "spdx2",
+              "spdx3"
+            ]
+          }
+        }
+      }
+    },
+    "PostureAttributes$pac": {
+      "title": "PostureAttributes$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "os_version": {
+          "$ref": "#/definitions/OS-Version$pac",
+          "description": ""
+        },
+        "password_min": {
+          "type": "integer"
+        },
+        "file": {
+          "$ref": "#/definitions/File$pac",
+          "description": ""
+        }
+      }
     },
     "OS-Version$pac": {
       "title": "OS Version$pac",
@@ -383,7 +483,8 @@
           "description": "Major release version"
         },
         "minor": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Minor release version"
         },
         "patch": {
           "type": "integer",
@@ -435,12 +536,44 @@
         "x86_64"
       ]
     },
-    "SBOM$pac": {
-      "title": "SBOM$pac",
+    "FileSpecifiers$pac": {
+      "title": "FileSpecifiers$pac",
       "type": "object",
       "additionalProperties": false,
       "minProperties": 1,
-      "maxProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "hash": {
+          "$ref": "#/definitions/Hashes",
+          "description": ""
+        }
+      }
+    },
+    "File$pac": {
+      "title": "File$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "data": {
+          "type": "string",
+          "contentEncoding": "base64url"
+        }
+      }
+    },
+    "SBOM-Info$pac": {
+      "title": "SBOM Info$pac",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
       "properties": {
         "uri": {
           "$ref": "#/definitions/URI",
@@ -468,6 +601,8 @@
         "supplier",
         "component",
         "version",
+        "component_ids",
+        "dependencies",
         "author",
         "timestamp"
       ],

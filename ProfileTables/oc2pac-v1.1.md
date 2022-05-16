@@ -22,13 +22,12 @@
 
 **Type: Args (Enumerated)**
 
-| ID   | Item                   | Description |
-|------|------------------------|-------------|
-| 1    | **start_time**         |             |
-| 2    | **stop_time**          |             |
-| 3    | **duration**           |             |
-| 4    | **response_requested** |             |
-| 1035 | **pac/**               |             |
+| ID | Item                   | Description |
+|----|------------------------|-------------|
+| 1  | **start_time**         |             |
+| 2  | **stop_time**          |             |
+| 3  | **duration**           |             |
+| 4  | **response_requested** |             |
 
 **********
 
@@ -71,23 +70,9 @@ Enumerated item values are string literals, not data structures
 
 **********
 
-Profile-defined command arguments
-
-**Type: AP-Args (Map{1..\*})**
-
-| ID | Name    | Type   | \#   | Description              |
-|----|---------|--------|------|--------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Args if none |
-
-**********
-
-Profile-defined actuator specifiers
-
-**Type: AP-Specifiers (Map)**
-
-| ID | Name    | Type   | \#   | Description                  |
-|----|---------|--------|------|------------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Actuator if none |
+| Type Name         | Type Definition | Description                         |
+|-------------------|-----------------|-------------------------------------|
+| **AP-Specifiers** | Map             | Profile-defined actuator specifiers |
 
 **********
 
@@ -225,8 +210,8 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 **********
 
-| Type Name    | Type Definition                                                                                  | Description     |
-|--------------|--------------------------------------------------------------------------------------------------|-----------------|
-| **DateTime** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
+| Type Name    | Type Definition                                                           | Description     |
+|--------------|---------------------------------------------------------------------------|-----------------|
+| **DateTime** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z\|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
 
 **********

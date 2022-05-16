@@ -32,7 +32,6 @@ Args = Map{1..*}
    3 duration         Duration optional           // The length of time for an Command to be in effect
    4 response_requested Response-Type optional    // The type of Response required for the Command: none, ack, status, complete
 1024 slpf/            AP-Args$slpf optional       // SLPF-defined command arguments
-1035 pac/             AP-Args$pac optional        // PAC-defined command arguments
 
 Actuator = Choice
 1024 slpf/            AP-Specifiers$slpf          // SLPF-defined actuator specifiers
@@ -141,11 +140,7 @@ AP-Target$pac = Choice
    1 attrs            Attribute-Specifiers$pac
    2 sbom             SBOM-Specifiers$pac
 
-AP-Args$pac = Map{1..*}                           // Profile-defined command arguments
-   1 foo              String optional             // Delete from Args if none
-
 AP-Specifiers$pac = Map                           // Profile-defined actuator specifiers
-   1 foo              String optional             // Delete from Actuator if none
 
 AP-Results$pac = Map{1..*}                        // Profile-defined response results
    1 attrs            PostureAttributes$pac optional

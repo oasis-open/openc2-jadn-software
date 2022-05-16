@@ -15,7 +15,6 @@ Args = Enumerated
    2 stop_time
    3 duration
    4 response_requested
-1035 pac/
 
 Actuator = Enumerated
 1035 pac/
@@ -34,11 +33,7 @@ AP-Target = Choice
    1 attrs            Attribute-Specifiers
    2 sbom             SBOM-Specifiers
 
-AP-Args = Map{1..*}                               // Profile-defined command arguments
-   1 foo              String optional             // Delete from Args if none
-
 AP-Specifiers = Map                               // Profile-defined actuator specifiers
-   1 foo              String optional             // Delete from Actuator if none
 
 AP-Results = Map{1..*}                            // Profile-defined response results
    1 attrs            PostureAttributes optional

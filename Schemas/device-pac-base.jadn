@@ -52,8 +52,7 @@
     [1, "start_time", "ls:Date-Time", ["[0"], "The specific date/time to initiate the Command"],
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
-    [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-    [1035, "pac", "pac:AP-Args", ["[0", "<"], "PAC-defined command arguments"]
+    [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"]
   ]],
 
   ["Actuator", "Choice", [], "", [

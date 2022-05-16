@@ -52,7 +52,6 @@ The Command defines an Action to be performed on a Target
 | 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                          |
 | 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: none, ack, status, complete |
 | 1024 | **slpf/**              | AP-Args$slpf  | 0..1 | SLPF-defined command arguments                                             |
-| 1035 | **pac/**               | AP-Args$pac   | 0..1 | PAC-defined command arguments                                              |
 
 **********
 
@@ -297,23 +296,9 @@ Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IA
 
 **********
 
-Profile-defined command arguments
-
-**Type: AP-Args$pac (Map{1..\*})**
-
-| ID | Name    | Type   | \#   | Description              |
-|----|---------|--------|------|--------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Args if none |
-
-**********
-
-Profile-defined actuator specifiers
-
-**Type: AP-Specifiers$pac (Map)**
-
-| ID | Name    | Type   | \#   | Description                  |
-|----|---------|--------|------|------------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Actuator if none |
+| Type Name             | Type Definition | Description                         |
+|-----------------------|-----------------|-------------------------------------|
+| **AP-Specifiers$pac** | Map             | Profile-defined actuator specifiers |
 
 **********
 

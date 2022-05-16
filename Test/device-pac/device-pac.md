@@ -35,13 +35,12 @@ The Command defines an Action to be performed on a Target
 
 **Type: Args (Map{1..\*})**
 
-| ID   | Name                   | Type          | \#   | Description                                                                |
-|------|------------------------|---------------|------|----------------------------------------------------------------------------|
-| 1    | **start_time**         | Date-Time     | 0..1 | The specific date/time to initiate the Command                             |
-| 2    | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                            |
-| 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                          |
-| 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: none, ack, status, complete |
-| 1035 | **pac/**               | AP-Args$pac   | 0..1 | PAC-defined command arguments                                              |
+| ID | Name                   | Type          | \#   | Description                                                                |
+|----|------------------------|---------------|------|----------------------------------------------------------------------------|
+| 1  | **start_time**         | Date-Time     | 0..1 | The specific date/time to initiate the Command                             |
+| 2  | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                            |
+| 3  | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                          |
+| 4  | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: none, ack, status, complete |
 
 **********
 
@@ -193,23 +192,9 @@ Cryptographic hash values
 
 **********
 
-Profile-defined command arguments
-
-**Type: AP-Args$pac (Map{1..\*})**
-
-| ID | Name    | Type   | \#   | Description              |
-|----|---------|--------|------|--------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Args if none |
-
-**********
-
-Profile-defined actuator specifiers
-
-**Type: AP-Specifiers$pac (Map)**
-
-| ID | Name    | Type   | \#   | Description                  |
-|----|---------|--------|------|------------------------------|
-| 1  | **foo** | String | 0..1 | Delete from Actuator if none |
+| Type Name             | Type Definition | Description                         |
+|-----------------------|-----------------|-------------------------------------|
+| **AP-Specifiers$pac** | Map             | Profile-defined actuator specifiers |
 
 **********
 

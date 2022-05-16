@@ -56,7 +56,6 @@ OS-Arch = Enumerated                              // Win: wmic os get osarchitec
 
 FileSpecifiers = Map{1..*}
    1 path             String optional
-   2 hash             ls:Hashes optional
 
 File = Record
    1 data             Binary

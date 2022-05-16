@@ -116,10 +116,6 @@
         "response_requested": {
           "$ref": "#/definitions/Response-Type",
           "description": "The type of Response required for the Command: none, ack, status, complete"
-        },
-        "pac": {
-          "$ref": "#/definitions/AP-Args$pac",
-          "description": "PAC-defined command arguments"
         }
       }
     },
@@ -335,34 +331,13 @@
         }
       }
     },
-    "AP-Args$pac": {
-      "title": "AP Args$pac",
-      "type": "object",
-      "description": "Profile-defined command arguments",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "foo": {
-          "type": "string",
-          "description": "Delete from Args if none",
-          "maxLength": 255
-        }
-      }
-    },
     "AP-Specifiers$pac": {
       "title": "AP Specifiers$pac",
       "type": "object",
       "description": "Profile-defined actuator specifiers",
       "additionalProperties": false,
       "maxProperties": 100,
-      "properties": {
-        "foo": {
-          "type": "string",
-          "description": "Delete from Actuator if none",
-          "maxLength": 255
-        }
-      }
+      "properties": {}
     },
     "AP-Results$pac": {
       "title": "AP Results$pac",

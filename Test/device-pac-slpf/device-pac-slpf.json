@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device/pacf/v3",
+  "$id": "http://acme.com/schemas/device-base/pacf/v3",
   "title": "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter",
   "type": "object",
   "additionalProperties": false,
@@ -647,7 +647,15 @@
       "additionalProperties": false,
       "required": [
         "name",
-        "version"
+        "version",
+        "major",
+        "minor",
+        "patch",
+        "build",
+        "platform",
+        "platform_like",
+        "codename",
+        "arch"
       ],
       "maxProperties": 100,
       "properties": {
@@ -684,14 +692,9 @@
           "maxLength": 255
         },
         "platform_like": {
-          "type": "array",
-          "description": "Closely-related platforms",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "description": "Closely-related platforms",
-            "maxLength": 255
-          }
+          "type": "string",
+          "description": "Closely-related platform",
+          "maxLength": 255
         },
         "codename": {
           "type": "string",
@@ -703,8 +706,16 @@
           "description": "OS Architecture"
         },
         "install_date": {
-          "$ref": "#/definitions/DateTime$pac",
-          "description": "Install date of the OS"
+          "type": "integer",
+          "description": "Install date of the OS (seconds)"
+        },
+        "pid_with_namespace": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "mount_namespace_id": {
+          "type": "string",
+          "maxLength": 255
         }
       }
     },

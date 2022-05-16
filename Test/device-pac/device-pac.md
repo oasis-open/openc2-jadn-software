@@ -255,19 +255,21 @@ Profile-defined response results
 
 **Type: OS-Version$pac (Record)**
 
-| ID | Name              | Type         | \#    | Description                          |
-|----|-------------------|--------------|-------|--------------------------------------|
-| 1  | **name**          | String       | 1     | Distribution or product name         |
-| 2  | **version**       | String       | 1     | Suitable for presentation OS version |
-| 3  | **major**         | Integer      | 0..1  | Major release version                |
-| 4  | **minor**         | Integer      | 0..1  | Minor release version                |
-| 5  | **patch**         | Integer      | 0..1  | Patch release                        |
-| 6  | **build**         | String       | 0..1  | Build-specific or variant string     |
-| 7  | **platform**      | String       | 0..1  | OS Platform or ID                    |
-| 8  | **platform_like** | String       | 0..\* | Closely-related platforms            |
-| 9  | **codename**      | String       | 0..1  | OS Release codename                  |
-| 10 | **arch**          | OS-Arch$pac  | 0..1  | OS Architecture                      |
-| 11 | **install_date**  | DateTime$pac | 0..1  | Install date of the OS               |
+| ID | Name                   | Type        | \#   | Description                          |
+|----|------------------------|-------------|------|--------------------------------------|
+| 1  | **name**               | String      | 1    | Distribution or product name         |
+| 2  | **version**            | String      | 1    | Suitable for presentation OS version |
+| 3  | **major**              | Integer     | 1    | Major release version                |
+| 4  | **minor**              | Integer     | 1    | Minor release version                |
+| 5  | **patch**              | Integer     | 1    | Patch release                        |
+| 6  | **build**              | String      | 1    | Build-specific or variant string     |
+| 7  | **platform**           | String      | 1    | OS Platform or ID                    |
+| 8  | **platform_like**      | String      | 1    | Closely-related platform             |
+| 9  | **codename**           | String      | 1    | OS Release codename                  |
+| 10 | **arch**               | OS-Arch$pac | 1    | OS Architecture                      |
+| 11 | **install_date**       | Integer     | 0..1 | Install date of the OS (seconds)     |
+| 12 | **pid_with_namespace** | String      | 0..1 |                                      |
+| 13 | **mount_namespace_id** | String      | 0..1 |                                      |
 
 **********
 

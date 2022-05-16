@@ -61,15 +61,17 @@ PostureAttributes = Map{1..*}
 OS-Version = Record
    1 name             String                      // Distribution or product name
    2 version          String                      // Suitable for presentation OS version
-   3 major            Integer optional            // Major release version
-   4 minor            Integer optional            // Minor release version
-   5 patch            Integer optional            // Patch release
-   6 build            String optional             // Build-specific or variant string
-   7 platform         String optional             // OS Platform or ID
-   8 platform_like    String [0..*]               // Closely-related platforms
-   9 codename         String optional             // OS Release codename
-  10 arch             OS-Arch optional            // OS Architecture
-  11 install_date     DateTime optional           // Install date of the OS
+   3 major            Integer                     // Major release version
+   4 minor            Integer                     // Minor release version
+   5 patch            Integer                     // Patch release
+   6 build            String                      // Build-specific or variant string
+   7 platform         String                      // OS Platform or ID
+   8 platform_like    String                      // Closely-related platform
+   9 codename         String                      // OS Release codename
+  10 arch             OS-Arch                     // OS Architecture
+  11 install_date     Integer optional            // Install date of the OS (seconds)
+  12 pid_with_namespace String optional
+  13 mount_namespace_id String optional
 
 OS-Arch = Enumerated                              // Win: wmic os get osarchitecture, or Unix: uname -m
    1 32-bit

@@ -27,7 +27,7 @@ Results = Enumerated
 1035 pac/
 
 Pairs = Enumerated                                // Enumerated item values are string literals, not data structures
-   3 query: [pac/attrs, pac/sbom]
+   3 query: features pac/attrs pac/sbom
 
 AP-Target = Choice
    1 attrs            Attribute-Specifiers

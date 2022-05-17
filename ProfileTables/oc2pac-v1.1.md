@@ -55,9 +55,9 @@ Enumerated item values are string literals, not data structures
 
 **Type: Pairs (Enumerated)**
 
-| ID | Item                             | Description |
-|----|----------------------------------|-------------|
-| 3  | **query: [pac/attrs, pac/sbom]** |             |
+| ID | Item                                   | Description |
+|----|----------------------------------------|-------------|
+| 3  | **query: features pac/attrs pac/sbom** |             |
 
 **********
 

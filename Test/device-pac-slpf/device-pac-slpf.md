@@ -1,5 +1,5 @@
          title: "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter"
-       package: "http://acme.com/schemas/device-base/pacf/v3"
+       package: "http://acme.com/schemas/device/pacf/v3"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -407,7 +407,7 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 | ID | Name              | Type         | \#    | Description                                                                          |
 |----|-------------------|--------------|-------|--------------------------------------------------------------------------------------|
-| 1  | **supplier**      | String       | 1..\* | Name of entity that creates, defines, and identifies components                      |
+| 1  | **supplier**      | String       | 1..\* | Name(s) of entity that creates, defines, and identifies components                   |
 | 2  | **component**     | String       | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
 | 3  | **version**       | String       | 1     | Identifier used by supplier to specify a change from a previously identified version |
 | 4  | **component_ids** | String       | 1..\* | Other identifiers used to identify a component, or serve as a look-yp key            |

@@ -55,9 +55,9 @@ Enumerated item values are string literals, not data structures
 
 **Type: Pairs (Enumerated)**
 
-| ID | Item                             | Description |
-|----|----------------------------------|-------------|
-| 3  | **query: [pac/attrs, pac/sbom]** |             |
+| ID | Item                                   | Description |
+|----|----------------------------------------|-------------|
+| 3  | **query: features pac/attrs pac/sbom** |             |
 
 **********
 
@@ -181,7 +181,7 @@ Win: wmic os get osarchitecture, or Unix: uname -m
 
 | ID | Name              | Type     | \#    | Description                                                                          |
 |----|-------------------|----------|-------|--------------------------------------------------------------------------------------|
-| 1  | **supplier**      | String   | 1..\* | Name of entity that creates, defines, and identifies components                      |
+| 1  | **supplier**      | String   | 1..\* | Name(s) of entity that creates, defines, and identifies components                   |
 | 2  | **component**     | String   | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
 | 3  | **version**       | String   | 1     | Identifier used by supplier to specify a change from a previously identified version |
 | 4  | **component_ids** | String   | 1..\* | Other identifiers used to identify a component, or serve as a look-yp key            |

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device-base/pacf/v3",
+  "$id": "http://acme.com/schemas/device/pacf/v3",
   "title": "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter",
   "type": "object",
   "additionalProperties": false,
@@ -779,11 +779,11 @@
       "properties": {
         "supplier": {
           "type": "array",
-          "description": "Name of entity that creates, defines, and identifies components",
+          "description": "Name(s) of entity that creates, defines, and identifies components",
           "minItems": 1,
           "items": {
             "type": "string",
-            "description": "Name of entity that creates, defines, and identifies components",
+            "description": "Name(s) of entity that creates, defines, and identifies components",
             "maxLength": 255
           }
         },

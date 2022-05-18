@@ -27,7 +27,7 @@ Results = Enumerated
 1035 pac/
 
 Pairs = Enumerated                                // Enumerated item values are string literals, not data structures
-   3 query: [pac/attrs, pac/sbom]
+   3 query: features pac/attrs pac/sbom
 
 AP-Target = Choice
    1 attrs            Attribute-Specifiers
@@ -88,7 +88,7 @@ SBOM-Info = Map{1..*}
    4 blob             SBOM-Blob optional          // Uninterpreted SBOM bytes
 
 SBOM-Elements = Record
-   1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
+   1 supplier         String [1..*]               // Name(s) of entity that creates, defines, and identifies components
    2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
    3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
    4 component_ids    String [1..*]               // Other identifiers used to identify a component, or serve as a look-yp key

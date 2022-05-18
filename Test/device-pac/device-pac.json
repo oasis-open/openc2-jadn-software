@@ -596,11 +596,11 @@
       "properties": {
         "supplier": {
           "type": "array",
-          "description": "Name of entity that creates, defines, and identifies components",
+          "description": "Name(s) of entity that creates, defines, and identifies components",
           "minItems": 1,
           "items": {
             "type": "string",
-            "description": "Name of entity that creates, defines, and identifies components",
+            "description": "Name(s) of entity that creates, defines, and identifies components",
             "maxLength": 255
           }
         },

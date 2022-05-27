@@ -1,3 +1,7 @@
+package: "http://cyclonedx.org/cyclonedx/v1.3"
+config: {"$FieldName": "^[a-z][-_A-Za-z0-9]{0,31}$", "$MaxString": 512}
+comment: "CycloneDX uses kebab-case names instead of snake_case"
+
 BOM = Record
   1 bomFormat BomFormat
   2 specVersion SpecVersion
@@ -17,7 +21,7 @@ SpecVersion = String        // SemVer pattern?
 
 Version = Integer{1..*}     // default = 1
 
-SerialNumber = String(pattern="^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+SerialNumber = String{pattern="^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"}
 
 Metadata = Map
   1 timestamp Timestamp optional
@@ -49,7 +53,7 @@ Component = Record
   1 type ComponentType // Specifies the type of component.  For software components, classify as application if no more specific appropriate classification is available or cannot be determined for the component.
   2 name String // The name of the component. This will often be a shortened, single name of the component. Examples: commons-lang3 and jquery
   3 version String // The component version. The version should ideally comply with semantic versioning but is not enforced.
-  4 mime-type String(pattern="^[-+a-z0-9.]+/[-+a-z0-9.]+$") optional // The optional mime-type of the component. When used on file components, the mime-type can provide additional context about the kind of file being represented such as an image, font, or executable. Some library or framework components may also have an associated mime-type.
+  4 mime-type String{pattern="^[-+a-z0-9.]+/[-+a-z0-9.]+$"} optional // The optional mime-type of the component. When used on file components, the mime-type can provide additional context about the kind of file being represented such as an image, font, or executable. Some library or framework components may also have an associated mime-type.
   5 bom-ref String optional // An optional identifier which can be used to reference the component elsewhere in the BOM. Every bom-ref should be unique.
   6 supplier OrganizationalEntity optional // The organization that supplied the component. The supplier may often be the manufacturer, but may also be a distributor or repackager.
   7 author String optional  // The person(s) or organization(s) that authored the component
@@ -115,5 +119,3 @@ ExternalReferenceType = Enumerated
  13 build-meta
  14 build-system
  99 other
-
-  x

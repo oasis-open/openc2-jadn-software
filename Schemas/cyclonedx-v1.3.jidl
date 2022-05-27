@@ -1,0 +1,119 @@
+BOM = Record
+  1 bomFormat BomFormat
+  2 specVersion SpecVersion
+  3 version Version
+  4 serialNumber SerialNumber
+  5 metadata Metadata
+  6 components Components
+  7 services Services
+  8 externalReferences ExternalReferences
+  9 dependencies Dependencies
+  10 compositions Compositions
+
+BomFormat = Enumerated
+  1 CycloneDX
+
+SpecVersion = String        // SemVer pattern?
+
+Version = Integer{1..*}     // default = 1
+
+SerialNumber = String(pattern="^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+Metadata = Map
+  1 timestamp Timestamp optional
+  2 tools Tool [0..*]
+  3 authors OrganizationalContact [0..*]
+  4 component Component optional
+  5 manufacture OrganizationalEntity optional
+  6 supplier OrganizationalEntity optional
+  7 licenses LicenseChoice optional
+  8 properties Property [0..*]
+
+Tool = Record{1..*}     // no minProperties in JSON schema
+  1 vendor String optional  // Tool Vendor (JSON Schema says date and time)
+  2 name String optional // Tool Nmae
+  3 version String optional // Tool Version
+  4 hashes Hashes optional // The hashes of the tool (if applicable).
+
+OrganizationalEntity = Record{1..*}
+  1 name String optional // The name of the organization
+  2 url Url [0..*] // The URL Of the organization. Multiple URLs are allowed.
+  3 contact OrganizationalContact [0..*] // A contact at the organization. Multiple contacts are allowed.
+
+OrganizationalContact = Record{1..*}
+  1 name String optional  // The name of a contact
+  2 email String /email optional  // The email address of the contact.
+  3 phone String optional // The phone number of the contact. (pattern?)
+
+Component = Record
+  1 type ComponentType // Specifies the type of component.  For software components, classify as application if no more specific appropriate classification is available or cannot be determined for the component.
+  2 name String // The name of the component. This will often be a shortened, single name of the component. Examples: commons-lang3 and jquery
+  3 version String // The component version. The version should ideally comply with semantic versioning but is not enforced.
+  4 mime-type String(pattern="^[-+a-z0-9.]+/[-+a-z0-9.]+$") optional // The optional mime-type of the component. When used on file components, the mime-type can provide additional context about the kind of file being represented such as an image, font, or executable. Some library or framework components may also have an associated mime-type.
+  5 bom-ref String optional // An optional identifier which can be used to reference the component elsewhere in the BOM. Every bom-ref should be unique.
+  6 supplier OrganizationalEntity optional // The organization that supplied the component. The supplier may often be the manufacturer, but may also be a distributor or repackager.
+  7 author String optional  // The person(s) or organization(s) that authored the component
+  8 publisher String optional   // The person(s) or organization(s) that published the component
+  9 group String optional   // The grouping name or identifier. This will often be a shortened, single name of the company or project that produced the component, or the source package or domain name. Whitespace and special characters should be avoided. Examples include: apache, org.apache.commons, and apache.org.
+ 10 description String optional    // Specifies a description for the component
+ 11 scope ScopeType optional    // Specifies the scope of the component. If scope is not specified, 'required' scope should be assumed by the consumer of the BOM
+ 12 hashes Hashes optional  // Component Hashes
+ 13 licenses LicenseChoice optional // Component License(s)
+ 14 copyright String optional   // An optional copyright notice informing users of the underlying claims to copyright ownership in a published work.
+ 15 cpe String optional // Component Common Platform Enumeration (CPE) - DEPRECATED - DO NOT USE. This will be removed in a future version.
+ 16 purl URI optional   // (fix string) Component Package URL (purl)
+ 17 swid SWID optional  // Specifies metadata and content for ISO-IEC 19770-2 Software Identification (SWID) Tags.
+ 18 modified Boolean optional   // DEPRECATED - DO NOT USE. This will be removed in a future version. Use the pedigree element instead to supply information on exactly how the component was modified. A boolean value indicating is the component has been modified from the original. A value of true indicates the component is a derivative of the original. A value of false indicates the component has not been modified from the original.
+ 19 pedigree Pedigree optional  // Component pedigree is a way to document complex supply chain scenarios where components are created, distributed, modified, redistributed, combined with other components, etc. Pedigree supports viewing this complex chain from the beginning, the end, or anywhere in the middle. It also provides a way to document variants where the exact relation may not be known.
+ 20 externalReferences ExternalReference [0..*] // External References
+ 21 components Component [0..*] // RECURSIVE!  Replace with bom-ref required key
+ 22 evidence ComponentEvidence optional  // Provides the ability to document evidence collected through various forms of extraction or analysis.
+ 23 properties Property [0..*] // Provides the ability to document properties in a name-value store. This provides flexibility to include data not officially supported in the standard without having to use additional namespaces or create extensions. Unlike key-value stores, properties support duplicate names, each potentially having different values.
+
+ComponentType = Enumerated
+  1 application
+  2 framework
+  3 library
+  4 container
+  5 operating-system
+  6 device
+  7 firmware
+  8 file
+
+ScopeType = Enumerated
+  1 required
+  2 optional
+  3 excluded
+
+Pedigree = Record   // RECURSIVE! Use bom-ref
+  1 ancestors Component [0..*] // Describes zero or more components in which a component is derived from. This is commonly used to describe forks from existing projects where the forked version contains a ancestor node containing the original component it was forked from. For example, Component A is the original component. Component B is the component being used and documented in the BOM. However, Component B contains a pedigree node with a single ancestor documenting Component A - the original component from which Component B is derived from.
+  2 descendants Component [0..*] // Descendants are the exact opposite of ancestors. This provides a way to document all forks (and their forks) of an original or root component.
+  3 variants Component [0..*] // Variants describe relations where the relationship between the components are not known. For example, if Component A contains nearly identical code to Component B. They are both related, but it is unclear if one is derived from the other, or if they share a common ancestor.
+  4 commits Commit [0..*]   // A list of zero or more commits which provide a trail describing how the component deviates from an ancestor, descendant, or variant.
+  5 patches Patch [0..*]    // A list of zero or more patches describing how the component deviates from an ancestor, descendant, or variant. Patches may be complimentary to commits or may be used in place of commits.
+  6 notes String optional   // Notes, observations, and other non-structured commentary describing the components pedigree.
+
+ExternalReference = Record
+  1 url IRI // The URL to the external reference
+  2 type ExternalReferenceType // Specifies the type of external reference. There are built-in types to describe common references. If a type does not exist for the reference being referred to, use the "other" type.
+  3 comment String optional // An optional comment describing the external reference
+  4 hashes Hashes optional // The hashes of the external reference (if applicable).
+
+ExternalReferenceType = Enumerated
+  1 vcs
+  2 issue-tracker
+  3 website
+  4 advisories
+  5 bom
+  6 mailing-list
+  7 social
+  8 chat
+  9 documentation
+ 10 support
+ 11 distribution
+ 12 license
+ 13 build-meta
+ 14 build-system
+ 99 other
+
+  x

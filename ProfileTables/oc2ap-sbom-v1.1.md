@@ -88,11 +88,11 @@ Profile-defined response results
 
 **Type: SBOM-Specifiers (Map)**
 
-| ID | Name       | Type                               | \# | Description |
-|----|------------|------------------------------------|----|-------------|
-| 1  | **type**   | ArrayOf(Enum[SBOM-Content]) unique | 1  |             |
-| 2  | **format** | ArrayOf(DataFormat) unique         | 1  |             |
-| 3  | **info**   | ArrayOf(Info) unique               | 1  |             |
+| ID | Name       | Type                               | \#   | Description |
+|----|------------|------------------------------------|------|-------------|
+| 1  | **type**   | ArrayOf(Enum[SBOM-Content]) unique | 0..1 |             |
+| 2  | **format** | ArrayOf(DataFormat) unique         | 0..1 |             |
+| 3  | **info**   | ArrayOf(Info) unique               | 0..1 |             |
 
 **********
 

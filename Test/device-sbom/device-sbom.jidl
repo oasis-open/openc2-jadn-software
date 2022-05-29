@@ -51,9 +51,9 @@ AP-Results$sbom = Map{1..*}                       // Profile-defined response re
    1 sboms            ArrayOf(SBOM-Info$sbom)
 
 SBOM-Specifiers$sbom = Map
-   1 type             ArrayOf(Enum[SBOM-Content$sbom]) unique
-   2 format           ArrayOf(DataFormat$sbom) unique
-   3 info             ArrayOf(Info$sbom) unique
+   1 type             ArrayOf(Enum[SBOM-Content$sbom]) unique optional
+   2 format           ArrayOf(DataFormat$sbom) unique optional
+   3 info             ArrayOf(Info$sbom) unique optional
 
 SBOM-List$sbom = Map
    1 sids             URI [1..*]

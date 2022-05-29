@@ -39,9 +39,9 @@ AP-Results = Map{1..*}                            // Profile-defined response re
    1 sboms            ArrayOf(SBOM-Info)
 
 SBOM-Specifiers = Map
-   1 type             ArrayOf(Enum[SBOM-Content]) unique
-   2 format           ArrayOf(DataFormat) unique
-   3 info             ArrayOf(Info) unique
+   1 type             ArrayOf(Enum[SBOM-Content]) unique optional
+   2 format           ArrayOf(DataFormat) unique optional
+   3 info             ArrayOf(Info) unique optional
 
 SBOM-List = Map
    1 sids             ls:URI [1..*]

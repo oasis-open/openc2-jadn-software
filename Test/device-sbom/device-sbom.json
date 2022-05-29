@@ -254,11 +254,6 @@
       "title": "SBOM Specifiers$sbom",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "type",
-        "format",
-        "info"
-      ],
       "maxProperties": 100,
       "properties": {
         "type": {

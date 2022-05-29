@@ -56,10 +56,9 @@ SBOM-Info = Map
    6 blob             SBOM-Blob optional          // Uninterpreted SBOM bytes
 
 Info = Enumerated                                 // SBOM-Info fields to return
-   1 sid
-   2 summary
-   3 content
-   4 blob
+   1 summary
+   2 content
+   3 blob
 
 SBOM-Elements = Record
    1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
@@ -81,10 +80,13 @@ SBOM-Blob = Record
    3 data             Binary
 
 DataFormat = Enumerated                           // Serialization Data Formats
-   1 json
-   2 json-c
-   3 json-m
-   4 cbor
-   5 xml
+   1 ttv                                          // Text Tag-Value
+   2 json                                         // JSON verbose
+   3 json-m                                       // JSON concise/minimized
+   4 json-ld                                      // JSON linked data
+   5 cbor                                         // CBOR binary
+   6 protobuf                                     // Protocol Buffers binary
+   7 xml                                          // XML
+   8 ss-csv                                       // Spreadsheet comma separated values
 
 DateTime = Integer{0..*}

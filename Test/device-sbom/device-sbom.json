@@ -367,7 +367,6 @@
       "type": "string",
       "description": "SBOM-Info fields to return",
       "enum": [
-        "sid",
         "summary",
         "content",
         "blob"
@@ -508,11 +507,14 @@
       "type": "string",
       "description": "Serialization Data Formats",
       "enum": [
+        "ttv",
         "json",
-        "json-c",
         "json-m",
+        "json-ld",
         "cbor",
-        "xml"
+        "protobuf",
+        "xml",
+        "ss-csv"
       ]
     },
     "DateTime$sbom": {

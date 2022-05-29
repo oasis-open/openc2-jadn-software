@@ -4,7 +4,7 @@
     "sbom": {
       "sbom_list": {
         "sids": ["http://foo", "http://bar"],
-        "info": ["sid", "summary", "blob"]
+        "info": ["summary", "blob"]
       }
     }
   }

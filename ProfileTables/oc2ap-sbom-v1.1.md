@@ -124,10 +124,9 @@ SBOM-Info fields to return
 
 | ID | Item        | Description |
 |----|-------------|-------------|
-| 1  | **sid**     |             |
-| 2  | **summary** |             |
-| 3  | **content** |             |
-| 4  | **blob**    |             |
+| 1  | **summary** |             |
+| 2  | **content** |             |
+| 3  | **blob**    |             |
 
 **********
 
@@ -169,13 +168,16 @@ Serialization Data Formats
 
 **Type: DataFormat (Enumerated)**
 
-| ID | Item       | Description |
-|----|------------|-------------|
-| 1  | **json**   |             |
-| 2  | **json-c** |             |
-| 3  | **json-m** |             |
-| 4  | **cbor**   |             |
-| 5  | **xml**    |             |
+| ID | Item         | Description                        |
+|----|--------------|------------------------------------|
+| 1  | **ttv**      | Text Tag-Value                     |
+| 2  | **json**     | JSON verbose                       |
+| 3  | **json-m**   | JSON concise/minimized             |
+| 4  | **json-ld**  | JSON linked data                   |
+| 5  | **cbor**     | CBOR binary                        |
+| 6  | **protobuf** | Protocol Buffers binary            |
+| 7  | **xml**      | XML                                |
+| 8  | **ss-csv**   | Spreadsheet comma separated values |
 
 **********
 

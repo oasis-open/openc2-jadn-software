@@ -5,7 +5,7 @@
       "sboms": {
         "type": ["cyclonedx", "spdx2", "spdx3"],
         "format": ["json", "cbor", "xml"],
-        "info": ["sid", "summary", "blob"]
+        "info": ["summary", "blob"]
       }
     }
   }

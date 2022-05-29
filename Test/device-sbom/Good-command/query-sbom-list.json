@@ -1,0 +1,11 @@
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+      "sbom_list": {
+        "sids": ["http://foo", "http://bar"],
+        "info": ["sid", "summary", "blob"]
+      }
+    }
+  }
+}

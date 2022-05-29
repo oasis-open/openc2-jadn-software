@@ -101,17 +101,17 @@
   ]],
 
   ["Actuator", "Choice", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
-    [1024, "slpf", "slpf:AP-Actuator", ["<"], "Actuator function and specifiers for Stateless Packet Filtering"],
-    [1025, "sfpf", "sfpf:AP-Actuator", ["<"], "Actuator function and specifiers for Stateful Packet Filtering"],
-    [1026, "sbom", "sbom:AP-Actuator", ["<"], "Actuator function and specifiers for Software Bill Of Materoals retrieval"],
-    [1027, "er", "er:AP-Actuator", ["<"], "Actuator function and specifiers for Endpoint Response"],
-    [1028, "hop", "hop:AP-Actuator", ["<"], "Actuator function and specifiers for Honeypot Operations"],
-    [1029, "av", "av:AP-Actuator", ["<"], "Actuator function and specifiers for Anti-Virus Actions"],
-    [1030, "ids", "ids:AP-Actuator", ["<"], "Actuator function and specifiers for Intrusion Detection"],
-    [1031, "log", "log:AP-Actuator", ["<"], "Actuator function and specifiers for Logging Control"],
-    [1032, "swup", "swup:AP-Actuator", ["<"], "Actuator function and specifiers for Software Updating"],
-    [1034, "pf", "pf:AP-Actuator", ["<"], "Actuator function and specifiers for Packet Filtering"],
-    [1035, "pac", "pac:AP-Actuator", ["<"], "Actuator function and specifiers for Security Posture Attribute Collection"]
+    [1024, "slpf", "slpf:AP-Specifiers", ["<"], "Actuator function and specifiers for Stateless Packet Filtering"],
+    [1025, "sfpf", "sfpf:AP-Specifiers", ["<"], "Actuator function and specifiers for Stateful Packet Filtering"],
+    [1026, "sbom", "sbom:AP-Specifiers", ["<"], "Actuator function and specifiers for Software Bill Of Materoals retrieval"],
+    [1027, "er", "er:AP-Specifiers", ["<"], "Actuator function and specifiers for Endpoint Response"],
+    [1028, "hop", "hop:AP-Specifiers", ["<"], "Actuator function and specifiers for Honeypot Operations"],
+    [1029, "av", "av:AP-Specifiers", ["<"], "Actuator function and specifiers for Anti-Virus Actions"],
+    [1030, "ids", "ids:AP-Specifiers", ["<"], "Actuator function and specifiers for Intrusion Detection"],
+    [1031, "log", "log:AP-Specifiers", ["<"], "Actuator function and specifiers for Logging Control"],
+    [1032, "swup", "swup:AP-Specifiers", ["<"], "Actuator function and specifiers for Software Updating"],
+    [1034, "pf", "pf:AP-Specifiers", ["<"], "Actuator function and specifiers for Packet Filtering"],
+    [1035, "pac", "pac:AP-Specifiers", ["<"], "Actuator function and specifiers for Security Posture Attribute Collection"]
   ]],
 
   ["Args", "Map", ["{1"], "", [

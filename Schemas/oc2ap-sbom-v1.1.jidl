@@ -1,0 +1,90 @@
+       title: "OpenC2 SBOM Retrieval Actuator Profile"
+     package: "http://oasis-open.org/openc2/oc2ap-sbom/v1.1"
+  namespaces: {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"}
+     exports: ["AP-Target", "AP-Specifiers", "AP-Results"]
+
+Action = Enumerated
+   3 query
+
+Target = Enumerated
+   9 features
+1034 sbom
+
+Args = Enumerated
+   1 start_time
+   2 stop_time
+   3 duration
+   4 response_requested
+
+Actuator = Enumerated
+1034 sbom
+
+Results = Enumerated
+   1 versions
+   2 profiles
+   3 pairs
+   4 rate_limit
+1034 sbom
+
+Pairs = Enumerated
+   3 query: features, /sboms, /sbom_list
+
+AP-Target = Choice                                // Profile-defined targets
+   1 sboms            SBOM-Specifiers             // Return IDs or SBOMs matching filter criteria
+   2 sbom_list        SBOM-List                   // Return specific SBOMs by ID
+
+AP-Specifiers = Map                               // Profile-defined actuator specifiers
+
+AP-Results = Map{1..*}                            // Profile-defined response results
+   1 sboms            ArrayOf(SBOM-Info)
+
+SBOM-Specifiers = Map
+   1 type             ArrayOf(Enum[SBOM-Content]) unique
+   2 format           ArrayOf(DataFormat) unique
+   3 info             ArrayOf(Info) unique
+
+SBOM-List = Map
+   1 sids             ls:URI [1..*]
+   2 info             ArrayOf(Info) unique
+
+SBOM-Info = Map
+   1 type             Enumerated(Enum[SBOM-Content]) // SBOM type (name of standard)
+   2 format           DataFormat                  // Data (serialization) format
+   3 sid              ls:URI                      // Unique identifier or locator of the SBOM
+   4 summary          SBOM-Elements optional      // NTIA Minimumum Elements of an SBOM
+   5 content          SBOM-Content optional       // SBOM structured data
+   6 blob             SBOM-Blob optional          // Uninterpreted SBOM bytes
+
+Info = Enumerated                                 // SBOM-Info fields to return
+   1 sid
+   2 summary
+   3 content
+   4 blob
+
+SBOM-Elements = Record
+   1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
+   2 component        String [1..*]               // Designation(s) assigned to a unit of software defined by the original supplier
+   3 version          String                      // Identifier used by supplier to specify a change from a previously identified version
+   4 component_ids    String [1..*]               // Other identifiers used to identify a component, or serve as a look-yp key
+   5 dependencies     String [1..*]               // Upstream component(s)
+   6 author           String                      // Name of the entity that creates SBOM data for this component
+   7 timestamp        DateTime                    // Record of the date and time of the SBOM data assembly
+
+SBOM-Content = Choice
+   1 cyclonedx        String                      // Placeholder for CycloneDX data model
+   2 spdx2            String                      // Placeholder for SPDX v2.x data model
+   3 spdx3            String                      // Placeholder for SPDX v3 data model
+
+SBOM-Blob = Record
+   1 format           Enumerated(Enum[SBOM-Content])
+   2 encoding         DataFormat unique [1..*]
+   3 data             Binary
+
+DataFormat = Enumerated                           // Serialization Data Formats
+   1 json
+   2 json-c
+   3 json-m
+   4 cbor
+   5 xml
+
+DateTime = Integer{0..*}

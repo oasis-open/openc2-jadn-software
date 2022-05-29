@@ -1,9 +1,8 @@
 {
  "info": {
-  "title": "OpenC2 Actuator Profile Template",
-  "package": "https://oasis-open.org/openc2/ap-template/v1.1",
-  "description": "Template for creating OpenC2 v1.1 actuator profiles",
-  "namespaces": {"ls": "https://oasis-open.org/openc2/oc2ls-types/v1.1"},
+  "title": "OpenC2 Endpoint Response Actuator Profile",
+  "package": "https://oasis-open.org/openc2/er/v1.1",
+  "namespaces": {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
   "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile"
  },

@@ -36,16 +36,16 @@ AP-Target = Choice                                // Profile-defined targets
 AP-Specifiers = Map                               // Profile-defined actuator specifiers
 
 AP-Results = Map{1..*}                            // Profile-defined response results
-   1 sboms            ArrayOf(SBOM-Info)
+   1 sboms            ArrayOf(SBOM-Info)          // List of all SBOMs matching query criteria
 
-SBOM-Specifiers = Map
-   1 type             ArrayOf(Enum[SBOM-Content]) unique optional
-   2 format           ArrayOf(DataFormat) unique optional
-   3 info             ArrayOf(Info) unique optional
+SBOM-Specifiers = Map                             // If none specified, return IDs for all SBOMs
+   1 type             ArrayOf(Enum[SBOM-Content]) unique optional // SBOM type
+   2 format           ArrayOf(DataFormat) unique optional // Data format
+   3 info             ArrayOf(Info){1..*} unique optional // Type of SBOM info to return
 
 SBOM-List = Map
-   1 sids             ls:URI [1..*]
-   2 info             ArrayOf(Info) unique
+   1 sids             ls:URI [1..*]               // SBOM IDs to return
+   2 info             ArrayOf(Info){1..*} unique  // Type of SBOM info to return
 
 SBOM-Info = Map
    1 type             Enumerated(Enum[SBOM-Content]) // SBOM type (name of standard)
@@ -53,12 +53,12 @@ SBOM-Info = Map
    3 sid              ls:URI                      // Unique identifier or locator of the SBOM
    4 summary          SBOM-Elements optional      // NTIA Minimumum Elements of an SBOM
    5 content          SBOM-Content optional       // SBOM structured data
-   6 blob             SBOM-Blob optional          // Uninterpreted SBOM bytes
+   6 blob             Binary optional             // Uninterpreted SBOM bytes
 
 Info = Enumerated                                 // SBOM-Info fields to return
-   1 summary
-   2 content
-   3 blob
+   1 summary                                      // NTIA Minimumum Elements of an SBOM
+   2 content                                      // SBOM structured data
+   3 blob                                         // Uninterpreted SBOM bytes
 
 SBOM-Elements = Record
    1 supplier         String [1..*]               // Name of entity that creates, defines, and identifies components
@@ -73,11 +73,6 @@ SBOM-Content = Choice
    1 cyclonedx        String                      // Placeholder for CycloneDX data model
    2 spdx2            String                      // Placeholder for SPDX v2.x data model
    3 spdx3            String                      // Placeholder for SPDX v3 data model
-
-SBOM-Blob = Record
-   1 format           Enumerated(Enum[SBOM-Content])
-   2 encoding         DataFormat unique [1..*]
-   3 data             Binary
 
 DataFormat = Enumerated                           // Serialization Data Formats
    1 ttv                                          // Text Tag-Value

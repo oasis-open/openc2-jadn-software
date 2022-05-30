@@ -80,28 +80,30 @@ Profile-defined response results
 
 **Type: AP-Results (Map{1..\*})**
 
-| ID | Name      | Type               | \# | Description |
-|----|-----------|--------------------|----|-------------|
-| 1  | **sboms** | ArrayOf(SBOM-Info) | 1  |             |
+| ID | Name      | Type               | \# | Description                               |
+|----|-----------|--------------------|----|-------------------------------------------|
+| 1  | **sboms** | ArrayOf(SBOM-Info) | 1  | List of all SBOMs matching query criteria |
 
 **********
 
+If none specified, return IDs for all SBOMs
+
 **Type: SBOM-Specifiers (Map)**
 
-| ID | Name       | Type                               | \#   | Description |
-|----|------------|------------------------------------|------|-------------|
-| 1  | **type**   | ArrayOf(Enum[SBOM-Content]) unique | 0..1 |             |
-| 2  | **format** | ArrayOf(DataFormat) unique         | 0..1 |             |
-| 3  | **info**   | ArrayOf(Info) unique               | 0..1 |             |
+| ID | Name       | Type                               | \#   | Description                 |
+|----|------------|------------------------------------|------|-----------------------------|
+| 1  | **type**   | ArrayOf(Enum[SBOM-Content]) unique | 0..1 | SBOM type                   |
+| 2  | **format** | ArrayOf(DataFormat) unique         | 0..1 | Data format                 |
+| 3  | **info**   | ArrayOf(Info){1..\*} unique        | 0..1 | Type of SBOM info to return |
 
 **********
 
 **Type: SBOM-List (Map)**
 
-| ID | Name     | Type                 | \#    | Description |
-|----|----------|----------------------|-------|-------------|
-| 1  | **sids** | ls:URI               | 1..\* |             |
-| 2  | **info** | ArrayOf(Info) unique | 1     |             |
+| ID | Name     | Type                        | \#    | Description                 |
+|----|----------|-----------------------------|-------|-----------------------------|
+| 1  | **sids** | ls:URI                      | 1..\* | SBOM IDs to return          |
+| 2  | **info** | ArrayOf(Info){1..\*} unique | 1     | Type of SBOM info to return |
 
 **********
 
@@ -114,7 +116,7 @@ Profile-defined response results
 | 3  | **sid**     | ls:URI                         | 1    | Unique identifier or locator of the SBOM |
 | 4  | **summary** | SBOM-Elements                  | 0..1 | NTIA Minimumum Elements of an SBOM       |
 | 5  | **content** | SBOM-Content                   | 0..1 | SBOM structured data                     |
-| 6  | **blob**    | SBOM-Blob                      | 0..1 | Uninterpreted SBOM bytes                 |
+| 6  | **blob**    | Binary                         | 0..1 | Uninterpreted SBOM bytes                 |
 
 **********
 
@@ -122,11 +124,11 @@ SBOM-Info fields to return
 
 **Type: Info (Enumerated)**
 
-| ID | Item        | Description |
-|----|-------------|-------------|
-| 1  | **summary** |             |
-| 2  | **content** |             |
-| 3  | **blob**    |             |
+| ID | Item        | Description                        |
+|----|-------------|------------------------------------|
+| 1  | **summary** | NTIA Minimumum Elements of an SBOM |
+| 2  | **content** | SBOM structured data               |
+| 3  | **blob**    | Uninterpreted SBOM bytes           |
 
 **********
 
@@ -151,16 +153,6 @@ SBOM-Info fields to return
 | 1  | **cyclonedx** | String | 1  | Placeholder for CycloneDX data model |
 | 2  | **spdx2**     | String | 1  | Placeholder for SPDX v2.x data model |
 | 3  | **spdx3**     | String | 1  | Placeholder for SPDX v3 data model   |
-
-**********
-
-**Type: SBOM-Blob (Record)**
-
-| ID | Name         | Type                           | \#    | Description |
-|----|--------------|--------------------------------|-------|-------------|
-| 1  | **format**   | Enumerated(Enum[SBOM-Content]) | 1     |             |
-| 2  | **encoding** | DataFormat unique              | 1..\* |             |
-| 3  | **data**     | Binary                         | 1     |             |
 
 **********
 

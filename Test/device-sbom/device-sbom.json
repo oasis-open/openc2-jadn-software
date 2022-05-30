@@ -243,6 +243,7 @@
       "properties": {
         "sboms": {
           "type": "array",
+          "description": "List of all SBOMs matching query criteria",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/SBOM-Info$sbom"
@@ -253,11 +254,13 @@
     "SBOM-Specifiers$sbom": {
       "title": "SBOM Specifiers$sbom",
       "type": "object",
+      "description": "If none specified, return IDs for all SBOMs",
       "additionalProperties": false,
       "maxProperties": 100,
       "properties": {
         "type": {
           "type": "array",
+          "description": "SBOM type",
           "uniqueItems": true,
           "maxItems": 100,
           "items": {
@@ -270,6 +273,7 @@
         },
         "format": {
           "type": "array",
+          "description": "Data format",
           "uniqueItems": true,
           "maxItems": 100,
           "items": {
@@ -278,7 +282,9 @@
         },
         "info": {
           "type": "array",
+          "description": "Type of SBOM info to return",
           "uniqueItems": true,
+          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -298,16 +304,18 @@
       "properties": {
         "sids": {
           "type": "array",
-          "description": "",
+          "description": "SBOM IDs to return",
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/URI",
-            "description": ""
+            "description": "SBOM IDs to return"
           }
         },
         "info": {
           "type": "array",
+          "description": "Type of SBOM info to return",
           "uniqueItems": true,
+          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -352,8 +360,9 @@
           "description": "SBOM structured data"
         },
         "blob": {
-          "$ref": "#/definitions/SBOM-Blob$sbom",
-          "description": "Uninterpreted SBOM bytes"
+          "type": "string",
+          "description": "Uninterpreted SBOM bytes",
+          "contentEncoding": "base64url"
         }
       }
     },
@@ -459,41 +468,6 @@
           "type": "string",
           "description": "Placeholder for SPDX v3 data model",
           "maxLength": 255
-        }
-      }
-    },
-    "SBOM-Blob$sbom": {
-      "title": "SBOM Blob$sbom",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "format",
-        "encoding",
-        "data"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "format": {
-          "type": "string",
-          "enum": [
-            "cyclonedx",
-            "spdx2",
-            "spdx3"
-          ]
-        },
-        "encoding": {
-          "type": "array",
-          "description": "",
-          "uniqueItems": true,
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/DataFormat$sbom",
-            "description": ""
-          }
-        },
-        "data": {
-          "type": "string",
-          "contentEncoding": "base64url"
         }
       }
     },

@@ -1,0 +1,11 @@
+{
+  "action": "deny",
+  "target": {
+    "file": {
+      "hash": "0a73291ab5607aef7db23863cf8e72f55bcb3c273bb47f00edf011515aeb5894"
+    }
+  },
+  "actuator": {
+    "er": {}
+  }
+}

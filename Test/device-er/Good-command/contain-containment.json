@@ -1,0 +1,16 @@
+{
+  "action": "contain",
+  "target": {
+    "device": {
+      "hostname": "DESKTOP-123ABC"
+    }
+  },
+  "args": {
+    "er": {
+      "containment":"network_isolation"
+    }
+   },
+  "actuator": {
+    "er": {}
+  }
+}

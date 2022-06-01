@@ -1,0 +1,18 @@
+{
+  "action": "set",
+  "target": {
+    "account": {
+       "uid":"S-1-5-21-7375663-6890924511-1272660413-2944159"
+    }
+  },
+  "args": {
+    "er": {
+      "account_status":"enabled"
+    }
+   },
+  "actuator": {
+    "er": {
+       "hostname": "edr_oslo"
+    }
+  }
+}

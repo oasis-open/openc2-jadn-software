@@ -1,0 +1,18 @@
+{
+  "action": "set",
+  "target": {
+    "account": {
+       "account_name":"sql_admin"
+    }
+  },
+  "args": {
+    "er": {
+      "account_status":"disabled"
+    }
+   },
+  "actuator": {
+    "er": {
+       "named_group":"production"
+    }
+  }
+}

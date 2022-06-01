@@ -1,0 +1,708 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://acme.com/schemas/devices/er/v1.0",
+  "title": "OpenC2 device schema for the Acme Endpoint Response service",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "openc2_command": {
+      "$ref": "#/definitions/OpenC2-Command"
+    },
+    "openc2_response": {
+      "$ref": "#/definitions/OpenC2-Response"
+    }
+  },
+  "definitions": {
+    "OpenC2-Command": {
+      "title": "OpenC2 Command",
+      "type": "object",
+      "description": "The Command defines an Action to be performed on a Target",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The task or activity to be performed (i.e., the 'verb')."
+        },
+        "target": {
+          "$ref": "#/definitions/Target",
+          "description": "The object of the Action. The Action is performed on the Target."
+        },
+        "args": {
+          "$ref": "#/definitions/Args",
+          "description": "Additional information that applies to the Command."
+        },
+        "actuator": {
+          "$ref": "#/definitions/Actuator",
+          "description": "The profile defining the function to be performed by the Command."
+        },
+        "command_id": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "An identifier of this Command."
+        }
+      }
+    },
+    "OpenC2-Response": {
+      "title": "OpenC2 Response",
+      "type": "object",
+      "description": "OpenC2-Response defines the structure of a response to OpenC2-Command.",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/Status-Code",
+          "description": "An integer status code."
+        },
+        "status_text": {
+          "type": "string",
+          "description": "A free-form human-readable description of the Response status.",
+          "maxLength": 255
+        },
+        "results": {
+          "$ref": "#/definitions/Results",
+          "description": "Map of key:value pairs that contain additional results based on the invoking Command."
+        }
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "string",
+      "enum": [
+        "query",
+        "deny",
+        "contain",
+        "allow",
+        "start",
+        "stop",
+        "restart",
+        "set",
+        "update",
+        "create",
+        "delete"
+      ]
+    },
+    "Target": {
+      "title": "Target",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/Device",
+          "description": "The properties of a hardware device."
+        },
+        "features": {
+          "$ref": "#/definitions/Features",
+          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+        },
+        "file": {
+          "$ref": "#/definitions/File",
+          "description": "Properties of a file."
+        },
+        "ipv4_net": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "An IPv4 address range including CIDR prefix length."
+        },
+        "ipv6_net": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "An IPv6 address range including prefix length."
+        },
+        "process": {
+          "$ref": "#/definitions/Process",
+          "description": "Common properties of an instance of a computer program as executed on an operating system."
+        },
+        "properties": {
+          "$ref": "#/definitions/Properties",
+          "description": "Data attribute associated with an Actuator."
+        },
+        "uri": {
+          "$ref": "#/definitions/URI",
+          "description": "A uniform resource identifier (URI)."
+        },
+        "er": {
+          "$ref": "#/definitions/AP-Target$er",
+          "description": "Targets defined in the Endpoint Response actuator profile"
+        }
+      }
+    },
+    "Actuator": {
+      "title": "Actuator",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "er": {
+          "$ref": "#/definitions/AP-Specifiers$er",
+          "description": "Actuator function and specifiers for Endpoint Response"
+        }
+      }
+    },
+    "Args": {
+      "title": "Args",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "start_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to initiate the Command"
+        },
+        "stop_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to terminate the Command"
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration",
+          "description": "The length of time for an Command to be in effect"
+        },
+        "response_requested": {
+          "$ref": "#/definitions/Response-Type",
+          "description": "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"
+        },
+        "er": {
+          "$ref": "#/definitions/AP-Args$er",
+          "description": "Command Arguments for Endpoint Response"
+        }
+      }
+    },
+    "Results": {
+      "title": "Results",
+      "type": "object",
+      "description": "Response Results",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "List of OpenC2 language versions supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Version",
+            "description": "List of OpenC2 language versions supported by this Consumer"
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "description": "List of profiles supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Nsid",
+            "description": "List of profiles supported by this Consumer"
+          }
+        },
+        "pairs": {
+          "$ref": "#/definitions/Action-Targets",
+          "description": "List of targets applicable to each supported Action"
+        },
+        "rate_limit": {
+          "type": "number",
+          "description": "Maximum number of requests per minute supported by design or policy",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Action-Targets": {
+      "title": "Action Targets",
+      "type": "object",
+      "description": "Targets applicable to each action supported by this device",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "$ref": "#/definitions/Targets"
+        },
+        "deny": {
+          "$ref": "#/definitions/Targets"
+        },
+        "contain": {
+          "$ref": "#/definitions/Targets"
+        },
+        "allow": {
+          "$ref": "#/definitions/Targets"
+        },
+        "start": {
+          "$ref": "#/definitions/Targets"
+        },
+        "stop": {
+          "$ref": "#/definitions/Targets"
+        },
+        "restart": {
+          "$ref": "#/definitions/Targets"
+        },
+        "set": {
+          "$ref": "#/definitions/Targets"
+        },
+        "update": {
+          "$ref": "#/definitions/Targets"
+        },
+        "create": {
+          "$ref": "#/definitions/Targets"
+        },
+        "delete": {
+          "$ref": "#/definitions/Targets"
+        }
+      }
+    },
+    "Targets": {
+      "title": "Targets",
+      "type": "array",
+      "description": "Target pointers",
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "enum": [
+          "device",
+          "features",
+          "file",
+          "ipv4_net",
+          "ipv6_net",
+          "process",
+          "properties",
+          "uri",
+          "er"
+        ]
+      }
+    },
+    "AP-Target$er": {
+      "title": "AP Target$er",
+      "type": "object",
+      "description": "Profile-defined targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "registry_entry": {
+          "$ref": "#/definitions/Registry-Entry$er",
+          "description": "A registry entry applicable to Windows Operating Systems."
+        },
+        "account": {
+          "$ref": "#/definitions/Account$er",
+          "description": "A user account on an endpoint."
+        },
+        "service": {
+          "$ref": "#/definitions/Service$er",
+          "description": "A program which is managed and executed by a service host process, where several services may be sharing the same service host."
+        }
+      }
+    },
+    "Registry-Entry$er": {
+      "title": "Registry Entry$er",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "maxProperties": 0,
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Specifies the full registry key including the hive.",
+          "maxLength": 255
+        },
+        "type": {
+          "type": "string",
+          "description": "The registry value type as defined in the [[Winnt.h header]](#winnth-registry-types).",
+          "maxLength": 255
+        },
+        "value": {
+          "type": "string",
+          "description": "The value of the registry key. The Actuator is responsible to format the value in accordance with the defined type.",
+          "maxLength": 255
+        }
+      }
+    },
+    "Account$er": {
+      "title": "Account$er",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique identifier of the account.",
+          "maxLength": 255
+        },
+        "account_name": {
+          "type": "string",
+          "description": "The chosen display name of the account.",
+          "maxLength": 255
+        },
+        "directory": {
+          "type": "string",
+          "description": "The path to the account's home directory.",
+          "maxLength": 255
+        }
+      }
+    },
+    "Service$er": {
+      "title": "Service$er",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The unique name of the service.",
+          "maxLength": 255
+        },
+        "display_name": {
+          "type": "string",
+          "description": "The display name of the service.",
+          "maxLength": 255
+        }
+      }
+    },
+    "AP-Args$er": {
+      "title": "AP Args$er",
+      "type": "object",
+      "description": "Profile-defined command arguments",
+      "additionalProperties": false,
+      "required": [
+        "account_status",
+        "device_containment",
+        "permitted_addresses"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "account_status": {
+          "$ref": "#/definitions/Account-Status$er",
+          "description": ""
+        },
+        "device_containment": {
+          "$ref": "#/definitions/Device-Containment$er",
+          "description": ""
+        },
+        "permitted_addresses": {
+          "$ref": "#/definitions/Permitted-Addresses$er",
+          "description": ""
+        }
+      }
+    },
+    "Account-Status$er": {
+      "title": "Account Status$er",
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disable"
+      ]
+    },
+    "Device-Containment$er": {
+      "title": "Device Containment$er",
+      "type": "string",
+      "enum": [
+        "network_isolation",
+        "app_restriction",
+        "disable_nic"
+      ]
+    },
+    "Permitted-Addresses$er": {
+      "title": "Permitted Addresses$er",
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "domain_name": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Domain-Name"
+          }
+        },
+        "ipv4_net": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/IPv4-Net"
+          }
+        },
+        "ipv6_net": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/IPv6-Net"
+          }
+        }
+      }
+    },
+    "AP-Specifiers$er": {
+      "title": "AP Specifiers$er",
+      "type": "object",
+      "description": "Profile-defined actuator specifiers",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "hostname": {
+          "$ref": "#/definitions/Hostname",
+          "description": ""
+        }
+      }
+    },
+    "Device": {
+      "title": "Device",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "hostname": {
+          "$ref": "#/definitions/Hostname",
+          "description": "A hostname that can be used to connect to this device over a network"
+        },
+        "idn_hostname": {
+          "$ref": "#/definitions/IDN-Hostname",
+          "description": "An internationalized hostname that can be used to connect to this device over a network"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "An identifier that refers to this device within an inventory or management system",
+          "maxLength": 255
+        }
+      }
+    },
+    "Domain-Name": {
+      "title": "Domain Name",
+      "type": "string",
+      "description": "[[RFC1034]](#rfc1034), Section 3.5",
+      "format": "hostname",
+      "maxLength": 255
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "File": {
+      "title": "File",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the file as defined in the file system",
+          "maxLength": 255
+        },
+        "path": {
+          "type": "string",
+          "description": "The absolute path to the location of the file in the file system",
+          "maxLength": 255
+        },
+        "hashes": {
+          "$ref": "#/definitions/Hashes",
+          "description": "One or more cryptographic hash codes of the file contents"
+        }
+      }
+    },
+    "IPv4-Net": {
+      "title": "IPv4 Net",
+      "type": "string",
+      "description": "IPv4 address and prefix length",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
+    },
+    "IPv6-Net": {
+      "title": "IPv6 Net",
+      "type": "string",
+      "description": "IPv6 address and prefix length",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
+    },
+    "Process": {
+      "title": "Process",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "description": "Process ID of the process",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the process",
+          "maxLength": 255
+        },
+        "cwd": {
+          "type": "string",
+          "description": "Current working directory of the process",
+          "maxLength": 255
+        },
+        "executable": {
+          "$ref": "#/definitions/File",
+          "description": "Executable that was executed to start the process"
+        },
+        "parent": {
+          "$ref": "#/definitions/Process",
+          "description": "Process that spawned this one"
+        },
+        "command_line": {
+          "type": "string",
+          "description": "The full command line invocation used to start this process, including all arguments",
+          "maxLength": 255
+        }
+      }
+    },
+    "Properties": {
+      "title": "Properties",
+      "type": "array",
+      "description": "A list of names that uniquely identify properties supported by a Consumer.",
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "URI": {
+      "title": "URI",
+      "type": "string",
+      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
+      "format": "uri",
+      "maxLength": 255
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "Hashes": {
+      "title": "Hashes",
+      "type": "object",
+      "description": "Cryptographic hash values",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "md5": {
+          "type": "string",
+          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
+          "contentEncoding": "base16"
+        },
+        "sha1": {
+          "type": "string",
+          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        }
+      }
+    },
+    "Hostname": {
+      "title": "Hostname",
+      "type": "string",
+      "description": "Internet host name as specified in [[RFC1123]](#rfc1123)",
+      "format": "hostname",
+      "maxLength": 255
+    },
+    "IDN-Hostname": {
+      "title": "IDN Hostname",
+      "type": "string",
+      "description": "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.",
+      "format": "idn-hostname",
+      "maxLength": 255
+    },
+    "IPv4-Addr": {
+      "title": "IPv4 Addr",
+      "type": "string",
+      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
+    },
+    "IPv6-Addr": {
+      "title": "IPv6 Addr",
+      "type": "string",
+      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "Version": {
+      "title": "Version",
+      "type": "string",
+      "description": "Major.Minor version number",
+      "maxLength": 255
+    }
+  }
+}

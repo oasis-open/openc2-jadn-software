@@ -1,7 +1,7 @@
 {
  "info": {
   "title": "OpenC2 Endpoint Response Actuator Profile",
-  "package": "https://oasis-open.org/openc2/er/v1.1",
+  "package": "http://oasis-open.org/openc2/er/v1.1",
   "namespaces": {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
   "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile"
@@ -9,8 +9,6 @@
 
  "types": [
   ["Action", "Enumerated", [], "", [
-    [1, "scan", ""],
-    [2, "locate", ""],
     [3, "query", ""],
     [6, "deny", ""],
     [7, "contain", ""],
@@ -18,51 +16,24 @@
     [9, "start", ""],
     [10, "stop", ""],
     [11, "restart", ""],
-    [14, "cancel", ""],
     [15, "set", ""],
     [16, "update", ""],
-    [18, "redirect", ""],
     [19, "create", ""],
-    [20, "delete", ""],
-    [22, "detonate", ""],
-    [23, "restore", ""],
-    [28, "copy", ""],
-    [30, "investigate", ""],
-    [32, "remediate", ""]
+    [20, "delete", ""]
   ]],
 
   ["Target", "Enumerated", [], "", [
-    [1, "artifact", ""],
-    [2, "command", ""],
     [3, "device", ""],
-    [7, "domain_name", ""],
-    [8, "email_addr", ""],
     [9, "features", ""],
     [10, "file", ""],
-    [11, "idn_domain_name", ""],
-    [12, "idn_email_addr", ""],
     [13, "ipv4_net", ""],
     [14, "ipv6_net", ""],
-    [15, "ipv4_connection", ""],
-    [16, "ipv6_connection", ""],
-    [20, "iri", ""],
-    [17, "mac_addr", ""],
     [18, "process", ""],
-    [25, "properties", ""],
-    [19, "uri", ""],
-    [0, "ap_name", ""]
-  ]],
-
-  ["Args", "Enumerated", [], "", [
-    [1, "start_time", ""],
-    [2, "stop_time", ""],
-    [3, "duration", ""],
-    [4, "response_requested", ""],
-    [0, "ap_name", ""]
+    [1027, "er", ""]
   ]],
 
   ["Actuator", "Enumerated", [], "", [
-    [0, "ap_name", ""]
+    [1027, "er", ""]
   ]],
 
   ["Results", "Enumerated", [], "", [
@@ -70,48 +41,72 @@
     [2, "profiles", ""],
     [3, "pairs", ""],
     [4, "rate_limit", ""],
-    [5, "args", ""],
-    [0, "ap_name", ""]
+    [5, "args", ""]
   ]],
 
   ["Pairs", "Enumerated", [], "", [
-    [1, "scan", ""],
-    [2, "locate", ""],
-    [3, "query: features, /foo, /bar", ""],
-    [6, "deny: ipv4_net, /bar", ""],
-    [7, "contain", ""],
-    [8, "allow: ipv4_net, /bar", ""],
-    [9, "start", ""],
-    [10, "stop", ""],
-    [11, "restart", ""],
-    [14, "cancel", ""],
-    [15, "set", ""],
-    [16, "update", ""],
-    [18, "redirect", ""],
-    [19, "create", ""],
-    [20, "delete", ""],
-    [22, "detonate", ""],
-    [23, "restore", ""],
-    [28, "copy", ""],
-    [30, "investigate", ""],
-    [32, "remediate", ""]
+    [3, "query: features", ""],
+    [6, "deny: file ipv4_net ipv6_net", ""],
+    [7, "contain: device file", ""],
+    [8, "allow: device file ipv4_net ipv6_net", ""],
+    [9, "start: file", ""],
+    [10, "stop: device process /service", ""],
+    [11, "restart: device process", ""],
+    [15, "set: ipv4_net ipv6_net /registry_entry /account", ""],
+    [16, "update: file", ""],
+    [19, "create: /registry_entry", ""],
+    [20, "delete: file /registry_entry /service", ""]
   ]],
 
   ["AP-Target", "Choice", [], "Profile-defined targets", [
-    [1, "foo", "String", [], ""],
-    [2, "bar", "ls:URI", [], ""]
+    [1, "registry_entry", "Registry-Entry", [], "A registry entry applicable to Windows Operating Systems."],
+    [2, "account", "Account", [], "A user account on an endpoint."],
+    [3, "service", "Service", [], "A program which is managed and executed by a service host process, where several services may be sharing the same service host."]
+  ]],
+
+  ["Registry-Entry", "Record", ["}0"], "", [
+    [1, "key", "String", ["[0"], "Specifies the full registry key including the hive."],
+    [2, "type", "String", [], "The registry value type as defined in the [[Winnt.h header]](#winnth-registry-types)."],
+    [3, "value", "String", ["[0"], "The value of the registry key. The Actuator is responsible to format the value in accordance with the defined type."]
+  ]],
+
+  ["Account", "Map", ["{1"], "", [
+    [1, "uid", "String", ["[0"], "The unique identifier of the account."],
+    [2, "account_name", "String", ["[0"], "The chosen display name of the account."],
+    [3, "directory", "String", ["[0"], "The path to the account's home directory."]
+  ]],
+
+  ["Service", "Map", ["{1"], "", [
+    [1, "name", "String", ["[0"], "The unique name of the service."],
+    [2, "display_name", "String", ["[0"], "The display name of the service."]
   ]],
 
   ["AP-Args", "Map", ["{1"], "Profile-defined command arguments", [
-    [1, "foo", "String", ["[0"], ""]
+    [1, "account_status", "Account-Status", [], ""],
+    [2, "device_containment", "Device-Containment", [], ""],
+    [3, "permitted_addresses", "Permitted-Addresses", [], ""]
+  ]],
+
+  ["Account-Status", "Enumerated", [], "", [
+    [1, "enabled", "Enable the account and render it available on the endpoint"],
+    [2, "disable", "Disable the account and render it unavailable on the endpoint"]
+  ]],
+
+  ["Device-Containment", "Enumerated", [], "", [
+    [1, "network_isolation", "Isolate the endpoint from communicating with other networked entities, typically through relegation to a private VLAN segment and/or port isolation. MAY be combined with the 'permitted_addresses' Argument to allow communication with select IP or domain name addresses."],
+    [2, "app_restriction", "Restrict the execution of applications to only those that are signed by a trusted party (e.g., Microsoft only)."],
+    [3, "disable_nic", "Disable the Network Interface Controller(s) on the endpoint."]
+  ]],
+
+  ["Permitted-Addresses", "Map", [], "", [
+    [1, "domain_name", "ArrayOf", ["*ls:Domain-Name", "[0"], ""],
+    [2, "ipv4_net", "ArrayOf", ["*ls:IPv4-Net", "[0"], ""],
+    [3, "ipv6_net", "ArrayOf", ["*ls:IPv6-Net", "[0"], ""]
   ]],
 
   ["AP-Specifiers", "Map", [], "Profile-defined actuator specifiers", [
-    [1, "foo", "String", ["[0"], ""]
-  ]],
-
-  ["AP-Results", "Map", ["{1"], "Profile-defined response results", [
-    [1, "foo", "String", ["[0"], ""]
+    [1, "hostname", "ls:Hostname", ["[0"], ""]
   ]]
+
  ]
 }

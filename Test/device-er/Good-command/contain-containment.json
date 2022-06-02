@@ -7,7 +7,7 @@
   },
   "args": {
     "er": {
-      "containment":"network_isolation"
+      "device_containment":"network_isolation"
     }
    },
   "actuator": {

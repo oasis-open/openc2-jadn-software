@@ -24,23 +24,31 @@
 
 **Type: Target (Enumerated)**
 
-| ID   | Item         | Description |
-|------|--------------|-------------|
-| 3    | **device**   |             |
-| 9    | **features** |             |
-| 10   | **file**     |             |
-| 13   | **ipv4_net** |             |
-| 14   | **ipv6_net** |             |
-| 18   | **process**  |             |
-| 1027 | **er**       |             |
+| ID | Item         | Description |
+|----|--------------|-------------|
+| 3  | **device**   |             |
+| 9  | **features** |             |
+| 10 | **file**     |             |
+| 13 | **ipv4_net** |             |
+| 14 | **ipv6_net** |             |
+| 18 | **process**  |             |
+| 0  | **ap_name**  |             |
+
+**********
+
+**Type: Args (Enumerated)**
+
+| ID | Item        | Description |
+|----|-------------|-------------|
+| 0  | **ap_name** |             |
 
 **********
 
 **Type: Actuator (Enumerated)**
 
-| ID   | Item   | Description |
-|------|--------|-------------|
-| 1027 | **er** |             |
+| ID | Item        | Description |
+|----|-------------|-------------|
+| 0  | **ap_name** |             |
 
 **********
 
@@ -119,11 +127,11 @@ Profile-defined command arguments
 
 **Type: AP-Args (Map{1..\*})**
 
-| ID | Name                    | Type                | \# | Description |
-|----|-------------------------|---------------------|----|-------------|
-| 1  | **account_status**      | Account-Status      | 1  |             |
-| 2  | **device_containment**  | Device-Containment  | 1  |             |
-| 3  | **permitted_addresses** | Permitted-Addresses | 1  |             |
+| ID | Name                    | Type                | \#   | Description |
+|----|-------------------------|---------------------|------|-------------|
+| 1  | **account_status**      | Account-Status      | 0..1 |             |
+| 2  | **device_containment**  | Device-Containment  | 0..1 |             |
+| 3  | **permitted_addresses** | Permitted-Addresses | 0..1 |             |
 
 **********
 
@@ -146,7 +154,7 @@ Profile-defined command arguments
 
 **********
 
-**Type: Permitted-Addresses (Map)**
+**Type: Permitted-Addresses (Map{1..\*})**
 
 | ID | Name            | Type                    | \#   | Description |
 |----|-----------------|-------------------------|------|-------------|
@@ -156,12 +164,13 @@ Profile-defined command arguments
 
 **********
 
-Profile-defined actuator specifiers
+Profile-defined actuator specifiers, may be empty
 
 **Type: AP-Specifiers (Map)**
 
-| ID | Name         | Type        | \#   | Description |
-|----|--------------|-------------|------|-------------|
-| 1  | **hostname** | ls:Hostname | 0..1 |             |
+| ID | Name            | Type        | \#   | Description                        |
+|----|-----------------|-------------|------|------------------------------------|
+| 1  | **hostname**    | ls:Hostname | 0..1 |                                    |
+| 2  | **named_group** | String      | 0..1 | User defined collection of devices |
 
 **********

@@ -1,5 +1,5 @@
 {
-  "action": "allow",
+  "action": "contain",
   "target": {
     "device": {
       "hostname": "DESKTOP-123ABC"
@@ -7,12 +7,10 @@
   },
   "args": {
     "er": {
-      "device_containment":"app_restriction"
+      "containment":"network_isolation"
     }
    },
   "actuator": {
-    "er": {
-       "named_group":"accounting"
-    }
+    "er": {}
   }
 }

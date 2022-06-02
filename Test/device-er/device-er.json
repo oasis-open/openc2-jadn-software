@@ -374,11 +374,6 @@
       "type": "object",
       "description": "Profile-defined command arguments",
       "additionalProperties": false,
-      "required": [
-        "account_status",
-        "device_containment",
-        "permitted_addresses"
-      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
@@ -401,7 +396,7 @@
       "type": "string",
       "enum": [
         "enabled",
-        "disable"
+        "disabled"
       ]
     },
     "Device-Containment$er": {
@@ -417,6 +412,7 @@
       "title": "Permitted Addresses$er",
       "type": "object",
       "additionalProperties": false,
+      "minProperties": 1,
       "maxProperties": 100,
       "properties": {
         "domain_name": {
@@ -445,13 +441,18 @@
     "AP-Specifiers$er": {
       "title": "AP Specifiers$er",
       "type": "object",
-      "description": "Profile-defined actuator specifiers",
+      "description": "Profile-defined actuator specifiers, may be empty",
       "additionalProperties": false,
       "maxProperties": 100,
       "properties": {
         "hostname": {
           "$ref": "#/definitions/Hostname",
           "description": ""
+        },
+        "named_group": {
+          "type": "string",
+          "description": "User defined collection of devices",
+          "maxLength": 255
         }
       }
     },

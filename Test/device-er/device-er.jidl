@@ -78,9 +78,9 @@ Service$er = Map{1..*}
    2 display_name     String optional             // The display name of the service.
 
 AP-Args$er = Map{1..*}                            // Profile-defined command arguments
-   1 account_status   Account-Status$er
-   2 device_containment Device-Containment$er
-   3 permitted_addresses Permitted-Addresses$er
+   1 account_status   Account-Status$er optional
+   2 device_containment Device-Containment$er optional
+   3 permitted_addresses Permitted-Addresses$er optional
 
 Account-Status$er = Enumerated
    1 enabled                                      // Enable the account and render it available on the endpoint
@@ -91,13 +91,14 @@ Device-Containment$er = Enumerated
    2 app_restriction                              // Restrict the execution of applications to only those that are signed by a trusted party (e.g., Microsoft only).
    3 disable_nic                                  // Disable the Network Interface Controller(s) on the endpoint.
 
-Permitted-Addresses$er = Map
+Permitted-Addresses$er = Map{1..*}
    1 domain_name      ArrayOf(Domain-Name) optional
    2 ipv4_net         ArrayOf(IPv4-Net) optional
    3 ipv6_net         ArrayOf(IPv6-Net) optional
 
-AP-Specifiers$er = Map                            // Profile-defined actuator specifiers
+AP-Specifiers$er = Map                            // Profile-defined actuator specifiers, may be empty
    1 hostname         Hostname optional
+   2 named_group      String optional             // User defined collection of devices
 
 Device = Map{1..*}
    1 hostname         Hostname optional           // A hostname that can be used to connect to this device over a network

@@ -29,11 +29,15 @@
     [13, "ipv4_net", ""],
     [14, "ipv6_net", ""],
     [18, "process", ""],
-    [1027, "er", ""]
+    [0, "ap_name", ""]
+  ]],
+
+  ["Args", "Enumerated", [], "", [
+    [0, "ap_name", ""]
   ]],
 
   ["Actuator", "Enumerated", [], "", [
-    [1027, "er", ""]
+    [0, "ap_name", ""]
   ]],
 
   ["Results", "Enumerated", [], "", [
@@ -82,14 +86,14 @@
   ]],
 
   ["AP-Args", "Map", ["{1"], "Profile-defined command arguments", [
-    [1, "account_status", "Account-Status", [], ""],
-    [2, "device_containment", "Device-Containment", [], ""],
-    [3, "permitted_addresses", "Permitted-Addresses", [], ""]
+    [1, "account_status", "Account-Status", ["[0"], ""],
+    [2, "device_containment", "Device-Containment", ["[0"], ""],
+    [3, "permitted_addresses", "Permitted-Addresses", ["[0"], ""]
   ]],
 
   ["Account-Status", "Enumerated", [], "", [
     [1, "enabled", "Enable the account and render it available on the endpoint"],
-    [2, "disable", "Disable the account and render it unavailable on the endpoint"]
+    [2, "disabled", "Disable the account and render it unavailable on the endpoint"]
   ]],
 
   ["Device-Containment", "Enumerated", [], "", [
@@ -98,14 +102,15 @@
     [3, "disable_nic", "Disable the Network Interface Controller(s) on the endpoint."]
   ]],
 
-  ["Permitted-Addresses", "Map", [], "", [
+  ["Permitted-Addresses", "Map", ["{1"], "", [
     [1, "domain_name", "ArrayOf", ["*ls:Domain-Name", "[0"], ""],
     [2, "ipv4_net", "ArrayOf", ["*ls:IPv4-Net", "[0"], ""],
     [3, "ipv6_net", "ArrayOf", ["*ls:IPv6-Net", "[0"], ""]
   ]],
 
-  ["AP-Specifiers", "Map", [], "Profile-defined actuator specifiers", [
-    [1, "hostname", "ls:Hostname", ["[0"], ""]
+  ["AP-Specifiers", "Map", [], "Profile-defined actuator specifiers, may be empty", [
+    [1, "hostname", "ls:Hostname", ["[0"], ""],
+    [2, "named_group", "String", ["[0"], "User defined collection of devices"]
   ]]
 
  ]

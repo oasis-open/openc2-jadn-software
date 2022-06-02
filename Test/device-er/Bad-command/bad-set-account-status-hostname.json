@@ -14,7 +14,7 @@
    },
   "actuator": {
     "er": {
-       "hostname": "edr.oslo.edu"
+       "hostname": "edr_oslo"
     }
   }
 }

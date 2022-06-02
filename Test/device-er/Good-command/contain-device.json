@@ -9,7 +9,7 @@
     "er": {
       "device_containment":"network_isolation",
       "permitted_addresses": {
-        "ipv_net": ["192.168.0.255"],
+        "ipv4_net": ["192.168.0.255"],
         "domain_name": ["support.organization.tld", "wiki.organization.tld"]
       }
     }

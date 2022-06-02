@@ -1,10 +1,8 @@
 {
   "action": "set",
   "target": {
-    "er": {
-      "account": {
-        "account_name":"sql_admin"
-      }
+    "account": {
+      "account_name":"sql_admin"
     }
   },
   "args": {

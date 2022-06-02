@@ -1,0 +1,16 @@
+{
+  "action": "allow",
+  "target": {
+    "device": {}
+  },
+  "args": {
+    "er": {
+      "containment":"app_restriction"
+    }
+   },
+  "actuator": {
+    "er": {
+       "named_group":"accounting"
+    }
+  }
+}

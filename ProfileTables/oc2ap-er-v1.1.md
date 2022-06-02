@@ -129,10 +129,10 @@ Profile-defined command arguments
 
 **Type: Account-Status (Enumerated)**
 
-| ID | Item        | Description                                                   |
-|----|-------------|---------------------------------------------------------------|
-| 1  | **enabled** | Enable the account and render it available on the endpoint    |
-| 2  | **disable** | Disable the account and render it unavailable on the endpoint |
+| ID | Item         | Description                                                   |
+|----|--------------|---------------------------------------------------------------|
+| 1  | **enabled**  | Enable the account and render it available on the endpoint    |
+| 2  | **disabled** | Disable the account and render it unavailable on the endpoint |
 
 **********
 

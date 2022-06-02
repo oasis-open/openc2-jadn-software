@@ -84,7 +84,7 @@ AP-Args$er = Map{1..*}                            // Profile-defined command arg
 
 Account-Status$er = Enumerated
    1 enabled                                      // Enable the account and render it available on the endpoint
-   2 disable                                      // Disable the account and render it unavailable on the endpoint
+   2 disabled                                     // Disable the account and render it unavailable on the endpoint
 
 Device-Containment$er = Enumerated
    1 network_isolation                            // Isolate the endpoint from communicating with other networked entities, typically through relegation to a private VLAN segment and/or port isolation. MAY be combined with the 'permitted_addresses' Argument to allow communication with select IP or domain name addresses.

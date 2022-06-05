@@ -97,15 +97,15 @@
       "properties": {
         "device": {
           "$ref": "#/definitions/Device",
-          "description": "The properties of a hardware device."
+          "description": "The properties of a device."
         },
         "features": {
           "$ref": "#/definitions/Features",
-          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+          "description": "A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities."
         },
         "file": {
           "$ref": "#/definitions/File",
-          "description": "Properties of a file."
+          "description": "The properties of a file."
         },
         "ipv4_net": {
           "$ref": "#/definitions/IPv4-Net",
@@ -118,14 +118,6 @@
         "process": {
           "$ref": "#/definitions/Process",
           "description": "Common properties of an instance of a computer program as executed on an operating system."
-        },
-        "properties": {
-          "$ref": "#/definitions/Properties",
-          "description": "Data attribute associated with an Actuator."
-        },
-        "uri": {
-          "$ref": "#/definitions/URI",
-          "description": "A uniform resource identifier (URI)."
         },
         "er": {
           "$ref": "#/definitions/AP-Target$er",
@@ -272,8 +264,6 @@
           "ipv4_net",
           "ipv6_net",
           "process",
-          "properties",
-          "uri",
           "er"
         ]
       }
@@ -379,15 +369,15 @@
       "properties": {
         "account_status": {
           "$ref": "#/definitions/Account-Status$er",
-          "description": ""
+          "description": "Specifies whether an account shall be enabled or disabled."
         },
         "device_containment": {
           "$ref": "#/definitions/Device-Containment$er",
-          "description": ""
+          "description": "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."
         },
         "permitted_addresses": {
           "$ref": "#/definitions/Permitted-Addresses$er",
-          "description": ""
+          "description": "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."
         }
       }
     },
@@ -417,6 +407,7 @@
       "properties": {
         "domain_name": {
           "type": "array",
+          "description": "The domain name address(es) the contained device(s) can still communicate with.",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Domain-Name"
@@ -424,6 +415,7 @@
         },
         "ipv4_net": {
           "type": "array",
+          "description": "The IPv4 address(es) or range(s) the contained device(s) can still communicate with.",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/IPv4-Net"
@@ -431,6 +423,7 @@
         },
         "ipv6_net": {
           "type": "array",
+          "description": "The IPv6 address(es) or range(s) the contained device(s) can still communicate with.",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/IPv6-Net"
@@ -447,7 +440,7 @@
       "properties": {
         "hostname": {
           "$ref": "#/definitions/Hostname",
-          "description": ""
+          "description": "Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123)."
         },
         "named_group": {
           "type": "string",
@@ -566,24 +559,6 @@
           "maxLength": 255
         }
       }
-    },
-    "Properties": {
-      "title": "Properties",
-      "type": "array",
-      "description": "A list of names that uniquely identify properties supported by a Consumer.",
-      "uniqueItems": true,
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "type": "string"
-      }
-    },
-    "URI": {
-      "title": "URI",
-      "type": "string",
-      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
-      "format": "uri",
-      "maxLength": 255
     },
     "Date-Time": {
       "title": "Date Time",

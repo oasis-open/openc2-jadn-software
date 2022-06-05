@@ -10,27 +10,25 @@ OpenC2-Command = Record                           // The Command defines an Acti
    5 command_id       Command-ID optional         // An identifier of this Command.
 
 Action = Enumerated
-   3 query                                        // Initiate a request for information.
-   6 deny                                         // Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access.
-   7 contain                                      // Isolate a file, process, or entity so that it cannot modify or access assets or processes.
-   8 allow                                        // Permit access to or execution of a Target.
+   3 query                                        // Query the ER actuator for a list of available features.
+   6 deny                                         // Deny a process or service from being executed on the endpoint.
+   7 contain                                      // Isolate a device from communicating with other devices on a network, quarantine a file.
+   8 allow                                        // Un-isolate a previously isolated device.
    9 start                                        // Initiate a process, application, system, or activity.
   10 stop                                         // Halt a system or end an activity.
-  11 restart                                      // Stop then start a system or an activity.
-  15 set                                          // Change a value, configuration, or state of a managed entity.
-  16 update                                       // Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
-  19 create                                       // Add a new entity of a known type (e.g., data, files, directories).
-  20 delete                                       // Remove an entity (e.g., data, files, flows).
+  11 restart                                      // Restart a device, system, or process.
+  15 set                                          // Change a value, configuration, or state of a managed entity (e.g., registry value, account).
+  16 update                                       // Instructs the Actuator to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update.
+  19 create                                       // Add a new entity of a known type (e.g.,  registry entry, file).
+  20 delete                                       // Remove an entity (e.g., registry entry, file).
 
 Target = Choice
-   3 device           Device                      // The properties of a hardware device.
-   9 features         Features                    // A set of items used with the query Action to determine an Actuator's capabilities.
-  10 file             File                        // Properties of a file.
+   3 device           Device                      // The properties of a device.
+   9 features         Features                    // A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities.
+  10 file             File                        // The properties of a file.
   13 ipv4_net         IPv4-Net                    // An IPv4 address range including CIDR prefix length.
   14 ipv6_net         IPv6-Net                    // An IPv6 address range including prefix length.
   18 process          Process                     // Common properties of an instance of a computer program as executed on an operating system.
-  25 properties       Properties                  // Data attribute associated with an Actuator.
-  19 uri              URI                         // A uniform resource identifier (URI).
 1027 er/              AP-Target$er                // Targets defined in the Endpoint Response actuator profile
 
 Actuator = Choice
@@ -78,13 +76,13 @@ Service$er = Map{1..*}
    2 display_name     String optional             // The display name of the service.
 
 AP-Args$er = Map{1..*}                            // Profile-defined command arguments
-   1 account_status   Account-Status$er optional
-   2 device_containment Device-Containment$er optional
-   3 permitted_addresses Permitted-Addresses$er optional
+   1 account_status   Account-Status$er optional  // Specifies whether an account shall be enabled or disabled.
+   2 device_containment Device-Containment$er optional// Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction).
+   3 permitted_addresses Permitted-Addresses$er optional// Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'.
 
 Account-Status$er = Enumerated
-   1 enabled                                      // Enable the account and render it available on the endpoint
-   2 disabled                                     // Disable the account and render it unavailable on the endpoint
+   1 enabled                                      // Enable the account and render it available on the endpoint.
+   2 disabled                                     // Disable the account and render it unavailable on the endpoint.
 
 Device-Containment$er = Enumerated
    1 network_isolation                            // Isolate the endpoint from communicating with other networked entities, typically through relegation to a private VLAN segment and/or port isolation. MAY be combined with the 'permitted_addresses' Argument to allow communication with select IP or domain name addresses.
@@ -92,12 +90,12 @@ Device-Containment$er = Enumerated
    3 disable_nic                                  // Disable the Network Interface Controller(s) on the endpoint.
 
 Permitted-Addresses$er = Map{1..*}
-   1 domain_name      ArrayOf(Domain-Name) optional
-   2 ipv4_net         ArrayOf(IPv4-Net) optional
-   3 ipv6_net         ArrayOf(IPv6-Net) optional
+   1 domain_name      ArrayOf(Domain-Name) optional// The domain name address(es) the contained device(s) can still communicate with.
+   2 ipv4_net         ArrayOf(IPv4-Net) optional  // The IPv4 address(es) or range(s) the contained device(s) can still communicate with.
+   3 ipv6_net         ArrayOf(IPv6-Net) optional  // The IPv6 address(es) or range(s) the contained device(s) can still communicate with.
 
 AP-Specifiers$er = Map                            // Profile-defined actuator specifiers, may be empty
-   1 hostname         Hostname optional
+   1 hostname         Hostname optional           // Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123).
    2 named_group      String optional             // User defined collection of devices
 
 Device = Map{1..*}
@@ -129,10 +127,6 @@ Process = Map{1..*}
    4 executable       File optional               // Executable that was executed to start the process
    5 parent           Process optional            // Process that spawned this one
    6 command_line     String optional             // The full command line invocation used to start this process, including all arguments
-
-Properties = ArrayOf(String){1..*} unique         // A list of names that uniquely identify properties supported by a Consumer.
-
-URI = String /uri                                 // Uniform Resource Identifier, [[RFC3986]](#rfc3986).
 
 Date-Time = Integer{0..*}                         // Date and Time
 

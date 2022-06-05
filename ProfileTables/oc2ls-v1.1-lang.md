@@ -119,19 +119,19 @@ Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actu
 
 **Type: Actuator (Choice)**
 
-| ID   | Name      | Type             | \# | Description                                                                |
-|------|-----------|------------------|----|----------------------------------------------------------------------------|
-| 1024 | **slpf/** | slpf:AP-Actuator | 1  | Actuator function and specifiers for Stateless Packet Filtering            |
-| 1025 | **sfpf/** | sfpf:AP-Actuator | 1  | Actuator function and specifiers for Stateful Packet Filtering             |
-| 1026 | **sbom/** | sbom:AP-Actuator | 1  | Actuator function and specifiers for Software Bill Of Materoals retrieval  |
-| 1027 | **er/**   | er:AP-Actuator   | 1  | Actuator function and specifiers for Endpoint Response                     |
-| 1028 | **hop/**  | hop:AP-Actuator  | 1  | Actuator function and specifiers for Honeypot Operations                   |
-| 1029 | **av/**   | av:AP-Actuator   | 1  | Actuator function and specifiers for Anti-Virus Actions                    |
-| 1030 | **ids/**  | ids:AP-Actuator  | 1  | Actuator function and specifiers for Intrusion Detection                   |
-| 1031 | **log/**  | log:AP-Actuator  | 1  | Actuator function and specifiers for Logging Control                       |
-| 1032 | **swup/** | swup:AP-Actuator | 1  | Actuator function and specifiers for Software Updating                     |
-| 1034 | **pf/**   | pf:AP-Actuator   | 1  | Actuator function and specifiers for Packet Filtering                      |
-| 1035 | **pac/**  | pac:AP-Actuator  | 1  | Actuator function and specifiers for Security Posture Attribute Collection |
+| ID   | Name      | Type               | \# | Description                                                                |
+|------|-----------|--------------------|----|----------------------------------------------------------------------------|
+| 1024 | **slpf/** | slpf:AP-Specifiers | 1  | Actuator function and specifiers for Stateless Packet Filtering            |
+| 1025 | **sfpf/** | sfpf:AP-Specifiers | 1  | Actuator function and specifiers for Stateful Packet Filtering             |
+| 1026 | **sbom/** | sbom:AP-Specifiers | 1  | Actuator function and specifiers for Software Bill Of Materoals retrieval  |
+| 1027 | **er/**   | er:AP-Specifiers   | 1  | Actuator function and specifiers for Endpoint Response                     |
+| 1028 | **hop/**  | hop:AP-Specifiers  | 1  | Actuator function and specifiers for Honeypot Operations                   |
+| 1029 | **av/**   | av:AP-Specifiers   | 1  | Actuator function and specifiers for Anti-Virus Actions                    |
+| 1030 | **ids/**  | ids:AP-Specifiers  | 1  | Actuator function and specifiers for Intrusion Detection                   |
+| 1031 | **log/**  | log:AP-Specifiers  | 1  | Actuator function and specifiers for Logging Control                       |
+| 1032 | **swup/** | swup:AP-Specifiers | 1  | Actuator function and specifiers for Software Updating                     |
+| 1034 | **pf/**   | pf:AP-Specifiers   | 1  | Actuator function and specifiers for Packet Filtering                      |
+| 1035 | **pac/**  | pac:AP-Specifiers  | 1  | Actuator function and specifiers for Security Posture Attribute Collection |
 
 **********
 

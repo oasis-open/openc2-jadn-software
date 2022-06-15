@@ -1,26 +1,29 @@
-title: "SPDX v2.2 Information Model updated to validate BEER-WARE example"
-package: "http://spdx.org/spdx-v2.2"
+title: "SPDX v2.3 Information Model"
+package: "http://spdx.org/spdx-v2.3"
 license: "CC0-1.0"
 namespaces: {"ll": "http://spdx.org/license-list"}
 exports: ["Document", "TagMap$"]
 config: {"$FieldName": "^[a-zA-Z][_A-Za-z0-9]{0,63}$", "$MaxElements": 1000}
 
-Document = Record   // Section 1.4 should define Document fields with cardinality as in other sections
-  1 spdxVersion SpdxVersion
-  2 dataLicense SpdxLicense
-  3 SPDXID SPDXREF-DOCUMENT      // should be spdxId for consistency with other property names
-  4 name String
-  5 documentNamespace URI
-  6 externalDocumentRefs ExternalDocumentRef [0..*]
-  7 creationInfo CreationInfo   // Section 2: mandatory, one
-  8 comment String optional // "comments to the consumers of the SPDX document"
-  9 packages PackageInfo [0..*] // Section 3: "optional, one or many" = 0..*, plural field name
- 10 files FileInfo [1..*]   // Section 4 has no cardinality.  Assume document must have at least one file?
- 11 snippets SnippetInfo [0..*] // Section 5: "snippets can optionally be used" = 0..*
- 12 hasExtractedLicensingInfos ExtraLicensingInfo [0..*]  // mandatory if license not on license list
- 13 relationships Relationship [0..*]
- 14 annotations Annotation [0..*]
- 15 documentDescribes SpdxRef [0..*]  // not in v2.2 spec
+Document = Record
+  1 spdxVersion SpdxVersion     // 6.1 SPDX-M.N where M and N are major and minor version number
+  2 dataLicense SPDX-METADATA-LICENSE   // 6.2 String constant "CC0-1.0"
+  3 SPDXID SPDXREF-DOCUMENT     // 6.3 Type is string constant "SPDXRef-DOCUMENT"
+  4 name String                 // 6.4 Name of this document as designated by creator
+  5 documentNamespace URI       // 6.5 Absolute URI (no #fragment)
+  6 externalDocumentRefs ExternalDocumentRef [0..*] // 6.6
+  7 licenseListVersion String optional  // 6.7
+  8 creator Creator [1..*]      // 6.8 Person / Organization / Tool
+  9 created Timestamp           // 6.9 RFC-3339 string YYYY-MM-DDThh:mm:ssZ
+ 10 creatorComment String optional  // 6.10 Comments about creation of the SPDX document
+ 11 documentComment String optional // 6.11 Comments to consumers of the SPDX document
+ 12 packages PackageInfo [0..*] // Section 7 Package Information
+ 13 files FileInfo [0..*]       // Section 8 File Information
+ 14 snippets SnippetInfo [0..*] // Section 9 Snippet Information
+ 15 extractedLicensingInfos ExtraLicensingInfo [0..*]  // Section 10 Other Licensing Information
+ 16 relationships Relationship [0..*]   // Section 11 Relationships
+ 17 annotations Annotation [0..*]   // Section 12 Annotations
+ 18 reviews Review [0..*]       // Section 13 Review Information (deprecated)
 
 ExternalDocumentRef = Record
   1 externalDocumentId DocumentRef
@@ -41,23 +44,21 @@ PackageInfo = Record
   5 supplier PackageSupplier optional
   6 originator Entity optional  // Person or Org, not Tool
   7 downloadLocation DownloadLocation // mandatory
-  8 filesAnalyzed Boolean optional  // Default True.   3.8.6
-  9 packageVerificationCode PackageVerificationCode optional // mandatory if filesAnalyzed is True, prohibited if False
+  8 filesAnalyzed Boolean optional  // Default True.   7.8.1
+  9 packageVerificationCode PackageVerificationCode optional // optional if filesAnalyzed is True, prohibited if False
  10 checksums Checksum [0..*]
- 11 homepage URI optional
+ 11 homepage URI optional // URI, NONE, NOASSERTION
  12 sourceInfo String optional
  13 licenseConcluded LicenseExpression optional // 3.13.3 says mandatory
- 14 licenseInfoFromFiles LicenseIdentifier [0..*]   // mandatory if filesAnalyzed is True, prohibited if False
+ 14 licenseInfoFromFiles LicenseIdentifier [0..*]   // optional if filesAnalyzed is True, prohibited if False
  15 licenseDeclared LicenseExpression optional // "NOASSERTION" is not a URI, should be omitted
  16 licenseComments String optional
  17 copyrightText String optional   // 3.17.3 says mandatory
  18 summary String optional
  19 description String optional
  20 comment String optional
- 21 externalRefs ExternalRef [0..*]
+ 21 externalRefs ExternalRef [0..*] // ExternalRef includes category/type/locator/comment.
  22 attributionTexts String [0..*]
- 23 annotations Annotation [0..*] // 8.4.6: For RDF annotations are a property of Document, Package, File or Snippet
- 24 hasFiles SpdxRef [0..*] // not in spec
 
 FileInfo = Record
   1 fileName String // "name" as in PackageInfo
@@ -103,6 +104,11 @@ Annotation = Record
   2 annotationDate Timestamp    // just "date"?
   3 annotationType AnnotationType
   4 comment String
+
+Review = Record // Deprecated since v2.0
+  1 reviewer Creator optional   // Person / Organization / Tool
+  2 reviewDate Timestamp optional   // mandatory if reviewer present
+  3 comment String  // review comment
 
 SpdxVersion = String{pattern="^SPDX-\d{1,2}\.\d{1,4}$"} // Limit digits to below the absurd, or enumerate valid versions
 
@@ -168,9 +174,34 @@ ExternalRef = Record
   3 referenceLocator ReferenceLocator
   4 comment String optional
 
-ReferenceType = String  // appendix VI gives regexs for category types
+ReferenceType = Enumerated(Enum[ReferenceLocator])
 
-ReferenceLocator = String
+ReferenceLocator = Choice  // annex F - external repository identifiers
+  1 cpe22Type CPE22Type
+  2 cpe23Type CPE23Typ
+  3 advisory URI
+  4 fix URI
+  5 url URI
+  6 swid SWID
+  7 maven Package-Maven-Central
+  8 npm Package-NPM
+  9 nuget Package-Nuget
+ 10 bower Package-Bower
+ 11 purl Package-PURL
+ 12 swh PID-Swh
+ 13 gitoid PID-GitOID
+ 99 other String
+
+CPE22Type = String  // Add regexes to all reference types
+CPE23Type = String
+SWID = String
+Package-Maven-Central = String
+Package-NPM = String
+Package-Nuget = String
+PackageBower = String
+PackagePurl = String
+PID-Swh = String
+PID-GitOID = String
 
 LicenseIdentifier = String  // import from License List
 
@@ -244,11 +275,10 @@ HashAlgorithm = Enumerated
   8 MD5
   9 MD6
 
-ReferenceCategory = Enumerated  // 3.2.1.4 (no underscores)
+ReferenceCategory = Enumerated  // no underscores
   1 SECURITY
   2 PACKAGE-MANAGER
   3 PERSISTENT-ID
-  4 PACKAGE_MANAGER     // typo - delete
  99 OTHER
 
 RelationshipType = Enumerated

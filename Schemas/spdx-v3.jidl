@@ -4,30 +4,38 @@ title: "SPDX v3"
 description: "This information model defines the serialized structure of SPDXv3 logical model types"
 license: "CC0-1.0"
 
-TransferUnit = Record         // Serialized data bytes ("document"), not an Element (e.g. BOM/SBOM, Document)
-  1 namespace Key(IRI)                  // document id = namespace = unique id of this document
-  2 specVersion SemVer                  // document property (required)
-  3 created Created                     // document property (required)
-  4 profiles ProfileIdentifier [1..*]   // document property (required)
-  5 dataLicense LicenseId               // document property (required)
-  6 elements Element [1..*]             // Element values, defined or copied, serialized in this document
-  7 documentRefs ExternalMap [0..*]     // Info about referenced documents containing element values
-  8 namespaceMap NamespaceMap optional  // Prefixes = namespace abbreviations
+ElementSet = MapOf(Link(Element), Element)   // Serialized set of individual Element values
 
-Element = Map
+TransferUnit = Record                   // Serialized collection of Element values, not an Element
+  1 namespace IRI                       // Default namespace for Element ids in this collection (rdf BASE)
+  2 namespaceMap NamespaceMap optional  // Namespace abbreviations (rdf PREFIX)
+  3 defaults ElementDefaults            // Default Element properties and collection creation info
+  4 collectionInfo Link(Element) optional  // Id of optional Element describing this collection
+  5 elementValues Element [1..*]        // Element values serialized in this collection (defined or copied)
+  6 documentRefs ExternalMap [0..*]     // Info about referenced documents containing element values
+
+ElementDefaults = Record                // Default Element properties, collection creation information
+  1 createdBy Link(Element)             // Actor / set of identifiers
+  2 created Created
+  3 specVersion SemVer
+  4 profiles ProfileIdentifier [1..*]
+  5 dataLicense LicenseId
+
+Element = Record
   1 id Key(IRI)
   2 type ElementType
-  3 name String optional
-  4 summary String optional
-  5 description String optional
-  6 comment String optional
-  7 specVersion SemVer optional         // explicit or default from document
-  8 created Created optional            // explicit or default from document
-  9 profiles ProfileIdentifier [0..*]   // explicit or default from document
- 10 dataLicense LicenseId optional      // explicit or default from document
- 11 verifiedUsing IntegrityMethod optional    // Only valid for Artifact types - move to Artifact/verifiedUsing
- 12 externalReferences ExternalReference [0..*]
- 13 extensions Extension [0..*]         // Or use extension point "..."
+  3 createdBy DateTime optional         // required: explicit or default
+  4 created Created optional            // required: explicit or default
+  5 specVersion SemVer optional         // required: explicit or default
+  6 profiles ProfileIdentifier [0..*]   // required: explicit or default
+  7 dataLicense LicenseId optional      // required: explicit or default
+  8 name String optional
+  9 summary String optional
+ 10 description String optional
+ 11 comment String optional
+ 12 verifiedUsing IntegrityMethod optional    // Only valid for Artifact types - move to Artifact/verifiedUsing
+ 13 externalReferences ExternalReference [0..*]
+ 14 extensions Extension [0..*]         // Or use extension point "..."
 
 ExternalMap = Record                // Information about referenced documents (units of transfer)
   1 namespace Key(IRI)                  // Namespace of referenced document
@@ -42,8 +50,7 @@ ElementType = Choice
   2 relationship Relationship
   3 identity Identity
   4 document Document
-  5 contextualCollection ContextualCollection   // Synonym for Collection
-  6 bom BOM
+  5 bom BOM
  10 snippet Snippet     // pkg:Software
  11 file File           // pkg:Software
  12 package Package     // pkg:Software
@@ -103,10 +110,6 @@ Package = Record
 SBOM = Record
   1 elements Link(Element) [1..*]       // <-Collection
   2 rootElements Link(Element) [0..*]   // <-Collection
-
-Created = Record
-  1 by Link(Element) [1..*]     // must be an Identity Element
-  2 when DateTime
 
 IdentityType = Choice
   1 person Person

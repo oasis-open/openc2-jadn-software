@@ -113,8 +113,7 @@
   ]],
 
   ["AP-Specifiers", "Map", [], "Profile-defined actuator specifiers, may be empty", [
-    [1, "hostname", "ls:Hostname", ["[0"], "Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123)."],
-    [2, "named_group", "String", ["[0"], "User defined collection of devices"]
+    [1, "hostname", "ls:Hostname", ["[0"], "Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123)."]
   ]]
 
  ]

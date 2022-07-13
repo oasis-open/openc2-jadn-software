@@ -1,0 +1,192 @@
+[
+  {
+    "id": "urn:spdx.dev:foobar-1.12-sbom",
+    "type": "SBOM",
+    "specVersion": "SPDX-3.0-alpha",
+    "name": "SPDX-foobar-1.12",
+    "dataLicense": "CC0-1.0",
+    "created": "2022-06-21T10:32:32Z",
+    "createdBy": "urn:spdx.dev:example-inc-doc#example-inc",
+    "comment": "This document was created for Defects WG discussions only.",
+    "profile": [
+      "core"
+    ],
+    "imports": [
+      {
+        "type": "ExternalMap",
+        "externalID": "urn:spdx.dev:example-inc-doc",
+        "elementURL": "http://exanple.com/spdxdocs/urn:spdx.dev:example-inc-doc"
+      }
+    ],
+    "rootElements": [
+      "urn:spdx.dev:foobar-1.12.0"
+    ],
+    "elements": [
+      {
+        "type": "Package",
+        "id": "urn:spdx.dev:foobar-1.12.0",
+        "packagePurpose": "APPLICATION",
+        "downloadLocation": "http://ftp.example.com/downloads/foobar.tar.gz",
+        "homepage": "https://example.com",
+        "identifiedBy": [
+          {
+            "type": "ExternalReference",
+            "externalReferenceType": "purl",
+            "locator": "pkg:maven/com.example/foobar@1.12.0"
+          },
+          {
+            "type": "ExternalReference",
+            "externalReferenceType": "cpe-2.3",
+            "locator": "cpe:/a:example:foobar:1.12.0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "urn:spdx.dev:foobar-1.12-defects-sbom",
+    "type": "SBOM",
+    "specVersion": "SPDX-3.0-alpha",
+    "name": "SPDX-foobar-1.12-security-info",
+    "dataLicense": "CC0-1.0",
+    "created": "2022-06-28T18:30:22Z",
+    "comment": "Known security information for foobar 1.12.",
+    "profile": [
+      "security"
+    ],
+    "imports": [
+      {
+        "type": "ExternalMap",
+        "externalID": "urn:spdx.dev:foobar-1.12-sbom",
+        "elementURL": "http://exanple.com/spdxdocs/foobar-1.12-sbom"
+      }
+    ],
+    "elements": [
+      {
+        "type": "LinkedSecurityInfo",
+        "id": "urn:spdx.dev:CVE-2020-29573-link",
+        "packagePurpose": "DATA",
+        "externalRefs": [
+          {
+            "type": "ExternalReference",
+            "locator": "https://nvd.nist.gov/vuln/detail/CVE-2020-29573",
+            "externalReferenceType": "ADVISORY"
+          }
+        ],
+        "relationships": [
+          {
+            "to": "urn:spdx.dev:foobar-sbom#foobar-1.12",
+            "from": "urn:spdx.dev:CVE-2020-29573-link",
+            "relationshipType": "ADVISORY_FOR"
+          },
+          {
+            "to": "urn:spdx.dev:CVE-2020-29573-link",
+            "from": "urn:snyk-limited-doc#snyk-limited",
+            "relationshipType": "SOURCE_OF"
+          }
+        ]
+      },
+      {
+        "type": "EmbeddedSecurityInfo",
+        "id": "urn:spdx.dev:CSAF-2022-evd-uc-01-a-001",
+        "format": "CSAF",
+        "formatVersion": "2.0",
+        "data": "ewogICJkb2N1bWVudCI6IHsKICAgICJjYXRlZ29yeSI6ICJjc...",
+        "packagePurpose" : "DATA",
+        "relationships": [
+          {
+            "to": "urn:spdx.dev:foobar-sbom#foobar-1.12",
+            "from": "urn:spdx.dev:CSAF-2022-evd-uc-01-a-001",
+            "relationshipType": "ADVISORY_FOR"
+          }
+        ]
+      },
+      {
+        "type": "SecurityInfo",
+        "id": "urn:spdx.dev:GHSA-r9p9-mrjm-926w",
+        "modified": "2021-03-08T16:02:43Z",
+        "published": "2021-03-08T16:06:50Z",
+        "withdrawn": "",
+        "aliases": [
+          "CVE-2020-28498"
+        ],
+        "summary": "Use of a Broken or Risky Cryptographic Algorithm",
+        "details": "The npm package `elliptic` before version 6.5.4 are vulnerable to Cryptographic Issues via the secp256k1 implementation in elliptic/ec/key.js. There is no check to confirm that the public key point passed into the derive function actually exists on the secp256k1 curve. This results in the potential for the private key used in this implementation to be revealed after a number of ECDH operations are performed.",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:N/A:N"
+          }
+        ],
+        "externalRefs": [
+          {
+            "type": "ExternalReference",
+            "locator": "https://nvd.nist.gov/vuln/detail/CVE-2020-28498",
+            "externalReferenceType": "ADVISORY"
+          },
+          {
+            "type": "ExternalReference",
+            "locator": "https://github.com/indutny/elliptic/commit/441b7428b0e8f6636c42118ad2aaa186d3c34c3f",
+            "externalReferenceType": "FIX"
+          },
+          {
+            "type": "ExternalReference",
+            "locator": "https://github.com/christianlundkvist/blog/blob/master/2020_05_26_secp256k1_twist_attacks/secp256k1_twist_attacks.md",
+            "externalReferenceType": "URL"
+          }
+        ],
+        "packagePurpose" : "DATA",
+        "relationships": [
+          {
+            "to": "urn:spdx.dev:foobar-sbom#foobar-1.12",
+            "from": "urn:spdx.dev:CVE-2020-29573",
+            "relationshipType": "ADVISORY_FOR"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Document",
+    "id": "urn:spdx.dev:example-inc-doc",
+    "specVersion": "3.0",
+    "profile": [
+      "core"
+    ],
+    "dataLicense": "CCO",
+    "createdBy": "urn:spdx.dev:example-inc",
+    "elements": [
+      {
+        "type": "Organization",
+        "id": "urn:spdx.dev:example-inc"
+      },
+      {
+        "type": "Person",
+        "id": "urn:spdx.dev:john-doe"
+      }
+    ]
+  },
+  {
+    "type": "Document",
+    "id": "urn:spdx.dev:snyk-limited-doc",
+    "specVersion": "3.0",
+    "profile": [
+      "core"
+    ],
+    "imports": [
+      {
+        "type": "ExternalMap",
+        "externalID": "urn:spdx.dev:example-inc-doc",
+        "elementURL": "http://exanple.com/spdxdocs/urn:spdx.dev:example-inc-doc"
+      }
+    ],
+    "dataLicense": "CCO",
+    "createdBy": "urn:spdx.dev:example-inc-doc#john-doe",
+    "elements": [
+      {
+        "type": "Organization",
+        "id": "urn:spdx.dev:snyk-limited"
+      }
+    ]
+  }
+]

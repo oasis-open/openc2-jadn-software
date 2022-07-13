@@ -4,14 +4,14 @@ title: "SPDX v3"
 description: "This information model defines the serialized structure of SPDXv3 logical model types"
 license: "CC0-1.0"
 
-ElementSet = MapOf(Link(Element), Element)   // Serialized set of individual Element values
+ElementSet = MapOf(Link(Element), Element)   // Serialized collection of independent Element values
 
-TransferUnit = Record                   // Serialized collection of Element values, not an Element
+TransferUnit = Record                   // Serialized collection of contextualized Element values, not an Element
   1 namespace IRI                       // Default namespace for Element ids in this collection (rdf BASE)
-  2 namespaceMap NamespaceMap optional  // Namespace abbreviations (rdf PREFIX)
+  2 namespaceMap NamespaceMap [0..1]    // Namespace abbreviations (rdf PREFIX)
   3 defaults ElementDefaults            // Default Element properties and collection creation info
-  4 collectionInfo Link(Element) optional  // Id of optional Element describing this collection
-  5 elementValues Element [1..*]        // Element values serialized in this collection (defined or copied)
+  4 elementValues Element [1..*]        // Element values serialized in this collection (defined or copied)
+  5 rootElementRef Link(Element) [0..1] // Optional "Document" element that describes this file
   6 documentRefs ExternalMap [0..*]     // Info about referenced documents containing element values
 
 ElementDefaults = Record                // Default Element properties, collection creation information
@@ -37,11 +37,9 @@ Element = Record
  13 externalReferences ExternalReference [0..*]
  14 extensions Extension [0..*]         // Or use extension point "..."
 
-ExternalMap = Record                // Information about referenced documents (units of transfer)
-  1 namespace Key(IRI)                  // Namespace of referenced document
-  2 elements Link(Element) [1..*]       // Elements serialized in referenced document
-  3 artifactUri ArtifactUri optional    // URI of serialized document
-  4 verifiedUsing IntegrityMethod       // Verifies document containing the referenced Element
+ExternalMap = Record                // Information about referenced documents (transfer units)
+  1 document Link(Element)              // Document Element id describing referenced file
+  2 verifiedUsing IntegrityMethod       // Verifies the referenced file
 
 NamespaceMap = MapOf(IRI, Prefix){1..*} // Prefixes = namespace abbreviations
 
@@ -49,7 +47,7 @@ ElementType = Choice
   1 annotation Annotation
   2 relationship Relationship
   3 identity Identity
-  4 document Document
+  4 document Document               // A file containing serialized element values
   5 bom BOM
  10 snippet Snippet     // pkg:Software
  11 file File           // pkg:Software

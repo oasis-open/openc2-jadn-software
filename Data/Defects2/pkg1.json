@@ -1,0 +1,28 @@
+{
+  "urn:spdx.dev:foobar-1.12.0": {
+    "type": {
+      "package": {
+        "packagePurpose": "APPLICATION",
+        "downloadLocation": "http://ftp.example.com/downloads/foobar.tar.gz",
+        "homepage": "https://example.com"
+      }
+    },
+    "createdBy": "",
+    "created": "",
+    "specVersion": "",
+    "profiles": [],
+    "dataLicense": "",
+    "identifiedBy": [
+      {
+        "type": "ExternalReference",
+        "externalReferenceType": "purl",
+        "locator": "pkg:maven/com.example/foobar@1.12.0"
+      },
+      {
+        "type": "ExternalReference",
+        "externalReferenceType": "cpe-2.3",
+        "locator": "cpe:/a:example:foobar:1.12.0"
+      }
+    ]
+  }
+}

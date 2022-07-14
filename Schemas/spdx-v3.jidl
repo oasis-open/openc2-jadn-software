@@ -1,238 +1,231 @@
-package: "http://spdx.org/spdx/v3/document"
-exports: ["TransferUnit"]
-title: "SPDX v3"
-description: "This information model defines the serialized structure of SPDXv3 logical model types"
-license: "CC0-1.0"
+       title: "SPDX v3"
+     package: "http://spdx.org/spdx/v3/document"
+ description: "This information model defines the serialized structure of SPDXv3 logical model types"
+     license: "CC0-1.0"
+     exports: ["TransferUnit", "ElementSet"]
 
-ElementSet = MapOf(Link(Element), Element)   // Serialized collection of independent Element values
+ElementSet = MapOf(IRI, Element)                  // Serialized collection of independent Element values  (fix IRI = Link(Element))
 
-TransferUnit = Record                   // Serialized collection of contextualized Element values, not an Element
-  1 namespace IRI                       // Default namespace for Element ids in this collection (rdf BASE)
-  2 namespaceMap NamespaceMap [0..1]    // Namespace abbreviations (rdf PREFIX)
-  3 defaults ElementDefaults            // Default Element properties and collection creation info
-  4 elementValues Element [1..*]        // Element values serialized in this collection (defined or copied)
-  5 rootElementRef Link(Element) [0..1] // Optional "Document" element that describes this file
-  6 documentRefs ExternalMap [0..*]     // Info about referenced documents containing element values
+TransferUnit = Record                             // Serialized collection of contextualized Element values
+   1 namespace        IRI                         // Default namespace for Element ids in this collection (rdf BASE)
+   2 namespaceMap     NamespaceMap optional       // Namespace abbreviations (rdf PREFIX)
+   3 defaults         ElementDefaults             // Default Element properties and collection creation info
+   4 elementValues    Element [1..*]              // Element values serialized in this collection (defined or copied)
+   5 documentId       Link(Element) optional      // Optional Document element that describes this file
+   6 documentRefs     ExternalMap [0..*]          // Info about referenced documents containing element values
 
-ElementDefaults = Record                // Default Element properties, collection creation information
-  1 createdBy Link(Element)             // Actor / set of identifiers
-  2 created Created
-  3 specVersion SemVer
-  4 profiles ProfileIdentifier [1..*]
-  5 dataLicense LicenseId
+NamespaceMap = MapOf(IRI, Prefix){1..*}           // Prefixes = namespace abbreviations
+
+ElementDefaults = Record                          // Default Element properties, collection creation information
+   1 createdBy        Link(Element) [1..*]        // Link(Actor): set of identifiers
+   2 created          DateTime
+   3 specVersion      SemVer
+   4 profiles         ProfileIdentifier [1..*]
+   5 dataLicense      LicenseId
+
+ExternalMap = Record                              // Information about referenced documents (transfer units)
+   1 document         Link(Element)               // Document Element id describing referenced file
+   2 verifiedUsing    IntegrityMethod             // Verifies the referenced file
 
 Element = Record
-  1 id Key(IRI)
-  2 type ElementType
-  3 createdBy DateTime optional         // required: explicit or default
-  4 created Created optional            // required: explicit or default
-  5 specVersion SemVer optional         // required: explicit or default
-  6 profiles ProfileIdentifier [0..*]   // required: explicit or default
-  7 dataLicense LicenseId optional      // required: explicit or default
-  8 name String optional
-  9 summary String optional
- 10 description String optional
- 11 comment String optional
- 12 verifiedUsing IntegrityMethod optional    // Only valid for Artifact types - move to Artifact/verifiedUsing
- 13 externalReferences ExternalReference [0..*]
- 14 extensions Extension [0..*]         // Or use extension point "..."
-
-ExternalMap = Record                // Information about referenced documents (transfer units)
-  1 document Link(Element)              // Document Element id describing referenced file
-  2 verifiedUsing IntegrityMethod       // Verifies the referenced file
-
-NamespaceMap = MapOf(IRI, Prefix){1..*} // Prefixes = namespace abbreviations
+   1 id               Key(IRI)
+   2 type             ElementType
+   3 createdBy        Link(Element) [0..*]        // required: explicit or default  - Link(Actor)
+   4 created          DateTime optional           // required: explicit or default
+   5 specVersion      SemVer optional             // required: explicit or default
+   6 profiles         ProfileIdentifier [0..*]    // required: explicit or default
+   7 dataLicense      LicenseId optional          // required: explicit or default
+   8 name             String optional
+   9 summary          String optional
+  10 description      String optional
+  11 comment          String optional
+  12 verifiedUsing    IntegrityMethod [0..*]
+  13 identifiedBy     IdentifierType [0..*]
+  14 extensions       Extensions optional
 
 ElementType = Choice
-  1 annotation Annotation
-  2 relationship Relationship
-  3 identity Identity
-  4 document Document               // A file containing serialized element values
-  5 bom BOM
- 10 snippet Snippet     // pkg:Software
- 11 file File           // pkg:Software
- 12 package Package     // pkg:Software
- 13 sbom SBOM           // pkg:Software
+   1 annotation       Annotation
+   2 relationship     Relationship
+   3 identity         IdentityType                // Abstract "Subject"
+   4 actor            IdentifierType
+   5 document         Document                    // <- Collection: A file containing serialized element values
+   6 bom              BOM                         // <- Collection
+  10 snippet          Snippet                     // <- Artifact: pkg:Software
+  11 file             File                        // <- Artifact: pkg:Software
+  12 package          Package                     // <- Artifact: pkg:Software
+  13 sbom             SBOM                        // <- BOM: pkg:Software
 
 Annotation = Record
-  1 type AnnotationType
-  2 subject Link(Element)
-  3 statement String optional
+   1 type             AnnotationType
+   2 subject          Link(Element)
+   3 statement        String optional
 
 Relationship = Record
-  1 type RelationshipType
-  2 from Link(Element)
-  3 to Link(Element) [1..*]
-  4 completeness RelationshipCompleteness optional
-
-Identity = Record
-  1 type IdentityType
-  2 email String /email optional
-  3 verifiedUsing IntegrityMethod optional  // Identity and Artifact entities are verified separately from Element properties
-
-Document = Record
-  1 elements Link(Element) [1..*]           // Serialized document contains these elementValues
-  2 artifactUri ArtifactUri optional        // <-Artifact
-  3 originator Link(Element) [0..*]         // <-Artifact
-  4 verifiedUsing IntegrityMethod optional  // <-Artifact(proposed), verifies referenced entity
-
-ContextualCollection = Record               // (not needed)
-  1 elements Link(Element) [1..*]           // <-Collection
-  2 rootElements Link(Element) [0..*]       // <-Collection
-
-BOM = Record
-  1 elements Link(Element) [1..*]           // <-Collection
-  2 rootElements Link(Element) [0..*]       // <-Collection
-
-File = Record
-  1 contentType MediaType optional
-  2 filePurpose SoftwarePurpose [0..*]
-  3 artifactUri ArtifactUri optional        // <-Artifact
-  4 originator Link(Element) [0..*]         // <-Artifact
-  5 verifiedUsing IntegrityMethod optional  // verifies referenced entity
-
-Snippet = Record
-  1 location SnippetLocation
-  2 snippetPurpose SoftwarePurpose [0..*]
-  3 artifactUri ArtifactUri [0..*]          // <-Artifact
-  4 originator Link(Element) [0..*]         // <-Artifact
-  5 verifiedUsing IntegrityMethod optional  // verifies referenced entity
-
-Package = Record
-  1 packagePurpose SoftwarePurpose [0..*]
-  2 artifactUri ArtifactUri [0..*]      // <-Artifact
-  3 originator Link(Element) [0..*]     // <-Artifact
-  4 verifiedUsing IntegrityMethod optional    // verifies referenced entity
-  5 contents Link(Element) [0..*]        // used for testing property vs. relationship
-
-SBOM = Record
-  1 elements Link(Element) [1..*]       // <-Collection
-  2 rootElements Link(Element) [0..*]   // <-Collection
+   1 type             RelationshipType
+   2 from             Link(Element)
+   3 to               Link(Element) [1..*]
+   4 completeness     RelationshipCompleteness optional
 
 IdentityType = Choice
-  1 person Person
-  2 organization Organization
-  3 tool Tool
+   1 person           Person
+   2 organization     Organization
+   3 tool             Tool
+
+IdentifierType = Choice                           // Identifier Data Type
+   1 email            String
+   2 externalReference ExternalReference
+
+Document = Record
+   1 elements         Link(Element) [1..*]        // Serialized document contains these elementValues
+   2 downloadLocation URL optional
+
+BOM = Record
+   1 elements         Link(Element) [1..*]        // <-Collection
+   2 rootElements     Link(Element) [0..*]        // <-Collection  Unnecessary - A BOM has exactly one root: the one BOM element.
+
+Snippet = Record
+   1 location         SnippetLocation
+   2 snippetPurpose   SoftwarePurpose [0..*]
+   3 originator       Link(Element) [0..*]        // <-Artifact:  Link(Actor)
+
+File = Record
+   1 contentType      MediaType optional
+   2 filePurpose      SoftwarePurpose [0..*]
+   3 originator       Link(Element) [0..*]        // <-Artifact:  Link(Actor)
+
+Package = Record
+   1 packagePurpose   SoftwarePurpose [0..*]
+   2 downloadLocation URL optional
+   3 homePage         URL optional
+   4 originator       Link(Element) [0..*]        // <-Artifact:  Link(Actor)
+
+SBOM = Record
+   1 elements         Link(Element) [1..*]        // <-Collection
+   2 rootElements     Link(Element) [0..*]        // <-Collection  Unnecessary
 
 Person = Record
 
 Organization = Record
 
 Tool = Record
-  1 userAgent String
+   1 userAgent        String
 
 IntegrityMethod = Choice
-  1 hashes Hashes
-  2 signature PublicKeySignature    // A public key by itself is not a checksum
+   1 hashes           Hashes
+   2 signature        PublicKeySignature          // A public key by itself is not a checksum
 
 Hashes = Map{1..*}
-  1 md5 Binary{16..16} /x optional
-  2 sha1 Binary{20..20} /x optional
-  3 sha256 Binary{32..32} /x optional
+   1 md5              Binary{16..16} /x optional
+   2 sha1             Binary{20..20} /x optional
+   3 sha256           Binary{32..32} /x optional
 
 PublicKeySignature = Record
 
-Extension = Record
+Extensions = MapOf(IRI, String)                   // Placeholder to define extension types
 
-DateTime = String  // implement Integer /datetime_ms
+DateTime = String                                 // implement Integer /datetime_ms
 
 MediaType = String
 
-Prefix = String{1..16}   // Abbreviation for document namespace
+Prefix = String{1..16}                            // Abbreviation for document namespace
 
 SemVer = String
 
 SnippetLocation = Record
 
-IRI = String   // Element id:  local, prefix:local, or absolute-IRI
+IRI = String /uri                                 // Element id:  local, prefix:local, or absolute-IRI
 
-ArtifactUri = String /uri
+URL = String /uri                                 // IRI, must be a locator
 
-LicenseId = Enumerated  // From license list: referenceNumber, licenseId  // name
- 451 Apache-2.0 // Apache License 2.0
- 457 CC0-1.0 // Creative Commons Zero v1.0 Universal
+LicenseId = Enumerated                            // From license list: referenceNumber, licenseId  // name
+ 451 Apache-2.0                                   // Apache License 2.0
+ 457 CC0-1.0                                      // Creative Commons Zero v1.0 Universal
 
 ExternalReference = Record
-  1 type ExternalReferenceType
-  2 artifactUri ArtifactUri optional    // called "locator" in logical model
+   1 type             ExternalReferenceType
+   2 locator          IRI                         // URL - must be a locator
 
-ExternalReferenceType = Enumerated      // Invalid without at least one defined value
-  1 FOO             // TBSL
+ExternalReferenceType = Enumerated                // Invalid without at least one defined value
+   1 FOO                                          // TBSL
 
-ProfileIdentifier = Enumerated      // Shown as "pkg" on logical model diagram, use upper case names?
-  1 Core
-  2 Software
-  3 License         // TBSL
+ProfileIdentifier = Enumerated                    // Shown as "pkg" on logical model diagram, use upper case names?
+   1 Core
+   2 Software
+   3 License                                      // TBSL
 
 RelationshipCompleteness = Enumerated
-  1 KNOWN
-  2 INCOMPLETE
-  3 UNKNOWN
+   1 KNOWN
+   2 INCOMPLETE
+   3 UNKNOWN
 
 SoftwarePurpose = Enumerated
-  1 APPLICATION
-  2 FRAMEWORK
-  3 LIBRARY
-  4 CONTAINER
-  5 OPERATING-SYSTEM
-  6 DEVICE
-  7 FIRMWARE
-  8 SOURCE
-  9 PATCH
- 10 ARCHIVE
- 11 DOCUMENTATION
- 12 EXECUTABLE
- 13 MODULE
- 14 BOM
- 99 OTHER
+   1 APPLICATION
+   2 FRAMEWORK
+   3 LIBRARY
+   4 CONTAINER
+   5 OPERATING-SYSTEM
+   6 DEVICE
+   7 FIRMWARE
+   8 SOURCE
+   9 PATCH
+  10 ARCHIVE
+  11 CONFIGURATION
+  12 DATA
+  13 DOCUMENTATION
+  14 EXECUTABLE
+  15 MODULE
+  16 BOM
+  99 OTHER
 
 AnnotationType = Enumerated
-  1 REVIEW
-  9 OTHER
+   1 REVIEW
+   9 OTHER
 
 RelationshipType = Enumerated
-  0 NONE
-  1 DESCRIBES
-  2 DESCRIBED_BY
-  3 CONTAINS
-  4 CONTAINED_BY
-  5 DEPENDS_ON
-  6 DEPENDENCY_OF
-  7 DEPENDENCY_MANIFEST_OF
-  8 BUILD_DEPENDENCY_OF
-  9 DEV_DEPENDENCY_OF
- 10 OPTIONAL_DEPENDENCY_OF
- 11 PROVIDED_DEPENDENCY_OF
- 12 TEST_DEPENDENCY_OF
- 13 RUNTIME_DEPENDENCY_OF
- 14 EXAMPLE_OF
- 15 GENERATES
- 16 GENERATED_FROM
- 17 ANCESTOR_OF
- 18 DESCENDANT_OF
- 19 VARIANT_OF
- 20 DISTRIBUTION_ARTIFACT
- 21 PATCH_FOR
- 22 PATCH_APPLIED
- 23 COPY_OF
- 24 FILE_ADDED
- 25 FILE_DELETED
- 26 FILE_MODIFIED
- 27 EXPANDED_FROM_ARCHIVE
- 28 DYNAMIC_LINK
- 29 STATIC_LINK
- 30 DATA_FILE_OF
- 31 TEST_CASE_OF
- 32 BUILD_TOOL_OF
- 33 DEF_TOOL_OF
- 34 TEST_OF
- 35 TEST_TOOL_OF
- 36 DOCUMENTATION_OF
- 37 OPTIONAL_COMPONENT_OF
- 38 METAFILE_OF
- 39 PACKAGE_OF
- 40 AMENDS
- 41 PREREQUISITE_FOR
- 42 HAS_PREREQUISITE
- 98 NOASSERTION     // should deprecate
- 99 OTHER
+   0 NONE
+   1 DESCRIBES
+   2 DESCRIBED_BY
+   3 CONTAINS
+   4 CONTAINED_BY
+   5 DEPENDS_ON
+   6 DEPENDENCY_OF
+   7 DEPENDENCY_MANIFEST_OF
+   8 BUILD_DEPENDENCY_OF
+   9 DEV_DEPENDENCY_OF
+  10 OPTIONAL_DEPENDENCY_OF
+  11 PROVIDED_DEPENDENCY_OF
+  12 TEST_DEPENDENCY_OF
+  13 RUNTIME_DEPENDENCY_OF
+  14 EXAMPLE_OF
+  15 GENERATES
+  16 GENERATED_FROM
+  17 ANCESTOR_OF
+  18 DESCENDANT_OF
+  19 VARIANT_OF
+  20 DISTRIBUTION_ARTIFACT
+  21 PATCH_FOR
+  22 PATCH_APPLIED
+  23 COPY_OF
+  24 FILE_ADDED
+  25 FILE_DELETED
+  26 FILE_MODIFIED
+  27 EXPANDED_FROM_ARCHIVE
+  28 DYNAMIC_LINK
+  29 STATIC_LINK
+  30 DATA_FILE_OF
+  31 TEST_CASE_OF
+  32 BUILD_TOOL_OF
+  33 DEF_TOOL_OF
+  34 TEST_OF
+  35 TEST_TOOL_OF
+  36 DOCUMENTATION_OF
+  37 OPTIONAL_COMPONENT_OF
+  38 METAFILE_OF
+  39 PACKAGE_OF
+  40 AMENDS
+  41 PREREQUISITE_FOR
+  42 HAS_PREREQUISITE
+  43 SUPPLIED_BY                                  // 3.0
+  44 ALSO_KNOWN_AS                                // 3.0
+  98 NOASSERTION
+  99 OTHER

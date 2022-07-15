@@ -2,7 +2,7 @@
   "urn:acme.dev:artifacts:gnu-coreutils/v9.1": {
     "type": {
       "package": {
-        "packagePurpose": "APPLICATION",
+        "packagePurpose": ["APPLICATION", "SOURCE"],
         "downloadLocation": "http://mirror.rit.edu/gnu/coreutils/coreutils-9.1.tar.gz",
         "homepage": "https://www.gnu.org/software/coreutils/"
       }

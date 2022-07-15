@@ -7,19 +7,19 @@
         "homepage": "https://example.com"
       }
     },
-    "createdBy": "",
-    "created": "",
-    "specVersion": "",
-    "profiles": [],
-    "dataLicense": "",
+    "createdBy": [
+      "urn:acme.dev:identities:fred"
+    ],
+    "created": "2022-04-05T22:00:00Z",
+    "specVersion": "3.0",
+    "profiles": ["core", "software"],
+    "dataLicense": "CC0-1.0",
     "identifiedBy": [
       {
-        "type": "ExternalReference",
         "externalReferenceType": "purl",
         "locator": "pkg:maven/com.example/foobar@1.12.0"
       },
       {
-        "type": "ExternalReference",
         "externalReferenceType": "cpe-2.3",
         "locator": "cpe:/a:example:foobar:1.12.0"
       }

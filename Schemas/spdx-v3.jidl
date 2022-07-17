@@ -27,27 +27,28 @@ ExternalMap = Record                              // Information about reference
    1 document         Link(Element)               // Document Element id describing referenced file
    2 verifiedUsing    IntegrityMethod             // Verifies the referenced file
 
-Element = Record
-   1 id               Key(IRI)
-   2 type             ElementType
-   3 createdBy        Link(Element) [0..*]        // required: explicit or default  - Link(Actor)
-   4 created          DateTime optional           // required: explicit or default
-   5 specVersion      SemVer optional             // required: explicit or default
-   6 profiles         ProfileIdentifier [0..*]    // required: explicit or default
-   7 dataLicense      LicenseId optional          // required: explicit or default
-   8 name             String optional
-   9 summary          String optional
-  10 description      String optional
-  11 comment          String optional
-  12 verifiedUsing    IntegrityMethod [0..*]
-  13 identifiedBy     IdentifierType [0..*]
-  14 extensions       Extensions optional
+Element = MapOf(IRI, Element$value)
+
+Element$value = Record
+   1 type             ElementType
+   2 createdBy        Link(Element) [0..*]        // required: explicit or default  - Link(Actor)
+   3 created          DateTime optional           // required: explicit or default
+   4 specVersion      SemVer optional             // required: explicit or default
+   5 profiles         ProfileIdentifier [0..*]    // required: explicit or default
+   6 dataLicense      LicenseId optional          // required: explicit or default
+   7 name             String optional
+   8 summary          String optional
+   9 description      String optional
+  10 comment          String optional
+  11 verifiedUsing    IntegrityMethod [0..*]
+  12 identifiedBy     IdentifierType [0..*]
+  13 extensions       Extensions optional
 
 ElementType = Choice
    1 annotation       Annotation
    2 relationship     Relationship
    3 identity         IdentityType                // Abstract "Subject"
-   4 actor            IdentifierType
+   4 actor            Empty
    5 document         Document                    // <- Collection: A file containing serialized element values
    6 bom              BOM                         // <- Collection
   10 snippet          Snippet                     // <- Artifact: pkg:Software
@@ -55,13 +56,15 @@ ElementType = Choice
   12 package          Package                     // <- Artifact: pkg:Software
   13 sbom             SBOM                        // <- BOM: pkg:Software
 
+Empty = Record
+
 Annotation = Record
-   1 type             AnnotationType
+   1 annotationType   AnnotationType
    2 subject          Link(Element)
    3 statement        String optional
 
 Relationship = Record
-   1 type             RelationshipType
+   1 relationshipType RelationshipType            // just 'type'
    2 from             Link(Element)
    3 to               Link(Element) [1..*]
    4 completeness     RelationshipCompleteness optional

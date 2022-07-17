@@ -16,7 +16,7 @@
     ],
     "created": "2022-04-05T22:00:00Z",
     "specVersion": "3.0",
-    "profiles": ["core", "software"],
+    "profiles": ["Core", "Software"],
     "dataLicense": "CC0-1.0"
   }
 }

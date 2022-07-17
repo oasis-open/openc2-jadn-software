@@ -4,7 +4,7 @@
       "package": {
         "packagePurpose": ["APPLICATION", "SOURCE"],
         "downloadLocation": "http://mirror.rit.edu/gnu/coreutils/coreutils-9.1.tar.gz",
-        "homepage": "https://www.gnu.org/software/coreutils/"
+        "homePage": "https://www.gnu.org/software/coreutils/"
       }
     },
     "name": "GNU Coreutils",
@@ -13,7 +13,7 @@
     ],
     "created": "2022-04-05T22:00:00Z",
     "specVersion": "3.0",
-    "profiles": ["core", "software"],
+    "profiles": ["Core", "Software"],
     "dataLicense": "CC0-1.0"
   }
 }

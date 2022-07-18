@@ -12,7 +12,7 @@ TransferUnit = Record                             // Serialized collection of co
    3 defaults         ElementDefaults             // Default Element properties and collection creation info
    4 elementValues    Element [1..*]              // Element values serialized in this collection (defined or copied)
    5 documentId       Link(Element) optional      // Optional Document element that describes this file
-   6 documentRefs     ExternalMap [0..*]          // Info about referenced documents containing element values
+   6 documentRefs     Link(Element) [0..*]        // Link(Document): Document elements that describe referenced files
 
 NamespaceMap = MapOf(IRI, Prefix){1..*}           // Prefixes = namespace abbreviations
 
@@ -22,10 +22,6 @@ ElementDefaults = Record                          // Default Element properties,
    3 specVersion      SemVer
    4 profiles         ProfileIdentifier [1..*]
    5 dataLicense      LicenseId
-
-ExternalMap = Record                              // Information about referenced documents (transfer units)
-   1 document         Link(Element)               // Document Element id describing referenced file
-   2 verifiedUsing    IntegrityMethod             // Verifies the referenced file
 
 Element = MapOf(IRI, Element$value)
 
@@ -78,9 +74,9 @@ IdentifierType = Choice                           // Identifier Data Type
    1 email            String
    2 externalReference ExternalReference
 
-Document = Record
-   1 elements         Link(Element) [1..*]        // Serialized document contains these elementValues
-   2 downloadLocation URL optional
+Document = Record                                 // Information about serialized document.  "verifiedUsing" is required.
+   1 elements         Link(Element) [1..*]        // Elements contained in serialized document
+   2 downloadLocation URL optional                // Location of serialized document
 
 BOM = Record
    1 elements         Link(Element) [1..*]        // <-Collection

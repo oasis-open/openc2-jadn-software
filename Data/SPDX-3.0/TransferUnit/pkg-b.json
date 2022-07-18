@@ -1,0 +1,18 @@
+{
+  "http://sw.baker.org/pkgs/widget-v2.3": {
+    "type": {
+      "package": {
+        "packagePurpose": ["APPLICATION", "SOURCE"],
+        "downloadLocation": "http://sw.baker.org/pkgs/widget-v2.3.zip",
+        "homePage": "https://www.baker.org"
+      }
+    },
+    "createdBy": [
+      "http://sw.baker.org/ids/betty"
+    ],
+    "created": "2022-05-02T09:15:00Z",
+    "specVersion": "3.0",
+    "profiles": ["Core", "Software"],
+    "dataLicense": "CC0-1.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "http://sw.baker.org/ids/betty": {
+    "type": {
+      "actor": {}
+    },
+    "createdBy": [
+      "http://sw.baker.org/ids/betty"
+    ],
+    "created": "2022-05-02T09:15:00Z",
+    "specVersion": "3.0",
+    "profiles": ["Core"],
+    "dataLicense": "CC0-1.0",
+    "identifiedBy": [
+      {
+        "email": "betty@baker.org"
+      }
+    ]
+  }
+}

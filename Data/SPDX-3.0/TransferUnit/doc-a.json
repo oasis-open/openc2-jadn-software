@@ -1,5 +1,5 @@
 {
-  "http://sw.baker.org/sboms/acme-files/gnu-coreutils-sbom.json": {
+  "http://sw.baker.org/docs/acme-docs/gnu-coreutils-sbom.json": {
     "type": {
       "document": {
         "elements": [

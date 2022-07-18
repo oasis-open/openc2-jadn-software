@@ -1,5 +1,5 @@
 {
-  "namespace": "urn:acme:dev",
+  "namespace": "urn:acme.dev:",
   "defaults": {
     "createdBy": ["identities:fred"],
     "created": "2022-04-05T22:00:00Z",

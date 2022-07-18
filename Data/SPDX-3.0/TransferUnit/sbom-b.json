@@ -3,9 +3,10 @@
     "type": {
       "sbom": {
         "elements": [
-          "urn:acme.dev:artifacts:gnu-coreutils/v9.1",
           "http://sw.baker.org/pkgs/widget-v2.3",
-          "http://sw.baker.org/ids/betty"
+          "http://sw.baker.org/ids/betty",
+          "urn:acme.dev:artifacts:gnu-coreutils/v9.1",
+          "urn:acme.dev:identities:fred"
         ]
       }
     },

@@ -1,0 +1,56 @@
+{
+  "namespace": "http://sw.baker.org/",
+  "namespaceMap": {"acme": "urn:acme.dev:"},
+  "defaults": {
+    "createdBy": ["http://sw.baker.org/ids/betty"],
+    "created": "2022-05-02T09:15:00Z",
+    "specVersion": "3.0",
+    "profiles": ["Core", "Software"],
+    "dataLicense": "CC0-1.0"
+  },
+  "elementValues": {
+    "pkgs/widget-v2.3": {
+      "type": {
+        "package": {
+          "packagePurpose": ["APPLICATION", "SOURCE"],
+          "downloadLocation": "http://sw.baker.org/pkgs/widget-v2.3.zip",
+          "homePage": "https://www.baker.org"
+        }
+      }
+    },
+    "ids/betty": {
+      "type": {
+        "actor": {}
+      },
+      "identifiedBy": [{"email": "betty@baker.org"}]
+    },
+    "widget-v2.3": {
+      "type": {
+        "sbom": {
+          "elements": [
+            "http://sw.baker.org/pkgs/widget-v2.3",
+            "http://sw.baker.org/ids/betty",
+            "acme:artifacts:gnu-coreutils/v9.1",
+            "acme:identities:fred"
+          ]
+        }
+      }
+    },
+    "docs/acme-docs/gnu-coreutils-sbom.json": {
+      "type": {
+        "document": {
+          "elements": [
+            "acme:artifacts:gnu-coreutils/v9.1/src/du.c",
+            "acme:artifacts:gnu-coreutils/v9.1/src/echo.c",
+            "acme:artifacts:gnu-coreutils/v9.1",
+            "acme:relationships:gnu-coreutils/v9.1",
+            "acme:identities:fred",
+            "acme:sboms:gnu-coreutils/v9.1"
+          ],
+          "downloadLocation": "http://sw.baker.org/sboms/acme-files/gnu-coreutils-sbom.json"
+        }
+      }
+    }
+  },
+  "documentRefs": ["docs/acme-docs/gnu-coreutils-sbom.json"]
+}

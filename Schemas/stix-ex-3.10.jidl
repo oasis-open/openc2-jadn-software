@@ -1,0 +1,22 @@
+package: "http://example.cti.org/section-3.10"
+comment: "Illustrate natural language translation of protocol data"
+exports: ["Obj"]
+
+Obj = Record
+  1 type ObjectType
+  2 spec_version SemVer
+  3 id String
+  4 hashes Hashes
+  5 size Integer
+
+ObjectType = Enumerated
+  1 file
+  2 package
+  3 observation
+
+Hashes = Map
+  1 md5 Binary{16..16} /x
+  2 sha1 Binary{20..20} /x
+  3 sha256 Binary{32..32} /x
+
+SemVer = String{pattern="^(\d{1,4})\.(\d{1,6})$"} // m.n: "3.141592" is valid, "3.14159262" is not.

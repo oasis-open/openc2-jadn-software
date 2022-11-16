@@ -4,7 +4,8 @@
   "package": "http://oasis-open.org/openc2/er/v1.1",
   "namespaces": {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
-  "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile"
+  "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile",
+  "config": {"$MaxString": 1000}
  },
 
  "types": [

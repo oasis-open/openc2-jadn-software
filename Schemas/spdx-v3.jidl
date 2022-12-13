@@ -44,13 +44,12 @@ ElementType = Choice
    1 annotation       Annotation
    2 relationship     Relationship
    3 identity         IdentityType                // Abstract "Subject"
-   4 actor            Empty
-   5 document         Document                    // <- Collection: A file containing serialized element values
-   6 bom              BOM                         // <- Collection
+   4 document         Document                    // <- Collection: A file containing serialized element values
+   5 bom              Bom                         // <- Collection
   10 snippet          Snippet                     // <- Artifact: pkg:Software
   11 file             File                        // <- Artifact: pkg:Software
   12 package          Package                     // <- Artifact: pkg:Software
-  13 sbom             SBOM                        // <- BOM: pkg:Software
+  13 sbom             Sbom                        // <- BOM: pkg:Software
 
 Empty = Record
 
@@ -78,7 +77,7 @@ Document = Record                                 // Information about serialize
    1 elements         Link(Element) [1..*]        // Elements contained in serialized document
    2 downloadLocation URL optional                // Location of serialized document
 
-BOM = Record
+Bom = Record
    1 elements         Link(Element) [1..*]        // <-Collection
    2 rootElements     Link(Element) [0..*]        // <-Collection  Unnecessary - A BOM has exactly one root: the one BOM element.
 
@@ -98,7 +97,7 @@ Package = Record
    3 homePage         URL optional
    4 originator       Link(Element) [0..*]        // <-Artifact:  Link(Actor)
 
-SBOM = Record
+Sbom = Record
    1 elements         Link(Element) [1..*]        // <-Collection
    2 rootElements     Link(Element) [0..*]        // <-Collection  Unnecessary
 

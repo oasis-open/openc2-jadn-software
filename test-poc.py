@@ -1,13 +1,13 @@
+import jadn
+import json
+import os
 from collections import defaultdict
 from io import TextIOWrapper
 from typing import TextIO
 from urllib.request import urlopen, Request
 from urllib.parse import urlparse
-import jadn
-import json
 from jsonschema import validate, draft7_format_checker
 from jsonschema.exceptions import ValidationError
-import os
 
 """
 Validate OpenC2 commands and responses for profiles stored in local ROOT_DIR or GitHub under ROOT_REPO
@@ -152,6 +152,7 @@ def run_test(dpath):         # Check correct validation of good and bad commands
     print(f'Validation Errors: {sum(k for k in ecount.values())}', {k: str(dict(ecount)[k]) + '/' + str(dict(tcount)[k]) for k in tcount})
 
 
-print(f'JADN Version: {jadn.__version__}, Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')
-for test in find_tests(TEST_ROOT):
-    run_test(test)
+if __name__ == '__main__':
+    print(f'JADN Version: {jadn.__version__}, Test Data: {TEST_ROOT}, Access Token: ..{AUTH["Authorization"][-4:]}')
+    for test in find_tests(TEST_ROOT):
+        run_test(test)

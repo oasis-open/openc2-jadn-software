@@ -1,0 +1,22 @@
+{
+ "types": [
+  ["Car", "Record", [], "", [
+    [1, "make", "Model$Enum", [], ""],
+    [2, "model", "Model", [], ""],
+    [3, "year", "Integer", [], ""],
+    [4, "vin", "String", [], ""]
+  ]],
+
+  ["Model", "Choice", [], "", [
+    [1, "ford", "Fords", [], ""],
+    [2, "gm", "GMs", [], ""],
+    [3, "dodge", "Dodges", [], ""]
+  ]],
+
+  ["Model$Enum", "Enumerated", [], "", [
+    [1, "ford", ""],
+    [2, "gm", ""],
+    [3, "dodge", ""]
+  ]]
+ ]
+}

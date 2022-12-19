@@ -1,6 +1,7 @@
 package: "http://cyclonedx.org/cyclonedx/v1.3"
 config: {"$FieldName": "^[a-z][-_A-Za-z0-9]{0,31}$", "$MaxString": 1000}
 comment: "CycloneDX uses kebab-case names instead of snake_case"
+exports: ["BOM"]
 
 BOM = Record
   1 bomFormat BomFormat

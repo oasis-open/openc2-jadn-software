@@ -1,0 +1,56 @@
+       title: "Threat Hunting Profile"
+     package: "https://github.com/oasis-tcs/openc2-ap-hunt"
+     version: "0-wd01"
+ description: "Data definitions for Threat Hunting (TH) functions"
+     exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
+
+Action = Enumerated
+   3 query
+  30 investigate
+
+Target = Enumerated
+   9 features
+   0 ap_name
+
+Args = Enumerated
+   1 start_time
+   2 stop_time
+   3 duration
+   4 response_requested
+   0 ap_name
+
+Actuator = Enumerated
+   0 ap_name
+
+Results = Enumerated
+   1 versions
+   2 profiles
+   3 pairs
+   4 rate_limit
+   5 args
+   0 ap_name
+
+Pairs = Enumerated
+   3 query: features
+  30 investigate: /hunt, /huntbooks, /datasources
+
+AP-Target = Choice                                // TH targets
+   1 hunt             String                      // description here
+   2 huntbooks        String                      // description here
+   3 datasources      String                      // description here
+
+AP-Args = Map{1..*}                               // TH command arguments
+   1 huntargs         Huntargs optional           // Arguments for use in conjunction with huntbook implementation
+
+AP-Specifiers = Map                               // TH actuator specifiers (may be empty)
+
+AP-Results = Map                                  // TH results defined in this profile
+   1 huntbooks        String optional             // Huntbook names returned by query huntbooks
+   2 datasources      String optional             // datasource identifiers returned by query datasources
+
+Huntargs = Map{1..*}
+   1 string_arg       String [0..*]               // string
+   2 integer_arg      Integer [0..*]              // integer
+   3 stix/            StixObject [0..*]           // stix
+
+StixObject = Map{1..*}                            // Stix cyber observables used in threat hunting. link to STIX table HERE

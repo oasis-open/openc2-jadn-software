@@ -1,0 +1,7 @@
+     package: "http://bob.com/schemas/base"
+  namespaces: {"acme": "http://acme.com/schemas"}
+     exports: ["Id"]
+
+Id = Record
+   1 name             String
+   2 ssn              acme:SocialSecurityNumber optional

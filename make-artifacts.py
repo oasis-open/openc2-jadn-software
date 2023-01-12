@@ -12,7 +12,9 @@ OUTPUT_DIR = 'Out'
 
 
 def translate(filename: str, sdir: str, odir: str) -> NoReturn:
-    with open(os.path.join(sdir, filename)) as fp:
+    if not os.path.isfile(p := os.path.join(sdir, filename)):
+        return
+    with open(p) as fp:
         schema = jadn.load_any(fp)
     print(f'{filename}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))
 
@@ -20,7 +22,7 @@ def translate(filename: str, sdir: str, odir: str) -> NoReturn:
     jadn.dump(schema, os.path.join(odir, fn + '.jadn'))
     jadn.dump(jadn.transform.unfold_extensions(jadn.transform.strip_comments(schema)),
               os.path.join(odir, fn + '-core.jadn'))
-    jadn.convert.dot_dump(schema, os.path.join(odir, fn + '.dot'), style={'links': True, 'attributes': True})
+    jadn.convert.dot_dump(schema, os.path.join(odir, fn + '.dot'), style={'links': True, 'attributes': False})  # TODO: attributes: True broken for Enum
     jadn.convert.plant_dump(schema, os.path.join(odir, fn + '.puml'), style={'links': True, 'detail': 'information'})
     jadn.convert.jidl_dump(schema, os.path.join(odir, fn + '.jidl'), style={'desc': 50})
     jadn.convert.html_dump(schema, os.path.join(odir, fn + '.html'))

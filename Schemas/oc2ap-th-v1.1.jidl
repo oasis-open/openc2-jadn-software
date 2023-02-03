@@ -1,5 +1,5 @@
        title: "Threat Hunting Profile"
-     package: "https://github.com/oasis-tcs/openc2-ap-hunt"
+     package: "http://docs.oasis-open.org/openc2/ns/ap-th/v2.0"
      version: "0-wd01"
  description: "Data definitions for Threat Hunting (TH) functions"
      exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]

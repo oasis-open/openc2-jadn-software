@@ -1,24 +1,24 @@
 {
  "info": {
-  "package": "http://oasis-open.org/openc2/oc2ls/v1.1",
+  "package": "http://docs.oasis-open.org/openc2/ns/oc2ls/v2.0",
   "title": "OpenC2 Language and Device Template",
-  "description": "Template for creating OpenC2 v1.1 device schemas",
+  "description": "Template for creating OpenC2 v2 device schemas",
   "comment": "Delete unused Action/Target/Args/Results, update package, and replace example.org/profile1 with actual profile(s)",
   "exports": ["Message"],
   "namespaces": {
-   "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
+   "ls": "http://docs.oasis-open.org/openc2/ns/oc2ls-types/v2.0",
    "nsid1": "http://example.org/profile1",
-   "slpf": "http://oasis-open.org/openc2/ap-slpf/v1.0",
-   "sfpf": "http://oasis-open.org/openc2/ap-sfpf/v1.0",
-   "sbom": "http://oasis-open.org/openc2/ap-sbom/v1.0",
-   "er": "http://oasis-open.org/openc2/ap-er/v1.0",
-   "hop": "http://oasis-open.org/openc2/ap-hop/v1.0",
-   "av": "http://oasis-open.org/openc2/ap-av/v1.0",
-   "ids": "http://oasis-open.org/openc2/ap-ids/v1.0",
-   "log": "http://oasis-open.org/openc2/ap-log/v1.0",
-   "swup": "http://oasis-open.org/openc2/ap-swup/v1.0",
-   "pf": "http://oasis-open.org/openc2/ap-pf/v1.0",
-   "pac": "http://oasis-open.org/openc2/ap-pac/v1.0"
+   "slpf": "http://docs.oasis-open.org/openc2/ns/ap-slpf/v1.0",
+   "sfpf": "http://docs.oasis-open.org/openc2/ns/ap-sfpf/v1.0",
+   "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v1.0",
+   "er": "http://docs.oasis-open.org/openc2/ns/ap-er/v1.0",
+   "hop": "http://docs.oasis-open.org/openc2/ns/ap-hop/v1.0",
+   "av": "http://docs.oasis-open.org/openc2/ns/ap-av/v1.0",
+   "ids": "http://docs.oasis-open.org/openc2/ns/ap-ids/v1.0",
+   "log": "http://docs.oasis-open.org/openc2/ns/ap-log/v1.0",
+   "swup": "http://docs.oasis-open.org/openc2/ns/ap-swup/v1.0",
+   "pf": "http://docs.oasis-open.org/openc2/ns/ap-pf/v1.0",
+   "pac": "http://docs.oasis-open.org/openc2/ns/ap-pac/v1.0"
   }
  },
 

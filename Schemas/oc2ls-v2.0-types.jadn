@@ -1,6 +1,6 @@
 {
  "info": {
-  "package": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
+  "package": "http://docs.oasis-open.org/openc2/ns/oc2ls-types/v2.0",
   "version": "0-wd01",
   "title": "OpenC2 Language Common Types",
   "description": "Common Types from the OpenC2 Language Specification version 1.1.  These definitions are referenced by or copied into Profiles",

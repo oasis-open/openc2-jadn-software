@@ -75,11 +75,11 @@ The OpenC2 language specification contains two content sections and correspondin
 1. Language framework and device template
 ([Sections 3.2, 3.3](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#32-message))
 that define Message, Command, and Response:
-[oc2ls-v1.1-lang.jadn](Schemas/oc2ls-v1.1-lang.jadn),
+[oc2ls-v1.1-lang.jadn](Schemas/oc2ls-v2.0-lang.jadn),
 2. Common types
 ([Section 3.4](https://docs.oasis-open.org/openc2/oc2ls/v1.0/cs02/oc2ls-v1.0-cs02.html#34-type-definitions))
 that are shared across actuator profiles:
-[oc2ls-v1.1-types.jadn](Schemas/oc2ls-v1.1-types.jadn).
+[oc2ls-v1.1-types.jadn](Schemas/oc2ls-v2.0-types.jadn).
 
 The Language references to Types can be resolved into a single schema file containing all
 definitions in the language specification using `resolve-references.py oc2ls-v1.1-lang.jadn`.
@@ -89,7 +89,7 @@ The OpenC2 language specification and actuator profiles all have individual sche
 But as described in the OpenC2 architecture, OpenC2 producers and consumers are *devices*,
 each of which supports the core language plus a combination of one or more actuator profiles.
 Before they can be used in a device, a device developer must:
-* Create a base schema for the device, starting with the [device template](Schemas/oc2ls-v1.1-lang.jadn)
+* Create a base schema for the device, starting with the [device template](Schemas/oc2ls-v2.0-lang.jadn)
 * Resolve profile schemas into the [base schema](Schemas/device-pac-slpf-base.jadn)
 to produce the [device schema](Schemas/device-pac-slpf.jadn)
 

@@ -1,0 +1,11 @@
+
+
+<ns:Object1>
+  <sequence>
+    <ns:DataProp>Hello</ns:DataProp>
+    <ns:DataProp>I</ns:DataProp>
+    <ns:DataProp>Must</ns:DataProp>
+    <ns:DataProp>Be</ns:DataProp>
+    <ns:DataProp>Going</ns:DataProp>
+  </sequence>
+</ns:Object1>

@@ -1,0 +1,29 @@
+       title: "NIEM Augmentation Example"
+     package: "http://niem-open.org/docs/aug"
+     exports: ["Objects"]
+
+DataProp = String{pattern="^A-Z(a-z)*$"}          // A single capitalized word
+
+Object1 = ArrayOf(DataProp){5..5}                 // List of exactly five words
+
+Object2 = ArrayOf(DataProp){5..5} set             // Set of exactly five words
+
+Object3 = Record                                  // List of three to five words, named attributes
+   1 first            DataProp
+   2 second           DataProp
+   3 third            DataProp
+   4 fourth           DataProp optional
+   5 fifth            DataProp optional
+
+Object4 = Map{3..5}                               // Set of three to five words, named attributes
+   5 bar              DataProp optional
+   2 foo              DataProp optional
+   8 fie              DataProp optional
+  13 baz              DataProp optional
+   6 boo              DataProp optional
+
+Objects = Choice                                  // Tagged union of container types
+   1 list             Object1
+   2 set              Object2
+   3 oa               Object3
+   4 ua               Object4

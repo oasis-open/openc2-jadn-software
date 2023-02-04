@@ -1,11 +1,11 @@
 {
  "info": {
-  "package": "http://acme.com/schemas/device-base/pac/v1.0",
+  "package": "http://acme.com/schemas/device-base/pac/v2.0",
   "title": "OpenC2 base device schema for the PACE collection service",
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
-   "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "pac": "http://oasis-open.org/openc2/oc2pac/v1.1"
+   "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+   "pac": "http://docs.oasis-open.org/openc2/ns/ap-pac/v2.0"
   }
  },
 

@@ -4,8 +4,8 @@
   "title": "OpenC2 base device schema for the SLPF-2000 packet filter",
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
-   "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "slpf": "http://oasis-open.org/openc2/oc2slpf/v1.1"
+   "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+   "slpf": "http://docs.oasis-open.org/openc2/ns/ap-slpf/v2.0"
   }
  },
 

@@ -1,6 +1,6 @@
        title: "OpenC2 Actuator Profile for Security Posture Attribute Collection"
-     package: "http://oasis-open.org/openc2/oc2pac/v1.1"
-  namespaces: {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"}
+     package: "http://docs.oasis-open.org/openc2/ns/ap-pac/v2.0"
+  namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
      exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
 
 Action = Enumerated

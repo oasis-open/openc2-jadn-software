@@ -1,0 +1,32 @@
+       title: "Container types example"
+     package: "http://acme.org/container/v1"
+     version: "1.0"
+ description: "Demonstrate serialization of logical classes"
+     license: "CC0-1.0"
+     exports: ["Teams"]
+
+// Logical model for random data that includes nested structures where all arrays are sets
+Teams = ArrayOf(Team) set
+
+Team = Record
+  1 isFake Boolean optional
+  2 description String
+  3 created DateTime
+  4 profiles ArrayOf(Profile){1..*} set
+  5 people ArrayOf(Person){4..4} set
+
+Profile = String{3..10}
+
+Person = Record
+  1 firstname Name
+  2 lastname Name
+  3 coordinates Coordinate
+
+Name = String{2..32}
+
+Coordinate = Record
+  1 latitude Number
+  2 longitude Number
+  3 altitude Number optional
+
+DateTime = String       // need datetime format

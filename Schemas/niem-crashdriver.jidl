@@ -1,0 +1,44 @@
+package: "http:docs.oasis-open.org/niemopen/ns/example-crashdriver/v1.0"
+namespaces: {"nc": "http://docs.oasis-open.org/niemopen/ns/core/v5.2", "j": "http://docs.oasis-open.org/niemopen/ns/justice"}
+exports: ["CrashDriverInfo"]
+
+CrashDriverInfo = Record    // Information about a crash and its driver.
+  1 driver Driver
+  2 crash Crash
+  3 injuredPerson InjuredPerson [0..*]
+  4 charge Charge [0..*]
+
+Driver = Record     // The person in control of a vehicle
+  1 license DriverLicense     // Identification of a person from a driver license
+  2 email Email     // An email address
+
+Crash = Record  // j: An automobile hitting another object
+  1 date Date   // The date a crash occurred
+  2 driver Driver  // The person in control of a vehicle
+  3 location Location   // Location coordinates
+
+InjuredPerson = Record  // A person injured in a crash
+
+Person = Record     // nc: A person
+  1 birthDate Date
+  2 firstName PersonName
+  3 middleName PersonName [0..*]
+  4 lastName PersonName
+
+Location = Record       //
+  1 latitude GeographicCoordinateLatitude
+  2 longitude GeographicCoordinateLongitude
+
+GeographicCoordinateLatitude = Record
+  1 latitudeDegreeValue = Integer{-90..90}
+  2 latitudeMinuteValue = Number{0..60}
+
+GeographicCoordinateLongitude = Record
+  1 longitudeDegreeValue = Integer{-180..179}
+  2 longitudeMinuteValue = Number{0..60}
+
+Date = Integer  // /format date
+
+Email = String /email
+
+PersonName = String

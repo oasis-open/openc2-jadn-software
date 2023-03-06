@@ -5,7 +5,7 @@
     "title": "Threat Hunting Device",
     "description": "Data definitions for Threat Hunting (TH) functions",
     "namespaces": {
-      "ls": "http://docs.oasis-open.org/openc2/ns/oc2ls-types/v2.0",
+      "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
       "th": "http://docs.oasis-open.org/openc2/ns/ap-th/v2.0"
     },
     "exports": ["OpenC2-Command", "OpenC2-Response"]

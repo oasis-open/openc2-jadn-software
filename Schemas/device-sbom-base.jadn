@@ -4,8 +4,8 @@
   "title": "Device that supports only SBOM retrieval",
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
-   "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "sbom": "http://oasis-open.org/openc2/oc2ap-sbom/v1.1"
+   "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+   "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v2.0"
   }
  },
 

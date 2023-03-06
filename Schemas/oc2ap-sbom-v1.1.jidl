@@ -1,6 +1,6 @@
        title: "OpenC2 SBOM Retrieval Actuator Profile"
-     package: "http://oasis-open.org/openc2/oc2ap-sbom/v1.1"
-  namespaces: {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"}
+     package: "http://docs.oasis-open.org/openc2/ns/ap-sbom/v2.0"
+  namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
      exports: ["AP-Target", "AP-Specifiers", "AP-Results"]
 
 Action = Enumerated

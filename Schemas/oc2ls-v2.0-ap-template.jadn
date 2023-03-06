@@ -2,8 +2,8 @@
  "info": {
   "title": "OpenC2 Actuator Profile Template",
   "package": "https://docs.oasis-open.org/openc2/ns/ap-template/v2.0",
-  "description": "Template for creating OpenC2 v1.1 actuator profiles",
-  "namespaces": {"ls": "https://docs.oasis-open.org/openc2/ns/oc2ls-types/v2.0"},
+  "description": "Template for creating OpenC2 v2.0 actuator profiles",
+  "namespaces": {"ls": "https://docs.oasis-open.org/openc2/ns/types/v2.0"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
   "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile"
  },

@@ -1,8 +1,8 @@
 {
  "info": {
   "title": "OpenC2 Endpoint Response Actuator Profile",
-  "package": "http://oasis-open.org/openc2/er/v1.1",
-  "namespaces": {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"},
+  "package": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
+  "namespaces": {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"},
   "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
   "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile",
   "config": {"$MaxString": 1000}

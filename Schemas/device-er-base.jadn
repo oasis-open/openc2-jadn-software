@@ -1,11 +1,11 @@
 {
  "info": {
-  "package": "http://acme.com/schemas/device-base/er/v1.0",
+  "package": "http://acme.com/schemas/device-base/er/v2.0",
   "title": "OpenC2 base device schema for the Endpoint Response service",
   "exports": ["OpenC2-Command", "OpenC2-Response"],
   "namespaces": {
-   "ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1",
-   "er": "http://oasis-open.org/openc2/er/v1.1"
+   "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+   "er": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0"
   }
  },
 

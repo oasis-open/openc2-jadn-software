@@ -1,6 +1,6 @@
        title: "SPDX v3"
      package: "http://spdx.org/spdx/v3/document"
-     version: "spdx-3-model 2022-09-20"
+     version: "spdx-3-model 2023-02-07"
  description: "This information model defines the serialized structure of SPDXv3 logical model types"
      license: "CC0-1.0"
      exports: ["Elements"]

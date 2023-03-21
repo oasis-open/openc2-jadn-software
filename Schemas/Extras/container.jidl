@@ -29,4 +29,4 @@ Coordinate = Record
   2 longitude Number
   3 altitude Number optional
 
-DateTime = String
+DateTime = String       // need datetime format

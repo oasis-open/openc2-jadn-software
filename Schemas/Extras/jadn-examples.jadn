@@ -1,0 +1,29 @@
+{
+ "info": {
+  "package": "http://example.com/uni",
+  "exports": ["University"]
+ },
+
+ "types": [
+  ["University", "Record", [], "", [
+    [1, "name", "String", [], ""],
+    [2, "classes", "Class", ["]0"], ""],
+    [3, "people", "Person", ["]0"], ""]
+  ]],
+
+  ["Class", "Record", [], "", [
+    [1, "name", "String", [], ""],
+    [2, "room", "String", [], ""],
+    [3, "teachers", "Person", ["L", "]0"], ""],
+    [4, "students", "Person", ["L", "]0"], ""]
+  ]],
+
+  ["Person", "Record", [], "", [
+    [1, "name", "String", [], ""],
+    [2, "univ_id", "UnivId", ["K"], ""],
+    [3, "email", "String", ["/email"], ""]
+  ]],
+
+  ["UnivId", "String", ["%^U-\\d{6}$"], "", []]
+ ]
+}

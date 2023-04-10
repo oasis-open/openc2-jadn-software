@@ -9,7 +9,7 @@ DATA_DIR = 'Data'
 """
 Validate a file against a JADN schema
 """
-def validate(file: str = 'container.json', schema: str = 'container.jidl') -> None:
+def validate(file: str = 'checksums.json', schema: str = 'checksums.jidl') -> None:
     filename, ext = os.path.splitext(file)
     with open(os.path.join(SCHEMA_DIR, schema), encoding='utf-8') as fp:
         sc = jadn.load_any(fp)

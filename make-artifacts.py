@@ -22,13 +22,12 @@ def translate(filename: str, sdir: str, odir: str) -> NoReturn:
     jadn.dump(schema, os.path.join(odir, fn + '.jadn'))
     jadn.dump(jadn.transform.unfold_extensions(jadn.transform.strip_comments(schema)),
               os.path.join(odir, fn + '-core.jadn'))
-    # jadn.convert.dot_dump(schema, os.path.join(odir, fn + '.dot'), style={'links': True, 'detail': 'logical', 'attributes': False})  # TODO: attributes: True broken for Enum
-    # jadn.convert.plant_dump(schema, os.path.join(odir, fn + '.puml'), style={'links': True, 'detail': 'logical'})
     for form in ('graphviz', 'plantuml'):
         ext = {'graphviz': 'dot', 'plantuml': 'puml'}[form]
         for detail in ('conceptual', 'logical', 'information'):
-            f = os.path.join(odir, fn + f'_{detail[0]}.{ext}')
-            jadn.convert.diagram_dump(schema, f, style={'format': form, 'detail': detail})
+            for attrs in (False, True):
+                f = os.path.join(odir, fn + f'_{detail[0]}{"a" if attrs else ""}.{ext}')
+                jadn.convert.diagram_dump(schema, f, style={'format': form, 'detail': detail, 'attributes': attrs})
     jadn.convert.jidl_dump(schema, os.path.join(odir, fn + '.jidl'), style={'desc': 50})
     jadn.convert.html_dump(schema, os.path.join(odir, fn + '.html'))
     jadn.convert.markdown_dump(schema, os.path.join(odir, fn + '.md'))

@@ -1,0 +1,26 @@
+{
+ "info": {
+  "package": "http://example.com/uni",
+  "exports": ["University"]
+ },
+ "types": [
+  ["University", "Record", [], "A place of learning", [
+    [1, "name", "String", [], "University Name"],
+    [2, "classes", "ArrayOf", ["*Class"], "Available classes"],
+    [3, "people", "ArrayOf", ["*Person"], "Students and faculty"]
+  ]],
+  ["Class", "Record", [], "Pertinent info about classes", [
+    [1, "name", "String", [], "Name of class"],
+    [2, "room", "String", [], "Where it happens"],
+    [3, "teachers", "Person", ["L", "]0", "q"], "Teacher(s) for this class"],
+    [4, "students", "Person", ["L", "]0", "q"], "Students attending this class"],
+    [5, "syllabus", "String", ["/uri"], "Link to class syllabus on the web"]
+  ]],
+  ["Person", "Record", [], "", [
+    [1, "name", "String", [], "Student / faculty member name"],
+    [2, "univ_id", "UnivId", ["K"], "Unique ID for student / faculty member"],
+    [3, "email", "String", ["/email"], "Student / faculty member email"]
+  ]],
+  ["UnivId", "String", ["%^U-\\d{6}$"], "University ID (U-nnnnnn)", []]
+ ]
+}

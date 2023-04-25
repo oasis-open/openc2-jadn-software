@@ -1,5 +1,5 @@
 """
-Translate each schema file in Source directory to multiple formats in Out directory
+Translate each schema file in Source directory to multiple formats in Out2 directory
 """
 import fire
 import jadn
@@ -20,11 +20,13 @@ def translate(filename: str, sdir: str, odir: str) -> None:
     fn, ext = os.path.splitext(filename)
     jadn.dump(schema, os.path.join(odir, fn + '.jadn'))
     jadn.dump(jadn.transform.unfold_extensions(jadn.transform.strip_comments(schema)),
-          os.path.join(odir, fn + '-core.jadn'))
-    jadn.convert.diagram_dump(schema, os.path.join(odir, fn + '_ia.dot'),
-          style={'format': 'graphviz', 'detail': 'information', 'attributes': True, 'links': True})
-    jadn.convert.diagram_dump(schema, os.path.join(odir, fn + '_i.puml'),
-          style={'format': 'plantuml', 'detail': 'information', 'attributes': False, 'links': False})
+              os.path.join(odir, fn + '-core.jadn'))
+    for form in ('graphviz', 'plantuml'):
+        ext = {'graphviz': 'dot', 'plantuml': 'puml'}[form]
+        for detail in ('conceptual', 'logical', 'information'):
+            for attrs in (False, True):
+                f = os.path.join(odir, fn + f'_{detail[0]}{"a" if attrs else ""}.{ext}')
+                jadn.convert.diagram_dump(schema, f, style={'format': form, 'detail': detail, 'attributes': attrs})
     jadn.convert.jidl_dump(schema, os.path.join(odir, fn + '.jidl'), style={'desc': 50})
     jadn.convert.html_dump(schema, os.path.join(odir, fn + '.html'))
     jadn.convert.markdown_dump(schema, os.path.join(odir, fn + '.md'))

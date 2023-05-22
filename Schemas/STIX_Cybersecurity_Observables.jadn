@@ -14,10 +14,11 @@
       "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },
-  "types": [
 
-    ["STIX-Cybersecurity-Observables", "ArrayOf", ["*SCO"], "An Array of Cybersecurity Observables in STIX formatting"],
-    ["SCO", "Choice", [], "Availiable Cybersecurity Observables in the STIX language", [
+  "types": [
+    ["STIX-Cybersecurity-Observables", "ArrayOf", ["*SCO"], "An Array of Cybersecurity Observables in STIX formatting", []],
+
+    ["SCO", "Choice", [], "Available Cybersecurity Observables in the STIX language", [
       [1, "Artifact", "artifact", ["[0"], ""],
       [2, "Autonomous-System", "autonomous-system", ["[0"], ""],
       [3, "Directory", "directory", ["[0"], ""],
@@ -36,7 +37,7 @@
       [16, "Windows-Registry-Key", "windows-registry-key", ["[0"], ""],
       [17, "X509-Certificate", "x509-certificate", ["[0"], ""]
     ]],
-      
+
     ["artifact", "Record", [], "The Artifact Object permits capturing an array of bytes (8-bits), as a base64-encoded string, or linking to a file-like payload.", [
       [1, "type", "String", ["%^artifact$"], "The value of this property MUST be `artifact`."],
       [2, "id", "String", ["%^artifact--"], ""],
@@ -52,11 +53,13 @@
       [12, "defanged", "defanged", ["[0"], ""],
       [13, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["encryption_algorithm_enum", "Enumerated", [], "", [
       [1, "AES-256-GCM", ""],
       [2, "ChaCha20-Poly1305", ""],
       [3, "mine-type-indicated", ""]
     ]],
+
     ["autonomous-system", "Record", [], "The AS object represents the properties of an Autonomous Systems (AS).", [
       [1, "type", "String", ["%^autonomous-system$"], ""],
       [2, "id", "String", ["%^autonomous-system--"], ""],
@@ -69,6 +72,7 @@
       [9, "defanged", "defanged", ["[0"], ""],
       [10, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["directory", "Record", [], "The Directory Object represents the properties common to a file system directory.", [
       [1, "type", "String", ["%^directory$"], ""],
       [2, "id", "String", ["%^directory--"], ""],
@@ -84,6 +88,7 @@
       [12, "defanged", "defanged", ["[0"], ""],
       [13, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["domain-name", "Record", [], "The Domain Name represents the properties of a network domain name.", [
       [1, "type", "String", ["%^domain-name$"], ""],
       [2, "id", "String", ["%^domain-name--"], ""],
@@ -95,6 +100,7 @@
       [8, "defanged", "defanged", ["[0"], ""],
       [9, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["email-addr", "Record", [], "The Email Address Object represents a single email address.", [
       [1, "type", "String", ["%^email-addr$"], ""],
       [2, "id", "String", ["%^email-addr--"], ""],
@@ -107,6 +113,7 @@
       [9, "defanged", "defanged", ["[0"], ""],
       [10, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["email-message", "Record", [], "The Email Message Object represents an instance of an email message.", [
       [1, "type", "String", ["%^email-message$"], ""],
       [2, "id", "String", ["%^email-message--"], ""],
@@ -131,6 +138,7 @@
       [21, "defanged", "defanged", ["[0"], ""],
       [22, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["file", "Record", [], "", [
       [1, "type", "String", ["%^file$"], "The value of this property MUST be `file`."],
       [2, "id", "String", ["%^file--"], ""],
@@ -151,8 +159,9 @@
       [17, "object_marking_refs", "object_marking_refs", ["[0"], ""],
       [18, "granular_markings", "granular_markings", ["[0"], ""],
       [19, "defanged", "defanged", ["[0"], ""],
-      [20, "core_extensions", "extensions", ["[0"], ""]  
+      [20, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["ipv4-addr", "Record", [], "The IPv4 Address Object represents one or more IPv4 addresses expressed using CIDR notation.", [
       [1, "type", "String", ["%^ipv4-addr$"], ""],
       [2, "id", "String", ["%^ipv4-addr--"], ""],
@@ -165,6 +174,7 @@
       [9, "defanged", "defanged", ["[0"], ""],
       [10, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["ipv6-addr", "Record", [], "", [
       [1, "type", "String", ["%^ipv6-addr$"], ""],
       [2, "id", "String", ["%^ipv6-addr--"], ""],
@@ -177,6 +187,7 @@
       [9, "defanged", "defanged", ["[0"], ""],
       [10, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["mac-addr", "Record", [], "Specifies one or more mac addresses expressed using CIDR notation.", [
       [1, "type", "String", ["%^mac-addr$"], ""],
       [2, "id", "String", ["%^mac-addr--"], ""],
@@ -187,6 +198,7 @@
       [7, "defanged", "defanged", ["[0"], ""],
       [8, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["mutex", "Record", [], "The Mutex Object represents the properties of a mutual exclusion (mutex) object.", [
       [1, "type", "String", ["%^mutex$"], ""],
       [2, "id", "String", ["%^mutex--"], ""],
@@ -197,6 +209,7 @@
       [7, "defanged", "defanged", ["[0"], ""],
       [8, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["network-traffic", "Record", [], "The Network Traffic Object represents arbitrary network traffic that originates from a source and is addressed to a destination.", [
       [1, "type", "String", ["%^network-traffic$"], ""],
       [2, "id", "String", ["%^network-traffic--"], ""],
@@ -212,16 +225,17 @@
       [12, "src_packets", "Integer", ["[0"], "Specifies the number of packets, as a positive integer, sent from the source to the destination."],
       [13, "dst_packets", "Integer", ["[0"], "Specifies the number of packets, as a positive integer, sent from the destination to the source."],
       [14, "ipfix", "ipfix_choice", ["[0"], "Specifies any IP Flow Information Export (IPFIX) data for the traffic."],
-      [15, "src_payload_ref", "String", ["[0"], "Specifies the bytes sent from the source to the destination."], 
-      [16, "dst_payload_ref", "String", ["[0"], "Specifies the bytes sent from the source to the destination."],  
-      [17, "encapsulates_refs", "ArrayOf", ["*String", "{1"], "Specifies the bytes sent from the source to the destination."], 
+      [15, "src_payload_ref", "String", ["[0"], "Specifies the bytes sent from the source to the destination."],
+      [16, "dst_payload_ref", "String", ["[0"], "Specifies the bytes sent from the source to the destination."],
+      [17, "encapsulates_refs", "ArrayOf", ["*String", "{1"], "Specifies the bytes sent from the source to the destination."],
       [18, "encapsulated_by_ref", "String", ["[0"], "Links to another network-traffic object which encapsulates this object."],
       [19, "spec_version", "spec_version", ["[0"], ""],
       [20, "object_marking_refs", "object_marking_refs", ["[0"], ""],
       [21, "granular_markings", "granular_markings", ["[0"], ""],
       [22, "defanged", "defanged", ["[0"], ""],
-      [23, "core_extensions", "extensions", ["[0"], ""]   
+      [23, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["ipfix_choice", "Choice", [], "Specifies any IP Flow Information Export (IPFIX) data for the traffic.", [
       [1, "ipfix_string", "String", [], ""],
       [2, "ipfix_integer", "Integer", [], ""]
@@ -247,7 +261,8 @@
       [17, "granular_markings", "granular_markings", ["[0"], ""],
       [18, "defanged", "defanged", ["[0"], ""],
       [19, "core_extensions", "extensions", ["[0"], ""]
-    ]],  
+    ]],
+
     ["software", "Record", [], "The Software Object represents high-level properties associated with software, including software products.", [
       [1, "type", "String", ["%^software$"], ""],
       [2, "id", "String", [], "%^software--"],
@@ -263,6 +278,7 @@
       [12, "defanged", "defanged", ["[0"], ""],
       [13, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["user-account", "Record", [], "The Software Object represents high-level properties associated with software, including software products.", [
       [1, "type", "String", ["%^user-account$"], "The value of this property MUST be `user-account`."],
       [2, "id", "String", ["%^user-account--"], ""],
@@ -287,9 +303,10 @@
       [21, "defanged", "defanged", ["[0"], ""],
       [22, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["url", "Record", [], "The URL Object represents the properties of a uniform resource locator (URL).", [
       [1, "type", "String", ["%^url$"], "The value of this property MUST be `url`."],
-      [2, "id", "String", ["%^url"], ""],        
+      [2, "id", "String", ["%^url"], ""],
       [3, "url_value", "String", ["%^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?"], "Specifies the value of the URL."],
       [4, "spec_version", "spec_version", ["[0"], ""],
       [5, "object_marking_refs", "object_marking_refs", ["[0"], ""],
@@ -297,9 +314,10 @@
       [7, "defanged", "defanged", ["[0"], ""],
       [8, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["windows-registry-key", "Record", [], "The Registry Key Object represents the properties of a Windows registry key.", [
       [1, "type", "String", ["%^windows-registry-key$"], "The value of this property MUST be `windows-registry-key`."],
-      [2, "id", "String", ["%^windows-registry-key--"], ""],        
+      [2, "id", "String", ["%^windows-registry-key--"], ""],
       [3, "key", "String", ["%^((?!((^|, )(HKLM|HKCC|HKCR|HKCU|HKU|hklm|hkcc|hkcr|hkcu|hku))+$).)*$"], "Specifies the full registry key including the hive."],
       [4, "registry_values", "ArrayOf", ["*windows_registry_value_type", "[0"], "Specifies the values found under the registry key."],
       [5, "modified_time", "timestamp", ["[0"], "Specifies the last date/time that the registry key was modified."],
@@ -311,9 +329,10 @@
       [11, "defanged", "defanged", ["[0"], ""],
       [12, "core_extensions", "extensions", ["[0"], ""]
     ]],
+
     ["x509-certificate", "Record", [], "The X509 Certificate Object represents the properties of an X.509 certificate.", [
       [1, "type", "String", ["%^x509-certificate$"], "The value of this property MUST be `x509-certificate`."],
-      [2, "id", "String", ["%^x509-certificate--"], ""],        
+      [2, "id", "String", ["%^x509-certificate--"], ""],
       [3, "is_self_signed", "Boolean", ["[0"], "Specifies whether the certificate is self-signed, i.e., whether it is signed by the same entity whose identity it certifies."],
       [4, "hashes", "ArrayOf", ["*hashes", "[0"], "Specifies any hashes that were calculated for the entire contents of the certificate."],
       [5, "version", "String", ["[0"], "Specifies the version of the encoded certificate."],
@@ -334,7 +353,6 @@
       [20, "core_extensions", "extensions", ["[0"], ""]
     ]],
 
-
     ["mime-part-type", "Record", [], "Specifies a component of a multi-part email body.", [
       [1, "body", "String", ["[0"], "Specifies the contents of the MIME part if the content_type is not provided OR starts with text/"],
       [2, "body_raw_ref", "String", ["[0"], "Specifies the contents of non-textual MIME parts, that is those whose content_type does not start with text/, as a reference to an Artifact Object or File Object."],
@@ -342,11 +360,12 @@
       [4, "content_disposition", "String", ["[0"], "Specifies the value of the 'Content-Disposition' header field of the MIME part."]
     ]],
 
+    ["email-additional-header-fields", "ArrayOf", ["*email_additional_header_field"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary.", []],
 
-    ["email-additional-header-fields", "ArrayOf", ["*email_additional_header_field"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary."],
-    ["email_additional_header_field", "MapOf", ["+email_additional_header_fieldname", "*email_additional_header_value"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary."],
-    ["email_additional_header_fieldname", "String", ["%^((?!((^|, )(date|received_lines|content_type|from_ref|sender_ref|to_refs|cc_refs|bcc_refs|subject))+$).)*$"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary."],
-     
+    ["email_additional_header_field", "MapOf", ["+email_additional_header_fieldname", "*email_additional_header_value"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary.", []],
+
+    ["email_additional_header_fieldname", "String", ["%^((?!((^|, )(date|received_lines|content_type|from_ref|sender_ref|to_refs|cc_refs|bcc_refs|subject))+$).)*$"], "Specifies any other header fields (except for date, received_lines, content_type, from_ref, sender_ref, to_refs, cc_refs, bcc_refs, and subject) found in the email message, as a dictionary.", []],
+
     ["email_additional_header_value", "Choice", [], "", [
       [1, "String_Value", "String", ["%[a-zA-Z0-9_-]{0,250}^$"], ""],
       [2, "String_Array", "ArrayOf", ["*String", "{2"], ""]
@@ -399,9 +418,10 @@
     ]],
 
     ["ntfs_ext", "Record", [], "The NTFS file extension specifies a default extension for capturing properties specific to the storage of the file on the NTFS file system.", [
-      [1, "sid", "String", ["[0"], "Specifies the security ID (SID) value assigned to the file."],  
+      [1, "sid", "String", ["[0"], "Specifies the security ID (SID) value assigned to the file."],
       [2, "alternate_data_streams", "ArrayOf", ["*ntfs_atlternate_data_stream", "[0"], "Specifies a list of NTFS alternate data streams that exist for the file."]
     ]],
+
     ["ntfs_atlternate_data_stream", "Record", [], "", [
       [1, "name", "String", [], "Specifies the name of the alternate data stream."],
       [2, "hashes", "ArrayOf", ["*hashes", "[0"], "Specifies a dictionary of hashes for the data contained in the alternate data stream."],
@@ -426,31 +446,32 @@
       [4, "tcp_ext", "tcp_ext", ["[0"], "The TCP extension specifies a default extension for capturing network traffic properties specific to TCP."]
     ]],
 
-
     ["http_request_ext", "Record", [], "The HTTP request extension specifies a default extension for capturing network traffic properties specific to HTTP requests.", [
-      [1, "request_method", "String", [], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],  
+      [1, "request_method", "String", [], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],
       [2, "request_value", "String", [], "Specifies the value (typically a resource path) portion of the HTTP request line."],
-      [3, "request_version", "String", ["[0"], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],  
+      [3, "request_version", "String", ["[0"], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],
       [4, "request_header", "ArrayOf", ["*String", "[0"], "Specifies the value (typically a resource path) portion of the HTTP request line."],
-      [5, "message_body_length", "String", ["[0"], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],  
+      [5, "message_body_length", "String", ["[0"], "Specifies the HTTP method portion of the HTTP request line, as a lowercase string."],
       [6, "message_body_data_ref", "String", ["[0"], "Specifies the value (typically a resource path) portion of the HTTP request line."]
     ]],
 
     ["icmp_ext", "Record", [], "The ICMP extension specifies a default extension for capturing network traffic properties specific to ICMP.", [
-      [1, "icmp_type_hex", "Hex", [], "Specifies the ICMP type byte."],  
+      [1, "icmp_type_hex", "Hex", [], "Specifies the ICMP type byte."],
       [2, "icmp_code_hex", "Hex", [], "Specifies the ICMP code byte."]
     ]],
+
     ["socket_ext", "Record", [], "The Network Socket extension specifies a default extension for capturing network traffic properties associated with network sockets.", [
-      [1, "address_family", "address_family", [], "Specifies the address family (AF_*) that the socket is configured for."],  
+      [1, "address_family", "address_family", [], "Specifies the address family (AF_*) that the socket is configured for."],
       [2, "is_blocking", "Boolean", ["[0"], "Specifies whether the socket is in blocking mode."],
-      [3, "is_listening", "String", ["[0"], "Specifies whether the socket is in listening mode."],  
+      [3, "is_listening", "String", ["[0"], "Specifies whether the socket is in listening mode."],
       [4, "options", "ArrayOf", ["*socket_option", "[0"], "Specifies any options (SO_*) that may be used by the socket, as a dictionary."],
-      [5, "socket_type", "socket_type", ["[0"], "Specifies the type of the socket."],  
+      [5, "socket_type", "socket_type", ["[0"], "Specifies the type of the socket."],
       [6, "socket_descriptor", "Integer", ["{0", "[0"], "Specifies the socket file descriptor value associated with the socket, as a non-negative integer."],
       [7, "socket_handle", "Integer", ["[0"], "Specifies the handle or inode value associated with the socket."]
     ]],
+
     ["tcp_ext", "Record", [], "The TCP extension specifies a default extension for capturing network traffic properties specific to TCP.", [
-      [1, "src_flags_hex", "Hex", [], "Specifies the source TCP flags, as the union of all TCP flags observed between the start of the traffic (as defined by the start property) and the end of the traffic (as defined by the end property)."],  
+      [1, "src_flags_hex", "Hex", [], "Specifies the source TCP flags, as the union of all TCP flags observed between the start of the traffic (as defined by the start property) and the end of the traffic (as defined by the end property)."],
       [2, "dst_flags_hex", "Hex", [], "Specifies the destination TCP flags, as the union of all TCP flags observed between the start of the traffic (as defined by the start property) and the end of the traffic (as defined by the end property)."]
     ]],
 
@@ -464,8 +485,9 @@
       [7, "AF_IRDA", ""],
       [8, "AF_BTH", ""]
     ]],
+
     ["socket_option", "Record", [], "Specifies any options (SO_*) that may be used by the socket, as a dictionary.", [
-      [1, "socket_option", "String", ["%^(SO|ICMP|ICMP6|IP|IPV6|MCAST|TCP|IRLMP)(_[A-Z]+)+$"], ""],  
+      [1, "socket_option", "String", ["%^(SO|ICMP|ICMP6|IP|IPV6|MCAST|TCP|IRLMP)(_[A-Z]+)+$"], ""],
       [2, "option_value", "Integer", [], ""]
     ]],
 
@@ -481,19 +503,16 @@
       [1, "unix_account_ext", "unix_account_ext", ["[0"], "The User Account Object defines the following extensions. In addition to these, producers MAY create their own."]
     ]],
 
-
     ["unix_account_ext", "Record", [], "", [
       [1, "gid", "Number", ["[0"], "Specifies the primary group ID of the account."]
-
     ]],
 
     ["process_extensions_dictionary", "Record", [], "", [
-      [1, "windows_proccess_extension", "windows_proccess_extension", ["[0"], "The Windows Process extension specifies a default extension for capturing properties specific to Windows processes."],  
+      [1, "windows_proccess_extension", "windows_proccess_extension", ["[0"], "The Windows Process extension specifies a default extension for capturing properties specific to Windows processes."],
       [2, "windows_service_ext", "windows_service_ext", ["[0"], "The Windows Service extension specifies a default extension for capturing properties specific to Windows services."]
     ]],
 
-
-    ["windows_proccess_extension", "Record", [], "The Windows Process extension specifies a default extension for capturing properties specific to Windows processes.", [ 
+    ["windows_proccess_extension", "Record", [], "The Windows Process extension specifies a default extension for capturing properties specific to Windows processes.", [
       [1, "aslr_enabled", "Boolean", ["[0"], "Specifies whether Address Space Layout Randomization (ASLR) is enabled for the process."],
       [2, "dep_enabled", "Boolean", ["[0"], "Specifies whether Data Execution Prevention (DEP) is enabled for the process."],
       [3, "priority", "String", ["[0"], "Specifies the current priority class of the process in Windows."],
@@ -501,7 +520,7 @@
       [5, "window_title", "String", ["[0"], "Specifies the title of the main window of the process."],
       [6, "startup_info", "startup_info_dictionary", ["[0"], "Specifies the STARTUP_INFO struct used by the process, as a dictionary."],
       [7, "integrity_level", "windows_integrity_level_enum", ["[0"], "Specifies the Windows integrity level, or trustworthiness, of the process."]
-    ]],  
+    ]],
 
     ["startup_info_dictionary", "Array", [], "", [
       [1, "lpDesktop", "String", ["[0"], ""],
@@ -523,7 +542,8 @@
       [17, "dwYCountChars", "Integer", ["[0"], ""],
       [18, "cbReserved2", "Integer", ["[0", "{0", "}0"], ""]
     ]],
-    ["Null", "String", ["%^NULL$"], "This Is Wrong"],    
+
+    ["Null", "String", ["%^NULL$"], "This Is Wrong", []],
 
     ["windows_integrity_level_enum", "Enumerated", [], "", [
       [1, "low", ""],
@@ -531,6 +551,7 @@
       [3, "high", ""],
       [4, "system", ""]
     ]],
+
     ["service_status", "Enumerated", [], "Specifies the current status of the service. windows-service-status-enum", [
       [1, "SERVICE_CONTINUE_PENDING", ""],
       [2, "SERVICE_PAUSE_PENDING", ""],
@@ -540,12 +561,14 @@
       [6, "SERVICE_STOP_PENDING", ""],
       [7, "SERVICE_STOPPED", ""]
     ]],
+
     ["service_type", "Enumerated", [], "Specifies the type of the service. windows-service-enum", [
       [1, "SERVICE_KERNEL_DRIVER", ""],
       [2, "SERVICE_FILE_SYSTEM_DRIVER", ""],
       [3, "SERVICE_WIN32_OWN_PROCESS", ""],
       [4, "SERVICE_WIN32_SHARE_PROCESS", ""]
     ]],
+
     ["windows_service_ext", "Record", [], "The Windows Service extension specifies a default extension for capturing properties specific to Windows services.", [
       [1, "service_name", "String", ["[0"], "Specifies the name of the service."],
       [2, "descriptions", "ArrayOf", ["*String", "{1", "[0"], "Specifies the descriptions defined for the service."],
@@ -556,6 +579,7 @@
       [7, "service_type", "service_type", ["[0"], "Specifies the type of the service. windows-service-enum"],
       [8, "service_status", "service_status", ["[0"], "Specifies the current status of the service. windows-service-status-enum"]
     ]],
+
     ["start_type", "Enumerated", [], "Specifies the start options defined for the service. windows-service-start-enum", [
       [1, "SERVICE_AUTO_START", ""],
       [2, "SERVICE_BOOT_START", ""],
@@ -568,19 +592,26 @@
       [1, "2.0", ""],
       [2, "2.1", ""]
     ]],
-    ["object_marking_refs", "ArrayOf", ["*identifier", "{1"], "The list of marking-definition objects to be applied to this object."],
+
+    ["object_marking_refs", "ArrayOf", ["*identifier", "{1"], "The list of marking-definition objects to be applied to this object.", []],
+
     ["granular_marking", "Record", [], "", [
       [1, "selectors", "identifier", ["[1"], "A list of selectors for content contained within the STIX object in which this property appears."],
       [2, "lang", "String", [], "Identifies the language of the text identified by this marking."],
       [3, "pattern", "identifier", ["[1"], "The marking_ref property specifies the ID of the marking-definition object that describes the marking."]
     ]],
-    ["granular_markings", "ArrayOf", ["*granular_marking", "{1"], "The set of granular markings that apply to this object."],
-    ["defanged", "Boolean", [], "Defines whether or not the data contained within the object has been defanged."],
-    ["identifier", "String", ["%^[a-z][a-z0-9-]+[a-z0-9]--[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"], "Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4."],
+
+    ["granular_markings", "ArrayOf", ["*granular_marking", "{1"], "The set of granular markings that apply to this object.", []],
+
+    ["defanged", "Boolean", [], "Defines whether or not the data contained within the object has been defanged.", []],
+
+    ["identifier", "String", ["%^[a-z][a-z0-9-]+[a-z0-9]--[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"], "Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4.", []],
+
     ["extensions", "Record", ["{1"], "Specifies any extensions of the object, as a dictionary.", [
       [1, "extension", "String", ["%^([a-z][a-z0-9]*)+(-[a-z0-9]+)*\\\\-ext$"], ""],
       [2, "extension_definition", "extension", [], ""]
     ]],
+
     ["properties", "Array", ["{1"], "Rules for custom properties", [
       [1, "binary", "Binary", ["[0"], ""],
       [2, "hex", "Hex", ["[0"], "The hex data type encodes an array of octets (8-bit bytes) as hexadecimal. The string MUST consist of an even number of hexadecimal characters, which are the digits '0' through '9' and the letters 'a' through 'f'.  In order to allow pattern matching on custom objects, all properties that use the hex type, the property name MUST end with '_hex'."],
@@ -591,19 +622,22 @@
       [7, "number", "Number", ["[0"], ""],
       [8, "object", "extensions", ["[0"], ""]
     ]],
+
     ["extension", "Record", ["{1"], "", [
       [1, "extension_type", "extension_type_enum", [], "The type of extension."],
       [2, "properties", "properties", [], ""]
     ]],
+
     ["extension_type_enum", "Enumerated", [], "", [
       [1, "new-sdo", ""],
       [2, "new-sco", ""],
       [3, "new-sro", ""],
       [4, "property-extension", ""],
       [5, "toplevel-property-extension", ""]
-    ]], 
-    ["Hex", "String", ["%^([a-fA-F0-9]{2})+$"], ""], 
-    ["timestamp", "String", ["%^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"], ""]
+    ]],
 
+    ["Hex", "String", ["%^([a-fA-F0-9]{2})+$"], "", []],
+
+    ["timestamp", "String", ["%^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"], "", []]
   ]
 }

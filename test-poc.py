@@ -6,7 +6,7 @@ from io import TextIOWrapper
 from typing import TextIO
 from urllib.request import urlopen, Request
 from urllib.parse import urlparse
-from jsonschema import validate, draft7_format_checker
+from jsonschema import validate, Draft202012Validator
 from jsonschema.exceptions import ValidationError
 
 """
@@ -36,7 +36,7 @@ VALIDATE_JADN = True    # Use JAON schema if True, JSON schema if False
 
 ROOT_DIR = 'Test'
 ROOT_REPO = 'https://api.github.com/repos/oasis-open/openc2-jadn-software/contents/Test'
-TEST_ROOT = ROOT_DIR          # Select local directory or GitHub root of test tree
+TEST_ROOT = ROOT_REPO          # Select local directory or GitHub root of test tree
 
 AUTH = {'Authorization': f'token {os.environ["GitHubToken"] if TEST_ROOT == ROOT_REPO else "None"}'}
 
@@ -132,7 +132,7 @@ def run_test(dpath):         # Check correct validation of good and bad commands
                             codec.decode(crtype, json.load(open_file(f)))
                         else:
                             validate({'openc2_' + cr: json.load(open_file(f))}, json_schema,
-                                     format_checker=draft7_format_checker)
+                                     format_checker=Draft202012Validator.FORMAT_CHECKER)
                         tcount[pdir] += 1
                         ecount[pdir] += 1 if gb == 'Bad' else 0
                         print()

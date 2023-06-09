@@ -1,7 +1,7 @@
 {
   "info": {
-    "title": "OpenC2 base device schema for LED panel controller using sFractal blinky interface",
-    "package": "http://sfractal.com/schemas/blinky-base/v1.0",
+    "title": "OpenC2 device schema for LED panel controller using sFractal blinky interface",
+    "package": "http://sfractal.com/schemas/blinky/v1.0",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 

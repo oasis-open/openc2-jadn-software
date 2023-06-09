@@ -1,7 +1,7 @@
        title: "OpenC2 SBOM Retrieval Actuator Profile"
      package: "http://docs.oasis-open.org/openc2/ns/ap-sbom/v2.0"
   namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
-     exports: ["AP-Target", "AP-Specifiers", "AP-Results"]
+     exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
 
 Action = Enumerated
    3 query
@@ -15,6 +15,7 @@ Args = Enumerated
    2 stop_time
    3 duration
    4 response_requested
+1034 sbom
 
 Actuator = Enumerated
 1034 sbom
@@ -30,8 +31,10 @@ Pairs = Enumerated
    3 query: features, /sboms, /sbom_list
 
 AP-Target = Choice                                // Profile-defined targets
-   1 sboms            SBOM-Specifiers             // Return IDs or SBOMs matching filter criteria
-   2 sbom_list        SBOM-List                   // Return specific SBOMs by ID
+   1 sbom             SBOM-Specifiers             // Return specific SBOM  ????? how change this?
+   2 sbom_list        SBOM-List                   // Return list of SBOMs ID and metadata
+
+AP-Args = Map                                     // Profile-defined command arguments
 
 AP-Specifiers = Map                               // Profile-defined actuator specifiers
 

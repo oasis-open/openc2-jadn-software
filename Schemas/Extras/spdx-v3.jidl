@@ -85,14 +85,14 @@ Snippet = Record {1..*}                           // Everything optional, must h
    2 snippetPurpose   SoftwarePurpose [0..*]
    3 byteRange        PositiveIntegerRange [0..1]
    4 lineRange        PositiveIntegerRange [0..1]
-   3 originatedBy     Link(Element) [0..*]        // <-Artifact:  Link(Agent)
+   5 originatedBy     Link(Element) [0..*]        // <-Artifact:  Link(Agent)
 
 File = Record
    1 name             String
    2 contentIdentifier URI [0..1]]
-   1 contentType      MediaType [0..1]
-   2 filePurpose      SoftwarePurpose [0..*]
-   3 originatedBy     Link(Element) [0..*]        // <-Artifact:  Link(Agent)
+   3 contentType      MediaType [0..1]
+   4 filePurpose      SoftwarePurpose [0..*]
+   5 originatedBy     Link(Element) [0..*]        // <-Artifact:  Link(Agent)
 
 Package = Record
    1 packagePurpose   SoftwarePurpose [0..*]

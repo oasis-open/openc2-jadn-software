@@ -11,7 +11,7 @@
           "sbom": {
             "query": ["sboms", "sbom_list"]
           },
-          "foo": {
+          "pac": {
             "query": ["attrs", "sbom"]
           },
           "slpf": {

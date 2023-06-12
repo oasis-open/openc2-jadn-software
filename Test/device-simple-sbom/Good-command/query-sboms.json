@@ -1,0 +1,12 @@
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+      "sbom": {
+        "type": ["cyclonedx", "spdx2", "spdx3"],
+        "format": ["json", "cbor", "xml"],
+        "info": ["summary", "blob"]
+      }
+    }
+  }
+}

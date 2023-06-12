@@ -1,0 +1,8 @@
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "uuid": "58156134-5547-4e4a-968f-88a33cfafc2c"
+    }
+  }
+}

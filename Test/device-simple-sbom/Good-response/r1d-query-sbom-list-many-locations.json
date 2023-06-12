@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+      "sbom_list": [
+        {
+          "id": ["twinkly_maha", "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+          "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+          "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+          "version": "1.0.0",
+          "format": ["cyclonedx", "1.4"],
+          "serialization": "json"
+        },
+        {
+          "id": ["twinkly_maha", "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+          "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+          "location": "localhost",
+          "version": "1.0.0",
+          "format": ["spdx", "2.3"],
+          "serialization": "json"
+        }
+      ]
+    }
+  }
+}

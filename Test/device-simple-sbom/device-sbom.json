@@ -1,0 +1,606 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://acme.com/sbomdevice/v1",
+  "title": "Device that supports only SBOM retrieval",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "openc2_command": {
+      "$ref": "#/definitions/OpenC2-Command"
+    },
+    "openc2_response": {
+      "$ref": "#/definitions/OpenC2-Response"
+    }
+  },
+  "definitions": {
+    "OpenC2-Command": {
+      "title": "OpenC2 Command",
+      "type": "object",
+      "description": "The Command defines an Action to be performed on a Target",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The task or activity to be performed (i.e., the 'verb')."
+        },
+        "target": {
+          "$ref": "#/definitions/Target",
+          "description": "The object of the Action. The Action is performed on the Target."
+        },
+        "args": {
+          "$ref": "#/definitions/Args",
+          "description": "Additional information that applies to the Command."
+        },
+        "actuator": {
+          "$ref": "#/definitions/Actuator",
+          "description": "The profile defining the function to be performed by the Command."
+        },
+        "command_id": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "An identifier of this Command."
+        }
+      }
+    },
+    "OpenC2-Response": {
+      "title": "OpenC2 Response",
+      "type": "object",
+      "description": "OpenC2-Response defines the structure of a response to OpenC2-Command.",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/Status-Code",
+          "description": "An integer status code."
+        },
+        "status_text": {
+          "type": "string",
+          "description": "A free-form human-readable description of the Response status.",
+          "maxLength": 255
+        },
+        "results": {
+          "$ref": "#/definitions/Results",
+          "description": "Map of key:value pairs that contain additional results based on the invoking Command."
+        }
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "string",
+      "enum": [
+        "query"
+      ]
+    },
+    "Target": {
+      "title": "Target",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "features": {
+          "$ref": "#/definitions/Features",
+          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+        },
+        "sbom": {
+          "$ref": "#/definitions/Target$sbom",
+          "description": "Targets defined in the Software Bill Of Materials AP"
+        }
+      }
+    },
+    "Args": {
+      "title": "Args",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "start_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to initiate the Command"
+        },
+        "stop_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to terminate the Command"
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration",
+          "description": "The length of time for an Command to be in effect"
+        },
+        "response_requested": {
+          "$ref": "#/definitions/Response-Type",
+          "description": "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"
+        },
+        "sbom": {
+          "$ref": "#/definitions/Args$sbom",
+          "description": "Profile-defined command arguments"
+        }
+      }
+    },
+    "Actuator": {
+      "title": "Actuator",
+      "type": "string",
+      "enum": [
+        "sbom"
+      ]
+    },
+    "Results": {
+      "title": "Results",
+      "type": "object",
+      "description": "Response Results",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "List of OpenC2 language versions supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Version",
+            "description": "List of OpenC2 language versions supported by this Consumer"
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "description": "List of profiles supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Nsid",
+            "description": "List of profiles supported by this Consumer"
+          }
+        },
+        "pairs": {
+          "$ref": "#/definitions/Pairs",
+          "description": "List of targets applicable to each supported Action"
+        },
+        "rate_limit": {
+          "type": "number",
+          "description": "Maximum number of requests per minute supported by design or policy",
+          "minimum": 0.0
+        },
+        "sbom": {
+          "$ref": "#/definitions/Results$sbom",
+          "description": "Results defined in the Sofware Bill Of Materials AP"
+        }
+      }
+    },
+    "Pairs": {
+      "title": "Pairs",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query",
+        "sbom"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
+        },
+        "sbom": {
+          "$ref": "#/definitions/Pairs$sbom",
+          "description": ""
+        }
+      }
+    },
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
+    },
+    "Target$sbom": {
+      "title": "Target$sbom",
+      "type": "object",
+      "description": "Profile-defined targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "sbom": {
+          "$ref": "#/definitions/SBOM-Specifiers$sbom",
+          "description": "Return IDs or SBOMs matching filter criteria"
+        },
+        "sbom_list": {
+          "$ref": "#/definitions/SBOM-List$sbom",
+          "description": "Return specific SBOMs by ID"
+        }
+      }
+    },
+    "Args$sbom": {
+      "title": "Args$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {}
+    },
+    "Results$sbom": {
+      "title": "Results$sbom",
+      "type": "object",
+      "description": "Profile-defined response results",
+      "additionalProperties": false,
+      "required": [
+        "sboms"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "sboms": {
+          "type": "array",
+          "description": "List of all SBOMs matching query criteria",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/SBOM-Info$sbom"
+          }
+        }
+      }
+    },
+    "Pairs$sbom": {
+      "title": "Pairs$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Query-Targets$sbom"
+          }
+        }
+      }
+    },
+    "Query-Targets$sbom": {
+      "title": "Query Targets$sbom",
+      "type": "string",
+      "enum": [
+        "sbom",
+        "sbom_list"
+      ]
+    },
+    "SBOM-Specifiers$sbom": {
+      "title": "SBOM Specifiers$sbom",
+      "type": "object",
+      "description": "If none specified, return IDs for all SBOMs",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "type": {
+          "type": "array",
+          "description": "SBOM type",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "enum": [
+              "cyclonedx",
+              "spdx2",
+              "spdx3"
+            ]
+          }
+        },
+        "format": {
+          "type": "array",
+          "description": "Data format",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/DataFormat$sbom"
+          }
+        },
+        "info": {
+          "type": "array",
+          "description": "Type of SBOM info to return",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Info$sbom"
+          }
+        }
+      }
+    },
+    "SBOM-List$sbom": {
+      "title": "SBOM List$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sids",
+        "info"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "sids": {
+          "type": "array",
+          "description": "SBOM IDs to return",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/URI",
+            "description": "SBOM IDs to return"
+          }
+        },
+        "info": {
+          "type": "array",
+          "description": "Type of SBOM info to return",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Info$sbom"
+          }
+        }
+      }
+    },
+    "SBOM-Info$sbom": {
+      "title": "SBOM Info$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "format",
+        "sid"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "SBOM type (name of standard)",
+          "enum": [
+            "cyclonedx",
+            "spdx2",
+            "spdx3"
+          ]
+        },
+        "format": {
+          "$ref": "#/definitions/DataFormat$sbom",
+          "description": "Data (serialization) format"
+        },
+        "sid": {
+          "$ref": "#/definitions/URI",
+          "description": "Unique identifier or locator of the SBOM"
+        },
+        "summary": {
+          "$ref": "#/definitions/SBOM-Elements$sbom",
+          "description": "NTIA Minimumum Elements of an SBOM"
+        },
+        "content": {
+          "$ref": "#/definitions/SBOM-Content$sbom",
+          "description": "SBOM structured data"
+        },
+        "blob": {
+          "type": "string",
+          "description": "Uninterpreted SBOM bytes",
+          "contentEncoding": "base64url"
+        }
+      }
+    },
+    "Info$sbom": {
+      "title": "Info$sbom",
+      "type": "string",
+      "description": "SBOM-Info fields to return",
+      "enum": [
+        "summary",
+        "content",
+        "blob"
+      ]
+    },
+    "SBOM-Elements$sbom": {
+      "title": "SBOM Elements$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supplier",
+        "component",
+        "version",
+        "component_ids",
+        "dependencies",
+        "author",
+        "timestamp"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "supplier": {
+          "type": "array",
+          "description": "Name of entity that creates, defines, and identifies components",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Name of entity that creates, defines, and identifies components",
+            "maxLength": 255
+          }
+        },
+        "component": {
+          "type": "array",
+          "description": "Designation(s) assigned to a unit of software defined by the original supplier",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Designation(s) assigned to a unit of software defined by the original supplier",
+            "maxLength": 255
+          }
+        },
+        "version": {
+          "type": "string",
+          "description": "Identifier used by supplier to specify a change from a previously identified version",
+          "maxLength": 255
+        },
+        "component_ids": {
+          "type": "array",
+          "description": "Other identifiers used to identify a component, or serve as a look-yp key",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Other identifiers used to identify a component, or serve as a look-yp key",
+            "maxLength": 255
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "Upstream component(s)",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "description": "Upstream component(s)",
+            "maxLength": 255
+          }
+        },
+        "author": {
+          "type": "string",
+          "description": "Name of the entity that creates SBOM data for this component",
+          "maxLength": 255
+        },
+        "timestamp": {
+          "$ref": "#/definitions/DateTime$sbom",
+          "description": "Record of the date and time of the SBOM data assembly"
+        }
+      }
+    },
+    "SBOM-Content$sbom": {
+      "title": "SBOM Content$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "cyclonedx": {
+          "type": "string",
+          "description": "Placeholder for CycloneDX data model",
+          "maxLength": 255
+        },
+        "spdx2": {
+          "type": "string",
+          "description": "Placeholder for SPDX v2.x data model",
+          "maxLength": 255
+        },
+        "spdx3": {
+          "type": "string",
+          "description": "Placeholder for SPDX v3 data model",
+          "maxLength": 255
+        }
+      }
+    },
+    "DataFormat$sbom": {
+      "title": "DataFormat$sbom",
+      "type": "string",
+      "description": "Serialization Data Formats",
+      "enum": [
+        "ttv",
+        "json",
+        "json-m",
+        "json-ld",
+        "cbor",
+        "protobuf",
+        "xml",
+        "ss-csv"
+      ]
+    },
+    "DateTime$sbom": {
+      "title": "DateTime$sbom",
+      "type": "integer",
+      "minimum": 0
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "URI": {
+      "title": "URI",
+      "type": "string",
+      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
+      "format": "uri",
+      "maxLength": 255
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "Version": {
+      "title": "Version",
+      "type": "string",
+      "description": "Major.Minor version number",
+      "maxLength": 255
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+      "sbom_list": [{
+        "id": ["twinkly_maha", "58156134-5547-4e4a-968f-88a33cfafc2c"],
+        "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+        "location": "localhost",
+        "version": "1.0.0",
+        "format": ["cyclonedx", "1.4"],
+        "serialization": "json",
+        "supplier": ["sFractal.com", "1783512b-1cae-4cfa-a183-3e30408bbc14"],
+        "created_at": "build",
+        "author": ["Duncan at sFractal", "4d50d859-a5f7-45fa-9935-77b294aa445a"],
+        "timestamp": "2021-10-12T07:20:50.52Z",
+        "notes": "this SBOM has known unknowns"
+      }]
+    }
+  }
+}

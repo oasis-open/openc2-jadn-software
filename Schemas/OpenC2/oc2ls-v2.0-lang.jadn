@@ -1,163 +1,163 @@
 {
- "info": {
-  "package": "http://docs.oasis-open.org/openc2/ns/lang/v2.0",
-  "title": "OpenC2 Language and Device Template",
-  "description": "Template for creating OpenC2 v2 device schemas",
-  "comment": "Delete unused Action/Target/Args/Results, update package, and replace example.org/profile1 with actual profile(s)",
-  "exports": ["Message"],
-  "namespaces": {
-   "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
-   "nsid1": "http://example.org/profile1",
-   "slpf": "http://docs.oasis-open.org/openc2/ns/ap-slpf/v2.0",
-   "sfpf": "http://docs.oasis-open.org/openc2/ns/ap-sfpf/v2.0",
-   "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v2.0",
-   "er": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
-   "hop": "http://docs.oasis-open.org/openc2/ns/ap-hop/v2.0",
-   "av": "http://docs.oasis-open.org/openc2/ns/ap-av/v2.0",
-   "ids": "http://docs.oasis-open.org/openc2/ns/ap-ids/v2.0",
-   "log": "http://docs.oasis-open.org/openc2/ns/ap-log/v2.0",
-   "swup": "http://docs.oasis-open.org/openc2/ns/ap-swup/v2.0",
-   "pf": "http://docs.oasis-open.org/openc2/ns/ap-pf/v2.0",
-   "pac": "http://docs.oasis-open.org/openc2/ns/ap-pac/v2.0"
-  }
- },
+  "info": {
+    "package": "http://docs.oasis-open.org/openc2/ns/lang/v2.0",
+    "title": "OpenC2 Language and Device Template",
+    "description": "Template for creating OpenC2 v2 device schemas",
+    "comment": "Delete unused Action/Target/Args/Results, update package, and replace example.org/profile1 with actual profile(s)",
+    "exports": ["Message"],
+    "namespaces": {
+      "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+      "nsid1": "http://example.org/profile1",
+      "slpf": "http://docs.oasis-open.org/openc2/ns/ap-slpf/v2.0",
+      "sfpf": "http://docs.oasis-open.org/openc2/ns/ap-sfpf/v2.0",
+      "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v2.0",
+      "er": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
+      "hop": "http://docs.oasis-open.org/openc2/ns/ap-hop/v2.0",
+      "av": "http://docs.oasis-open.org/openc2/ns/ap-av/v2.0",
+      "ids": "http://docs.oasis-open.org/openc2/ns/ap-ids/v2.0",
+      "log": "http://docs.oasis-open.org/openc2/ns/ap-log/v2.0",
+      "swup": "http://docs.oasis-open.org/openc2/ns/ap-swup/v2.0",
+      "pf": "http://docs.oasis-open.org/openc2/ns/ap-pf/v2.0",
+      "pac": "http://docs.oasis-open.org/openc2/ns/ap-pac/v2.0",
+      "th": "http://docs.oasis-open.org/openc2/ns/ap-th/v2.0"
+    }
+  },
 
- "types": [
+  "types": [
+    ["Message", "Record", [], "", [
+      [1, "headers", "Headers", ["[0"], ""],
+      [2, "body", "Body", [], ""],
+      [3, "signature", "String", ["[0"], ""]
+    ]],
 
-  ["Message", "Record", [], "", [
-    [1, "headers", "Headers", ["[0"], ""],
-    [2, "body", "Body", [], ""],
-    [3, "signature", "String", ["[0"], ""]
-  ]],
+    ["Headers", "Map", ["{1"], "", [
+      [1, "request_id", "String", ["[0"], ""],
+      [2, "created", "ls:Date-Time", ["[0"], ""],
+      [3, "from", "String", ["[0"], ""],
+      [4, "to", "String", ["[0", "]0"], ""]
+    ]],
 
-  ["Headers", "Map", ["{1"], "", [
-    [1, "request_id", "String", ["[0"], ""],
-    [2, "created", "ls:Date-Time", ["[0"], ""],
-    [3, "from", "String", ["[0"], ""],
-    [4, "to", "String",  ["[0", "]0"], ""]
-  ]],
+    ["Body", "Choice", [], "Content Types", [
+      [1, "openc2", "OpenC2-Content", [], "Media Type 'application/openc2' means payload=Message, body=OpenC2-Content"]
+    ]],
 
-  ["Body", "Choice", [], "Content Types", [
-    [1, "openc2", "OpenC2-Content", [], "Media Type 'application/openc2' means payload=Message, body=OpenC2-Content"]
-  ]],
+    ["OpenC2-Content", "Choice", [], "Content values for each message_type", [
+      [1, "request", "OpenC2-Command", [], ""],
+      [2, "response", "OpenC2-Response", [], ""],
+      [3, "notification", "OpenC2-Event", [], ""]
+    ]],
 
-  ["OpenC2-Content", "Choice", [], "Content values for each message_type", [
-    [1, "request", "OpenC2-Command", [], ""],
-    [2, "response", "OpenC2-Response", [], ""],
-    [3, "notification", "OpenC2-Event", [], ""]
-  ]],
+    ["OpenC2-Command", "Record", [], "The Command defines an Action to be performed on a Target", [
+      [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
+      [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
+      [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
+      [4, "actuator", "Actuator", ["[0"], "The profile defining the function to be performed by the Command."],
+      [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
+    ]],
 
-  ["OpenC2-Command", "Record", [], "The Command defines an Action to be performed on a Target", [
-    [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
-    [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
-    [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-    [4, "actuator", "Actuator", ["[0"], "The profile defining the function to be performed by the Command."],
-    [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
-  ]],
+    ["Action", "Enumerated", [], "", [
+      [1, "scan", "Systematic examination of some aspect of the entity or its environment."],
+      [2, "locate", "Find an object physically, logically, functionally, or by organization."],
+      [3, "query", "Initiate a request for information."],
+      [6, "deny", "Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access."],
+      [7, "contain", "Isolate a file, process, or entity so that it cannot modify or access assets or processes."],
+      [8, "allow", "Permit access to or execution of a Target."],
+      [9, "start", "Initiate a process, application, system, or activity."],
+      [10, "stop", "Halt a system or end an activity."],
+      [11, "restart", "Stop then start a system or an activity."],
+      [14, "cancel", "Invalidate a previously issued Action."],
+      [15, "set", "Change a value, configuration, or state of a managed entity."],
+      [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
+      [18, "redirect", "Change the flow of traffic to a destination other than its original destination."],
+      [19, "create", "Add a new entity of a known type (e.g., data, files, directories)."],
+      [20, "delete", "Remove an entity (e.g., data, files, flows)."],
+      [22, "detonate", "Execute and observe the behavior of a Target (e.g., file, hyperlink) in an isolated environment."],
+      [23, "restore", "Return a system to a previously known state."],
+      [28, "copy", "Duplicate an object, file, data flow, or artifact."],
+      [30, "investigate", "Task the recipient to aggregate and report information as it pertains to a security event or incident."],
+      [32, "remediate", "Task the recipient to eliminate a vulnerability or attack point."]
+    ]],
 
-  ["Action", "Enumerated", [], "", [
-    [1, "scan", "Systematic examination of some aspect of the entity or its environment."],
-    [2, "locate", "Find an object physically, logically, functionally, or by organization."],
-    [3, "query", "Initiate a request for information."],
-    [6, "deny", "Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access."],
-    [7, "contain", "Isolate a file, process, or entity so that it cannot modify or access assets or processes."],
-    [8, "allow", "Permit access to or execution of a Target."],
-    [9, "start", "Initiate a process, application, system, or activity."],
-    [10, "stop", "Halt a system or end an activity."],
-    [11, "restart", "Stop then start a system or an activity."],
-    [14, "cancel", "Invalidate a previously issued Action."],
-    [15, "set", "Change a value, configuration, or state of a managed entity."],
-    [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
-    [18, "redirect", "Change the flow of traffic to a destination other than its original destination."],
-    [19, "create", "Add a new entity of a known type (e.g., data, files, directories)."],
-    [20, "delete", "Remove an entity (e.g., data, files, flows)."],
-    [22, "detonate", "Execute and observe the behavior of a Target (e.g., file, hyperlink) in an isolated environment."],
-    [23, "restore", "Return a system to a previously known state."],
-    [28, "copy", "Duplicate an object, file, data flow, or artifact."],
-    [30, "investigate", "Task the recipient to aggregate and report information as it pertains to a security event or incident."],
-    [32, "remediate", "Task the recipient to eliminate a vulnerability or attack point."]
-  ]],
+    ["Target", "Choice", [], "", [
+      [1, "artifact", "ls:Artifact", [], "An array of bytes representing a file-like object or a link to that object."],
+      [2, "command", "ls:Command-ID", [], "A reference to a previously issued Command."],
+      [3, "device", "ls:Device", [], "The properties of a hardware device."],
+      [7, "domain_name", "ls:Domain-Name", [], "A network domain name."],
+      [8, "email_addr", "ls:Email-Addr", [], "A single email address."],
+      [9, "features", "ls:Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
+      [10, "file", "ls:File", [], "Properties of a file."],
+      [11, "idn_domain_name", "ls:IDN-Domain-Name", [], "An internationalized domain name."],
+      [12, "idn_email_addr", "ls:IDN-Email-Addr", [], "A single internationalized email address."],
+      [13, "ipv4_net", "ls:IPv4-Net", [], "An IPv4 address range including CIDR prefix length."],
+      [14, "ipv6_net", "ls:IPv6-Net", [], "An IPv6 address range including prefix length."],
+      [15, "ipv4_connection", "ls:IPv4-Connection", [], "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."],
+      [16, "ipv6_connection", "ls:IPv6-Connection", [], "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."],
+      [20, "iri", "ls:IRI", [], "An internationalized resource identifier (IRI)."],
+      [17, "mac_addr", "ls:MAC-Addr", [], "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."],
+      [18, "process", "ls:Process", [], "Common properties of an instance of a computer program as executed on an operating system."],
+      [25, "properties", "ls:Properties", [], "Data attribute associated with an Actuator."],
+      [19, "uri", "ls:URI", [], "A uniform resource identifier (URI)."],
+      [1001, "ap_name1", "nsid1:AP-Target", ["<"], "Example: Profile-defined targets"]
+    ]],
 
-  ["Target", "Choice", [], "", [
-    [1, "artifact", "ls:Artifact", [], "An array of bytes representing a file-like object or a link to that object."],
-    [2, "command", "ls:Command-ID", [], "A reference to a previously issued Command."],
-    [3, "device", "ls:Device", [], "The properties of a hardware device."],
-    [7, "domain_name", "ls:Domain-Name", [], "A network domain name."],
-    [8, "email_addr", "ls:Email-Addr", [], "A single email address."],
-    [9, "features", "ls:Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
-    [10, "file", "ls:File", [], "Properties of a file."],
-    [11, "idn_domain_name", "ls:IDN-Domain-Name", [], "An internationalized domain name."],
-    [12, "idn_email_addr", "ls:IDN-Email-Addr", [], "A single internationalized email address."],
-    [13, "ipv4_net", "ls:IPv4-Net", [], "An IPv4 address range including CIDR prefix length."],
-    [14, "ipv6_net", "ls:IPv6-Net", [], "An IPv6 address range including prefix length."],
-    [15, "ipv4_connection", "ls:IPv4-Connection", [], "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."],
-    [16, "ipv6_connection", "ls:IPv6-Connection", [], "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."],
-    [20, "iri", "ls:IRI", [], "An internationalized resource identifier (IRI)."],
-    [17, "mac_addr", "ls:MAC-Addr", [], "A Media Access Control (MAC) address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."],
-    [18, "process", "ls:Process", [], "Common properties of an instance of a computer program as executed on an operating system."],
-    [25, "properties", "ls:Properties", [], "Data attribute associated with an Actuator."],
-    [19, "uri", "ls:URI", [], "A uniform resource identifier (URI)."],
-    [1001, "ap_name1", "nsid1:AP-Target", ["<"], "Example: Profile-defined targets"]
-  ]],
+    ["Actuator", "Enumerated", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
+      [1024, "slpf", ""],
+      [1025, "sfpf", ""],
+      [1026, "sbom", ""],
+      [1027, "er", ""],
+      [1028, "hop", ""],
+      [1029, "av", ""],
+      [1030, "ids", ""],
+      [1031, "log", ""],
+      [1032, "swup", ""],
+      [1034, "pf", ""],
+      [1035, "pac", ""],
+      [1036, "th", ""]
+    ]],
 
-  ["Actuator", "Enumerated", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
-    [1024, "slpf", ""],
-    [1025, "sfpf", ""],
-    [1026, "sbom", ""],
-    [1027, "er", ""],
-    [1028, "hop", ""],
-    [1029, "av", ""],
-    [1030, "ids", ""],
-    [1031, "log", ""],
-    [1032, "swup", ""],
-    [1034, "pf", ""],
-    [1035, "pac", ""]
-  ]],
+    ["Args", "Map", ["{1"], "", [
+      [1, "start_time", "ls:Date-Time", ["[0"], "The specific date/time to initiate the Command"],
+      [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
+      [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
+      [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
+      [1001, "ap_name1", "nsid1:AP-Args", ["[0", "<"], "Example: Profile-defined command arguments"]
+    ]],
 
-  ["Args", "Map", ["{1"], "", [
-    [1, "start_time", "ls:Date-Time", ["[0"], "The specific date/time to initiate the Command"],
-    [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
-    [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
-    [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
-    [1001, "ap_name1", "nsid1:AP-Args", ["[0", "<"], "Example: Profile-defined command arguments"]
-  ]],
+    ["OpenC2-Response", "Record", [], "OpenC2-Response defines the structure of a response to OpenC2-Command.", [
+      [1, "status", "ls:Status-Code", [], "An integer status code."],
+      [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status."],
+      [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
+    ]],
 
-  ["OpenC2-Response", "Record", [], "OpenC2-Response defines the structure of a response to OpenC2-Command.", [
-    [1, "status", "ls:Status-Code", [], "An integer status code."],
-    [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status."],
-    [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
-  ]],
+    ["Results", "Map", ["{1"], "Response Results", [
+      [1, "versions", "ls:Version", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
+      [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
+      [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
+      [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
+      [1001, "ap_name1", "nsid1:Results", ["[0", "<"], "Example: Profile-defined results"]
+    ]],
 
-  ["Results", "Map", ["{1"], "Response Results", [
-    [1, "versions", "ls:Version", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
-    [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
-    [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
-    [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-    [1001, "ap_name1", "nsid1:Results", ["[0", "<"], "Example: Profile-defined results"]
-  ]],
+    ["OpenC2-Event", "Map", ["{1"], "Content of a one-way notification", [
+      [1001, "ap_name1", "nsid1:Event", ["[0", "<"], "Example: Profile-defined event notifications"]
+    ]],
 
-  ["OpenC2-Event", "Map", ["{1"], "Content of a one-way notification", [
-    [1001, "ap_name1", "nsid1:Event", ["[0", "<"], "Example: Profile-defined event notifications"]
-  ]],
+    ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
+      [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
+      [1024, "slpf", "slpf:Pairs", ["<"], "Targets of each Action for Stateless Packet Filtering"],
+      [1025, "sfpf", "sfpf:Pairs", ["<"], "Targets of each Action for Stateful Packet Filtering"],
+      [1026, "sbom", "sbom:Pairs", ["<"], "Targets of each Action for Software Bill Of Materials retrieval"],
+      [1027, "er", "er:Pairs", ["<"], "Targets of each Action for Endpoint Response"],
+      [1028, "hop", "hop:Pairs", ["<"], "Targets of each Action for Honeypot Operations"],
+      [1029, "av", "av:Pairs", ["<"], "Targets of each Action for Anti-Virus Actions"],
+      [1030, "ids", "ids:Pairs", ["<"], "Targets of each Action for Intrusion Detection"],
+      [1031, "log", "log:Pairs", ["<"], "Targets of each Action for Logging Control"],
+      [1032, "swup", "swup:Pairs", ["<"], "Targets of each Action for Software Updating"],
+      [1034, "pf", "pf:Pairs", ["<"], "Targets of each Action for Packet Filtering"],
+      [1035, "pac", "pac:Pairs", ["<"], "Targets of each Action for Security Posture Attribute Collection"]
+    ]],
 
-   ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
-     [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-     [1024, "slpf", "slpf:Pairs", ["<"], "Targets of each Action for Stateless Packet Filtering"],
-     [1025, "sfpf", "sfpf:Pairs", ["<"], "Targets of each Action for Stateful Packet Filtering"],
-     [1026, "sbom", "sbom:Pairs", ["<"], "Targets of each Action for Software Bill Of Materoals retrieval"],
-     [1027, "er", "er:Pairs", ["<"], "Targets of each Action for Endpoint Response"],
-     [1028, "hop", "hop:Pairs", ["<"], "Targets of each Action for Honeypot Operations"],
-     [1029, "av", "av:Pairs", ["<"], "Targets of each Action for Anti-Virus Actions"],
-     [1030, "ids", "ids:Pairs", ["<"], "Targets of each Action for Intrusion Detection"],
-     [1031, "log", "log:Pairs", ["<"], "Targets of each Action for Logging Control"],
-     [1032, "swup", "swup:Pairs", ["<"], "Targets of each Action for Software Updating"],
-     [1034, "pf", "pf:Pairs", ["<"], "Targets of each Action for Packet Filtering"],
-     [1035, "pac", "pac:Pairs", ["<"], "Targets of each Action for Security Posture Attribute Collection"]
-   ]],
-
-   ["QueryTargets", "Enumerated", [], "", [
-     [9, "features", ""]
-   ]]
-
- ]
+    ["QueryTargets", "Enumerated", [], "", [
+      [9, "features", ""]
+    ]]
+  ]
 }

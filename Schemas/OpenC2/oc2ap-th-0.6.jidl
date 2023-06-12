@@ -1,25 +1,24 @@
        title: "Threat Hunting Profile"
-     package: "https://github.com/oasis-tcs/openc2-ap-hunt"
-     version: "0-wd01"
+     package: "http://docs.oasis-open.org/openc2/ns/ap-th/v2.0"
  description: "Data definitions for Threat Hunting (TH) functions"
   namespaces: {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"}
      exports: ["Action", "Target", "Args", "Results", "Pairs"]
 
 Action = Enumerated
-   3 query                                        // Initiate a request for information.
-  30 investigate                                  // Task the recipient to aggregate and report information as it pertains to a security event or incident.
+   3 query                                         // Initiate a request for information.
+  30 investigate                                   // Task the recipient to aggregate and report information as it pertains to a security event or incident.
 
-Target = Choice                                // TH targets defined in this profile.
-   1 hunt             String                      // A procedure to find a set of entities in the monitored environment that associates with a cyberthreat.
-   2 huntbooks        Huntbook-Specifiers         // TH Huntbook specifiers.
+Target = Choice                                    // TH targets defined in this profile.
+   1 hunt             String                       // A procedure to find a set of entities in the monitored environment that associates with a cyberthreat.
+   2 huntbooks        Huntbook-Specifiers          // TH Huntbook specifiers.
    3 datasources      String optional
 
-Args = Map                                     // TH command arguments defined in this profile.
-   1 huntargs         Huntargs                    // Arguments for use in conjunction with huntbook implementation.
+Args = Map                                         // TH command arguments defined in this profile.
+   1 huntargs         Huntargs                     // Arguments for use in conjunction with huntbook implementation.
 
-Results = Map{1..*}                            // TH results defined in this profile.
-   1 huntbook_info    Huntbook-Info optional      // Structured data returned by Query: Huntbooks.
-   2 datasources      Datasource-Array optional   // Datasource names and info returned by Query Datasources.
+Results = Map{1..*}                                // TH results defined in this profile.
+   1 huntbook_info    Huntbook-Info optional       // Structured data returned by Query: Huntbooks.
+   2 datasources      Datasource-Array optional    // Datasource names and info returned by Query Datasources.
    3 investigation    Investigation-results
 
 Pairs = Map
@@ -33,91 +32,91 @@ Query-Targets = Enumerated
 Investigate-Targets = Enumerated
    1 hunt
 
-Huntbook-Specifiers = Map                         // TH Huntbook specifiers.
-   1 path             String optional             // Return huntbooks at and below this filesystem location (absolute path).
-   2 tags             Tags optional               // Return huntbooks with these keywords.
-   3 arg_types        Specified-Arg-Types optional// Return huntbooks that take these argument types.
-   4 arg_names        Specified-Arg-Names optional// Return huntbooks that take these argument types.
-   5 format_types     Return-Type optional        // Return huntbooks that produce these output types.
-   6 return_format    Huntbook-Sections optional  // For each huntbook returned, include these data items.
+Huntbook-Specifiers = Map                          // TH Huntbook specifiers.
+   1 path             String optional              // Return huntbooks at and below this filesystem location (absolute path).
+   2 tags             Tags optional                // Return huntbooks with these keywords.
+   3 arg_types        Specified-Arg-Types optional // Return huntbooks that take these argument types.
+   4 arg_names        Specified-Arg-Names optional // Return huntbooks that take these argument types.
+   5 format_types     Return-Type optional         // Return huntbooks that produce these output types.
+   6 return_format    Huntbook-Sections optional   // For each huntbook returned, include these data items.
 
-Specified-Arg-Types = ArrayOf(Arg-Type)           // Return huntbooks that take these argument types.
+Specified-Arg-Types = ArrayOf(Arg-Type)            // Return huntbooks that take these argument types.
 
-Specified-Arg-Names = ArrayOf(Arg-Name)           // Return huntbooks that take arguments with these names.
+Specified-Arg-Names = ArrayOf(Arg-Name)            // Return huntbooks that take arguments with these names.
 
-Huntargs = Record{1..*}                           // TH command arguments defined in this profile.
-   1 string_arg       String optional             // string arguments supplied as huntargs.
-   2 integer_arg      Integer optional            // integer arguments supplied as huntargs.
-   3 stix/            STIX-Array optional         // STIX arguments supplied as huntargs.
-   4 timeranges       Timeranges optional         // Timeranges used in the execution of a hunt.
-   5 datasources      Datasource-Array optional   // You must identify one or more available data sources for hunting. These may be a host monitor, an EDR, a SIEM, a firewall, etc.
-   6 ipv4_addr        ls:IPv4-Addr optional       // ipv4_address:: IPv4 address as defined in [RFC0791]
-   7 ipv6_addr        ls:IPv6-Addr optional       // ipv6_address:: IPv6 address as defined in [RFC8200]
-   8 ipv4_net         ls:IPv4-Net optional        // ipv4_network:: ipv4 network targeted by hunt activity
-   9 ipv6_net         ls:IPv6-Net optional        // ipv6_network:: ipv6 network targeted by hunt activity
+Huntargs = Record{1..*}                            // TH command arguments defined in this profile.
+   1 string_arg       String optional              // string arguments supplied as huntargs.
+   2 integer_arg      Integer optional             // integer arguments supplied as huntargs.
+   3 stix/            STIX-Array optional          // STIX arguments supplied as huntargs.
+   4 timeranges       Timeranges optional          // Timeranges used in the execution of a hunt.
+   5 datasources      Datasource-Array optional    // You must identify one or more available data sources for hunting. These may be a host monitor, an EDR, a SIEM, a firewall, etc.
+   6 ipv4_addr        ls:IPv4-Addr optional        // ipv4_address:: IPv4 address as defined in [RFC0791]
+   7 ipv6_addr        ls:IPv6-Addr optional        // ipv6_address:: IPv6 address as defined in [RFC8200]
+   8 ipv4_net         ls:IPv4-Net optional         // ipv4_network:: ipv4 network targeted by hunt activity
+   9 ipv6_net         ls:IPv6-Net optional         // ipv6_network:: ipv6 network targeted by hunt activity
 
 Investigation-results = Record
-   1 names            String                      // + ???
-   2 content          Integer                     // tables
+   1 names            String                       // + ???
+   2 content          Integer                      // tables
 
-Timeranges = ArrayOf(Timerange)                   // a timerange used in the execution of a hunt.
+Timeranges = ArrayOf(Timerange)                    // a timerange used in the execution of a hunt.
 
-Timerange = Choice                                // Identification of process to be targeted by Threat Hunting activity.
-   1 timerange_absolute Timerange-Abs optional    // Absolute timerange, defined by a start and end time in ISO 8601 format.
-   2 timerange_relative Timerange-Rel optional    // Relative timerange, example '3, Days' for last 3 days.
+Timerange = Choice                                 // Identification of process to be targeted by Threat Hunting activity.
+   1 timerange_absolute Timerange-Abs optional     // Absolute timerange, defined by a start and end time in ISO 8601 format.
+   2 timerange_relative Timerange-Rel optional     // Relative timerange, example '3, Days' for last 3 days.
 
-Time-Unit = Enumerated                            // Time Unit Keywords.
+Time-Unit = Enumerated                             // Time Unit Keywords.
    1 Days
    2 Hours
    3 Minutes
    4 Seconds
 
-Timerange-Abs = Record{2..*}                      // Absolute timerange, defined by a start and end time in ISO 8601 format.
-   1 hunt_start_time  STIX-Time                   // Start time, as a STIX time string.
-   2 hunt_stop_time   STIX-Time                   // Stop time, as a STIX time string.
+Timerange-Abs = Record{2..*}                       // Absolute timerange, defined by a start and end time in ISO 8601 format.
+   1 hunt_start_time  STIX-Time                    // Start time, as a STIX time string.
+   2 hunt_stop_time   STIX-Time                    // Stop time, as a STIX time string.
 
-STIX-Time = String{pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}// string representation of ISO 8601 time.
+STIX-Time = String{pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"} // string representation of ISO 8601 time.
 
-Timerange-Rel = Record{2..*}                      // Relative timerange, example '3, Days' for last 3 days.
-   1 number           Integer                     // Number of specified Time Units used in Relative Timerange.
-   2 time_unit        Time-Unit                   // Time Unit Keywords.
+Timerange-Rel = Record{2..*}                       // Relative timerange, example '3, Days' for last 3 days.
+   1 number           Integer                      // Number of specified Time Units used in Relative Timerange.
+   2 time_unit        Time-Unit                    // Time Unit Keywords.
 
-Arg-Type = String                                 // Argument types used by a Huntbook. Follow STIX naming conventions, with lowercase characters and hyphens replacing spaces. Common types include process, file, and network-traffic.
+Arg-Type = String                                  // Argument types used by a Huntbook. Follow STIX naming conventions, with lowercase characters and hyphens replacing spaces. Common types include process, file, and network-traffic.
 
-Arg-Name = String                                 // Argument names used by a Huntbook. Follow C variable naming conventions. Examples include name, src_port, and x_unique_id.
+Arg-Name = String                                  // Argument names used by a Huntbook. Follow C variable naming conventions. Examples include name, src_port, and x_unique_id.
 
-Return-Type = Record{2..*}                        // Variable names and types expected as returns when using a Huntbook.
-   1 var_name         Arg-Name                    // Variable name to be returned by use of Huntbook.
-   2 var_type         Arg-Type                    // Type of data to be returned by use of Huntbook.
+Return-Type = Record{2..*}                         // Variable names and types expected as returns when using a Huntbook.
+   1 var_name         Arg-Name                     // Variable name to be returned by use of Huntbook.
+   2 var_type         Arg-Type                     // Type of data to be returned by use of Huntbook.
 
-Datasource = Record{1..*}                         // Datasource names and tags required for use with a particular Huntbook.
-   1 ds_name          String                      // Name of a Datasource used by a Huntbook in Kestrel runtime.
-   2 ds_tags          Tags optional               // Tags applied to a Datasource for search or filter purposes.
+Datasource = Record{1..*}                          // Datasource names and tags required for use with a particular Huntbook.
+   1 ds_name          String                       // Name of a Datasource used by a Huntbook in Kestrel runtime.
+   2 ds_tags          Tags optional                // Tags applied to a Datasource for search or filter purposes.
 
-Huntbook-Sections = ArrayOf(Huntbook-Section)     // For each huntbook returned, include these data items.
+Huntbook-Sections = ArrayOf(Huntbook-Section)      // For each huntbook returned, include these data items.
 
-Huntbook-Section = Enumerated                     // Data format to be returned by Query Huntbooks. If none specified, return all.
-   1 path                                         // Specifies the return should include the path to each Huntbook specified by the query conditions.
-   2 uniqueId                                     // Specifies the return should include the ID of each Huntbook specified by the query conditions.
-   3 version                                      // Specifies the return should include the ID of each Huntbook specified by the query conditions.
-   4 args_required                                // Specifies the returned data should include the required arguments for the available Huntbooks.
-   5 expected_returns                             // Specifies the returned data should include the expected returns for the available Huntbooks.
-   6 script                                       // Specifies the returned data should include the full text of the Huntflow for each available Huntbook.
+Huntbook-Section = Enumerated                      // Data format to be returned by Query Huntbooks. If none specified, return all.
+   1 path                                          // Specifies the return should include the path to each Huntbook specified by the query conditions.
+   2 uniqueId                                      // Specifies the return should include the ID of each Huntbook specified by the query conditions.
+   3 version                                       // Specifies the return should include the ID of each Huntbook specified by the query conditions.
+   4 args_required                                 // Specifies the returned data should include the required arguments for the available Huntbooks.
+   5 expected_returns                              // Specifies the returned data should include the expected returns for the available Huntbooks.
+   6 script                                        // Specifies the returned data should include the full text of the Huntflow for each available Huntbook.
 
-Huntbook-Info = Record{1..*}                      // Structured data returned by Query: Huntbooks with specifiers for specific info.
-   1 path             String optional             // Path used to identify a Huntbook in place of a name.
-   2 uniqueId         Integer optional            // Unique ID associated with a specified Huntbook.
-   3 version          String optional             // Unique ID associated with a specified Huntbook.
-   4 args_required    Typed-Arguments optional    // List of arguments used in the specified Huntflow.
-   5 expected_returns Typed-Arguments optional    // Data returned by the specified Huntbooks.
-   6 script           String optional             // Text of Hunt logic imlemented by specified Huntbook.
+Huntbook-Info = Record{1..*}                       // Structured data returned by Query: Huntbooks with specifiers for specific info.
+   1 path             String optional              // Path used to identify a Huntbook in place of a name.
+   2 uniqueId         Integer optional             // Unique ID associated with a specified Huntbook.
+   3 version          String optional              // Unique ID associated with a specified Huntbook.
+   4 args_required    Typed-Arguments optional     // List of arguments used in the specified Huntflow.
+   5 expected_returns Typed-Arguments optional     // Data returned by the specified Huntbooks.
+   6 script           String optional              // Text of Hunt logic imlemented by specified Huntbook.
 
-STIX-Array = ArrayOf(STIX-Object)                 // STIX arguments supplied as huntargs.
+STIX-Array = ArrayOf(STIX-Object)                  // STIX arguments supplied as huntargs.
 
-STIX-Object = ArrayOf(String)                     // STIX cyber observables used in threat hunting. link to STIX table HERE.
+STIX-Object = ArrayOf(String)                      // STIX cyber observables used in threat hunting. link to STIX table HERE.
 
-Datasource-Array = ArrayOf(Datasource)            // An Array of Datasources, with multiple uses in Threathunting
+Datasource-Array = ArrayOf(Datasource)             // An Array of Datasources, with multiple uses in Threathunting
 
-Tags = ArrayOf(String)                            // Tags applied for search or filter purposes.
+Tags = ArrayOf(String)                             // Tags applied for search or filter purposes.
 
-Typed-Arguments = MapOf(Arg-Name, Arg-Type)       // Argument names and types tied to a specific Huntbook.
+Typed-Arguments = MapOf(Arg-Name, Arg-Type)        // Argument names and types tied to a specific Huntbook.

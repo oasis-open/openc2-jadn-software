@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+      "sboms": [
+        {
+          "type": "cyclonedx",
+          "format": "json",
+          "sid": "http://foo"
+        },
+        {
+          "type": "spdx2",
+          "format": "cbor",
+          "sid": "http://bar"
+        }
+      ]
+    }
+  }
+}

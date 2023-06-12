@@ -3,58 +3,35 @@
      version: "0-wd01"
  description: "Data definitions for Threat Hunting (TH) functions"
   namespaces: {"ls": "http://oasis-open.org/openc2/oc2ls-types/v1.1"}
-     exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
+     exports: ["Action", "Target", "Args", "Results", "Pairs"]
 
 Action = Enumerated
    3 query                                        // Initiate a request for information.
   30 investigate                                  // Task the recipient to aggregate and report information as it pertains to a security event or incident.
 
-Target = Enumerated
-   9 features
-1036 th
-
-Args = Enumerated
-   1 start_time
-   2 stop_time
-   3 duration
-   4 response_requested
-1036 th
-
-Actuator = Enumerated
-1036 th
-
-Results = Enumerated
-   1 versions
-   2 profiles
-   3 pairs
-   4 rate_limit
-   5 args
-1036 th
-
-Pairs = Enumerated
-   3 query: features, /huntbooks, /datasources
-  30 investigate: /hunt
-
-AP-Target = Choice                                // TH targets defined in this profile.
+Target = Choice                                // TH targets defined in this profile.
    1 hunt             String                      // A procedure to find a set of entities in the monitored environment that associates with a cyberthreat.
    2 huntbooks        Huntbook-Specifiers         // TH Huntbook specifiers.
    3 datasources      String optional
 
-AP-Args = Map                                     // TH command arguments defined in this profile.
+Args = Map                                     // TH command arguments defined in this profile.
    1 huntargs         Huntargs                    // Arguments for use in conjunction with huntbook implementation.
 
-Huntargs = Record{1..*}                           // TH command arguments defined in this profile.
-   1 string_arg       String optional             // string arguments supplied as huntargs.
-   2 integer_arg      Integer optional            // integer arguments supplied as huntargs.
-   3 stix/            STIX-Array optional         // STIX arguments supplied as huntargs.
-   4 timeranges       Timeranges optional         // Timeranges used in the execution of a hunt.
-   5 datasources      Datasource-Array optional   // You must identify one or more available data sources for hunting. These may be a host monitor, an EDR, a SIEM, a firewall, etc.
-   6 ipv4_addr        ls:IPv4-Addr optional       // ipv4_address:: IPv4 address as defined in [RFC0791]
-   7 ipv6_addr        ls:IPv6-Addr optional       // ipv6_address:: IPv6 address as defined in [RFC8200]
-   8 ipv4_net         ls:IPv4-Net optional        // ipv4_network:: ipv4 network targeted by hunt activity
-   9 ipv6_net         ls:IPv6-Net optional        // ipv6_network:: ipv6 network targeted by hunt activity
+Results = Map{1..*}                            // TH results defined in this profile.
+   1 huntbook_info    Huntbook-Info optional      // Structured data returned by Query: Huntbooks.
+   2 datasources      Datasource-Array optional   // Datasource names and info returned by Query Datasources.
+   3 investigation    Investigation-results
 
-AP-Specifiers = Map{1..*}                         // TH actuator specifiers (may be empty).
+Pairs = Map
+   3 query            ArrayOf(Query-Targets) unique
+  30 investigate      ArrayOf(Investigate-Targets) unique
+
+Query-Targets = Enumerated
+   1 huntbooks
+   2 datasources
+
+Investigate-Targets = Enumerated
+   1 hunt
 
 Huntbook-Specifiers = Map                         // TH Huntbook specifiers.
    1 path             String optional             // Return huntbooks at and below this filesystem location (absolute path).
@@ -68,10 +45,16 @@ Specified-Arg-Types = ArrayOf(Arg-Type)           // Return huntbooks that take 
 
 Specified-Arg-Names = ArrayOf(Arg-Name)           // Return huntbooks that take arguments with these names.
 
-AP-Results = Map{1..*}                            // TH results defined in this profile.
-   1 huntbook_info    Huntbook-Info optional      // Structured data returned by Query: Huntbooks.
-   2 datasources      Datasource-Array optional   // Datasource names and info returned by Query Datasources.
-   3 investigation    Investigation-results
+Huntargs = Record{1..*}                           // TH command arguments defined in this profile.
+   1 string_arg       String optional             // string arguments supplied as huntargs.
+   2 integer_arg      Integer optional            // integer arguments supplied as huntargs.
+   3 stix/            STIX-Array optional         // STIX arguments supplied as huntargs.
+   4 timeranges       Timeranges optional         // Timeranges used in the execution of a hunt.
+   5 datasources      Datasource-Array optional   // You must identify one or more available data sources for hunting. These may be a host monitor, an EDR, a SIEM, a firewall, etc.
+   6 ipv4_addr        ls:IPv4-Addr optional       // ipv4_address:: IPv4 address as defined in [RFC0791]
+   7 ipv6_addr        ls:IPv6-Addr optional       // ipv6_address:: IPv6 address as defined in [RFC8200]
+   8 ipv4_net         ls:IPv4-Net optional        // ipv4_network:: ipv4 network targeted by hunt activity
+   9 ipv6_net         ls:IPv6-Net optional        // ipv6_network:: ipv6 network targeted by hunt activity
 
 Investigation-results = Record
    1 names            String                      // + ???

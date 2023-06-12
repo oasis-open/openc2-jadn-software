@@ -1,8 +1,11 @@
 {
-    "action": "query",
-    "target": {
-      "sbom": {
-        "sbom_name": "binky_maha"
+  "action": "query",
+  "target": {
+    "sbom": {
+      "sbom_list": {
+        "sids": ["http://sfractal.com/sboms/blinky_maha"],
+        "info": ["content"]
       }
     }
   }
+}

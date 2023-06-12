@@ -1,0 +1,36 @@
+       title: "OpenC2 Actuator Profile for HII Blinky Board"
+     package: "http://docs.oasis-open.org/openc2/ns/ext/ap-led/v2.0"
+  namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
+     exports: ["Action", "Target", "Args", "Results", "Pairs"]
+
+Action = Enumerated
+   3 query
+   6 deny
+   8 allow
+
+Target = Choice                                // Profile-defined targets
+   1 foo              String
+   2 bar              ls:URI
+
+Args = Map{1..*}                               // Profile-defined command arguments
+   1 foo              String optional
+
+Results = Map{1..*}                            // Profile-defined response results
+   1 foo              String optional
+
+Pairs = Map
+   3 query            ArrayOf(Query-Targets) unique
+   6 deny             ArrayOf(Deny-Targets) unique
+   8 allow            ArrayOf(Allow-Targets) unique
+
+Query-Targets = Enumerated
+   1 foo
+   2 bar
+
+Deny-Targets = Enumerated
+   1 ipv4_net
+   2 bar
+
+Allow-Targets = Enumerated
+   1 ipv4_net
+   2 bar

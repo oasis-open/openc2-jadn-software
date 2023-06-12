@@ -2,7 +2,9 @@
     "action": "query",
     "target": {
         "sbom": {
-            "list": ""
+            "sbom_list": {
+                "info":  ["content"]
+            }
         }
     }
 }

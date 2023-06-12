@@ -3,14 +3,12 @@
   "title": "OpenC2 Endpoint Response Actuator Profile",
   "package": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
   "namespaces": {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"},
-  "exports": ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"],
-  "comment": "Delete actions/targets/args/specifiers/results/pairs not used by this profile",
+  "exports": ["Action", "Target", "Args", "Results", "Pairs"],
   "config": {"$MaxString": 1000}
  },
 
  "types": [
   ["Action", "Enumerated", [], "", [
-    [3, "query", "Query the ER actuator for a list of available features."],
     [6, "deny", "Deny a process or service from being executed on the endpoint."],
     [7, "contain", "Isolate a device from communicating with other devices on a network, quarantine a file."],
     [8, "allow", "Un-isolate a previously isolated device."],
@@ -23,21 +21,86 @@
     [20, "delete", "Remove an entity (e.g., registry entry, file)."]
   ]],
 
-  ["Target", "Enumerated", [], "", [
-    [3, "device", "The properties of a device."],
-    [9, "features", "A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities."],
-    [10, "file", "The properties of a file."],
-    [13, "ipv4_net", "An IPv4 address range including CIDR prefix length."],
-    [14, "ipv6_net", "An IPv6 address range including prefix length."],
-    [18, "process", "Common properties of an instance of a computer program as executed on an operating system."],
-    [0, "ap_name", "Targets defined in the Endpoint Response actuator profile."]
-  ]],
-
-  ["AP-Target", "Choice", [], "Profile-defined targets", [
+  ["Target", "Choice", [], "Profile-defined targets", [
     [1, "registry_entry", "Registry-Entry", [], "A registry entry applicable to Windows Operating Systems."],
     [2, "account", "Account", [], "A user account on an endpoint."],
     [3, "service", "Service", [], "A program which is managed and executed by a service host process, where several services may be sharing the same service host."]
   ]],
+
+  ["Args", "Map", ["{1"], "Profile-defined command arguments", [
+    [1, "account_status", "Account-Status", ["[0"], "Specifies whether an account shall be enabled or disabled."],
+    [2, "device_containment", "Device-Containment", ["[0"], "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."],
+    [3, "permitted_addresses", "Permitted-Addresses", ["[0"], "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."]
+  ]],
+
+   ["Results", "Map", ["{1"], "", []],
+
+  ["Pairs", "Map", [], "", [
+    [6, "deny", "ArrayOf", ["*Deny-Targets", "q"], ""],
+    [7, "contain",  "ArrayOf", ["*Contain-Targets", "q"], ""],
+    [8, "allow", "ArrayOf", ["*Allow-Targets", "q"], ""],
+    [9, "start", "ArrayOf", ["*Start-Targets", "q"], ""],
+    [10, "stop", "ArrayOf", ["*Stop-Targets", "q"], ""],
+    [11, "restart", "ArrayOf", ["*Restart-Targets", "q"], ""],
+    [15, "set", "ArrayOf", ["*Set-Targets", "q"], ""],
+    [16, "update", "ArrayOf", ["*Update-Targets", "q"], ""],
+    [19, "create", "ArrayOf", ["*Create-Targets", "q"], ""],
+    [20, "delete", "ArrayOf", ["*Delete-Targets", "q"], ""]
+  ]],
+
+   ["Deny-Targets", "Enumerated", [], "", [
+     [1, "file", ""],
+     [2, "ipv4_net", ""],
+     [3, "ipv6_net", ""]
+   ]],
+
+   ["Contain-Targets", "Enumerated", [], "", [
+     [1, "file", ""],
+     [2, "ipv4_net", ""],
+     [3, "ipv6_net", ""]
+   ]],
+
+   ["Allow-Targets", "Enumerated", [], "", [
+     [1, "file", ""],
+     [2, "ipv4_net", ""],
+     [3, "ipv6_net", ""]
+   ]],
+
+   ["Start-Targets", "Enumerated", [], "", [
+     [1, "file", ""]
+   ]],
+
+   ["Stop-Targets", "Enumerated", [], "", [
+     [1, "device", ""],
+     [2, "process", ""],
+     [3, "service", ""]
+   ]],
+
+   ["Restart-Targets", "Enumerated", [], "", [
+     [1, "device", ""],
+     [2, "process", ""]
+   ]],
+
+   ["Set-Targets", "Enumerated", [], "", [
+     [1, "ipv4_net", ""],
+     [2, "ipv6_net", ""],
+     [3, "registry_entry", ""],
+     [4, "account", ""]
+   ]],
+
+   ["Update-Targets", "Enumerated", [], "", [
+     [1, "file", ""]
+   ]],
+
+   ["Create-Targets", "Enumerated", [], "", [
+     [1, "registry_entry", ""]
+   ]],
+
+   ["Delete-Targets", "Enumerated", [], "", [
+     [1, "file", ""],
+     [2, "registry_entry", ""],
+     [3, "service", ""]
+   ]],
 
   ["Registry-Entry", "Record", [], "", [
     [1, "key", "String", ["[0"], "Specifies the full registry key including the hive."],
@@ -56,46 +119,6 @@
     [2, "display_name", "String", ["[0"], "The display name of the service."]
   ]],
 
-  ["Args", "Enumerated", [], "", [
-    [1, "start_time", "The specific date/time to initiate the Command."],
-    [2, "stop_time", "The specific date/time to terminate the Command."],
-    [3, "duration", "The length of time for an Command to be in effect."],
-    [4, "response_requested", "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
-    [0, "ap_name", ""]
-  ]],
-
-  ["Actuator", "Enumerated", [], "", [
-    [0, "ap_name", ""]
-  ]],
-
-  ["Results", "Enumerated", [], "", [
-    [1, "versions", ""],
-    [2, "profiles", ""],
-    [3, "pairs", ""],
-    [4, "rate_limit", ""],
-    [5, "args", ""]
-  ]],
-
-  ["Pairs", "Enumerated", [], "", [
-    [3, "query: features", ""],
-    [6, "deny: file ipv4_net ipv6_net", ""],
-    [7, "contain: device file", ""],
-    [8, "allow: device file ipv4_net ipv6_net", ""],
-    [9, "start: file", ""],
-    [10, "stop: device process /service", ""],
-    [11, "restart: device process", ""],
-    [15, "set: ipv4_net ipv6_net /registry_entry /account", ""],
-    [16, "update: file", ""],
-    [19, "create: /registry_entry", ""],
-    [20, "delete: file /registry_entry /service", ""]
-  ]],
-
-  ["AP-Args", "Map", ["{1"], "Profile-defined command arguments", [
-    [1, "account_status", "Account-Status", ["[0"], "Specifies whether an account shall be enabled or disabled."],
-    [2, "device_containment", "Device-Containment", ["[0"], "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."],
-    [3, "permitted_addresses", "Permitted-Addresses", ["[0"], "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."]
-  ]],
-
   ["Account-Status", "Enumerated", [], "", [
     [1, "enabled", "Enable the account and render it available on the endpoint."],
     [2, "disabled", "Disable the account and render it unavailable on the endpoint."]
@@ -111,10 +134,6 @@
     [1, "domain_name", "ArrayOf", ["*ls:Domain-Name", "[0"], "The domain name address(es) the contained device(s) can still communicate with."],
     [2, "ipv4_net", "ArrayOf", ["*ls:IPv4-Net", "[0"], "The IPv4 address(es) or range(s) the contained device(s) can still communicate with."],
     [3, "ipv6_net", "ArrayOf", ["*ls:IPv6-Net", "[0"], "The IPv6 address(es) or range(s) the contained device(s) can still communicate with."]
-  ]],
-
-  ["AP-Specifiers", "Map", [], "Profile-defined actuator specifiers, may be empty", [
-    [1, "hostname", "ls:Hostname", ["[0"], "Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123)."]
   ]]
 
  ]

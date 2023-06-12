@@ -1,0 +1,24 @@
+       title: "OpenC2 Actuator Profile for sFractal Blinky Commands"
+     package: "http://docs.oasis-open.org/openc2/ns/ext/cap-blinky/v1.0"
+  namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
+     exports: ["Action", "Target", "Args", "Results", "Pairs", "Triples"]
+
+Action = Enumerated
+  15 set
+
+Target = Choice                                // Profile-defined targets
+   1 led              String
+   2 leds             String [1..*]
+
+Args = Map{1..*}                               // Profile-defined command arguments
+
+Results = Map{1..*}                            // Profile-defined response results
+
+Pairs = Map                                    // Targets applicable to each action
+  15 set              ArrayOf(Set-Targets) unique
+
+Set-Targets = Enumerated
+   1 led
+   2 leds
+
+Triples = Enumerated                           // Command arguments applicable to each action-target pair

@@ -1,43 +1,27 @@
        title: "OpenC2 Actuator Profile for Security Posture Attribute Collection"
      package: "http://docs.oasis-open.org/openc2/ns/ap-pac/v2.0"
   namespaces: {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"}
-     exports: ["AP-Target", "AP-Args", "AP-Specifiers", "AP-Results"]
+     exports: ["Action", "Target", "Args", "Results", "Pairs"]
 
-Action = Enumerated
+Action = Enumerated                            // Actions used in profile
    3 query
 
-Target = Enumerated
-   9 features
-1035 pac/
-
-Args = Enumerated
-   1 start_time
-   2 stop_time
-   3 duration
-   4 response_requested
-
-Actuator = Enumerated
-1035 pac/
-
-Results = Enumerated
-   1 versions
-   2 profiles
-   3 pairs
-   4 rate_limit
-1035 pac/
-
-Pairs = Enumerated                                // Enumerated item values are string literals, not data structures
-   3 query: features, /attrs, /sbom
-
-AP-Target = Choice
+Target = Choice                                // Profile-defined targets
    1 attrs            Attribute-Specifiers
    2 sbom             SBOM-Specifiers
 
-AP-Specifiers = Map                               // Profile-defined actuator specifiers
+Args = Map{1..*}
 
-AP-Results = Map{1..*}                            // Profile-defined response results
+Results = Map{1..*}                            // Profile-defined response results
    1 attrs            PostureAttributes optional
    2 sbom             SBOM-Info optional
+
+Pairs = Map                                    // Targets applicable to each action
+   3 query            ArrayOf(Query-Targets) unique
+
+Query-Targets = Enumerated
+   1 attrs
+   2 sbom
 
 Attribute-Specifiers = Map{1..*}
    1 os_version       Boolean optional

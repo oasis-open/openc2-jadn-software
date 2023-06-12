@@ -29,7 +29,7 @@
     ]],
 
     ["Query-Targets", "Enumerated", [], "", [
-      [1, "sboms", ""],
+      [1, "sbom", ""],
       [2, "sbom_list", ""]
     ]],
 

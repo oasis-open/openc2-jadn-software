@@ -90,22 +90,8 @@
           "description": "A set of items used with the query Action to determine an Actuator's capabilities."
         },
         "sbom": {
-          "$ref": "#/definitions/AP-Target$sbom",
+          "$ref": "#/definitions/Target$sbom",
           "description": "Targets defined in the Software Bill Of Materials AP"
-        }
-      }
-    },
-    "Actuator": {
-      "title": "Actuator",
-      "type": "object",
-      "description": "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "sbom": {
-          "$ref": "#/definitions/AP-Specifiers$sbom",
-          "description": "Actuator function and specifiers for Software Bill Of Materoals retrieval"
         }
       }
     },
@@ -131,8 +117,19 @@
         "response_requested": {
           "$ref": "#/definitions/Response-Type",
           "description": "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"
+        },
+        "sbom": {
+          "$ref": "#/definitions/Args$sbom",
+          "description": "Profile-defined command arguments"
         }
       }
+    },
+    "Actuator": {
+      "title": "Actuator",
+      "type": "string",
+      "enum": [
+        "sbom"
+      ]
     },
     "Results": {
       "title": "Results",
@@ -163,7 +160,7 @@
           }
         },
         "pairs": {
-          "$ref": "#/definitions/Action-Targets",
+          "$ref": "#/definitions/Pairs",
           "description": "List of targets applicable to each supported Action"
         },
         "rate_limit": {
@@ -172,47 +169,51 @@
           "minimum": 0.0
         },
         "sbom": {
-          "$ref": "#/definitions/AP-Results$sbom",
+          "$ref": "#/definitions/Results$sbom",
           "description": "Results defined in the Sofware Bill Of Materials AP"
         }
       }
     },
-    "Action-Targets": {
-      "title": "Action Targets",
+    "Pairs": {
+      "title": "Pairs",
       "type": "object",
-      "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
-      "minProperties": 1,
+      "required": [
+        "query",
+        "sbom"
+      ],
       "maxProperties": 100,
       "properties": {
         "query": {
-          "$ref": "#/definitions/Targets"
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
+        },
+        "sbom": {
+          "$ref": "#/definitions/Pairs$sbom",
+          "description": ""
         }
       }
     },
-    "Targets": {
-      "title": "Targets",
-      "type": "array",
-      "description": "Target pointers",
-      "uniqueItems": true,
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "enum": [
-          "features",
-          "sbom"
-        ]
-      }
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
     },
-    "AP-Target$sbom": {
-      "title": "AP Target$sbom",
+    "Target$sbom": {
+      "title": "Target$sbom",
       "type": "object",
       "description": "Profile-defined targets",
       "additionalProperties": false,
       "minProperties": 1,
       "maxProperties": 1,
       "properties": {
-        "sboms": {
+        "sbom": {
           "$ref": "#/definitions/SBOM-Specifiers$sbom",
           "description": "Return IDs or SBOMs matching filter criteria"
         },
@@ -222,16 +223,15 @@
         }
       }
     },
-    "AP-Specifiers$sbom": {
-      "title": "AP Specifiers$sbom",
+    "Args$sbom": {
+      "title": "Args$sbom",
       "type": "object",
-      "description": "Profile-defined actuator specifiers",
       "additionalProperties": false,
       "maxProperties": 100,
       "properties": {}
     },
-    "AP-Results$sbom": {
-      "title": "AP Results$sbom",
+    "Results$sbom": {
+      "title": "Results$sbom",
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
@@ -250,6 +250,33 @@
           }
         }
       }
+    },
+    "Pairs$sbom": {
+      "title": "Pairs$sbom",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Query-Targets$sbom"
+          }
+        }
+      }
+    },
+    "Query-Targets$sbom": {
+      "title": "Query Targets$sbom",
+      "type": "string",
+      "enum": [
+        "sbom",
+        "sbom_list"
+      ]
     },
     "SBOM-Specifiers$sbom": {
       "title": "SBOM Specifiers$sbom",
@@ -284,7 +311,6 @@
           "type": "array",
           "description": "Type of SBOM info to return",
           "uniqueItems": true,
-          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -315,7 +341,6 @@
           "type": "array",
           "description": "Type of SBOM info to return",
           "uniqueItems": true,
-          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -496,7 +521,7 @@
       "type": "array",
       "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
       "uniqueItems": true,
-      "maxItems": 10,
+      "maxItems": 100,
       "items": {
         "$ref": "#/definitions/Feature"
       }

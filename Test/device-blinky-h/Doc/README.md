@@ -1,0 +1,1 @@
+Device Schema in JADN IDL and property table formats

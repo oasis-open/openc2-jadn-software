@@ -1,0 +1,10 @@
+{
+  "action": "query",
+  "target": {
+    "th": {
+      "huntbooks": {
+        "path": "./"
+      }
+    }
+  }
+}

@@ -73,7 +73,7 @@ Target$sbom = Choice                               // Profile-defined targets
 Args$sbom = Map                                    // Profile-defined command arguments
 
 Results$sbom = Map{1..*}                           // Profile-defined response results
-   1 search           ArrayOf(URI){0..*}           // IDs of all SBOMs matching query criteria
+   1 search           ArrayOf(URI)                 // IDs of all SBOMs matching query criteria
    2 sbom_list        SBOM-Info$sbom [0..*]        // SBOM Info for each ID in sbom_list
 
 Pairs$sbom = Map
@@ -90,7 +90,7 @@ SBOM-Specifiers$sbom = Map                         // Query: If none specified, 
 
 SBOM-List$sbom = Map
    1 sids             URI [0..*]                   // Query: IDs of SBOMs to return (return all if none listed)
-   2 info             ArrayOf(Info$sbom){1..*} unique // Type of info to return for each SBOM
+   2 info             ArrayOf(Info$sbom) unique    // Type of info to return for each SBOM
 
 Info$sbom = Enumerated                             // SBOM-Info fields to return
    1 summary                                       // NTIA Minimumum Elements of an SBOM

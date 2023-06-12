@@ -90,7 +90,7 @@ But as described in the OpenC2 architecture, OpenC2 producers and consumers are 
 each of which supports the core language plus a combination of one or more actuator profiles.
 Before they can be used in a device, a device developer must:
 * Create a base schema for the device, starting with the [device template](Schemas/OpenC2/oc2ls-v2.0-lang.jadn)
-* Resolve profile schemas into the [base schema](Schemas/OpenC2/device-pac-slpf-base.jadn)
+* Resolve profile schemas into the [base schema](Schemas/OpenC2-custom/device-pac-slpf-base.jadn)
 to produce the [device schema](Schemas/device-pac-slpf.jadn)
 
 ![Profile Architecture](Images/Arch-Example-1.drawio.png)

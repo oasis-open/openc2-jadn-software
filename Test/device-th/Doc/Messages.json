@@ -1,0 +1,269 @@
+
+// Query for Huntbooks
+// Command
+{
+    "headers": {
+        "request_id": "f455cf17-89f9-4ede-8509-0d4343aa9db8",
+        "created": 1686578689501,
+        "from": "OIF Orchestrator",
+        "to": "oc2/cmd/device/th",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "request": {
+                "action": "query",
+                "target": {
+                    "th": {
+                        "huntbooks": {
+                            "path": "./"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Response
+{
+    "headers": {
+        "request_id": "f4c86e9a-f2e4-49d9-9aea-044ca56bacf1",
+        "created": 1686578689606,
+        "from": "oif-matts-device-dbf770c1-4b08-4d6f-bd49-576899f53b58",
+        "to": "OIF Orchestrator",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "response": {
+                "status": 200,
+                "results": [
+                    {
+                        "filename": "find_data_via_stixshifter.hf",
+                        "fullpath": "./hunts/find_data_via_stixshifter.hf"
+                    },
+                    {
+                        "filename": "forked_process_hunt.hf",
+                        "fullpath": "./hunts/forked_process_hunt.hf"
+                    },
+                    {
+                        "filename": "finddata.hf",
+                        "fullpath": "./hunts/finddata.hf"
+                    },
+                    {
+                        "filename": "find_stixdata_via_https.hf",
+                        "fullpath": "./hunts/find_stixdata_via_https.hf"
+                    },
+                    {
+                        "filename": "external_file_hunt.hf",
+                        "fullpath": "./hunts/external_file_hunt.hf"
+                    },
+                    {
+                        "filename": "find_stixdata_via_local.hf",
+                        "fullpath": "./hunts/find_stixdata_via_local.hf"
+                    },
+                    {
+                        "filename": "hunting_process.hf",
+                        "fullpath": "./hunts/hunting_process.hf"
+                    },
+                    {
+                        "filename": "traffic_hunt.hf",
+                        "fullpath": "./hunts/traffic_hunt.hf"
+                    },
+                    {
+                        "filename": "openc2_live_data_hunt.hf",
+                        "fullpath": "./hunts/openc2_live_data_hunt.hf"
+                    },
+                    {
+                        "filename": "helloworld.hf",
+                        "fullpath": "./hunts/sub-folder/helloworld.hf"
+                    },
+                    {
+                        "filename": "kestrel_jinja_template.hf",
+                        "fullpath": "./hunts/templates/kestrel_jinja_template.hf"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+// Query via Huntbook
+// Command
+{
+    "headers": {
+        "request_id": "496760b1-8c37-4af2-87f6-3f9bbff769c3",
+        "created": 1686578382485,
+        "from": "OIF Orchestrator",
+        "to": "oc2/cmd/device/th",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "request": {
+                "action": "investigate",
+                "target": {
+                    "th": {
+                        "hunt": "/home/matt/workspace/oif-kestrel/hunts/find_data_via_stixshifter.hf"
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Response
+{
+    "headers": {
+        "request_id": "496760b1-8c37-4af2-87f6-3f9bbff769c3",
+        "created": 1686578384944,
+        "from": "oif-matts-device-dbf770c1-4b08-4d6f-bd49-576899f53b58",
+        "to": "OIF Orchestrator",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "response": {
+                "status": 200,
+                "results": {
+                    "name": "bash",
+                    "created": "2022-07-26T22:10:40.807093416Z",
+                    "pid": 13333,
+                    "command_line": "/bin/bash /usr/local/src/starx/sshd.sh /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config",
+                    "id": "process--0093cde6-bc01-56af-b2ee-1021caa2ab88",
+                    "x_thread_id": 13333,
+                    "binary_ref.name": "bash",
+                    "binary_ref.id": "file--8221df86-8b80-51d9-8beb-fbba2c99d693",
+                    "binary_ref.x_path": null,
+                    "binary_ref.x_type": null,
+                    "binary_ref.x_target_path": null,
+                    "binary_ref.parent_directory_ref.path": "/bin",
+                    "binary_ref.parent_directory_ref.id": "directory--1e950b10-638e-5c9a-8363-897b04d8c5f0",
+                    "parent_ref.name": "bash",
+                    "parent_ref.created": "2022-07-26T22:10:40.412498335Z",
+                    "parent_ref.pid": 13299,
+                    "parent_ref.command_line": "/bin/bash ./entry.sh",
+                    "parent_ref.id": "process--7cbd56a9-a74c-5ecc-b1fb-cc5f238bfb1b",
+                    "parent_ref.x_thread_id": null,
+                    "parent_ref.parent_ref.name": null,
+                    "parent_ref.parent_ref.created": null,
+                    "parent_ref.parent_ref.pid": null,
+                    "parent_ref.parent_ref.command_line": null,
+                    "parent_ref.parent_ref.id": null,
+                    "parent_ref.parent_ref.x_thread_id": null,
+                    "parent_ref.binary_ref.name": "bash",
+                    "parent_ref.binary_ref.id": "file--8221df86-8b80-51d9-8beb-fbba2c99d693",
+                    "parent_ref.binary_ref.x_path": null,
+                    "parent_ref.binary_ref.x_type": null,
+                    "parent_ref.binary_ref.x_target_path": null,
+                    "parent_ref.binary_ref.parent_directory_ref.path": "/bin",
+                    "parent_ref.binary_ref.parent_directory_ref.id": "directory--1e950b10-638e-5c9a-8363-897b04d8c5f0",
+                    "parent_ref.creator_user_ref.user_id": null,
+                    "parent_ref.creator_user_ref.account_login": null,
+                    "parent_ref.creator_user_ref.x_group.name": null,
+                    "parent_ref.creator_user_ref.x_group.id": null,
+                    "parent_ref.creator_user_ref.id": null,
+                    "creator_user_ref.user_id": "root",
+                    "creator_user_ref.account_login": "root",
+                    "creator_user_ref.x_group.name": "root",
+                    "creator_user_ref.x_group.id": 0,
+                    "creator_user_ref.id": "user-account--325842f7-22de-5bc4-bf7b-383150f02505",
+                    "type": "process"
+                }
+            }
+        }
+    }
+}
+
+// Hunt via variables
+// Command
+{
+    "headers": {
+        "request_id": "17f57614-fb41-4244-9162-441554f0b994",
+        "created": 1684947320786,
+        "from": "OIF Orchestrator",
+        "to": "oc2/cmd/device/th",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "request": {
+                "action": "investigate",
+                "target": {
+                    "th": {
+                        "hunt": "test"
+                    }
+                },
+                "args": {
+                    "th": {
+                        "huntargs": {
+                            "string_arg": "name = 'node' AND pid = '13334'"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Response
+{
+    "headers": {
+        "request_id": "17f57614-fb41-4244-9162-441554f0b994",
+        "created": 1684947323426,
+        "from": "oif-device-25ca0825-a2d5-4608-bc25-c82daf6d2491",
+        "to": "OIF Orchestrator",
+        "actuator_id": "23b53109-75b9-4d2e-98d6-e70e018923e2"
+    },
+    "body": {
+        "openc2": {
+            "response": {
+                "status": 200,
+                "results": {
+                    "name": "node",
+                    "created": "2022-07-26T22:10:40.811069902Z",
+                    "pid": 13334,
+                    "command_line": "/usr/local/bin/node /usr/local/bin/npm start",
+                    "id": "process--063ba782-cbf7-506c-b9ac-af623c1d5ad5",
+                    "x_thread_id": 13334,
+                    "binary_ref.name": "node",
+                    "binary_ref.id": "file--449b2085-5f61-5d58-bfd9-399e1fa4684d",
+                    "binary_ref.x_type": null,
+                    "binary_ref.x_path": null,
+                    "binary_ref.parent_directory_ref.path": "/usr/local/bin",
+                    "binary_ref.parent_directory_ref.id": "directory--e7436cdd-f067-5c1e-9fd9-ad0fff5cd386",
+                    "parent_ref.name": "bash",
+                    "parent_ref.created": "2022-07-26T22:10:40.412498335Z",
+                    "parent_ref.pid": 13299,
+                    "parent_ref.command_line": "/bin/bash ./entry.sh",
+                    "parent_ref.id": "process--7bd31240-15a3-5685-901e-29274c534639",
+                    "parent_ref.x_thread_id": null,
+                    "parent_ref.parent_ref.name": null,
+                    "parent_ref.parent_ref.created": null,
+                    "parent_ref.parent_ref.pid": null,
+                    "parent_ref.parent_ref.command_line": null,
+                    "parent_ref.parent_ref.id": null,
+                    "parent_ref.parent_ref.x_thread_id": null,
+                    "parent_ref.binary_ref.name": "bash",
+                    "parent_ref.binary_ref.id": "file--8221df86-8b80-51d9-8beb-fbba2c99d693",
+                    "parent_ref.binary_ref.x_type": null,
+                    "parent_ref.binary_ref.x_path": null,
+                    "parent_ref.binary_ref.parent_directory_ref.path": "/bin",
+                    "parent_ref.binary_ref.parent_directory_ref.id": "directory--1e950b10-638e-5c9a-8363-897b04d8c5f0",
+                    "parent_ref.creator_user_ref.user_id": null,
+                    "parent_ref.creator_user_ref.account_login": null,
+                    "parent_ref.creator_user_ref.x_group.name": null,
+                    "parent_ref.creator_user_ref.x_group.id": null,
+                    "parent_ref.creator_user_ref.id": null,
+                    "creator_user_ref.user_id": "root",
+                    "creator_user_ref.account_login": "root",
+                    "creator_user_ref.x_group.name": "root",
+                    "creator_user_ref.x_group.id": 0,
+                    "creator_user_ref.id": "user-account--325842f7-22de-5bc4-bf7b-383150f02505",
+                    "type": "process"
+                }
+            }
+        }
+    }
+}

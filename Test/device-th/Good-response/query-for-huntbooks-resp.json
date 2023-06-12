@@ -1,0 +1,49 @@
+{
+  "status": 200,
+  "results": [
+      {
+          "filename": "find_data_via_stixshifter.hf",
+          "fullpath": "./hunts/find_data_via_stixshifter.hf"
+      },
+      {
+          "filename": "forked_process_hunt.hf",
+          "fullpath": "./hunts/forked_process_hunt.hf"
+      },
+      {
+          "filename": "finddata.hf",
+          "fullpath": "./hunts/finddata.hf"
+      },
+      {
+          "filename": "find_stixdata_via_https.hf",
+          "fullpath": "./hunts/find_stixdata_via_https.hf"
+      },
+      {
+          "filename": "external_file_hunt.hf",
+          "fullpath": "./hunts/external_file_hunt.hf"
+      },
+      {
+          "filename": "find_stixdata_via_local.hf",
+          "fullpath": "./hunts/find_stixdata_via_local.hf"
+      },
+      {
+          "filename": "hunting_process.hf",
+          "fullpath": "./hunts/hunting_process.hf"
+      },
+      {
+          "filename": "traffic_hunt.hf",
+          "fullpath": "./hunts/traffic_hunt.hf"
+      },
+      {
+          "filename": "openc2_live_data_hunt.hf",
+          "fullpath": "./hunts/openc2_live_data_hunt.hf"
+      },
+      {
+          "filename": "helloworld.hf",
+          "fullpath": "./hunts/sub-folder/helloworld.hf"
+      },
+      {
+          "filename": "kestrel_jinja_template.hf",
+          "fullpath": "./hunts/templates/kestrel_jinja_template.hf"
+      }
+  ]
+}

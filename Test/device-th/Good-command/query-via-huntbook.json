@@ -1,0 +1,8 @@
+{
+  "action": "investigate",
+  "target": {
+    "th": {
+      "hunt": "/home/matt/workspace/oif-kestrel/hunts/find_data_via_stixshifter.hf"
+    }
+  }
+}

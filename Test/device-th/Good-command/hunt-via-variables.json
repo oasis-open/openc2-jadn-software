@@ -1,0 +1,15 @@
+{
+  "action": "investigate",
+  "target": {
+    "th": {
+      "hunt": "test"
+    }
+  },
+  "args": {
+    "th": {
+      "huntargs": {
+        "string_arg": "name = 'node' AND pid = '13334'"
+      }
+    }
+  }
+}

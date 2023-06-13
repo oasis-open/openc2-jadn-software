@@ -236,12 +236,12 @@
       "description": "Profile-defined response results",
       "additionalProperties": false,
       "required": [
-        "sboms"
+        "sbom_list"
       ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "sboms": {
+        "sbom_list": {
           "type": "array",
           "description": "List of all SBOMs matching query criteria",
           "maxItems": 100,

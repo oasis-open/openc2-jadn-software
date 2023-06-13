@@ -87,7 +87,7 @@
     ["Args$sbom", "Map", [], "Profile-defined command arguments", []],
 
     ["Results$sbom", "Map", ["{1"], "Profile-defined response results", [
-      [1, "sbom", "ArrayOf", ["*URI"], "IDs of all SBOMs matching query criteria"],
+      [1, "sbom", "ArrayOf", ["*URI", "[0"], "IDs of all SBOMs matching query criteria (NOT in AP)"],
       [2, "sbom_list", "SBOM-Info$sbom", ["[0", "]0"], "SBOM Info for each ID in sbom_list"]
     ]],
 

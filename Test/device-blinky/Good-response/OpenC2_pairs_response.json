@@ -9,7 +9,7 @@
             "set": ["led", "leds"]
           },
           "sbom": {
-            "query": ["search", "sbom_list"]
+            "query": ["sbom", "sbom_list"]
           },
           "pac": {
             "query": ["attrs", "sbom"]

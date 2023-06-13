@@ -1,0 +1,33 @@
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+      "sbom_list": [
+        {
+          "id": ["twinkly_maha", "58156134-5547-4e4a-968f-88a33cfafc2c"],
+          "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+          "location": "localhost",
+          "version": "1.0.0",
+          "format": ["cyclonedx", "1.4"],
+          "serialization": "json"
+        },
+        {
+          "id": ["twinkly_maha", "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+          "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+          "location": "localhost",
+          "version": "1.0.0",
+          "format": ["spdx", "2.3"],
+          "serialization": "json"
+        },
+        {
+          "id": ["debian.buster_slim", "caff7de1-c0a8-4913-a4c6-8993db102428"],
+          "filename": "debian.buster_slim-cyclonedx-bom.json",
+          "location": "localhost",
+          "version": "1.0.0",
+          "format": ["cyclonedx", "1.4"],
+          "serialization": "json"
+        }
+      ]
+    }
+  }
+}

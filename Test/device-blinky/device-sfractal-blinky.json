@@ -314,15 +314,12 @@
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
-      "required": [
-        "search"
-      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "search": {
+        "sbom": {
           "type": "array",
-          "description": "IDs of all SBOMs matching query criteria",
+          "description": "IDs of all SBOMs matching query criteria (NOT in AP)",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/URI"
@@ -362,7 +359,7 @@
       "title": "Query Targets$sbom",
       "type": "string",
       "enum": [
-        "search",
+        "sbom",
         "sbom_list"
       ]
     },

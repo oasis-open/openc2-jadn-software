@@ -136,10 +136,10 @@ Profile-defined response results
 
 **Type: Results$sbom (Map{1..\*})**
 
-| ID | Name          | Type           | \#    | Description                              |
-|----|---------------|----------------|-------|------------------------------------------|
-| 1  | **search**    | ArrayOf(URI)   | 1     | IDs of all SBOMs matching query criteria |
-| 2  | **sbom_list** | SBOM-Info$sbom | 0..\* | SBOM Info for each ID in sbom_list       |
+| ID | Name          | Type           | \#    | Description                                          |
+|----|---------------|----------------|-------|------------------------------------------------------|
+| 1  | **sbom**      | ArrayOf(URI)   | 0..1  | IDs of all SBOMs matching query criteria (NOT in AP) |
+| 2  | **sbom_list** | SBOM-Info$sbom | 0..\* | SBOM Info for each ID in sbom_list                   |
 
 **********
 
@@ -155,7 +155,7 @@ Profile-defined response results
 
 | ID | Item          | Description |
 |----|---------------|-------------|
-| 1  | **search**    |             |
+| 1  | **sbom**      |             |
 | 2  | **sbom_list** |             |
 
 **********

@@ -21,7 +21,7 @@
     ["Args", "Map", [], "Profile-defined command arguments", []],
 
     ["Results", "Map", ["{1"], "Profile-defined response results", [
-      [1, "sboms", "ArrayOf", ["*SBOM-Info"], "List of all SBOMs matching query criteria"]
+      [1, "sbom_list", "ArrayOf", ["*SBOM-Info"], "List of all SBOMs matching query criteria"]
     ]],
 
     ["Pairs", "Map", [], "", [

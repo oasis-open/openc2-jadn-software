@@ -117,9 +117,9 @@ Profile-defined response results
 
 **Type: Results$sbom (Map{1..\*})**
 
-| ID | Name      | Type                    | \# | Description                               |
-|----|-----------|-------------------------|----|-------------------------------------------|
-| 1  | **sboms** | ArrayOf(SBOM-Info$sbom) | 1  | List of all SBOMs matching query criteria |
+| ID | Name          | Type                    | \# | Description                               |
+|----|---------------|-------------------------|----|-------------------------------------------|
+| 1  | **sbom_list** | ArrayOf(SBOM-Info$sbom) | 1  | List of all SBOMs matching query criteria |
 
 **********
 

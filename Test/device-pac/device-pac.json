@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device-base/pac/v2.0",
-  "title": "OpenC2 base device schema for the PACE collection service",
+  "$id": "http://acme.com/schemas/device/pac/v2.0",
+  "title": "OpenC2 device schema for the PACE collection service",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -98,9 +98,6 @@
       "title": "Args",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "pac"
-      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
@@ -158,7 +155,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Nsid",
+            "$ref": "#/definitions/Profile",
             "description": "List of profiles supported by this Actuator"
           }
         },
@@ -693,13 +690,6 @@
           "contentEncoding": "base16"
         }
       }
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
     },
     "Response-Type": {
       "title": "Response Type",

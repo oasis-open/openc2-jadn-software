@@ -1,5 +1,5 @@
-         title: "OpenC2 base device schema for the Endpoint Response service"
-       package: "http://acme.com/schemas/device-base/er/v2.0"
+         title: "OpenC2 device schema for the Endpoint Response service"
+       package: "http://acme.com/schemas/device/er/v2.0"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -87,7 +87,7 @@ Response Results
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique   | 0..\* | List of OpenC2 language versions supported by this Consumer         |
-| 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Consumer                         |
+| 2    | **profiles**   | Profile unique  | 0..\* | List of profiles supported by this Consumer                         |
 | 3    | **pairs**      | Pairs           | 0..1  | List of targets applicable to each supported Action                 |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 1027 | **er/**        | Results$er      | 0..1  | Results for Endpoint Response                                       |
@@ -437,12 +437,6 @@ Cryptographic hash values
 | Type Name     | Type Definition   | Description                                              |
 |---------------|-------------------|----------------------------------------------------------|
 | **IPv6-Addr** | Binary /ipv6-addr | 128 bit IPv6 address as defined in [[RFC8200]](#rfc8200) |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

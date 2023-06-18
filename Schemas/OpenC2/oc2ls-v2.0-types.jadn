@@ -4,9 +4,7 @@
     "version": "0-wd01",
     "title": "OpenC2 Language Common Types",
     "description": "Common Types from the OpenC2 Language Specification version 1.1.  These definitions are referenced by or copied into Profiles",
-    "exports": ["Artifact", "Command-ID", "Date-Time", "Device", "Domain-Name", "Duration", "Email-Addr", "Feature", "Features",
-      "File", "IDN-Domain-Name", "IDN-Email-Addr", "IPv4-Net", "IPv4-Connection", "IPv6-Net", "IPv6-Connection",
-      "IRI", "MAC-Addr", "Nsid", "Process", "Properties", "Response-Type", "Status-Code", "URI", "SemVer"]
+    "exports": ["Artifact", "Command-ID", "Date-Time", "Device", "Domain-Name", "Duration", "Email-Addr", "Feature", "Features", "File", "IDN-Domain-Name", "IDN-Email-Addr", "IPv4-Net", "IPv4-Connection", "IPv6-Net", "IPv6-Connection", "IRI", "MAC-Addr", "Nsid", "Process", "Properties", "Response-Type", "Status-Code", "URI", "SemVer"]
   },
 
   "types": [

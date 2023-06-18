@@ -1,5 +1,5 @@
          title: "Threat Hunting Device"
-       package: "https://oca.org/casp/threat-hunter-2000"
+       package: "https://oca.org/casp/device/threat-hunter-2000"
        version: "0-wd01"
    description: "Data definitions for Threat Hunting (TH) functions"
        exports: ["OpenC2-Command", "OpenC2-Response"]
@@ -56,7 +56,7 @@ Actions available to this Profile
 | 2    | **stop_time**          | Date-Time     | 0..1 |             |
 | 3    | **duration**           | Duration      | 0..1 |             |
 | 4    | **response_requested** | Response-Type | 0..1 |             |
-| 1036 | **th**                 | Args$th       | 0..1 |             |
+| 1036 | **th/**                | Args$th       | 0..1 |             |
 
 **********
 
@@ -75,7 +75,7 @@ Response Results
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique   | 0..10 | List of OpenC2 language versions supported by this Actuator         |
-| 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Actuator                         |
+| 2    | **profiles**   | Profile unique  | 0..\* | List of profiles supported by this Actuator                         |
 | 3    | **pairs**      | Pairs           | 0..1  | Targets applicable to each supported Action                         |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 1036 | **th/**        | Results$th      | 0..1  | TH-defined results                                                  |
@@ -86,10 +86,10 @@ Targets applicable to each action supported by this device
 
 **Type: Pairs (Map{1..\*})**
 
-| ID   | Name      | Type                         | \# | Description                                                     |
-|------|-----------|------------------------------|----|-----------------------------------------------------------------|
-| 3    | **query** | ArrayOf(QueryTargets) unique | 1  |                                                                 |
-| 1036 | **th/**   | Pairs$th                     | 1  | Targets of each Action for Software Bill Of Materials retrieval |
+| ID   | Name      | Type                         | \#   | Description                                                     |
+|------|-----------|------------------------------|------|-----------------------------------------------------------------|
+| 3    | **query** | ArrayOf(QueryTargets) unique | 1    |                                                                 |
+| 1036 | **th/**   | Pairs$th                     | 0..1 | Targets of each Action for Software Bill Of Materials retrieval |
 
 **********
 
@@ -435,12 +435,6 @@ Specifies the results to be returned from a query features Command
 | Type Name     | Type Definition   | Description                                              |
 |---------------|-------------------|----------------------------------------------------------|
 | **IPv6-Addr** | Binary /ipv6-addr | 128 bit IPv6 address as defined in [[RFC8200]](#rfc8200) |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

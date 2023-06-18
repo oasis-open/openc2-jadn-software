@@ -1,0 +1,10 @@
+{
+  "action": "delete",
+  "target": {
+    "slpf:rule_number": 1234
+  },
+  "args": {
+    "response_requested": "complete"
+  },
+  "profile": "slpf"
+}

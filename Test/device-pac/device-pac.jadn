@@ -1,7 +1,7 @@
 {
   "info": {
-    "package": "http://acme.com/schemas/device-base/pac/v2.0",
-    "title": "OpenC2 base device schema for the PACE collection service",
+    "package": "http://acme.com/schemas/device/pac/v2.0",
+    "title": "OpenC2 device schema for the PACE collection service",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 
@@ -28,7 +28,7 @@
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
       [3, "duration", "Duration", ["[0"], "The length of time for an Command to be in effect"],
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-      [1035, "pac", "Args$pac", ["<"], "PAC-defined command arguments"]
+      [1035, "pac", "Args$pac", ["<", "[0"], "PAC-defined command arguments"]
     ]],
 
     ["Profile", "Enumerated", [], "", [
@@ -43,15 +43,15 @@
 
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
-      [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Pairs", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-      [1035, "pac", "Results$pac", ["[0", "<"], "PAC-defined results"]
+      [1035, "pac", "Results$pac", ["<", "[0"], "PAC-defined results"]
     ]],
 
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [1035, "pac", "Pairs$pac", ["[0", "<"], ""]
+      [1035, "pac", "Pairs$pac", ["<", "[0"], ""]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
@@ -178,8 +178,6 @@
       [2, "sha1", "Binary", ["/x", "{20", "}20", "[0"], "SHA1 hash as defined in [[RFC6234]](#rfc6234)"],
       [3, "sha256", "Binary", ["/x", "{32", "}32", "[0"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
     ]],
-
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
 
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],

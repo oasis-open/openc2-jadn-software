@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/base/sbomdevice/v1",
-  "title": "Device that supports only SBOM retrieval",
+  "$id": "http://acme.com/device/sbomdevice/v1",
+  "title": "Device schema that supports only SBOM retrieval",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -156,7 +156,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Nsid",
+            "$ref": "#/definitions/Profile",
             "description": "List of profiles supported by this Consumer"
           }
         },
@@ -181,8 +181,7 @@
       "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
       "required": [
-        "query",
-        "sbom"
+        "query"
       ],
       "minProperties": 1,
       "maxProperties": 100,
@@ -239,13 +238,10 @@
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
-      "required": [
-        "search"
-      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "search": {
+        "sbom": {
           "type": "array",
           "description": "IDs of all SBOMs matching query criteria",
           "maxItems": 100,
@@ -287,7 +283,7 @@
       "title": "Query Targets$sbom",
       "type": "string",
       "enum": [
-        "search",
+        "sbom",
         "sbom_list"
       ]
     },
@@ -570,13 +566,6 @@
         "pairs",
         "rate_limit"
       ]
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
     },
     "Response-Type": {
       "title": "Response Type",

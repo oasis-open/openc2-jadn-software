@@ -1,7 +1,7 @@
 {
   "info": {
-    "package": "http://acme.com/schemas/device-base/slpf2000/v2.4",
-    "title": "OpenC2 base device schema for the SLPF-2000 packet filter",
+    "package": "http://acme.com/schemas/device/slpf2000/v2.4",
+    "title": "OpenC2 device schema for the SLPF-2000 packet filter",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 
@@ -37,7 +37,7 @@
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
       [3, "duration", "Duration", ["[0"], "The length of time for an Command to be in effect"],
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-      [1024, "slpf", "Args$slpf", ["[0", "<"], "Profile-defined command arguments"]
+      [1024, "slpf", "Args$slpf", ["<", "[0"], "Profile-defined command arguments"]
     ]],
 
     ["Profile", "Enumerated", [], "", [
@@ -52,16 +52,16 @@
 
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
-      [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Pairs", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
       [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"],
-      [1024, "slpf", "Results$slpf", ["[0", "<"], "Profile-defined results"]
+      [1024, "slpf", "Results$slpf", ["<", "[0"], "Profile-defined results"]
     ]],
 
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [1024, "slpf", "Pairs$slpf", ["<"], "Targets of each Action for Software Bill Of Materials retrieval"]
+      [1024, "slpf", "Pairs$slpf", ["<", "[0"], "Targets of each Action for Software Bill Of Materials retrieval"]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
@@ -83,12 +83,33 @@
       [1, "rule_number", "Rule-ID$slpf", ["[0"], "Rule identifier returned from allow or deny Command."]
     ]],
 
-    ["Pairs$slpf", "Enumerated", [], "", [
-      [3, "query: features", ""],
-      [6, "deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection", ""],
-      [8, "allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection", ""],
-      [16, "update: file", ""],
-      [20, "delete: /rule_number", ""]
+    ["Pairs$slpf", "Map", [], "Targets applicable to each action", [
+      [6, "deny", "ArrayOf", ["q", "*Deny-Targets$slpf"], ""],
+      [8, "allow", "ArrayOf", ["q", "*Allow-Targets$slpf"], ""],
+      [16, "update", "ArrayOf", ["q", "*Update-Targets$slpf"], ""],
+      [20, "delete", "ArrayOf", ["q", "*Delete-Targets$slpf"], ""]
+    ]],
+
+    ["Deny-Targets$slpf", "Enumerated", [], "", [
+      [1, "ipv4_net", ""],
+      [2, "ipv6_net", ""],
+      [3, "ipv4_connection", ""],
+      [4, "ipv6_connection", ""]
+    ]],
+
+    ["Allow-Targets$slpf", "Enumerated", [], "", [
+      [1, "ipv4_net", ""],
+      [2, "ipv6_net", ""],
+      [3, "ipv4_connection", ""],
+      [4, "ipv6_connection", ""]
+    ]],
+
+    ["Update-Targets$slpf", "Enumerated", [], "", [
+      [1, "file", ""]
+    ]],
+
+    ["Delete-Targets$slpf", "Enumerated", [], "", [
+      [1, "rule_number", ""]
     ]],
 
     ["Drop-Process$slpf", "Enumerated", [], "", [
@@ -166,8 +187,6 @@
       [17, "udp", "User Datagram Protocol - [[RFC0768]](#rfc0768)"],
       [132, "sctp", "Stream Control Transmission Protocol - [[RFC4960]](#rfc4960)"]
     ]],
-
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
 
     ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)", []],
 

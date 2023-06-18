@@ -1,5 +1,5 @@
        title: "Threat Hunting Device"
-     package: "https://oca.org/casp/threat-hunter-2000"
+     package: "https://oca.org/casp/device/threat-hunter-2000"
      version: "0-wd01"
  description: "Data definitions for Threat Hunting (TH) functions"
      exports: ["OpenC2-Command", "OpenC2-Response"]
@@ -29,21 +29,21 @@ Args = Map{1..*}
    2 stop_time        Date-Time optional
    3 duration         Duration optional
    4 response_requested Response-Type optional
-1036 th               Args$th optional
+1036 th/              Args$th optional
 
 Profile = Enumerated
 1036 th
 
 Results = Map{1..*}                                // Response Results
    1 versions         SemVer unique [0..10]        // List of OpenC2 language versions supported by this Actuator
-   2 profiles         Nsid unique [0..*]           // List of profiles supported by this Actuator
+   2 profiles         Profile unique [0..*]        // List of profiles supported by this Actuator
    3 pairs            Pairs optional               // Targets applicable to each supported Action
    4 rate_limit       Number{0.0..*} optional      // Maximum number of requests per minute supported by design or policy
 1036 th/              Results$th optional          // TH-defined results
 
 Pairs = Map{1..*}                                  // Targets applicable to each action supported by this device
    3 query            ArrayOf(QueryTargets) unique
-1036 th/              Pairs$th                     // Targets of each Action for Software Bill Of Materials retrieval
+1036 th/              Pairs$th optional            // Targets of each Action for Software Bill Of Materials retrieval
 
 QueryTargets = Enumerated
    9 features
@@ -184,8 +184,6 @@ Feature = Enumerated                               // Specifies the results to b
 IPv4-Addr = Binary /ipv4-addr                      // 32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)
 
 IPv6-Addr = Binary /ipv6-addr                      // 128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)
-
-Nsid = String{1..16}                               // A short identifier that refers to a namespace.
 
 Response-Type = Enumerated
    0 none                                          // No response

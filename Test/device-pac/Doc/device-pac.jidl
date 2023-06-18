@@ -1,5 +1,5 @@
-       title: "OpenC2 base device schema for the PACE collection service"
-     package: "http://acme.com/schemas/device-base/pac/v2.0"
+       title: "OpenC2 device schema for the PACE collection service"
+     package: "http://acme.com/schemas/device/pac/v2.0"
      exports: ["OpenC2-Command", "OpenC2-Response"]
 
 OpenC2-Command = Record                            // The Command defines an Action to be performed on a Target
@@ -21,7 +21,7 @@ Args = Map{1..*}
    2 stop_time        Date-Time optional           // The specific date/time to terminate the Command
    3 duration         Duration optional            // The length of time for an Command to be in effect
    4 response_requested Response-Type optional     // The type of Response required for the Command: none, ack, status, complete
-1035 pac/             Args$pac                     // PAC-defined command arguments
+1035 pac/             Args$pac optional            // PAC-defined command arguments
 
 Profile = Enumerated
 1035 pac
@@ -33,7 +33,7 @@ OpenC2-Response = Record
 
 Results = Map{1..*}                                // Response Results
    1 versions         SemVer unique [0..10]        // List of OpenC2 language versions supported by this Actuator
-   2 profiles         Nsid unique [0..*]           // List of profiles supported by this Actuator
+   2 profiles         Profile unique [0..*]        // List of profiles supported by this Actuator
    3 pairs            Pairs optional               // DEPRECATED: targets applicable to each supported Action
    4 rate_limit       Number{0.0..*} optional      // Maximum number of requests per minute supported by design or policy
 1035 pac/             Results$pac optional         // PAC-defined results
@@ -148,8 +148,6 @@ Hashes = Map{1..*}                                 // Cryptographic hash values
    1 md5              Binary{16..16} /x optional   // MD5 hash as defined in [[RFC1321]](#rfc1321)
    2 sha1             Binary{20..20} /x optional   // SHA1 hash as defined in [[RFC6234]](#rfc6234)
    3 sha256           Binary{32..32} /x optional   // SHA256 hash as defined in [[RFC6234]](#rfc6234)
-
-Nsid = String{1..16}                               // A short identifier that refers to a namespace.
 
 Response-Type = Enumerated
    0 none                                          // No response

@@ -1,5 +1,5 @@
-         title: "OpenC2 base device schema for the SLPF-2000 packet filter"
-       package: "http://acme.com/schemas/device-base/slpf2000/v2.4"
+         title: "OpenC2 device schema for the SLPF-2000 packet filter"
+       package: "http://acme.com/schemas/device/slpf2000/v2.4"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -79,7 +79,7 @@ Response Results
 | ID   | Name           | Type                   | \#    | Description                                                         |
 |------|----------------|------------------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique          | 0..10 | List of OpenC2 language versions supported by this Actuator         |
-| 2    | **profiles**   | Nsid unique            | 0..\* | List of profiles supported by this Actuator                         |
+| 2    | **profiles**   | Profile unique         | 0..\* | List of profiles supported by this Actuator                         |
 | 3    | **pairs**      | Pairs                  | 0..1  | DEPRECATED: targets applicable to each supported Action             |
 | 4    | **rate_limit** | Number{0.0..\*}        | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 5    | **args**       | Enumerated(Enum[Args]) | 0..\* | List of supported Command Arguments                                 |
@@ -91,10 +91,10 @@ Targets applicable to each action supported by this device
 
 **Type: Pairs (Map{1..\*})**
 
-| ID   | Name      | Type                         | \# | Description                                                     |
-|------|-----------|------------------------------|----|-----------------------------------------------------------------|
-| 3    | **query** | ArrayOf(QueryTargets) unique | 1  |                                                                 |
-| 1024 | **slpf/** | Pairs$slpf                   | 1  | Targets of each Action for Software Bill Of Materials retrieval |
+| ID   | Name      | Type                         | \#   | Description                                                     |
+|------|-----------|------------------------------|------|-----------------------------------------------------------------|
+| 3    | **query** | ArrayOf(QueryTargets) unique | 1    |                                                                 |
+| 1024 | **slpf/** | Pairs$slpf                   | 0..1 | Targets of each Action for Software Bill Of Materials retrieval |
 
 **********
 
@@ -139,15 +139,54 @@ SLPF results defined in this profile
 
 **********
 
-**Type: Pairs$slpf (Enumerated)**
+Targets applicable to each action
 
-| ID | Item                                                            | Description |
-|----|-----------------------------------------------------------------|-------------|
-| 3  | **query: features**                                             |             |
-| 6  | **deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection**  |             |
-| 8  | **allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection** |             |
-| 16 | **update: file**                                                |             |
-| 20 | **delete: /rule_number**                                        |             |
+**Type: Pairs$slpf (Map)**
+
+| ID | Name       | Type                                | \# | Description |
+|----|------------|-------------------------------------|----|-------------|
+| 6  | **deny**   | ArrayOf(Deny-Targets$slpf) unique   | 1  |             |
+| 8  | **allow**  | ArrayOf(Allow-Targets$slpf) unique  | 1  |             |
+| 16 | **update** | ArrayOf(Update-Targets$slpf) unique | 1  |             |
+| 20 | **delete** | ArrayOf(Delete-Targets$slpf) unique | 1  |             |
+
+**********
+
+**Type: Deny-Targets$slpf (Enumerated)**
+
+| ID | Item                | Description |
+|----|---------------------|-------------|
+| 1  | **ipv4_net**        |             |
+| 2  | **ipv6_net**        |             |
+| 3  | **ipv4_connection** |             |
+| 4  | **ipv6_connection** |             |
+
+**********
+
+**Type: Allow-Targets$slpf (Enumerated)**
+
+| ID | Item                | Description |
+|----|---------------------|-------------|
+| 1  | **ipv4_net**        |             |
+| 2  | **ipv6_net**        |             |
+| 3  | **ipv4_connection** |             |
+| 4  | **ipv6_connection** |             |
+
+**********
+
+**Type: Update-Targets$slpf (Enumerated)**
+
+| ID | Item     | Description |
+|----|----------|-------------|
+| 1  | **file** |             |
+
+**********
+
+**Type: Delete-Targets$slpf (Enumerated)**
+
+| ID | Item            | Description |
+|----|-----------------|-------------|
+| 1  | **rule_number** |             |
 
 **********
 
@@ -302,12 +341,6 @@ Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IA
 | 6   | **tcp**  | Transmission Control Protocol - [[RFC0793]](#rfc0793)        |
 | 17  | **udp**  | User Datagram Protocol - [[RFC0768]](#rfc0768)               |
 | 132 | **sctp** | Stream Control Transmission Protocol - [[RFC4960]](#rfc4960) |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

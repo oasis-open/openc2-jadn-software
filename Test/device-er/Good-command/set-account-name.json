@@ -12,9 +12,5 @@
       "account_status":"disabled"
     }
    },
-  "actuator": {
-    "er": {
-       "named_group":"production"
-    }
-  }
+  "profile": "er"
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device-base/slpf2000/v2.4",
-  "title": "OpenC2 base device schema for the SLPF-2000 packet filter",
+  "$id": "http://acme.com/schemas/device/slpf2000/v2.4",
+  "title": "OpenC2 device schema for the SLPF-2000 packet filter",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -179,7 +179,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Nsid",
+            "$ref": "#/definitions/Profile",
             "description": "List of profiles supported by this Actuator"
           }
         },
@@ -220,8 +220,7 @@
       "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
       "required": [
-        "query",
-        "slpf"
+        "query"
       ],
       "minProperties": 1,
       "maxProperties": 100,
@@ -302,13 +301,83 @@
     },
     "Pairs$slpf": {
       "title": "Pairs$slpf",
+      "type": "object",
+      "description": "Targets applicable to each action",
+      "additionalProperties": false,
+      "required": [
+        "deny",
+        "allow",
+        "update",
+        "delete"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "deny": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Deny-Targets$slpf"
+          }
+        },
+        "allow": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Allow-Targets$slpf"
+          }
+        },
+        "update": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Update-Targets$slpf"
+          }
+        },
+        "delete": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Delete-Targets$slpf"
+          }
+        }
+      }
+    },
+    "Deny-Targets$slpf": {
+      "title": "Deny Targets$slpf",
       "type": "string",
       "enum": [
-        "query: features",
-        "deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
-        "allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
-        "update: file",
-        "delete: /rule_number"
+        "ipv4_net",
+        "ipv6_net",
+        "ipv4_connection",
+        "ipv6_connection"
+      ]
+    },
+    "Allow-Targets$slpf": {
+      "title": "Allow Targets$slpf",
+      "type": "string",
+      "enum": [
+        "ipv4_net",
+        "ipv6_net",
+        "ipv4_connection",
+        "ipv6_connection"
+      ]
+    },
+    "Update-Targets$slpf": {
+      "title": "Update Targets$slpf",
+      "type": "string",
+      "enum": [
+        "file"
+      ]
+    },
+    "Delete-Targets$slpf": {
+      "title": "Delete Targets$slpf",
+      "type": "string",
+      "enum": [
+        "rule_number"
       ]
     },
     "Drop-Process$slpf": {
@@ -509,13 +578,6 @@
         "udp",
         "sctp"
       ]
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
     },
     "Port": {
       "title": "Port",

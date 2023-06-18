@@ -1,7 +1,7 @@
 {
   "info": {
-    "title": "OpenC2 base device schema for LED panel controller using sFractal blinky interface",
-    "package": "http://sfractal.com/schemas/blinky-base/v1.0",
+    "title": "OpenC2 device schema for LED panel controller using sFractal blinky interface",
+    "package": "http://sfractal.com/schemas/device/super-blinky/v1.0",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 
@@ -25,8 +25,9 @@
 
     ["Target", "Choice", [], "", [
       [9, "features", "Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
-      [1024, "slpf", "Target$slpf", ["<"], ""],
-      [1026, "sbom", "Target$sbom", ["<"], ""],
+      [1024, "slpf", "Target$slpf", ["<"], "SLPF-defined targets"],
+      [1026, "sbom", "Target$sbom", ["<"], "SBOM-defined targets"],
+      [1035, "pac", "Target$pac", ["<"], "PAC-defined targets"],
       [9001, "blinky", "Target$blinky", ["<"], "Profile-defined targets"]
     ]],
 
@@ -35,14 +36,16 @@
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
       [3, "duration", "Duration", ["[0"], "The length of time for an Command to be in effect"],
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-      [1024, "slpf", "Args$slpf", ["<", "[0"], ""],
-      [1026, "sbom", "Args$sbom", ["<", "[0"], ""],
-      [9001, "blinky", "Args$blinky", ["<", "[0"], "Profile-defined command arguments"]
+      [1024, "slpf", "Args$slpf", ["<", "[0"], "SLPF-defined command arguments"],
+      [1026, "sbom", "Args$sbom", ["<", "[0"], "SBOM-defined command arguments"],
+      [1035, "pac", "Args$pac", ["<", "[0"], "PAC-defined command arguments"],
+      [9001, "blinky", "Args$blinky", ["<", "[0"], "Blinky-defined command arguments"]
     ]],
 
     ["Profile", "Enumerated", [], "", [
       [1024, "slpf", ""],
       [1026, "sbom", ""],
+      [1035, "pac", ""],
       [9001, "blinky", ""]
     ]],
 
@@ -54,45 +57,157 @@
 
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
-      [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Pairs", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
       [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"],
-      [1024, "slpf", "Results$slpf", ["<", "[0"], ""],
-      [1026, "sbom", "Results$sbom", ["<", "[0"], ""],
-      [9001, "blinky", "Results$blinky", ["<", "[0"], "Profile-defined results"]
+      [1024, "slpf", "Results$slpf", ["<", "[0"], "SLPF-defined results"],
+      [1026, "sbom", "Results$sbom", ["<", "[0"], "SBOM-defined results"],
+      [1035, "pac", "Results$pac", ["<", "[0"], "PAC-defined results"],
+      [9001, "blinky", "Results$blinky", ["<", "[0"], "Blinky-defined results"]
     ]],
 
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [9001, "blinky", "Pairs$blinky", ["[0", "<"], ""]
+      [1024, "slpf", "Pairs$slpf", ["<", "[0"], "SLPF-defined action-target pairs"],
+      [1026, "sbom", "Pairs$sbom", ["<", "[0"], "SBOM-defined action-target pairs"],
+      [1035, "pac", "Pairs$pac", ["<", "[0"], "PAC-defined action-target pairs"],
+      [9001, "blinky", "Pairs$blinky", ["<", "[0"], "Blinky-defined action-target pairs"]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
       [9, "features", ""]
     ]],
 
+    ["Target$pac", "Choice", [], "Profile-defined targets", [
+      [1, "attrs", "Attribute-Specifiers$pac", [], ""],
+      [2, "sbom", "SBOM-Specifiers$pac", [], ""]
+    ]],
+
+    ["Args$pac", "Map", ["{1"], "", []],
+
+    ["Results$pac", "Map", ["{1"], "Profile-defined response results", [
+      [1, "attrs", "PostureAttributes$pac", ["[0"], ""],
+      [2, "sbom", "SBOM-Info$pac", ["[0"], ""]
+    ]],
+
+    ["Pairs$pac", "Map", [], "Targets applicable to each action", [
+      [3, "query", "ArrayOf", ["q", "*Query-Targets$pac"], ""]
+    ]],
+
+    ["Query-Targets$pac", "Enumerated", [], "", [
+      [1, "attrs", ""],
+      [2, "sbom", ""]
+    ]],
+
+    ["Attribute-Specifiers$pac", "Map", ["{1"], "", [
+      [1, "os_version", "Boolean", ["[0"], ""],
+      [2, "password_min", "Boolean", ["[0"], ""],
+      [3, "file", "FileSpecifiers$pac", ["[0"], ""]
+    ]],
+
+    ["SBOM-Specifiers$pac", "Map", [], "", [
+      [1, "type", "ArrayOf", ["q", "*#SBOM-Info$pac"], ""],
+      [2, "content", "ArrayOf", ["q", "*#SBOM-Content$pac"], ""]
+    ]],
+
+    ["PostureAttributes$pac", "Map", ["{1"], "", [
+      [1, "os_version", "OS-Version$pac", ["[0"], ""],
+      [2, "password_min", "Integer", ["[0"], ""],
+      [3, "file", "File$pac", ["[0"], ""]
+    ]],
+
+    ["OS-Version$pac", "Record", [], "", [
+      [1, "name", "String", [], "Distribution or product name"],
+      [2, "version", "String", [], "Suitable for presentation OS version"],
+      [3, "major", "Integer", [], "Major release version"],
+      [4, "minor", "Integer", [], "Minor release version"],
+      [5, "patch", "Integer", [], "Patch release"],
+      [6, "build", "String", [], "Build-specific or variant string"],
+      [7, "platform", "String", [], "OS Platform or ID"],
+      [8, "platform_like", "String", [], "Closely-related platform"],
+      [9, "codename", "String", [], "OS Release codename"],
+      [10, "arch", "OS-Arch$pac", [], "OS Architecture"],
+      [11, "install_date", "Integer", ["[0"], "Install date of the OS (seconds)"],
+      [12, "pid_with_namespace", "String", ["[0"], ""],
+      [13, "mount_namespace_id", "String", ["[0"], ""]
+    ]],
+
+    ["OS-Arch$pac", "Enumerated", [], "Win: wmic os get osarchitecture, or Unix: uname -m", [
+      [1, "32-bit", ""],
+      [2, "64-bit", ""],
+      [3, "x86_32", ""],
+      [4, "x86_64", ""]
+    ]],
+
+    ["FileSpecifiers$pac", "Map", ["{1"], "", [
+      [1, "path", "String", ["[0"], ""],
+      [2, "hash", "Hashes", ["[0"], ""]
+    ]],
+
+    ["File$pac", "Record", [], "", [
+      [1, "data", "Binary", [], ""]
+    ]],
+
+    ["SBOM-Info$pac", "Map", ["{1"], "", [
+      [1, "uri", "URI", ["[0"], "Unique identifier or locator of the SBOM"],
+      [2, "summary", "SBOM-Elements$pac", ["[0"], "NTIA Minimumum Elements of an SBOM"],
+      [3, "content", "SBOM-Content$pac", ["[0"], "SBOM structured data"],
+      [4, "blob", "SBOM-Blob$pac", ["[0"], "Uninterpreted SBOM bytes"]
+    ]],
+
+    ["SBOM-Elements$pac", "Record", [], "", [
+      [1, "supplier", "String", ["]0"], "Name(s) of entity that creates, defines, and identifies components"],
+      [2, "component", "String", ["]0"], "Designation(s) assigned to a unit of software defined by the original supplier"],
+      [3, "version", "String", [], "Identifier used by supplier to specify a change from a previously identified version"],
+      [4, "component_ids", "String", ["]0"], "Other identifiers used to identify a component, or serve as a look-yp key"],
+      [5, "dependencies", "String", ["]0"], "Upstream component(s)"],
+      [6, "author", "String", [], "Name of the entity that creates SBOM data for this component"],
+      [7, "timestamp", "DateTime$pac", [], "Record of the date and time of the SBOM data assembly"]
+    ]],
+
+    ["SBOM-Content$pac", "Choice", [], "", [
+      [1, "cyclonedx", "String", [], "Placeholder for CycloneDX data model"],
+      [2, "spdx2", "String", [], "Placeholder for SPDX v2.x data model"],
+      [3, "spdx3", "String", [], "Placeholder for SPDX v3 data model"]
+    ]],
+
+    ["SBOM-Blob$pac", "Record", [], "", [
+      [1, "format", "Enumerated", ["#SBOM-Content$pac"], ""],
+      [2, "data", "Binary", [], ""]
+    ]],
+
+    ["DateTime$pac", "String", ["%^((?:(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?))(Z|[\\+-]\\d{2}:\\d{2})?)$"], "RFC-3339 format", []],
+
     ["Target$sbom", "Choice", [], "Profile-defined targets", [
-      [1, "sbom", "SBOM-Specifiers$sbom", [], "Return URI IDs for all or specified SBOMs"],
-      [2, "sbom_list", "SBOM-List$sbom", [], "Return requested SBOM info for specified IDs"]
+      [1, "sbom", "SBOM-Specifiers$sbom", [], "Return specific SBOM  ????? how change this?"],
+      [2, "sbom_list", "SBOM-List$sbom", [], "Return list of SBOMs ID and metadata"]
     ]],
 
     ["Args$sbom", "Map", [], "Profile-defined command arguments", []],
 
     ["Results$sbom", "Map", ["{1"], "Profile-defined response results", [
-      [1, "search", "ArrayOf", ["*URI"], "IDs of all SBOMs matching query criteria"],
-      [2, "sbom_list", "SBOM-Info$sbom", ["[0", "]0"], "SBOM Info for each ID in sbom_list"]
+      [1, "sbom_list", "ArrayOf", ["*SBOM-Info$sbom"], "List of all SBOMs matching query criteria"]
+    ]],
+
+    ["Pairs$sbom", "Map", [], "", [
+      [3, "query", "ArrayOf", ["q", "*Query-Targets$sbom"], ""]
+    ]],
+
+    ["Query-Targets$sbom", "Enumerated", [], "", [
+      [1, "sbom", ""],
+      [2, "sbom_list", ""]
     ]],
 
     ["SBOM-Specifiers$sbom", "Map", [], "If none specified, return IDs for all SBOMs", [
-      [1, "type", "ArrayOf", ["q", "*#SBOM-Content$sbom", "[0"], "SBOM type"],
-      [2, "format", "ArrayOf", ["q", "*DataFormat$sbom", "[0"], "Data format"],
-      [3, "info", "ArrayOf", ["*Info$sbom", "{1", "q", "[0"], "Type of SBOM info to return"]
+      [1, "type", "ArrayOf", ["*#SBOM-Content$sbom", "q", "[0"], "SBOM type"],
+      [2, "format", "ArrayOf", ["*DataFormat$sbom", "q", "[0"], "Data format"],
+      [3, "info", "ArrayOf", ["*Info$sbom", "q", "[0"], "Type of SBOM info to return"]
     ]],
 
     ["SBOM-List$sbom", "Map", [], "", [
       [1, "sids", "URI", ["]0"], "SBOM IDs to return"],
-      [2, "info", "ArrayOf", ["*Info$sbom", "{1", "q"], "Type of SBOM info to return"]
+      [2, "info", "ArrayOf", ["*Info$sbom", "q"], "Type of SBOM info to return"]
     ]],
 
     ["Info$sbom", "Enumerated", [], "SBOM-Info fields to return", [
@@ -154,6 +269,35 @@
       [1, "rule_number", "Rule-ID$slpf", ["[0"], "Rule identifier returned from allow or deny Command."]
     ]],
 
+    ["Pairs$slpf", "Map", [], "Targets applicable to each action", [
+      [6, "deny", "ArrayOf", ["q", "*Deny-Targets$slpf"], ""],
+      [8, "allow", "ArrayOf", ["q", "*Allow-Targets$slpf"], ""],
+      [16, "update", "ArrayOf", ["q", "*Update-Targets$slpf"], ""],
+      [20, "delete", "ArrayOf", ["q", "*Delete-Targets$slpf"], ""]
+    ]],
+
+    ["Deny-Targets$slpf", "Enumerated", [], "", [
+      [1, "ipv4_net", ""],
+      [2, "ipv6_net", ""],
+      [3, "ipv4_connection", ""],
+      [4, "ipv6_connection", ""]
+    ]],
+
+    ["Allow-Targets$slpf", "Enumerated", [], "", [
+      [1, "ipv4_net", ""],
+      [2, "ipv6_net", ""],
+      [3, "ipv4_connection", ""],
+      [4, "ipv6_connection", ""]
+    ]],
+
+    ["Update-Targets$slpf", "Enumerated", [], "", [
+      [1, "file", ""]
+    ]],
+
+    ["Delete-Targets$slpf", "Enumerated", [], "", [
+      [1, "rule_number", ""]
+    ]],
+
     ["Drop-Process$slpf", "Enumerated", [], "", [
       [1, "none", "Drop the packet and do not send a notification to the source of the packet"],
       [2, "reject", "Drop the packet and send an ICMP host unreachable (or equivalent) to the source of the packet"],
@@ -201,7 +345,11 @@
       [4, "rate_limit", "Maximum number of Commands per minute supported by design or policy"]
     ]],
 
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
+    ["Hashes", "Map", ["{1"], "Cryptographic hash values", [
+      [1, "md5", "Binary", ["/x", "{16", "}16", "[0"], "MD5 hash as defined in [[RFC1321]](#rfc1321)"],
+      [2, "sha1", "Binary", ["/x", "{20", "}20", "[0"], "SHA1 hash as defined in [[RFC6234]](#rfc6234)"],
+      [3, "sha256", "Binary", ["/x", "{32", "}32", "[0"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
+    ]],
 
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],

@@ -1,0 +1,10 @@
+{
+  "action": "update",
+  "target": {
+    "file": {
+      "path": "\\\\someshared-drive\\somedirectory\\configurations",
+      "name": "firewallconfiguration.txt"
+    }
+  },
+  "profile": "slpf"
+}

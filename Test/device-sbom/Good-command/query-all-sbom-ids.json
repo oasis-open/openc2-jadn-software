@@ -2,7 +2,7 @@
   "action": "query",
   "target": {
     "sbom": {
-      "sboms": {}
+      "sbom": {}
     }
   }
 }

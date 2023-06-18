@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://sfractal.com/schemas/blinky-base/v1.0",
-  "title": "OpenC2 base device schema for LED panel controller using sFractal blinky interface",
+  "$id": "http://sfractal.com/schemas/blinky/v1.0",
+  "title": "OpenC2 device schema for LED panel controller using sFractal blinky interface",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -159,7 +159,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Nsid",
+            "$ref": "#/definitions/Profile",
             "description": "List of profiles supported by this Consumer"
           }
         },
@@ -311,13 +311,6 @@
         "pairs",
         "rate_limit"
       ]
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
     },
     "Response-Type": {
       "title": "Response Type",

@@ -1,0 +1,363 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://sfractal.com/schemas/blinky-base/v1.0",
+  "title": "OpenC2 base device schema for LED panel controller using sFractal blinky interface",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "openc2_command": {
+      "$ref": "#/definitions/OpenC2-Command"
+    },
+    "openc2_response": {
+      "$ref": "#/definitions/OpenC2-Response"
+    }
+  },
+  "definitions": {
+    "OpenC2-Command": {
+      "title": "OpenC2 Command",
+      "type": "object",
+      "description": "The Command defines an Action to be performed on a Target",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The task or activity to be performed (i.e., the 'verb')."
+        },
+        "target": {
+          "$ref": "#/definitions/Target",
+          "description": "The object of the Action. The Action is performed on the Target."
+        },
+        "args": {
+          "$ref": "#/definitions/Args",
+          "description": "Additional information that applies to the Command."
+        },
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
+        },
+        "command_id": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "An identifier of this Command."
+        }
+      }
+    },
+    "OpenC2-Response": {
+      "title": "OpenC2 Response",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/Status-Code",
+          "description": "An integer status code."
+        },
+        "status_text": {
+          "type": "string",
+          "description": "A free-form human-readable description of the Response status.",
+          "maxLength": 255
+        },
+        "results": {
+          "$ref": "#/definitions/Results",
+          "description": "Map of key:value pairs that contain additional results based on the invoking Command."
+        }
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "string",
+      "enum": [
+        "query",
+        "deny",
+        "allow",
+        "set",
+        "update",
+        "delete"
+      ]
+    },
+    "Target": {
+      "title": "Target",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "features": {
+          "$ref": "#/definitions/Features",
+          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+        },
+        "blinky": {
+          "$ref": "#/definitions/Target$blinky",
+          "description": "Profile-defined targets"
+        }
+      }
+    },
+    "Args": {
+      "title": "Args",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "start_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to initiate the Command"
+        },
+        "stop_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": "The specific date/time to terminate the Command"
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration",
+          "description": "The length of time for an Command to be in effect"
+        },
+        "response_requested": {
+          "$ref": "#/definitions/Response-Type",
+          "description": "The type of Response required for the Command: none, ack, status, complete"
+        },
+        "blinky": {
+          "$ref": "#/definitions/Args$blinky",
+          "description": "Profile-defined command arguments"
+        }
+      }
+    },
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "enum": [
+        "blinky"
+      ]
+    },
+    "Results": {
+      "title": "Results",
+      "type": "object",
+      "description": "Response Results",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "List of OpenC2 language versions supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/SemVer",
+            "description": "List of OpenC2 language versions supported by this Consumer"
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "description": "List of profiles supported by this Consumer",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Nsid",
+            "description": "List of profiles supported by this Consumer"
+          }
+        },
+        "pairs": {
+          "$ref": "#/definitions/Pairs",
+          "description": "List of targets applicable to each supported Action"
+        },
+        "rate_limit": {
+          "type": "number",
+          "description": "Maximum number of requests per minute supported by design or policy",
+          "minimum": 0.0
+        },
+        "blinky": {
+          "$ref": "#/definitions/Results$blinky",
+          "description": "Profile-defined results"
+        }
+      }
+    },
+    "Pairs": {
+      "title": "Pairs",
+      "type": "object",
+      "description": "Targets applicable to each action supported by this device",
+      "additionalProperties": false,
+      "required": [
+        "query"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
+        },
+        "blinky": {
+          "$ref": "#/definitions/Pairs$blinky",
+          "description": ""
+        }
+      }
+    },
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
+    },
+    "Target$blinky": {
+      "title": "Target$blinky",
+      "type": "object",
+      "description": "Profile-defined targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "led": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "leds": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "maxLength": 255
+          }
+        }
+      }
+    },
+    "Args$blinky": {
+      "title": "Args$blinky",
+      "type": "object",
+      "description": "Profile-defined command arguments",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {}
+    },
+    "Results$blinky": {
+      "title": "Results$blinky",
+      "type": "object",
+      "description": "Profile-defined response results",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {}
+    },
+    "Pairs$blinky": {
+      "title": "Pairs$blinky",
+      "type": "object",
+      "description": "Targets applicable to each action",
+      "additionalProperties": false,
+      "required": [
+        "set"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "set": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Set-Targets$blinky"
+          }
+        }
+      }
+    },
+    "Set-Targets$blinky": {
+      "title": "Set Targets$blinky",
+      "type": "string",
+      "enum": [
+        "led",
+        "leds"
+      ]
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "SemVer": {
+      "title": "SemVer",
+      "type": "string",
+      "description": "Major.Minor.Patch version number",
+      "maxLength": 255,
+      "pattern": "^(\\d{1,4})(\\.(\\d{1,6})){0,2}$"
+    }
+  }
+}

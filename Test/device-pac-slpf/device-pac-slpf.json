@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device/pacf/v3",
-  "title": "OpenC2 device schema for the PACMaster3 PACE collection service and packet filter",
+  "$id": "http://acme.com/schemas/device-base/pacf/v3",
+  "title": "OpenC2 base device schema for the PACE collection service and packet filter",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -36,9 +36,9 @@
           "$ref": "#/definitions/Args",
           "description": "Additional information that applies to the Command."
         },
-        "actuator": {
-          "$ref": "#/definitions/Actuator",
-          "description": "The subject of the Action. The Actuator executes the Action on the Target."
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
         },
         "command_id": {
           "$ref": "#/definitions/Command-ID",
@@ -113,11 +113,11 @@
           "description": "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Target$slpf",
+          "$ref": "#/definitions/Target$slpf",
           "description": "SLPF-defined targets"
         },
         "pac": {
-          "$ref": "#/definitions/AP-Target$pac",
+          "$ref": "#/definitions/Target$pac",
           "description": "PAC-defined targets"
         }
       }
@@ -146,27 +146,22 @@
           "description": "The type of Response required for the Command: none, ack, status, complete"
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Args$slpf",
+          "$ref": "#/definitions/Args$slpf",
           "description": "SLPF-defined command arguments"
+        },
+        "pac": {
+          "$ref": "#/definitions/Args$pac",
+          "description": "PAC-defined command arguments"
         }
       }
     },
-    "Actuator": {
-      "title": "Actuator",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "slpf": {
-          "$ref": "#/definitions/AP-Specifiers$slpf",
-          "description": "SLPF-defined actuator specifiers"
-        },
-        "pac": {
-          "$ref": "#/definitions/AP-Specifiers$pac",
-          "description": "PAC-defined actuator specifiers"
-        }
-      }
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "enum": [
+        "slpf",
+        "pac"
+      ]
     },
     "Results": {
       "title": "Results",
@@ -183,7 +178,7 @@
           "minItems": 1,
           "maxItems": 10,
           "items": {
-            "$ref": "#/definitions/Version",
+            "$ref": "#/definitions/SemVer",
             "description": "List of OpenC2 language versions supported by this Actuator"
           }
         },
@@ -198,7 +193,7 @@
           }
         },
         "pairs": {
-          "$ref": "#/definitions/Action-Targets",
+          "$ref": "#/definitions/Pairs",
           "description": "DEPRECATED: targets applicable to each supported Action"
         },
         "rate_limit": {
@@ -207,299 +202,55 @@
           "minimum": 0.0
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Results$slpf",
+          "$ref": "#/definitions/Results$slpf",
           "description": "SLPF-defined results"
         },
         "pac": {
-          "$ref": "#/definitions/AP-Results$pac",
+          "$ref": "#/definitions/Results$pac",
           "description": "PAC-defined results"
         }
       }
     },
-    "Action-Targets": {
-      "title": "Action Targets",
+    "Pairs": {
+      "title": "Pairs",
       "type": "object",
       "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
+      "required": [
+        "query"
+      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
         "query": {
-          "$ref": "#/definitions/Targets"
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
         },
-        "deny": {
-          "$ref": "#/definitions/Targets"
+        "slpf": {
+          "$ref": "#/definitions/Pairs$slpf",
+          "description": ""
         },
-        "allow": {
-          "$ref": "#/definitions/Targets"
-        },
-        "update": {
-          "$ref": "#/definitions/Targets"
-        },
-        "delete": {
-          "$ref": "#/definitions/Targets"
+        "pac": {
+          "$ref": "#/definitions/Pairs$pac",
+          "description": ""
         }
       }
     },
-    "Targets": {
-      "title": "Targets",
-      "type": "array",
-      "description": "Target pointers",
-      "uniqueItems": true,
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "enum": [
-          "features",
-          "file",
-          "ipv4_net",
-          "ipv6_net",
-          "ipv4_connection",
-          "ipv6_connection",
-          "slpf",
-          "pac"
-        ]
-      }
-    },
-    "Features": {
-      "title": "Features",
-      "type": "array",
-      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
-      "uniqueItems": true,
-      "maxItems": 10,
-      "items": {
-        "$ref": "#/definitions/Feature"
-      }
-    },
-    "File": {
-      "title": "File",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the file as defined in the file system",
-          "maxLength": 255
-        },
-        "path": {
-          "type": "string",
-          "description": "The absolute path to the location of the file in the file system",
-          "maxLength": 255
-        },
-        "hashes": {
-          "$ref": "#/definitions/Hashes",
-          "description": "One or more cryptographic hash codes of the file contents"
-        }
-      }
-    },
-    "IPv4-Net": {
-      "title": "IPv4 Net",
-      "type": "string",
-      "description": "IPv4 address and prefix length",
-      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
-    },
-    "IPv4-Connection": {
-      "title": "IPv4 Connection",
-      "type": "object",
-      "description": "5-tuple that specifies a tcp/ip connection",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "src_addr": {
-          "$ref": "#/definitions/IPv4-Net",
-          "description": "IPv4 source address range"
-        },
-        "src_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Source service per [[RFC6335]](#rfc6335)"
-        },
-        "dst_addr": {
-          "$ref": "#/definitions/IPv4-Net",
-          "description": "IPv4 destination address range"
-        },
-        "dst_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Destination service per [[RFC6335]](#rfc6335)"
-        },
-        "protocol": {
-          "$ref": "#/definitions/L4-Protocol",
-          "description": "Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)"
-        }
-      }
-    },
-    "IPv6-Net": {
-      "title": "IPv6 Net",
-      "type": "string",
-      "description": "IPv6 address and prefix length",
-      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
-    },
-    "IPv6-Connection": {
-      "title": "IPv6 Connection",
-      "type": "object",
-      "description": "5-tuple that specifies a tcp/ip connection",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "src_addr": {
-          "$ref": "#/definitions/IPv6-Net",
-          "description": "IPv6 source address range"
-        },
-        "src_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Source service per [[RFC6335]](#rfc6335)"
-        },
-        "dst_addr": {
-          "$ref": "#/definitions/IPv6-Net",
-          "description": "IPv6 destination address range"
-        },
-        "dst_port": {
-          "$ref": "#/definitions/Port",
-          "description": "Destination service per [[RFC6335]](#rfc6335)"
-        },
-        "protocol": {
-          "$ref": "#/definitions/L4-Protocol",
-          "description": "Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"
-        }
-      }
-    },
-    "URI": {
-      "title": "URI",
-      "type": "string",
-      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
-      "format": "uri",
-      "maxLength": 255
-    },
-    "Date-Time": {
-      "title": "Date Time",
-      "type": "integer",
-      "description": "Date and Time",
-      "minimum": 0
-    },
-    "Duration": {
-      "title": "Duration",
-      "type": "integer",
-      "description": "A length of time",
-      "minimum": 0
-    },
-    "Feature": {
-      "title": "Feature",
-      "type": "string",
-      "description": "Specifies the results to be returned from a query features Command",
-      "enum": [
-        "versions",
-        "profiles",
-        "pairs",
-        "rate_limit"
-      ]
-    },
-    "Hashes": {
-      "title": "Hashes",
-      "type": "object",
-      "description": "Cryptographic hash values",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "md5": {
-          "type": "string",
-          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
-          "contentEncoding": "base16"
-        },
-        "sha1": {
-          "type": "string",
-          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        },
-        "sha256": {
-          "type": "string",
-          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        }
-      }
-    },
-    "IPv4-Addr": {
-      "title": "IPv4 Addr",
-      "type": "string",
-      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
-      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
-    },
-    "IPv6-Addr": {
-      "title": "IPv6 Addr",
-      "type": "string",
-      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
-      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
-    },
-    "L4-Protocol": {
-      "title": "L4 Protocol",
-      "type": "string",
-      "description": "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)",
-      "enum": [
-        "icmp",
-        "tcp",
-        "udp",
-        "sctp"
-      ]
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
-    },
-    "Port": {
-      "title": "Port",
-      "type": "integer",
-      "description": "Transport Protocol Port Number, [[RFC6335]](#rfc6335)",
-      "minimum": 0,
-      "maximum": 65535
-    },
-    "Response-Type": {
-      "title": "Response Type",
+    "QueryTargets": {
+      "title": "QueryTargets",
       "type": "string",
       "enum": [
-        "none",
-        "ack",
-        "status",
-        "complete"
+        "features"
       ]
     },
-    "Status-Code": {
-      "title": "Status Code",
-      "type": "integer",
-      "enum": [
-        102,
-        200,
-        201,
-        400,
-        401,
-        403,
-        404,
-        500,
-        501,
-        503
-      ]
-    },
-    "Command-ID": {
-      "title": "Command ID",
-      "type": "string",
-      "description": "Command Identifier",
-      "maxLength": 255,
-      "pattern": "^\\S{0,36}$"
-    },
-    "Version": {
-      "title": "Version",
-      "type": "string",
-      "description": "Major.Minor version number",
-      "maxLength": 255
-    },
-    "AP-Target$pac": {
-      "title": "AP Target$pac",
+    "Target$pac": {
+      "title": "Target$pac",
       "type": "object",
+      "description": "Profile-defined targets",
       "additionalProperties": false,
       "minProperties": 1,
       "maxProperties": 1,
@@ -514,16 +265,16 @@
         }
       }
     },
-    "AP-Specifiers$pac": {
-      "title": "AP Specifiers$pac",
+    "Args$pac": {
+      "title": "Args$pac",
       "type": "object",
-      "description": "Profile-defined actuator specifiers",
       "additionalProperties": false,
+      "minProperties": 1,
       "maxProperties": 100,
       "properties": {}
     },
-    "AP-Results$pac": {
-      "title": "AP Results$pac",
+    "Results$pac": {
+      "title": "Results$pac",
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
@@ -539,6 +290,34 @@
           "description": ""
         }
       }
+    },
+    "Pairs$pac": {
+      "title": "Pairs$pac",
+      "type": "object",
+      "description": "Targets applicable to each action",
+      "additionalProperties": false,
+      "required": [
+        "query"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Query-Targets$pac"
+          }
+        }
+      }
+    },
+    "Query-Targets$pac": {
+      "title": "Query Targets$pac",
+      "type": "string",
+      "enum": [
+        "attrs",
+        "sbom"
+      ]
     },
     "Attribute-Specifiers$pac": {
       "title": "Attribute Specifiers$pac",
@@ -888,8 +667,8 @@
       "maxLength": 255,
       "pattern": "^((?:(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?))(Z|[\\+-]\\d{2}:\\d{2})?)$"
     },
-    "AP-Target$slpf": {
-      "title": "AP Target$slpf",
+    "Target$slpf": {
+      "title": "Target$slpf",
       "type": "object",
       "description": "SLPF targets",
       "additionalProperties": false,
@@ -902,8 +681,8 @@
         }
       }
     },
-    "AP-Args$slpf": {
-      "title": "AP Args$slpf",
+    "Args$slpf": {
+      "title": "Args$slpf",
       "type": "object",
       "description": "SLPF command arguments",
       "additionalProperties": false,
@@ -928,43 +707,8 @@
         }
       }
     },
-    "AP-Specifiers$slpf": {
-      "title": "AP Specifiers$slpf",
-      "type": "object",
-      "description": "SLPF actuator specifiers (may be empty)",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "type": "string",
-          "description": "RFC 1123 hostname (can be a domain name or IP address) for a particular device with SLPF functionality",
-          "maxLength": 255
-        },
-        "named_group": {
-          "type": "string",
-          "description": "User defined collection of devices with SLPF functionality",
-          "maxLength": 255
-        },
-        "asset_id": {
-          "type": "string",
-          "description": "Unique identifier for a particular SLPF",
-          "maxLength": 255
-        },
-        "asset_tuple": {
-          "type": "array",
-          "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-          "minItems": 1,
-          "maxItems": 10,
-          "items": {
-            "type": "string",
-            "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-            "maxLength": 255
-          }
-        }
-      }
-    },
-    "AP-Results$slpf": {
-      "title": "AP Results$slpf",
+    "Results$slpf": {
+      "title": "Results$slpf",
       "type": "object",
       "description": "SLPF results defined in this profile",
       "additionalProperties": false,
@@ -975,6 +719,17 @@
           "description": "Rule identifier returned from allow or deny Command."
         }
       }
+    },
+    "Pairs$slpf": {
+      "title": "Pairs$slpf",
+      "type": "string",
+      "enum": [
+        "query: features",
+        "deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
+        "allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
+        "update: file",
+        "delete: /rule_number"
+      ]
     },
     "Drop-Process$slpf": {
       "title": "Drop Process$slpf",
@@ -998,6 +753,243 @@
       "title": "Rule ID$slpf",
       "type": "integer",
       "description": "Access rule identifier"
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "File": {
+      "title": "File",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the file as defined in the file system",
+          "maxLength": 255
+        },
+        "path": {
+          "type": "string",
+          "description": "The absolute path to the location of the file in the file system",
+          "maxLength": 255
+        },
+        "hashes": {
+          "$ref": "#/definitions/Hashes",
+          "description": "One or more cryptographic hash codes of the file contents"
+        }
+      }
+    },
+    "IPv4-Net": {
+      "title": "IPv4 Net",
+      "type": "string",
+      "description": "IPv4 address and prefix length",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
+    },
+    "IPv4-Connection": {
+      "title": "IPv4 Connection",
+      "type": "object",
+      "description": "5-tuple that specifies a tcp/ip connection",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "src_addr": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "IPv4 source address range"
+        },
+        "src_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Source service per [[RFC6335]](#rfc6335)"
+        },
+        "dst_addr": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "IPv4 destination address range"
+        },
+        "dst_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Destination service per [[RFC6335]](#rfc6335)"
+        },
+        "protocol": {
+          "$ref": "#/definitions/L4-Protocol",
+          "description": "Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)"
+        }
+      }
+    },
+    "IPv6-Net": {
+      "title": "IPv6 Net",
+      "type": "string",
+      "description": "IPv6 address and prefix length",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
+    },
+    "IPv6-Connection": {
+      "title": "IPv6 Connection",
+      "type": "object",
+      "description": "5-tuple that specifies a tcp/ip connection",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "src_addr": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "IPv6 source address range"
+        },
+        "src_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Source service per [[RFC6335]](#rfc6335)"
+        },
+        "dst_addr": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "IPv6 destination address range"
+        },
+        "dst_port": {
+          "$ref": "#/definitions/Port",
+          "description": "Destination service per [[RFC6335]](#rfc6335)"
+        },
+        "protocol": {
+          "$ref": "#/definitions/L4-Protocol",
+          "description": "Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"
+        }
+      }
+    },
+    "URI": {
+      "title": "URI",
+      "type": "string",
+      "description": "Uniform Resource Identifier, [[RFC3986]](#rfc3986).",
+      "format": "uri",
+      "maxLength": 255
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "Hashes": {
+      "title": "Hashes",
+      "type": "object",
+      "description": "Cryptographic hash values",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "md5": {
+          "type": "string",
+          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
+          "contentEncoding": "base16"
+        },
+        "sha1": {
+          "type": "string",
+          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
+          "contentEncoding": "base16"
+        }
+      }
+    },
+    "IPv4-Addr": {
+      "title": "IPv4 Addr",
+      "type": "string",
+      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
+    },
+    "IPv6-Addr": {
+      "title": "IPv6 Addr",
+      "type": "string",
+      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
+    },
+    "L4-Protocol": {
+      "title": "L4 Protocol",
+      "type": "string",
+      "description": "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)",
+      "enum": [
+        "icmp",
+        "tcp",
+        "udp",
+        "sctp"
+      ]
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Port": {
+      "title": "Port",
+      "type": "integer",
+      "description": "Transport Protocol Port Number, [[RFC6335]](#rfc6335)",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "SemVer": {
+      "title": "SemVer",
+      "type": "string",
+      "description": "Major.Minor.Patch version number",
+      "maxLength": 255,
+      "pattern": "^(\\d{1,4})(\\.(\\d{1,6})){0,2}$"
     }
   }
 }

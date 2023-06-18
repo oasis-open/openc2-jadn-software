@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://sfractal.com/schemas/blinky/v1.0",
-  "title": "OpenC2 device schema for LED panel controller using sFractal blinky interface",
+  "$id": "http://sfractal.com/schemas/blinky-base/v1.0",
+  "title": "OpenC2 base device schema for LED panel controller using sFractal blinky interface",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -36,9 +36,9 @@
           "$ref": "#/definitions/Args",
           "description": "Additional information that applies to the Command."
         },
-        "actuator": {
-          "$ref": "#/definitions/Actuator",
-          "description": "The subject of the Action. The Actuator executes the Action on the Target."
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
         },
         "command_id": {
           "$ref": "#/definitions/Command-ID",
@@ -101,13 +101,9 @@
           "$ref": "#/definitions/Target$sbom",
           "description": ""
         },
-        "pac": {
-          "$ref": "#/definitions/Target$pac",
-          "description": ""
-        },
         "blinky": {
           "$ref": "#/definitions/Target$blinky",
-          "description": ""
+          "description": "Profile-defined targets"
         }
       }
     },
@@ -142,23 +138,18 @@
           "$ref": "#/definitions/Args$sbom",
           "description": ""
         },
-        "pac": {
-          "$ref": "#/definitions/Args$pac",
-          "description": ""
-        },
         "blinky": {
           "$ref": "#/definitions/Args$blinky",
-          "description": ""
+          "description": "Profile-defined command arguments"
         }
       }
     },
-    "Actuator": {
-      "title": "Actuator",
+    "Profile": {
+      "title": "Profile",
       "type": "string",
       "enum": [
         "slpf",
         "sbom",
-        "pac",
         "blinky"
       ]
     },
@@ -193,7 +184,7 @@
         },
         "pairs": {
           "$ref": "#/definitions/Pairs",
-          "description": ""
+          "description": "DEPRECATED: targets applicable to each supported Action"
         },
         "rate_limit": {
           "type": "number",
@@ -214,7 +205,6 @@
               "response_requested",
               "slpf",
               "sbom",
-              "pac",
               "blinky"
             ]
           }
@@ -227,27 +217,21 @@
           "$ref": "#/definitions/Results$sbom",
           "description": ""
         },
-        "pac": {
-          "$ref": "#/definitions/Results$pac",
-          "description": ""
-        },
         "blinky": {
           "$ref": "#/definitions/Results$blinky",
-          "description": ""
+          "description": "Profile-defined results"
         }
       }
     },
     "Pairs": {
       "title": "Pairs",
       "type": "object",
+      "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
       "required": [
-        "query",
-        "slpf",
-        "sbom",
-        "pac",
-        "blinky"
+        "query"
       ],
+      "minProperties": 1,
       "maxProperties": 100,
       "properties": {
         "query": {
@@ -257,18 +241,6 @@
           "items": {
             "$ref": "#/definitions/QueryTargets"
           }
-        },
-        "slpf": {
-          "$ref": "#/definitions/Pairs$slpf",
-          "description": ""
-        },
-        "sbom": {
-          "$ref": "#/definitions/Pairs$sbom",
-          "description": ""
-        },
-        "pac": {
-          "$ref": "#/definitions/Pairs$pac",
-          "description": ""
         },
         "blinky": {
           "$ref": "#/definitions/Pairs$blinky",
@@ -314,12 +286,15 @@
       "type": "object",
       "description": "Profile-defined response results",
       "additionalProperties": false,
+      "required": [
+        "search"
+      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "sbom": {
+        "search": {
           "type": "array",
-          "description": "IDs of all SBOMs matching query criteria (NOT in AP)",
+          "description": "IDs of all SBOMs matching query criteria",
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/URI"
@@ -336,37 +311,10 @@
         }
       }
     },
-    "Pairs$sbom": {
-      "title": "Pairs$sbom",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "query"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "query": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Query-Targets$sbom"
-          }
-        }
-      }
-    },
-    "Query-Targets$sbom": {
-      "title": "Query Targets$sbom",
-      "type": "string",
-      "enum": [
-        "sbom",
-        "sbom_list"
-      ]
-    },
     "SBOM-Specifiers$sbom": {
       "title": "SBOM Specifiers$sbom",
       "type": "object",
-      "description": "Query: If none specified, return IDs for all SBOMs",
+      "description": "If none specified, return IDs for all SBOMs",
       "additionalProperties": false,
       "maxProperties": 100,
       "properties": {
@@ -396,6 +344,7 @@
           "type": "array",
           "description": "Type of SBOM info to return",
           "uniqueItems": true,
+          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -408,23 +357,25 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "sids",
         "info"
       ],
       "maxProperties": 100,
       "properties": {
         "sids": {
           "type": "array",
-          "description": "Query: IDs of SBOMs to return (return all if none listed)",
+          "description": "SBOM IDs to return",
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/URI",
-            "description": "Query: IDs of SBOMs to return (return all if none listed)"
+            "description": "SBOM IDs to return"
           }
         },
         "info": {
           "type": "array",
-          "description": "Type of info to return for each SBOM",
+          "description": "Type of SBOM info to return",
           "uniqueItems": true,
+          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -653,86 +604,6 @@
         }
       }
     },
-    "Pairs$slpf": {
-      "title": "Pairs$slpf",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "deny",
-        "allow",
-        "update",
-        "delete"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "deny": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Deny-Targets$slpf"
-          }
-        },
-        "allow": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Allow-Targets$slpf"
-          }
-        },
-        "update": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Update-Targets$slpf"
-          }
-        },
-        "delete": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Delete-Targets$slpf"
-          }
-        }
-      }
-    },
-    "Deny-Targets$slpf": {
-      "title": "Deny Targets$slpf",
-      "type": "string",
-      "enum": [
-        "ipv4_net",
-        "ipv6_net",
-        "ipv4_connection",
-        "ipv6_connection"
-      ]
-    },
-    "Allow-Targets$slpf": {
-      "title": "Allow Targets$slpf",
-      "type": "string",
-      "enum": [
-        "ipv4_net",
-        "ipv6_net",
-        "ipv4_connection",
-        "ipv6_connection"
-      ]
-    },
-    "Update-Targets$slpf": {
-      "title": "Update Targets$slpf",
-      "type": "string",
-      "enum": [
-        "file"
-      ]
-    },
-    "Delete-Targets$slpf": {
-      "title": "Delete Targets$slpf",
-      "type": "string",
-      "enum": [
-        "rule_number"
-      ]
-    },
     "Drop-Process$slpf": {
       "title": "Drop Process$slpf",
       "type": "string",
@@ -756,416 +627,6 @@
       "type": "integer",
       "description": "Access rule identifier"
     },
-    "Target$pac": {
-      "title": "Target$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "attrs": {
-          "$ref": "#/definitions/Attribute-Specifiers$pac",
-          "description": ""
-        },
-        "sbom": {
-          "$ref": "#/definitions/SBOM-Specifiers$pac",
-          "description": ""
-        }
-      }
-    },
-    "Args$pac": {
-      "title": "Args$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {}
-    },
-    "Results$pac": {
-      "title": "Results$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "attrs": {
-          "$ref": "#/definitions/PostureAttributes$pac",
-          "description": ""
-        },
-        "sbom": {
-          "$ref": "#/definitions/SBOM-Info$pac",
-          "description": ""
-        }
-      }
-    },
-    "Pairs$pac": {
-      "title": "Pairs$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "query"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "query": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/Query-Targets$pac"
-          }
-        }
-      }
-    },
-    "Query-Targets$pac": {
-      "title": "Query Targets$pac",
-      "type": "string",
-      "enum": [
-        "attrs",
-        "sbom"
-      ]
-    },
-    "Attribute-Specifiers$pac": {
-      "title": "Attribute Specifiers$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "os_version": {
-          "type": "boolean"
-        },
-        "password_min": {
-          "type": "boolean"
-        },
-        "file": {
-          "$ref": "#/definitions/FileSpecifiers$pac",
-          "description": ""
-        }
-      }
-    },
-    "SBOM-Specifiers$pac": {
-      "title": "SBOM Specifiers$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "type",
-        "content"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "type": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "enum": [
-              "uri",
-              "summary",
-              "content",
-              "blob"
-            ]
-          }
-        },
-        "content": {
-          "type": "array",
-          "uniqueItems": true,
-          "maxItems": 100,
-          "items": {
-            "enum": [
-              "cyclonedx",
-              "spdx2",
-              "spdx3"
-            ]
-          }
-        }
-      }
-    },
-    "PostureAttributes$pac": {
-      "title": "PostureAttributes$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "os_version": {
-          "$ref": "#/definitions/OS-Version$pac",
-          "description": ""
-        },
-        "password_min": {
-          "type": "integer"
-        },
-        "file": {
-          "$ref": "#/definitions/File$pac",
-          "description": ""
-        }
-      }
-    },
-    "OS-Version$pac": {
-      "title": "OS Version$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "name",
-        "version",
-        "major",
-        "minor",
-        "patch",
-        "build",
-        "platform",
-        "platform_like",
-        "codename",
-        "arch"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Distribution or product name",
-          "maxLength": 255
-        },
-        "version": {
-          "type": "string",
-          "description": "Suitable for presentation OS version",
-          "maxLength": 255
-        },
-        "major": {
-          "type": "integer",
-          "description": "Major release version"
-        },
-        "minor": {
-          "type": "integer",
-          "description": "Minor release version"
-        },
-        "patch": {
-          "type": "integer",
-          "description": "Patch release"
-        },
-        "build": {
-          "type": "string",
-          "description": "Build-specific or variant string",
-          "maxLength": 255
-        },
-        "platform": {
-          "type": "string",
-          "description": "OS Platform or ID",
-          "maxLength": 255
-        },
-        "platform_like": {
-          "type": "string",
-          "description": "Closely-related platform",
-          "maxLength": 255
-        },
-        "codename": {
-          "type": "string",
-          "description": "OS Release codename",
-          "maxLength": 255
-        },
-        "arch": {
-          "$ref": "#/definitions/OS-Arch$pac",
-          "description": "OS Architecture"
-        },
-        "install_date": {
-          "type": "integer",
-          "description": "Install date of the OS (seconds)"
-        },
-        "pid_with_namespace": {
-          "type": "string",
-          "maxLength": 255
-        },
-        "mount_namespace_id": {
-          "type": "string",
-          "maxLength": 255
-        }
-      }
-    },
-    "OS-Arch$pac": {
-      "title": "OS Arch$pac",
-      "type": "string",
-      "description": "Win: wmic os get osarchitecture, or Unix: uname -m",
-      "enum": [
-        "32-bit",
-        "64-bit",
-        "x86_32",
-        "x86_64"
-      ]
-    },
-    "FileSpecifiers$pac": {
-      "title": "FileSpecifiers$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "path": {
-          "type": "string",
-          "maxLength": 255
-        },
-        "hash": {
-          "$ref": "#/definitions/Hashes",
-          "description": ""
-        }
-      }
-    },
-    "File$pac": {
-      "title": "File$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "data"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "data": {
-          "type": "string",
-          "contentEncoding": "base64url"
-        }
-      }
-    },
-    "SBOM-Info$pac": {
-      "title": "SBOM Info$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "uri": {
-          "$ref": "#/definitions/URI",
-          "description": "Unique identifier or locator of the SBOM"
-        },
-        "summary": {
-          "$ref": "#/definitions/SBOM-Elements$pac",
-          "description": "NTIA Minimumum Elements of an SBOM"
-        },
-        "content": {
-          "$ref": "#/definitions/SBOM-Content$pac",
-          "description": "SBOM structured data"
-        },
-        "blob": {
-          "$ref": "#/definitions/SBOM-Blob$pac",
-          "description": "Uninterpreted SBOM bytes"
-        }
-      }
-    },
-    "SBOM-Elements$pac": {
-      "title": "SBOM Elements$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "supplier",
-        "component",
-        "version",
-        "component_ids",
-        "dependencies",
-        "author",
-        "timestamp"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "supplier": {
-          "type": "array",
-          "description": "Name(s) of entity that creates, defines, and identifies components",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "description": "Name(s) of entity that creates, defines, and identifies components",
-            "maxLength": 255
-          }
-        },
-        "component": {
-          "type": "array",
-          "description": "Designation(s) assigned to a unit of software defined by the original supplier",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "description": "Designation(s) assigned to a unit of software defined by the original supplier",
-            "maxLength": 255
-          }
-        },
-        "version": {
-          "type": "string",
-          "description": "Identifier used by supplier to specify a change from a previously identified version",
-          "maxLength": 255
-        },
-        "component_ids": {
-          "type": "array",
-          "description": "Other identifiers used to identify a component, or serve as a look-yp key",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "description": "Other identifiers used to identify a component, or serve as a look-yp key",
-            "maxLength": 255
-          }
-        },
-        "dependencies": {
-          "type": "array",
-          "description": "Upstream component(s)",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "description": "Upstream component(s)",
-            "maxLength": 255
-          }
-        },
-        "author": {
-          "type": "string",
-          "description": "Name of the entity that creates SBOM data for this component",
-          "maxLength": 255
-        },
-        "timestamp": {
-          "$ref": "#/definitions/Date-Time",
-          "description": "Record of the date and time of the SBOM data assembly"
-        }
-      }
-    },
-    "SBOM-Content$pac": {
-      "title": "SBOM Content$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "cyclonedx": {
-          "type": "string",
-          "description": "Placeholder for CycloneDX data model",
-          "maxLength": 255
-        },
-        "spdx2": {
-          "type": "string",
-          "description": "Placeholder for SPDX v2.x data model",
-          "maxLength": 255
-        },
-        "spdx3": {
-          "type": "string",
-          "description": "Placeholder for SPDX v3 data model",
-          "maxLength": 255
-        }
-      }
-    },
-    "SBOM-Blob$pac": {
-      "title": "SBOM Blob$pac",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "format",
-        "data"
-      ],
-      "maxProperties": 100,
-      "properties": {
-        "format": {
-          "type": "string",
-          "enum": [
-            "cyclonedx",
-            "spdx2",
-            "spdx3"
-          ]
-        },
-        "data": {
-          "type": "string",
-          "contentEncoding": "base64url"
-        }
-      }
-    },
     "Target$blinky": {
       "title": "Target$blinky",
       "type": "object",
@@ -1177,6 +638,15 @@
         "led": {
           "type": "string",
           "maxLength": 255
+        },
+        "leds": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "maxLength": 255
+          }
         }
       }
     },
@@ -1201,6 +671,7 @@
     "Pairs$blinky": {
       "title": "Pairs$blinky",
       "type": "object",
+      "description": "Targets applicable to each action",
       "additionalProperties": false,
       "required": [
         "set"
@@ -1228,7 +699,7 @@
     "Features": {
       "title": "Features",
       "type": "array",
-      "description": "An array of names used to query a Consume for its supported capabilities.",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
       "uniqueItems": true,
       "maxItems": 100,
       "items": {
@@ -1264,31 +735,6 @@
         "pairs",
         "rate_limit"
       ]
-    },
-    "Hashes": {
-      "title": "Hashes",
-      "type": "object",
-      "description": "Cryptographic hash values",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "md5": {
-          "type": "string",
-          "description": "MD5 hash as defined in [[RFC1321]](#rfc1321)",
-          "contentEncoding": "base16"
-        },
-        "sha1": {
-          "type": "string",
-          "description": "SHA1 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        },
-        "sha256": {
-          "type": "string",
-          "description": "SHA256 hash as defined in [[RFC6234]](#rfc6234)",
-          "contentEncoding": "base16"
-        }
-      }
     },
     "Nsid": {
       "title": "Nsid",

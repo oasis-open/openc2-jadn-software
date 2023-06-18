@@ -1,0 +1,794 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://oca.org/casp/threat-hunter-2000",
+  "title": "Threat Hunting Device",
+  "version": "0-wd01",
+  "description": "Data definitions for Threat Hunting (TH) functions",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "openc2_command": {
+      "$ref": "#/definitions/OpenC2-Command"
+    },
+    "openc2_response": {
+      "$ref": "#/definitions/OpenC2-Response"
+    }
+  },
+  "definitions": {
+    "OpenC2-Command": {
+      "title": "OpenC2 Command",
+      "type": "object",
+      "description": "The Command defines an Action to be performed on a Target",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The task or activity to be performed (i.e., the 'verb')."
+        },
+        "target": {
+          "$ref": "#/definitions/Target",
+          "description": "The object of the Action. The Action is performed on the Target."
+        },
+        "args": {
+          "$ref": "#/definitions/Args",
+          "description": "Additional information that applies to the Command."
+        },
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
+        },
+        "command_id": {
+          "$ref": "#/definitions/Command-ID",
+          "description": "An identifier of this Command."
+        }
+      }
+    },
+    "OpenC2-Response": {
+      "title": "OpenC2 Response",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/Status-Code",
+          "description": "An integer status code"
+        },
+        "status_text": {
+          "type": "string",
+          "description": "A free-form human-readable description of the Response status",
+          "maxLength": 255
+        },
+        "results": {
+          "$ref": "#/definitions/Results",
+          "description": "Map of key:value pairs that contain additional results based on the invoking Command."
+        }
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "string",
+      "description": "Actions available to this Profile",
+      "enum": [
+        "query",
+        "investigate"
+      ]
+    },
+    "Target": {
+      "title": "Target",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "features": {
+          "$ref": "#/definitions/Features",
+          "description": "A set of items used with the query Action to determine an Actuator's capabilities."
+        },
+        "th": {
+          "$ref": "#/definitions/Target$th",
+          "description": "Threat Hunting Profile-defined targets"
+        }
+      }
+    },
+    "Args": {
+      "title": "Args",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "start_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": ""
+        },
+        "stop_time": {
+          "$ref": "#/definitions/Date-Time",
+          "description": ""
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration",
+          "description": ""
+        },
+        "response_requested": {
+          "$ref": "#/definitions/Response-Type",
+          "description": ""
+        },
+        "th": {
+          "$ref": "#/definitions/Args$th",
+          "description": ""
+        }
+      }
+    },
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "enum": [
+        "th"
+      ]
+    },
+    "Results": {
+      "title": "Results",
+      "type": "object",
+      "description": "Response Results",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "List of OpenC2 language versions supported by this Actuator",
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/definitions/SemVer",
+            "description": "List of OpenC2 language versions supported by this Actuator"
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "description": "List of profiles supported by this Actuator",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Nsid",
+            "description": "List of profiles supported by this Actuator"
+          }
+        },
+        "pairs": {
+          "$ref": "#/definitions/Pairs",
+          "description": "Targets applicable to each supported Action"
+        },
+        "rate_limit": {
+          "type": "number",
+          "description": "Maximum number of requests per minute supported by design or policy",
+          "minimum": 0.0
+        },
+        "th": {
+          "$ref": "#/definitions/Results$th",
+          "description": "TH-defined results"
+        }
+      }
+    },
+    "Pairs": {
+      "title": "Pairs",
+      "type": "object",
+      "description": "Targets applicable to each action supported by this device",
+      "additionalProperties": false,
+      "required": [
+        "query",
+        "th"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
+        },
+        "th": {
+          "$ref": "#/definitions/Pairs$th",
+          "description": "Targets of each Action for Software Bill Of Materials retrieval"
+        }
+      }
+    },
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
+    },
+    "Target$th": {
+      "title": "Target$th",
+      "type": "object",
+      "description": "TH targets defined in this profile.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "hunt": {
+          "type": "string",
+          "description": "A procedure to find a set of entities in the monitored environment that associates with a cyberthreat.",
+          "maxLength": 255
+        },
+        "huntbooks": {
+          "$ref": "#/definitions/Huntbook-Specifiers$th",
+          "description": "TH Huntbook specifiers."
+        },
+        "datasources": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Args$th": {
+      "title": "Args$th",
+      "type": "object",
+      "description": "TH command arguments defined in this profile.",
+      "additionalProperties": false,
+      "required": [
+        "huntargs"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "huntargs": {
+          "$ref": "#/definitions/Huntargs$th",
+          "description": "Arguments for use in conjunction with huntbook implementation."
+        }
+      }
+    },
+    "Results$th": {
+      "title": "Results$th",
+      "type": "object",
+      "description": "TH results defined in this profile.",
+      "additionalProperties": false,
+      "required": [
+        "investigation"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "huntbook_info": {
+          "$ref": "#/definitions/Huntbook-Info$th",
+          "description": "Structured data returned by Query: Huntbooks."
+        },
+        "datasources": {
+          "$ref": "#/definitions/Datasource-Array$th",
+          "description": "Datasource names and info returned by Query Datasources."
+        },
+        "investigation": {
+          "$ref": "#/definitions/Investigation-results$th",
+          "description": ""
+        }
+      }
+    },
+    "Pairs$th": {
+      "title": "Pairs$th",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query",
+        "investigate"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "query": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Query-Targets$th"
+          }
+        },
+        "investigate": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Investigate-Targets$th"
+          }
+        }
+      }
+    },
+    "Query-Targets$th": {
+      "title": "Query Targets$th",
+      "type": "string",
+      "enum": [
+        "huntbooks",
+        "datasources"
+      ]
+    },
+    "Investigate-Targets$th": {
+      "title": "Investigate Targets$th",
+      "type": "string",
+      "enum": [
+        "hunt"
+      ]
+    },
+    "Huntbook-Specifiers$th": {
+      "title": "Huntbook Specifiers$th",
+      "type": "object",
+      "description": "TH Huntbook specifiers.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Return huntbooks at and below this filesystem location (absolute path).",
+          "maxLength": 255
+        },
+        "tags": {
+          "$ref": "#/definitions/Tags$th",
+          "description": "Return huntbooks with these keywords."
+        },
+        "arg_types": {
+          "$ref": "#/definitions/Specified-Arg-Types$th",
+          "description": "Return huntbooks that take these argument types."
+        },
+        "arg_names": {
+          "$ref": "#/definitions/Specified-Arg-Names$th",
+          "description": "Return huntbooks that take these argument types."
+        },
+        "format_types": {
+          "$ref": "#/definitions/Return-Type$th",
+          "description": "Return huntbooks that produce these output types."
+        },
+        "return_format": {
+          "$ref": "#/definitions/Huntbook-Sections$th",
+          "description": "For each huntbook returned, include these data items."
+        }
+      }
+    },
+    "Specified-Arg-Types$th": {
+      "title": "Specified Arg Types$th",
+      "type": "array",
+      "description": "Return huntbooks that take these argument types.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Arg-Type$th"
+      }
+    },
+    "Specified-Arg-Names$th": {
+      "title": "Specified Arg Names$th",
+      "type": "array",
+      "description": "Return huntbooks that take arguments with these names.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Arg-Name$th"
+      }
+    },
+    "Huntargs$th": {
+      "title": "Huntargs$th",
+      "type": "object",
+      "description": "TH command arguments defined in this profile.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "string_arg": {
+          "type": "string",
+          "description": "string arguments supplied as huntargs.",
+          "maxLength": 255
+        },
+        "integer_arg": {
+          "type": "integer",
+          "description": "integer arguments supplied as huntargs."
+        },
+        "stix": {
+          "$ref": "#/definitions/STIX-Array$th",
+          "description": "STIX arguments supplied as huntargs."
+        },
+        "timeranges": {
+          "$ref": "#/definitions/Timeranges$th",
+          "description": "Timeranges used in the execution of a hunt."
+        },
+        "datasources": {
+          "$ref": "#/definitions/Datasource-Array$th",
+          "description": "You must identify one or more available data sources for hunting. These may be a host monitor, an EDR, a SIEM, a firewall, etc."
+        },
+        "ipv4_addr": {
+          "$ref": "#/definitions/IPv4-Addr",
+          "description": "ipv4_address:: IPv4 address as defined in [RFC0791]"
+        },
+        "ipv6_addr": {
+          "$ref": "#/definitions/IPv6-Addr",
+          "description": "ipv6_address:: IPv6 address as defined in [RFC8200]"
+        },
+        "ipv4_net": {
+          "$ref": "#/definitions/IPv4-Net",
+          "description": "ipv4_network:: ipv4 network targeted by hunt activity"
+        },
+        "ipv6_net": {
+          "$ref": "#/definitions/IPv6-Net",
+          "description": "ipv6_network:: ipv6 network targeted by hunt activity"
+        }
+      }
+    },
+    "Investigation-results$th": {
+      "title": "Investigation results$th",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "names",
+        "content"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "names": {
+          "type": "string",
+          "description": "+ ???",
+          "maxLength": 255
+        },
+        "content": {
+          "type": "integer",
+          "description": "tables"
+        }
+      }
+    },
+    "Timeranges$th": {
+      "title": "Timeranges$th",
+      "type": "array",
+      "description": "a timerange used in the execution of a hunt.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Timerange$th"
+      }
+    },
+    "Timerange$th": {
+      "title": "Timerange$th",
+      "type": "object",
+      "description": "Identification of process to be targeted by Threat Hunting activity.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "timerange_absolute": {
+          "$ref": "#/definitions/Timerange-Abs$th",
+          "description": "Absolute timerange, defined by a start and end time in ISO 8601 format."
+        },
+        "timerange_relative": {
+          "$ref": "#/definitions/Timerange-Rel$th",
+          "description": "Relative timerange, example '3, Days' for last 3 days."
+        }
+      }
+    },
+    "Time-Unit$th": {
+      "title": "Time Unit$th",
+      "type": "string",
+      "description": "Time Unit Keywords.",
+      "enum": [
+        "Days",
+        "Hours",
+        "Minutes",
+        "Seconds"
+      ]
+    },
+    "Timerange-Abs$th": {
+      "title": "Timerange Abs$th",
+      "type": "object",
+      "description": "Absolute timerange, defined by a start and end time in ISO 8601 format.",
+      "additionalProperties": false,
+      "required": [
+        "hunt_start_time",
+        "hunt_stop_time"
+      ],
+      "minProperties": 2,
+      "maxProperties": 100,
+      "properties": {
+        "hunt_start_time": {
+          "$ref": "#/definitions/STIX-Time$th",
+          "description": "Start time, as a STIX time string."
+        },
+        "hunt_stop_time": {
+          "$ref": "#/definitions/STIX-Time$th",
+          "description": "Stop time, as a STIX time string."
+        }
+      }
+    },
+    "STIX-Time$th": {
+      "title": "STIX Time$th",
+      "type": "string",
+      "description": "string representation of ISO 8601 time.",
+      "maxLength": 255,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "Timerange-Rel$th": {
+      "title": "Timerange Rel$th",
+      "type": "object",
+      "description": "Relative timerange, example '3, Days' for last 3 days.",
+      "additionalProperties": false,
+      "required": [
+        "number",
+        "time_unit"
+      ],
+      "minProperties": 2,
+      "maxProperties": 100,
+      "properties": {
+        "number": {
+          "type": "integer",
+          "description": "Number of specified Time Units used in Relative Timerange."
+        },
+        "time_unit": {
+          "$ref": "#/definitions/Time-Unit$th",
+          "description": "Time Unit Keywords."
+        }
+      }
+    },
+    "Arg-Type$th": {
+      "title": "Arg Type$th",
+      "type": "string",
+      "description": "Argument types used by a Huntbook. Follow STIX naming conventions, with lowercase characters and hyphens replacing spaces. Common types include process, file, and network-traffic.",
+      "maxLength": 255
+    },
+    "Arg-Name$th": {
+      "title": "Arg Name$th",
+      "type": "string",
+      "description": "Argument names used by a Huntbook. Follow C variable naming conventions. Examples include name, src_port, and x_unique_id.",
+      "maxLength": 255
+    },
+    "Return-Type$th": {
+      "title": "Return Type$th",
+      "type": "object",
+      "description": "Variable names and types expected as returns when using a Huntbook.",
+      "additionalProperties": false,
+      "required": [
+        "var_name",
+        "var_type"
+      ],
+      "minProperties": 2,
+      "maxProperties": 100,
+      "properties": {
+        "var_name": {
+          "$ref": "#/definitions/Arg-Name$th",
+          "description": "Variable name to be returned by use of Huntbook."
+        },
+        "var_type": {
+          "$ref": "#/definitions/Arg-Type$th",
+          "description": "Type of data to be returned by use of Huntbook."
+        }
+      }
+    },
+    "Datasource$th": {
+      "title": "Datasource$th",
+      "type": "object",
+      "description": "Datasource names and tags required for use with a particular Huntbook.",
+      "additionalProperties": false,
+      "required": [
+        "ds_name"
+      ],
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "ds_name": {
+          "type": "string",
+          "description": "Name of a Datasource used by a Huntbook in Kestrel runtime.",
+          "maxLength": 255
+        },
+        "ds_tags": {
+          "$ref": "#/definitions/Tags$th",
+          "description": "Tags applied to a Datasource for search or filter purposes."
+        }
+      }
+    },
+    "Huntbook-Sections$th": {
+      "title": "Huntbook Sections$th",
+      "type": "array",
+      "description": "For each huntbook returned, include these data items.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Huntbook-Section$th"
+      }
+    },
+    "Huntbook-Section$th": {
+      "title": "Huntbook Section$th",
+      "type": "string",
+      "description": "Data format to be returned by Query Huntbooks. If none specified, return all.",
+      "enum": [
+        "path",
+        "uniqueId",
+        "version",
+        "args_required",
+        "expected_returns",
+        "script"
+      ]
+    },
+    "Huntbook-Info$th": {
+      "title": "Huntbook Info$th",
+      "type": "object",
+      "description": "Structured data returned by Query: Huntbooks with specifiers for specific info.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path used to identify a Huntbook in place of a name.",
+          "maxLength": 255
+        },
+        "uniqueId": {
+          "type": "integer",
+          "description": "Unique ID associated with a specified Huntbook."
+        },
+        "version": {
+          "type": "string",
+          "description": "Unique ID associated with a specified Huntbook.",
+          "maxLength": 255
+        },
+        "args_required": {
+          "$ref": "#/definitions/Typed-Arguments$th",
+          "description": "List of arguments used in the specified Huntflow."
+        },
+        "expected_returns": {
+          "$ref": "#/definitions/Typed-Arguments$th",
+          "description": "Data returned by the specified Huntbooks."
+        },
+        "script": {
+          "type": "string",
+          "description": "Text of Hunt logic imlemented by specified Huntbook.",
+          "maxLength": 255
+        }
+      }
+    },
+    "STIX-Array$th": {
+      "title": "STIX Array$th",
+      "type": "array",
+      "description": "STIX arguments supplied as huntargs.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/STIX-Object$th"
+      }
+    },
+    "STIX-Object$th": {
+      "title": "STIX Object$th",
+      "type": "array",
+      "description": "STIX cyber observables used in threat hunting. link to STIX table HERE.",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "Datasource-Array$th": {
+      "title": "Datasource Array$th",
+      "type": "array",
+      "description": "An Array of Datasources, with multiple uses in Threathunting",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Datasource$th"
+      }
+    },
+    "Tags$th": {
+      "title": "Tags$th",
+      "type": "array",
+      "description": "Tags applied for search or filter purposes.",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "Typed-Arguments$th": {
+      "title": "Typed Arguments$th",
+      "type": "object",
+      "description": "Argument names and types tied to a specific Huntbook.",
+      "additionalProperties": false,
+      "maxProperties": 100
+    },
+    "Features": {
+      "title": "Features",
+      "type": "array",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Feature"
+      }
+    },
+    "IPv4-Net": {
+      "title": "IPv4 Net",
+      "type": "string",
+      "description": "IPv4 address and prefix length",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\/(3[0-2]|[0-2]?[0-9]))?$"
+    },
+    "IPv6-Net": {
+      "title": "IPv6 Net",
+      "type": "string",
+      "description": "IPv6 address and prefix length",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)?s*(\\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$"
+    },
+    "Date-Time": {
+      "title": "Date Time",
+      "type": "integer",
+      "description": "Date and Time",
+      "minimum": 0
+    },
+    "Duration": {
+      "title": "Duration",
+      "type": "integer",
+      "description": "A length of time",
+      "minimum": 0
+    },
+    "Feature": {
+      "title": "Feature",
+      "type": "string",
+      "description": "Specifies the results to be returned from a query features Command",
+      "enum": [
+        "versions",
+        "profiles",
+        "pairs",
+        "rate_limit"
+      ]
+    },
+    "IPv4-Addr": {
+      "title": "IPv4 Addr",
+      "type": "string",
+      "description": "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$"
+    },
+    "IPv6-Addr": {
+      "title": "IPv6 Addr",
+      "type": "string",
+      "description": "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)",
+      "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(%.+)$"
+    },
+    "Nsid": {
+      "title": "Nsid",
+      "type": "string",
+      "description": "A short identifier that refers to a namespace.",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "Response-Type": {
+      "title": "Response Type",
+      "type": "string",
+      "enum": [
+        "none",
+        "ack",
+        "status",
+        "complete"
+      ]
+    },
+    "Status-Code": {
+      "title": "Status Code",
+      "type": "integer",
+      "enum": [
+        102,
+        200,
+        201,
+        400,
+        401,
+        403,
+        404,
+        500,
+        501,
+        503
+      ]
+    },
+    "Command-ID": {
+      "title": "Command ID",
+      "type": "string",
+      "description": "Command Identifier",
+      "maxLength": 255,
+      "pattern": "^\\S{0,36}$"
+    },
+    "SemVer": {
+      "title": "SemVer",
+      "type": "string",
+      "description": "Major.Minor.Patch version number",
+      "maxLength": 255,
+      "pattern": "^(\\d{1,4})(\\.(\\d{1,6})){0,2}$"
+    }
+  }
+}

@@ -35,7 +35,7 @@
     [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
     [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
     [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-    [4, "actuator", "Actuator", ["[0"], "The subject of the Action. The Actuator executes the Action on the Target."],
+    [4, "profile", "Profile", ["[0"], "The actuator profile defining the function to be performed by the Command."],
     [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
   ]],
 
@@ -45,18 +45,19 @@
 
   ["Target", "Choice", [], "", [
     [9, "features", "ls:Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
-    [1035, "pac", "pac:AP-Target", ["<"], "PAC-defined targets"]
+    [1035, "pac", "pac:Target", ["<"], "PAC-defined targets"]
   ]],
 
   ["Args", "Map", ["{1"], "", [
     [1, "start_time", "ls:Date-Time", ["[0"], "The specific date/time to initiate the Command"],
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
-    [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"]
+    [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
+    [1035, "pac", "pac:Args", ["<"], "PAC-defined command arguments"]
   ]],
 
-  ["Actuator", "Choice", [], "", [
-    [1035, "pac", "pac:AP-Specifiers", ["<"], "PAC-defined actuator specifiers"]
+  ["Profile", "Enumerated", [], "", [
+    [1035, "pac", ""]
   ]],
 
   ["OpenC2-Response", "Record", [], "", [
@@ -66,15 +67,21 @@
   ]],
 
   ["Results", "Map", ["{1"], "Response Results", [
-    [1, "versions", "ls:Version", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
+    [1, "versions", "ls:SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
     [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
-    [3, "pairs", "Action-Targets", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
+    [3, "pairs", "Pairs", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
     [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-    [1035, "pac", "pac:AP-Results", ["[0", "<"], "PAC-defined results"]
+    [1035, "pac", "pac:Results", ["[0", "<"], "PAC-defined results"]
   ]],
 
-  ["Action-Targets", "MapOf", ["+Action", "*Targets", "{1"], "Targets applicable to each action supported by this device", []],
+  ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
+    [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
+    [1035, "pac", "pac:Pairs", ["[0", "<"], ""]
+  ]],
 
-  ["Targets", "ArrayOf", ["*>Target", "{1", "q"], "Target pointers", []]
+  ["QueryTargets", "Enumerated", [], "", [
+    [9, "features", ""]
+  ]]
+
  ]
 }

@@ -1,7 +1,7 @@
 {
   "info": {
-    "title": "OpenC2 device schema for LED panel controller using sFractal blinky interface",
-    "package": "http://sfractal.com/schemas/blinky/v1.0",
+    "package": "http://acme.com/schemas/device-base/pacf/v3",
+    "title": "OpenC2 base device schema for the PACE collection service and packet filter",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 
@@ -10,7 +10,7 @@
       [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
       [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
       [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-      [4, "actuator", "Actuator", ["[0"], "The subject of the Action. The Actuator executes the Action on the Target."],
+      [4, "profile", "Profile", ["[0"], "The actuator profile defining the function to be performed by the Command."],
       [5, "command_id", "Command-ID", ["[0"], "An identifier of this Command."]
     ]],
 
@@ -18,17 +18,19 @@
       [3, "query", "Initiate a request for information."],
       [6, "deny", "Prevent a certain event or action from completion, such as preventing a flow from reaching a destination or preventing access."],
       [8, "allow", "Permit access to or execution of a Target."],
-      [15, "set", ""],
       [16, "update", "Instruct a component to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
       [20, "delete", "Remove an entity (e.g., data, files, flows)."]
     ]],
 
     ["Target", "Choice", [], "", [
       [9, "features", "Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
-      [1024, "slpf", "Target$slpf", ["<"], ""],
-      [1026, "sbom", "Target$sbom", ["<"], ""],
-      [1035, "pac", "Target$pac", ["<"], ""],
-      [9001, "blinky", "Target$blinky", ["<"], ""]
+      [10, "file", "File", [], "Properties of a file."],
+      [13, "ipv4_net", "IPv4-Net", [], "An IPv4 address range including CIDR prefix length."],
+      [14, "ipv6_net", "IPv6-Net", [], "An IPv6 address range including prefix length."],
+      [15, "ipv4_connection", "IPv4-Connection", [], "A 5-tuple of source and destination IPv4 address ranges, source and destination ports, and protocol."],
+      [16, "ipv6_connection", "IPv6-Connection", [], "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."],
+      [1024, "slpf", "Target$slpf", ["<"], "SLPF-defined targets"],
+      [1035, "pac", "Target$pac", ["<"], "PAC-defined targets"]
     ]],
 
     ["Args", "Map", ["{1"], "", [
@@ -36,17 +38,13 @@
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
       [3, "duration", "Duration", ["[0"], "The length of time for an Command to be in effect"],
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: none, ack, status, complete"],
-      [1024, "slpf", "Args$slpf", ["<", "[0"], ""],
-      [1026, "sbom", "Args$sbom", ["<", "[0"], ""],
-      [1035, "pac", "Args$pac", ["<", "[0"], ""],
-      [9001, "blinky", "Args$blinky", ["<", "[0"], ""]
+      [1024, "slpf", "Args$slpf", ["[0", "<"], "SLPF-defined command arguments"],
+      [1035, "pac", "Args$pac", ["[0", "<"], "PAC-defined command arguments"]
     ]],
 
-    ["Actuator", "Enumerated", [], "", [
+    ["Profile", "Enumerated", [], "", [
       [1024, "slpf", ""],
-      [1026, "sbom", ""],
-      [1035, "pac", ""],
-      [9001, "blinky", ""]
+      [1035, "pac", ""]
     ]],
 
     ["OpenC2-Response", "Record", [], "", [
@@ -58,175 +56,36 @@
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
       [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
-      [3, "pairs", "Pairs", ["[0"], ""],
+      [3, "pairs", "Pairs", ["[0"], "DEPRECATED: targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-      [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"],
-      [1024, "slpf", "Results$slpf", ["<", "[0"], ""],
-      [1026, "sbom", "Results$sbom", ["<", "[0"], ""],
-      [1035, "pac", "Results$pac", ["<", "[0"], ""],
-      [9001, "blinky", "Results$blinky", ["<", "[0"], ""]
+      [1024, "slpf", "Results$slpf", ["[0", "<"], "SLPF-defined results"],
+      [1035, "pac", "Results$pac", ["[0", "<"], "PAC-defined results"]
     ]],
 
-    ["Pairs", "Map", [], "", [
+    ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [1024, "slpf", "Pairs$slpf", ["<"], ""],
-      [1026, "sbom", "Pairs$sbom", ["<"], ""],
-      [1035, "pac", "Pairs$pac", ["<"], ""],
-      [9001, "blinky", "Pairs$blinky", ["<"], ""]
+      [1024, "slpf", "Pairs$slpf", ["[0", "<"], ""],
+      [1035, "pac", "Pairs$pac", ["[0", "<"], ""]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
       [9, "features", ""]
     ]],
 
-    ["Target$sbom", "Choice", [], "Profile-defined targets", [
-      [1, "sbom", "SBOM-Specifiers$sbom", [], "Return URI IDs for all or specified SBOMs"],
-      [2, "sbom_list", "SBOM-List$sbom", [], "Return requested SBOM info for specified IDs"]
-    ]],
-
-    ["Args$sbom", "Map", [], "Profile-defined command arguments", []],
-
-    ["Results$sbom", "Map", ["{1"], "Profile-defined response results", [
-      [1, "sbom", "ArrayOf", ["*URI", "[0"], "IDs of all SBOMs matching query criteria (NOT in AP)"],
-      [2, "sbom_list", "SBOM-Info$sbom", ["[0", "]0"], "SBOM Info for each ID in sbom_list"]
-    ]],
-
-    ["Pairs$sbom", "Map", [], "", [
-      [3, "query", "ArrayOf", ["*Query-Targets$sbom", "q"], ""]
-    ]],
-
-    ["Query-Targets$sbom", "Enumerated", [], "", [
-      [1, "sbom", ""],
-      [2, "sbom_list", ""]
-    ]],
-
-    ["SBOM-Specifiers$sbom", "Map", [], "Query: If none specified, return IDs for all SBOMs", [
-      [1, "type", "ArrayOf", ["*#SBOM-Content$sbom", "q", "[0"], "SBOM type"],
-      [2, "format", "ArrayOf", ["*DataFormat$sbom", "q", "[0"], "Data format"],
-      [3, "info", "ArrayOf", ["*Info$sbom", "q", "[0"], "Type of SBOM info to return"]
-    ]],
-
-    ["SBOM-List$sbom", "Map", [], "", [
-      [1, "sids", "URI", ["[0", "]0"], "Query: IDs of SBOMs to return (return all if none listed)"],
-      [2, "info", "ArrayOf", ["*Info$sbom", "q"], "Type of info to return for each SBOM"]
-    ]],
-
-    ["Info$sbom", "Enumerated", [], "SBOM-Info fields to return", [
-      [1, "summary", "NTIA Minimumum Elements of an SBOM"],
-      [2, "content", "SBOM structured data"],
-      [3, "blob", "Uninterpreted SBOM bytes"]
-    ]],
-
-    ["SBOM-Info$sbom", "Map", [], "", [
-      [1, "type", "Enumerated", ["#SBOM-Content$sbom"], "SBOM type (name of standard)"],
-      [2, "format", "DataFormat$sbom", [], "Data (serialization) format"],
-      [3, "sid", "URI", [], "Unique identifier or locator of the SBOM"],
-      [4, "summary", "SBOM-Elements$sbom", ["[0"], "NTIA Minimumum Elements of an SBOM"],
-      [5, "content", "SBOM-Content$sbom", ["[0"], "SBOM structured data"],
-      [6, "blob", "Binary", ["[0"], "Uninterpreted SBOM bytes"]
-    ]],
-
-    ["SBOM-Elements$sbom", "Record", [], "", [
-      [1, "supplier", "String", ["]0"], "Name of entity that creates, defines, and identifies components"],
-      [2, "component", "String", ["]0"], "Designation(s) assigned to a unit of software defined by the original supplier"],
-      [3, "version", "String", [], "Identifier used by supplier to specify a change from a previously identified version"],
-      [4, "component_ids", "String", ["]0"], "Other identifiers used to identify a component, or serve as a look-yp key"],
-      [5, "dependencies", "String", ["]0"], "Upstream component(s)"],
-      [6, "author", "String", [], "Name of the entity that creates SBOM data for this component"],
-      [7, "timestamp", "DateTime$sbom", [], "Record of the date and time of the SBOM data assembly"]
-    ]],
-
-    ["SBOM-Content$sbom", "Choice", [], "", [
-      [1, "cyclonedx", "String", [], "Placeholder for CycloneDX data model"],
-      [2, "spdx2", "String", [], "Placeholder for SPDX v2.x data model"],
-      [3, "spdx3", "String", [], "Placeholder for SPDX v3 data model"]
-    ]],
-
-    ["DataFormat$sbom", "Enumerated", [], "Serialization Data Formats", [
-      [1, "ttv", "Text Tag-Value"],
-      [2, "json", "JSON verbose"],
-      [3, "json-m", "JSON concise/minimized"],
-      [4, "json-ld", "JSON linked data"],
-      [5, "cbor", "CBOR binary"],
-      [6, "protobuf", "Protocol Buffers binary"],
-      [7, "xml", "XML"],
-      [8, "ss-csv", "Spreadsheet comma separated values"]
-    ]],
-
-    ["DateTime$sbom", "Integer", ["{0"], "", []],
-
-    ["Target$slpf", "Choice", [], "SLPF targets", [
-      [1, "rule_number", "Rule-ID$slpf", [], "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"]
-    ]],
-
-    ["Args$slpf", "Map", ["{1"], "SLPF command arguments", [
-      [1, "drop_process", "Drop-Process$slpf", ["[0"], "Specifies how to handle denied packets"],
-      [2, "persistent", "Boolean", ["[0"], "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"],
-      [3, "direction", "Direction$slpf", ["[0"], "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"],
-      [4, "insert_rule", "Rule-ID$slpf", ["[0"], "Specifies the identifier of the rule within a list, typically used in a top-down rule list"]
-    ]],
-
-    ["Results$slpf", "Map", [], "SLPF results defined in this profile", [
-      [1, "rule_number", "Rule-ID$slpf", ["[0"], "Rule identifier returned from allow or deny Command."]
-    ]],
-
-    ["Pairs$slpf", "Map", [], "", [
-      [6, "deny", "ArrayOf", ["*Deny-Targets$slpf", "q"], ""],
-      [8, "allow", "ArrayOf", ["q", "*Allow-Targets$slpf"], ""],
-      [16, "update", "ArrayOf", ["q", "*Update-Targets$slpf"], ""],
-      [20, "delete", "ArrayOf", ["q", "*Delete-Targets$slpf"], ""]
-    ]],
-
-    ["Deny-Targets$slpf", "Enumerated", [], "", [
-      [1, "ipv4_net", ""],
-      [2, "ipv6_net", ""],
-      [3, "ipv4_connection", ""],
-      [4, "ipv6_connection", ""]
-    ]],
-
-    ["Allow-Targets$slpf", "Enumerated", [], "", [
-      [1, "ipv4_net", ""],
-      [2, "ipv6_net", ""],
-      [3, "ipv4_connection", ""],
-      [4, "ipv6_connection", ""]
-    ]],
-
-    ["Update-Targets$slpf", "Enumerated", [], "", [
-      [1, "file", ""]
-    ]],
-
-    ["Delete-Targets$slpf", "Enumerated", [], "", [
-      [1, "rule_number", ""]
-    ]],
-
-    ["Drop-Process$slpf", "Enumerated", [], "", [
-      [1, "none", "Drop the packet and do not send a notification to the source of the packet"],
-      [2, "reject", "Drop the packet and send an ICMP host unreachable (or equivalent) to the source of the packet"],
-      [3, "false_ack", "Drop the traffic and send a false acknowledgement"]
-    ]],
-
-    ["Direction$slpf", "Enumerated", [], "", [
-      [1, "both", "Apply rules to all traffic"],
-      [2, "ingress", "Apply rules to incoming traffic only"],
-      [3, "egress", "Apply rules to outgoing traffic only"]
-    ]],
-
-    ["Rule-ID$slpf", "Integer", [], "Access rule identifier", []],
-
-    ["Target$pac", "Choice", [], "", [
+    ["Target$pac", "Choice", [], "Profile-defined targets", [
       [1, "attrs", "Attribute-Specifiers$pac", [], ""],
       [2, "sbom", "SBOM-Specifiers$pac", [], ""]
     ]],
 
     ["Args$pac", "Map", ["{1"], "", []],
 
-    ["Results$pac", "Map", ["{1"], "", [
+    ["Results$pac", "Map", ["{1"], "Profile-defined response results", [
       [1, "attrs", "PostureAttributes$pac", ["[0"], ""],
       [2, "sbom", "SBOM-Info$pac", ["[0"], ""]
     ]],
 
-    ["Pairs$pac", "Map", [], "", [
-      [3, "query", "ArrayOf", ["*Query-Targets$pac", "q"], ""]
+    ["Pairs$pac", "Map", [], "Targets applicable to each action", [
+      [3, "query", "ArrayOf", ["q", "*Query-Targets$pac"], ""]
     ]],
 
     ["Query-Targets$pac", "Enumerated", [], "", [
@@ -242,7 +101,7 @@
 
     ["SBOM-Specifiers$pac", "Map", [], "", [
       [1, "type", "ArrayOf", ["q", "*#SBOM-Info$pac"], ""],
-      [2, "content", "ArrayOf", ["*#SBOM-Content$pac", "q"], ""]
+      [2, "content", "ArrayOf", ["q", "*#SBOM-Content$pac"], ""]
     ]],
 
     ["PostureAttributes$pac", "Map", ["{1"], "", [
@@ -297,7 +156,7 @@
       [4, "component_ids", "String", ["]0"], "Other identifiers used to identify a component, or serve as a look-yp key"],
       [5, "dependencies", "String", ["]0"], "Upstream component(s)"],
       [6, "author", "String", [], "Name of the entity that creates SBOM data for this component"],
-      [7, "timestamp", "Date-Time", [], "Record of the date and time of the SBOM data assembly"]
+      [7, "timestamp", "DateTime$pac", [], "Record of the date and time of the SBOM data assembly"]
     ]],
 
     ["SBOM-Content$pac", "Choice", [], "", [
@@ -311,24 +170,78 @@
       [2, "data", "Binary", [], ""]
     ]],
 
-    ["Target$blinky", "Choice", [], "Profile-defined targets", [
-      [1, "led", "String", [], ""]
+    ["DateTime$pac", "String", ["%^((?:(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?))(Z|[\\+-]\\d{2}:\\d{2})?)$"], "RFC-3339 format", []],
+
+    ["Target$slpf", "Choice", [], "SLPF targets", [
+      [1, "rule_number", "Rule-ID$slpf", [], "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"]
     ]],
 
-    ["Args$blinky", "Map", ["{1"], "Profile-defined command arguments", []],
-
-    ["Results$blinky", "Map", ["{1"], "Profile-defined response results", []],
-
-    ["Pairs$blinky", "Map", [], "", [
-      [15, "set", "ArrayOf", ["q", "*Set-Targets$blinky"], ""]
+    ["Args$slpf", "Map", ["{1"], "SLPF command arguments", [
+      [1, "drop_process", "Drop-Process$slpf", ["[0"], "Specifies how to handle denied packets"],
+      [2, "persistent", "Boolean", ["[0"], "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"],
+      [3, "direction", "Direction$slpf", ["[0"], "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"],
+      [4, "insert_rule", "Rule-ID$slpf", ["[0"], "Specifies the identifier of the rule within a list, typically used in a top-down rule list"]
     ]],
 
-    ["Set-Targets$blinky", "Enumerated", [], "", [
-      [1, "led", ""],
-      [2, "leds", ""]
+    ["Results$slpf", "Map", [], "SLPF results defined in this profile", [
+      [1, "rule_number", "Rule-ID$slpf", ["[0"], "Rule identifier returned from allow or deny Command."]
     ]],
 
-    ["Features", "ArrayOf", ["*Feature", "q"], "An array of names used to query a Consume for its supported capabilities.", []],
+    ["Pairs$slpf", "Enumerated", [], "", [
+      [3, "query: features", ""],
+      [6, "deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection", ""],
+      [8, "allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection", ""],
+      [16, "update: file", ""],
+      [20, "delete: /rule_number", ""]
+    ]],
+
+    ["Drop-Process$slpf", "Enumerated", [], "", [
+      [1, "none", "Drop the packet and do not send a notification to the source of the packet"],
+      [2, "reject", "Drop the packet and send an ICMP host unreachable (or equivalent) to the source of the packet"],
+      [3, "false_ack", "Drop the traffic and send a false acknowledgement"]
+    ]],
+
+    ["Direction$slpf", "Enumerated", [], "", [
+      [1, "both", "Apply rules to all traffic"],
+      [2, "ingress", "Apply rules to incoming traffic only"],
+      [3, "egress", "Apply rules to outgoing traffic only"]
+    ]],
+
+    ["Rule-ID$slpf", "Integer", [], "Access rule identifier", []],
+
+    ["Features", "ArrayOf", ["*Feature", "{0", "q"], "An array of names used to query a Consumer for its supported capabilities.", []],
+
+    ["File", "Map", ["{1"], "", [
+      [1, "name", "String", ["[0"], "The name of the file as defined in the file system"],
+      [2, "path", "String", ["[0"], "The absolute path to the location of the file in the file system"],
+      [3, "hashes", "Hashes", ["[0"], "One or more cryptographic hash codes of the file contents"]
+    ]],
+
+    ["IPv4-Net", "Array", ["/ipv4-net"], "IPv4 address and prefix length", [
+      [1, "ipv4_addr", "IPv4-Addr", [], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+      [2, "prefix_length", "Integer", ["[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+    ]],
+
+    ["IPv4-Connection", "Record", ["{1"], "5-tuple that specifies a tcp/ip connection", [
+      [1, "src_addr", "IPv4-Net", ["[0"], "IPv4 source address range"],
+      [2, "src_port", "Port", ["[0"], "Source service per [[RFC6335]](#rfc6335)"],
+      [3, "dst_addr", "IPv4-Net", ["[0"], "IPv4 destination address range"],
+      [4, "dst_port", "Port", ["[0"], "Destination service per [[RFC6335]](#rfc6335)"],
+      [5, "protocol", "L4-Protocol", ["[0"], "Layer 4 protocol (e.g., TCP) - see [Section 3.4.2.10](#34210-l4-protocol)"]
+    ]],
+
+    ["IPv6-Net", "Array", ["/ipv6-net"], "IPv6 address and prefix length", [
+      [1, "ipv6_addr", "IPv6-Addr", [], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+      [2, "prefix_length", "Integer", ["[0"], "prefix length. If omitted, refers to a single host address"]
+    ]],
+
+    ["IPv6-Connection", "Record", ["{1"], "5-tuple that specifies a tcp/ip connection", [
+      [1, "src_addr", "IPv6-Net", ["[0"], "IPv6 source address range"],
+      [2, "src_port", "Port", ["[0"], "Source service per [[RFC6335]](#rfc6335)"],
+      [3, "dst_addr", "IPv6-Net", ["[0"], "IPv6 destination address range"],
+      [4, "dst_port", "Port", ["[0"], "Destination service per [[RFC6335]](#rfc6335)"],
+      [5, "protocol", "L4-Protocol", ["[0"], "Layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"]
+    ]],
 
     ["URI", "String", ["/uri"], "Uniform Resource Identifier, [[RFC3986]](#rfc3986).", []],
 
@@ -349,7 +262,20 @@
       [3, "sha256", "Binary", ["/x", "{32", "}32", "[0"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
     ]],
 
+    ["IPv4-Addr", "Binary", ["/ipv4-addr"], "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)", []],
+
+    ["IPv6-Addr", "Binary", ["/ipv6-addr"], "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)", []],
+
+    ["L4-Protocol", "Enumerated", [], "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [[RFC5237]](#rfc5237)", [
+      [1, "icmp", "Internet Control Message Protocol - [[RFC0792]](#rfc0792)"],
+      [6, "tcp", "Transmission Control Protocol - [[RFC0793]](#rfc0793)"],
+      [17, "udp", "User Datagram Protocol - [[RFC0768]](#rfc0768)"],
+      [132, "sctp", "Stream Control Transmission Protocol - [[RFC4960]](#rfc4960)"]
+    ]],
+
     ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
+
+    ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)", []],
 
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],

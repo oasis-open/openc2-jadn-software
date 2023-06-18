@@ -95,14 +95,6 @@
         }
       }
     },
-    "Profile": {
-      "title": "Profile",
-      "type": "string",
-      "description": "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.",
-      "enum": [
-        "sbom"
-      ]
-    },
     "Args": {
       "title": "Args",
       "type": "object",
@@ -128,9 +120,17 @@
         },
         "sbom": {
           "$ref": "#/definitions/Args$sbom",
-          "description": "Command arguments for the SBOM actuator profile"
+          "description": ""
         }
       }
+    },
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "description": "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.",
+      "enum": [
+        "sbom"
+      ]
     },
     "Results": {
       "title": "Results",
@@ -171,7 +171,7 @@
         },
         "sbom": {
           "$ref": "#/definitions/Results$sbom",
-          "description": "Results defined in the Sofware Bill Of Materials AP"
+          "description": "Results defined in the Software Bill Of Materials AP"
         }
       }
     },
@@ -218,11 +218,11 @@
       "properties": {
         "sbom": {
           "$ref": "#/definitions/SBOM-Specifiers$sbom",
-          "description": "Return URI IDs for all or specified SBOMs"
+          "description": "Return specific SBOM  ????? how change this?"
         },
         "sbom_list": {
           "$ref": "#/definitions/SBOM-List$sbom",
-          "description": "Return requested SBOM info for specified IDs"
+          "description": "Return list of SBOMs ID and metadata"
         }
       }
     },
@@ -240,26 +240,17 @@
       "description": "Profile-defined response results",
       "additionalProperties": false,
       "required": [
-        "search"
+        "sbom_list"
       ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
-        "search": {
-          "type": "array",
-          "description": "IDs of all SBOMs matching query criteria",
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/definitions/URI"
-          }
-        },
         "sbom_list": {
           "type": "array",
-          "description": "SBOM Info for each ID in sbom_list",
-          "minItems": 1,
+          "description": "List of all SBOMs matching query criteria",
+          "maxItems": 100,
           "items": {
-            "$ref": "#/definitions/SBOM-Info$sbom",
-            "description": "SBOM Info for each ID in sbom_list"
+            "$ref": "#/definitions/SBOM-Info$sbom"
           }
         }
       }
@@ -287,7 +278,7 @@
       "title": "Query Targets$sbom",
       "type": "string",
       "enum": [
-        "search",
+        "sbom",
         "sbom_list"
       ]
     },
@@ -324,7 +315,6 @@
           "type": "array",
           "description": "Type of SBOM info to return",
           "uniqueItems": true,
-          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"
@@ -355,7 +345,6 @@
           "type": "array",
           "description": "Type of SBOM info to return",
           "uniqueItems": true,
-          "minItems": 1,
           "maxItems": 100,
           "items": {
             "$ref": "#/definitions/Info$sbom"

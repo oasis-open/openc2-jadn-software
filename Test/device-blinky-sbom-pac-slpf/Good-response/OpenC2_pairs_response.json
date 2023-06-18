@@ -1,0 +1,25 @@
+{
+    "status": 200,
+    "results": {
+        "versions": ["1.0"],
+        "profiles": ["blinky", "sbom", "pac", "slpf"],
+        "pairs": {
+          "query": ["features"],
+          "blinky": {
+            "set": ["led", "leds"]
+          },
+          "sbom": {
+            "query": ["sbom", "sbom_list"]
+          },
+          "pac": {
+            "query": ["attrs", "sbom"]
+          },
+          "slpf": {
+            "deny": ["ipv4_net", "ipv6_net", "ipv4_connection", "ipv6_connection"],
+            "allow": ["ipv4_net", "ipv6_net", "ipv4_connection", "ipv6_connection"],
+            "update": ["file"],
+            "delete": ["rule_number"]
+          }
+        }
+    }
+}

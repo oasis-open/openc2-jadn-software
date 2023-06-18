@@ -2,7 +2,7 @@
   "action": "query",
   "target": {
     "sbom": {
-      "sboms": {
+      "sbom": {
         "type": ["cyclonedx", "spdx2", "spdx3"],
         "format": ["json", "cbor", "xml"],
         "info": ["summary", "blob"]

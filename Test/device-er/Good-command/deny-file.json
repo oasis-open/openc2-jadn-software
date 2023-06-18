@@ -7,7 +7,5 @@
       }
     }
   },
-  "actuator": {
-    "er": {}
-  }
+  "profile": "er"
 }

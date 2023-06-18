@@ -1,5 +1,5 @@
-       title: "OpenC2 base device schema for the SLPF-2000 packet filter"
-     package: "http://acme.com/schemas/device-base/slpf2000/v2.4"
+       title: "OpenC2 device schema for the SLPF-2000 packet filter"
+     package: "http://acme.com/schemas/device/slpf2000/v2.4"
      exports: ["OpenC2-Command", "OpenC2-Response"]
 
 OpenC2-Command = Record                            // The Command defines an Action to be performed on a Target
@@ -42,7 +42,7 @@ OpenC2-Response = Record
 
 Results = Map{1..*}                                // Response Results
    1 versions         SemVer unique [0..10]        // List of OpenC2 language versions supported by this Actuator
-   2 profiles         Nsid unique [0..*]           // List of profiles supported by this Actuator
+   2 profiles         Profile unique [0..*]        // List of profiles supported by this Actuator
    3 pairs            Pairs optional               // DEPRECATED: targets applicable to each supported Action
    4 rate_limit       Number{0.0..*} optional      // Maximum number of requests per minute supported by design or policy
    5 args             Enumerated(Enum[Args]) [0..*] // List of supported Command Arguments
@@ -50,7 +50,7 @@ Results = Map{1..*}                                // Response Results
 
 Pairs = Map{1..*}                                  // Targets applicable to each action supported by this device
    3 query            ArrayOf(QueryTargets) unique
-1024 slpf/            Pairs$slpf                   // Targets of each Action for Software Bill Of Materials retrieval
+1024 slpf/            Pairs$slpf optional          // Targets of each Action for Software Bill Of Materials retrieval
 
 QueryTargets = Enumerated
    9 features
@@ -67,12 +67,29 @@ Args$slpf = Map{1..*}                              // SLPF command arguments
 Results$slpf = Map                                 // SLPF results defined in this profile
    1 rule_number      Rule-ID$slpf optional        // Rule identifier returned from allow or deny Command.
 
-Pairs$slpf = Enumerated
-   3 query: features
-   6 deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection
-   8 allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection
-  16 update: file
-  20 delete: /rule_number
+Pairs$slpf = Map                                   // Targets applicable to each action
+   6 deny             ArrayOf(Deny-Targets$slpf) unique
+   8 allow            ArrayOf(Allow-Targets$slpf) unique
+  16 update           ArrayOf(Update-Targets$slpf) unique
+  20 delete           ArrayOf(Delete-Targets$slpf) unique
+
+Deny-Targets$slpf = Enumerated
+   1 ipv4_net
+   2 ipv6_net
+   3 ipv4_connection
+   4 ipv6_connection
+
+Allow-Targets$slpf = Enumerated
+   1 ipv4_net
+   2 ipv6_net
+   3 ipv4_connection
+   4 ipv6_connection
+
+Update-Targets$slpf = Enumerated
+   1 file
+
+Delete-Targets$slpf = Enumerated
+   1 rule_number
 
 Drop-Process$slpf = Enumerated
    1 none                                          // Drop the packet and do not send a notification to the source of the packet
@@ -139,8 +156,6 @@ L4-Protocol = Enumerated                           // Value of the protocol (IPv
    6 tcp                                           // Transmission Control Protocol - [[RFC0793]](#rfc0793)
   17 udp                                           // User Datagram Protocol - [[RFC0768]](#rfc0768)
  132 sctp                                          // Stream Control Transmission Protocol - [[RFC4960]](#rfc4960)
-
-Nsid = String{1..16}                               // A short identifier that refers to a namespace.
 
 Port = Integer{0..65535}                           // Transport Protocol Port Number, [[RFC6335]](#rfc6335)
 

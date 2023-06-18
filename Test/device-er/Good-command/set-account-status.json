@@ -12,9 +12,5 @@
       "account_status":"enabled"
     }
    },
-  "actuator": {
-    "er": {
-       "hostname": "edr-oslo"
-    }
-  }
+  "profile": "er"
 }

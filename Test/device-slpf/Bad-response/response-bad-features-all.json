@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "results": {
+    "versions": ["1.1"],
+    "profiles": ["slpf"],
+    "pairs": {
+      "query": ["features"],
+      "slpf": {
+        "allow": ["ipv6_net", "ipv6_connection"],
+        "deny": ["ipv6_net", "ipv6_connection"],
+        "delete": ["slpf/rule_number"],
+        "update": ["file"]
+      }
+    },
+    "rate_limit": 15.0
+  }
+}

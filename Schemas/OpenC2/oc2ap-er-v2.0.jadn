@@ -1,140 +1,143 @@
 {
- "info": {
-  "title": "OpenC2 Endpoint Response Actuator Profile",
-  "package": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
-  "namespaces": {"ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"},
-  "exports": ["Action", "Target", "Args", "Results", "Pairs"],
-  "config": {"$MaxString": 1000}
- },
+  "info": {
+    "title": "OpenC2 Endpoint Response Actuator Profile",
+    "package": "http://docs.oasis-open.org/openc2/ns/ap-er/v2.0",
+    "namespaces": {
+      "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0"
+    },
+    "exports": ["Action", "Target", "Args", "Results", "Pairs"],
+    "config": {
+      "$MaxString": 1000
+    }
+  },
 
- "types": [
-  ["Action", "Enumerated", [], "", [
-    [6, "deny", "Deny a process or service from being executed on the endpoint."],
-    [7, "contain", "Isolate a device from communicating with other devices on a network, quarantine a file."],
-    [8, "allow", "Un-isolate a previously isolated device."],
-    [9, "start", "Initiate a process, application, system, or activity."],
-    [10, "stop", "Halt a system or end an activity."],
-    [11, "restart", "Restart a device, system, or process."],
-    [15, "set", "Change a value, configuration, or state of a managed entity (e.g., registry value, account)."],
-    [16, "update", "Instructs the Actuator to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
-    [19, "create", "Add a new entity of a known type (e.g., registry entry, file)."],
-    [20, "delete", "Remove an entity (e.g., registry entry, file)."]
-  ]],
+  "types": [
+    ["Action", "Enumerated", [], "", [
+      [6, "deny", "Deny a process or service from being executed on the endpoint."],
+      [7, "contain", "Isolate a device from communicating with other devices on a network, quarantine a file."],
+      [8, "allow", "Un-isolate a previously isolated device."],
+      [9, "start", "Initiate a process, application, system, or activity."],
+      [10, "stop", "Halt a system or end an activity."],
+      [11, "restart", "Restart a device, system, or process."],
+      [15, "set", "Change a value, configuration, or state of a managed entity (e.g., registry value, account)."],
+      [16, "update", "Instructs the Actuator to retrieve, install, process, and operate in accordance with a software update, reconfiguration, or other update."],
+      [19, "create", "Add a new entity of a known type (e.g., registry entry, file)."],
+      [20, "delete", "Remove an entity (e.g., registry entry, file)."]
+    ]],
 
-  ["Target", "Choice", [], "Profile-defined targets", [
-    [1, "registry_entry", "Registry-Entry", [], "A registry entry applicable to Windows Operating Systems."],
-    [2, "account", "Account", [], "A user account on an endpoint."],
-    [3, "service", "Service", [], "A program which is managed and executed by a service host process, where several services may be sharing the same service host."]
-  ]],
+    ["Target", "Choice", [], "Profile-defined targets", [
+      [1, "registry_entry", "Registry-Entry", [], "A registry entry applicable to Windows Operating Systems."],
+      [2, "account", "Account", [], "A user account on an endpoint."],
+      [3, "service", "Service", [], "A program which is managed and executed by a service host process, where several services may be sharing the same service host."]
+    ]],
 
-  ["Args", "Map", ["{1"], "Profile-defined command arguments", [
-    [1, "account_status", "Account-Status", ["[0"], "Specifies whether an account shall be enabled or disabled."],
-    [2, "device_containment", "Device-Containment", ["[0"], "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."],
-    [3, "permitted_addresses", "Permitted-Addresses", ["[0"], "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."]
-  ]],
+    ["Args", "Map", ["{1"], "Profile-defined command arguments", [
+      [1, "account_status", "Account-Status", ["[0"], "Specifies whether an account shall be enabled or disabled."],
+      [2, "device_containment", "Device-Containment", ["[0"], "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."],
+      [3, "permitted_addresses", "Permitted-Addresses", ["[0"], "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."]
+    ]],
 
-   ["Results", "Map", ["{1"], "", []],
+    ["Results", "Map", ["{1"], "", []],
 
-  ["Pairs", "Map", [], "", [
-    [6, "deny", "ArrayOf", ["*Deny-Targets", "q"], ""],
-    [7, "contain",  "ArrayOf", ["*Contain-Targets", "q"], ""],
-    [8, "allow", "ArrayOf", ["*Allow-Targets", "q"], ""],
-    [9, "start", "ArrayOf", ["*Start-Targets", "q"], ""],
-    [10, "stop", "ArrayOf", ["*Stop-Targets", "q"], ""],
-    [11, "restart", "ArrayOf", ["*Restart-Targets", "q"], ""],
-    [15, "set", "ArrayOf", ["*Set-Targets", "q"], ""],
-    [16, "update", "ArrayOf", ["*Update-Targets", "q"], ""],
-    [19, "create", "ArrayOf", ["*Create-Targets", "q"], ""],
-    [20, "delete", "ArrayOf", ["*Delete-Targets", "q"], ""]
-  ]],
+    ["Pairs", "Map", [], "", [
+      [6, "deny", "ArrayOf", ["*Deny-Targets", "q"], ""],
+      [7, "contain", "ArrayOf", ["*Contain-Targets", "q"], ""],
+      [8, "allow", "ArrayOf", ["*Allow-Targets", "q"], ""],
+      [9, "start", "ArrayOf", ["*Start-Targets", "q"], ""],
+      [10, "stop", "ArrayOf", ["*Stop-Targets", "q"], ""],
+      [11, "restart", "ArrayOf", ["*Restart-Targets", "q"], ""],
+      [15, "set", "ArrayOf", ["*Set-Targets", "q"], ""],
+      [16, "update", "ArrayOf", ["*Update-Targets", "q"], ""],
+      [19, "create", "ArrayOf", ["*Create-Targets", "q"], ""],
+      [20, "delete", "ArrayOf", ["*Delete-Targets", "q"], ""]
+    ]],
 
-   ["Deny-Targets", "Enumerated", [], "", [
-     [1, "file", ""],
-     [2, "ipv4_net", ""],
-     [3, "ipv6_net", ""]
-   ]],
+    ["Deny-Targets", "Enumerated", [], "", [
+      [1, "file", ""],
+      [2, "ipv4_net", ""],
+      [3, "ipv6_net", ""]
+    ]],
 
-   ["Contain-Targets", "Enumerated", [], "", [
-     [1, "file", ""],
-     [2, "ipv4_net", ""],
-     [3, "ipv6_net", ""]
-   ]],
+    ["Contain-Targets", "Enumerated", [], "", [
+      [1, "file", ""],
+      [2, "ipv4_net", ""],
+      [3, "ipv6_net", ""]
+    ]],
 
-   ["Allow-Targets", "Enumerated", [], "", [
-     [1, "file", ""],
-     [2, "ipv4_net", ""],
-     [3, "ipv6_net", ""]
-   ]],
+    ["Allow-Targets", "Enumerated", [], "", [
+      [1, "file", ""],
+      [2, "ipv4_net", ""],
+      [3, "ipv6_net", ""]
+    ]],
 
-   ["Start-Targets", "Enumerated", [], "", [
-     [1, "file", ""]
-   ]],
+    ["Start-Targets", "Enumerated", [], "", [
+      [1, "file", ""]
+    ]],
 
-   ["Stop-Targets", "Enumerated", [], "", [
-     [1, "device", ""],
-     [2, "process", ""],
-     [3, "service", ""]
-   ]],
+    ["Stop-Targets", "Enumerated", [], "", [
+      [1, "device", ""],
+      [2, "process", ""],
+      [3, "service", ""]
+    ]],
 
-   ["Restart-Targets", "Enumerated", [], "", [
-     [1, "device", ""],
-     [2, "process", ""]
-   ]],
+    ["Restart-Targets", "Enumerated", [], "", [
+      [1, "device", ""],
+      [2, "process", ""]
+    ]],
 
-   ["Set-Targets", "Enumerated", [], "", [
-     [1, "ipv4_net", ""],
-     [2, "ipv6_net", ""],
-     [3, "registry_entry", ""],
-     [4, "account", ""]
-   ]],
+    ["Set-Targets", "Enumerated", [], "", [
+      [1, "ipv4_net", ""],
+      [2, "ipv6_net", ""],
+      [3, "registry_entry", ""],
+      [4, "account", ""]
+    ]],
 
-   ["Update-Targets", "Enumerated", [], "", [
-     [1, "file", ""]
-   ]],
+    ["Update-Targets", "Enumerated", [], "", [
+      [1, "file", ""]
+    ]],
 
-   ["Create-Targets", "Enumerated", [], "", [
-     [1, "registry_entry", ""]
-   ]],
+    ["Create-Targets", "Enumerated", [], "", [
+      [1, "registry_entry", ""]
+    ]],
 
-   ["Delete-Targets", "Enumerated", [], "", [
-     [1, "file", ""],
-     [2, "registry_entry", ""],
-     [3, "service", ""]
-   ]],
+    ["Delete-Targets", "Enumerated", [], "", [
+      [1, "file", ""],
+      [2, "registry_entry", ""],
+      [3, "service", ""]
+    ]],
 
-  ["Registry-Entry", "Record", [], "", [
-    [1, "key", "String", ["[0"], "Specifies the full registry key including the hive."],
-    [2, "type", "String", [], "The registry value type as defined in the [[Winnt.h header]](#winnth-registry-types)."],
-    [3, "value", "String", ["[0"], "The value of the registry key. The Actuator is responsible to format the value in accordance with the defined type."]
-  ]],
+    ["Registry-Entry", "Record", [], "", [
+      [1, "key", "String", ["[0"], "Specifies the full registry key including the hive."],
+      [2, "type", "String", [], "The registry value type as defined in the [[Winnt.h header]](#winnth-registry-types)."],
+      [3, "value", "String", ["[0"], "The value of the registry key. The Actuator is responsible to format the value in accordance with the defined type."]
+    ]],
 
-  ["Account", "Map", ["{1"], "", [
-    [1, "uid", "String", ["[0"], "The unique identifier of the account."],
-    [2, "account_name", "String", ["[0"], "The chosen display name of the account."],
-    [3, "directory", "String", ["[0"], "The path to the account's home directory."]
-  ]],
+    ["Account", "Map", ["{1"], "", [
+      [1, "uid", "String", ["[0"], "The unique identifier of the account."],
+      [2, "account_name", "String", ["[0"], "The chosen display name of the account."],
+      [3, "directory", "String", ["[0"], "The path to the account's home directory."]
+    ]],
 
-  ["Service", "Map", ["{1"], "", [
-    [1, "name", "String", ["[0"], "The unique name of the service."],
-    [2, "display_name", "String", ["[0"], "The display name of the service."]
-  ]],
+    ["Service", "Map", ["{1"], "", [
+      [1, "name", "String", ["[0"], "The unique name of the service."],
+      [2, "display_name", "String", ["[0"], "The display name of the service."]
+    ]],
 
-  ["Account-Status", "Enumerated", [], "", [
-    [1, "enabled", "Enable the account and render it available on the endpoint."],
-    [2, "disabled", "Disable the account and render it unavailable on the endpoint."]
-  ]],
+    ["Account-Status", "Enumerated", [], "", [
+      [1, "enabled", "Enable the account and render it available on the endpoint."],
+      [2, "disabled", "Disable the account and render it unavailable on the endpoint."]
+    ]],
 
-  ["Device-Containment", "Enumerated", [], "", [
-    [1, "network_isolation", "Isolate the endpoint from communicating with other networked entities, typically through relegation to a private VLAN segment and/or port isolation. MAY be combined with the 'permitted_addresses' Argument to allow communication with select IP or domain name addresses."],
-    [2, "app_restriction", "Restrict the execution of applications to only those that are signed by a trusted party (e.g., Microsoft only)."],
-    [3, "disable_nic", "Disable the Network Interface Controller(s) on the endpoint."]
-  ]],
+    ["Device-Containment", "Enumerated", [], "", [
+      [1, "network_isolation", "Isolate the endpoint from communicating with other networked entities, typically through relegation to a private VLAN segment and/or port isolation. MAY be combined with the 'permitted_addresses' Argument to allow communication with select IP or domain name addresses."],
+      [2, "app_restriction", "Restrict the execution of applications to only those that are signed by a trusted party (e.g., Microsoft only)."],
+      [3, "disable_nic", "Disable the Network Interface Controller(s) on the endpoint."]
+    ]],
 
-  ["Permitted-Addresses", "Map", ["{1"], "", [
-    [1, "domain_name", "ArrayOf", ["*ls:Domain-Name", "[0"], "The domain name address(es) the contained device(s) can still communicate with."],
-    [2, "ipv4_net", "ArrayOf", ["*ls:IPv4-Net", "[0"], "The IPv4 address(es) or range(s) the contained device(s) can still communicate with."],
-    [3, "ipv6_net", "ArrayOf", ["*ls:IPv6-Net", "[0"], "The IPv6 address(es) or range(s) the contained device(s) can still communicate with."]
-  ]]
-
- ]
+    ["Permitted-Addresses", "Map", ["{1"], "", [
+      [1, "domain_name", "ArrayOf", ["*ls:Domain-Name", "[0"], "The domain name address(es) the contained device(s) can still communicate with."],
+      [2, "ipv4_net", "ArrayOf", ["*ls:IPv4-Net", "[0"], "The IPv4 address(es) or range(s) the contained device(s) can still communicate with."],
+      [3, "ipv6_net", "ArrayOf", ["*ls:IPv6-Net", "[0"], "The IPv6 address(es) or range(s) the contained device(s) can still communicate with."]
+    ]]
+  ]
 }

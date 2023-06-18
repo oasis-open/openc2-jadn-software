@@ -1,0 +1,87 @@
+{
+  "info": {
+    "title": "Device that supports only SBOM retrieval",
+    "package": "http://acme.com/base/sbomdevice/v1",
+    "namespaces": {
+      "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
+      "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v0.5"
+    },
+    "exports": ["OpenC2-Command", "OpenC2-Response"]
+  },
+
+  "types": [
+    ["Message", "Record", [], "", [
+      [1, "headers", "Headers", ["[0"], ""],
+      [2, "body", "Body", [], ""],
+      [3, "signature", "String", ["[0"], ""]
+    ]],
+
+    ["Headers", "Map", ["{1"], "", [
+      [1, "request_id", "String", ["[0"], ""],
+      [2, "created", "ls:Date-Time", ["[0"], ""],
+      [3, "from", "String", ["[0"], ""],
+      [4, "to", "String", ["[0", "]0"], ""]
+    ]],
+
+    ["Body", "Choice", [], "Content Types", [
+      [1, "openc2", "OpenC2-Content", [], "Media Type 'application/openc2' -> payload=Message, body=OpenC2-Content"]
+    ]],
+
+    ["OpenC2-Content", "Choice", [], "Content values for each message_type", [
+      [1, "request", "OpenC2-Command", [], ""],
+      [2, "response", "OpenC2-Response", [], ""]
+    ]],
+
+    ["OpenC2-Command", "Record", [], "The Command defines an Action to be performed on a Target", [
+      [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
+      [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
+      [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
+      [4, "profile", "Profile", ["[0"], "The actuator profile defining the function to be performed by the Command."],
+      [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
+    ]],
+
+    ["Action", "Enumerated", [], "", [
+      [3, "query", "Initiate a request for information."]
+    ]],
+
+    ["Target", "Choice", [], "", [
+      [9, "features", "ls:Features", [], "A set of items used with the query Action to determine an Actuator's capabilities."],
+      [1026, "sbom", "sbom:Target", ["<"], "Targets defined in the Software Bill Of Materials AP"]
+    ]],
+
+    ["Args", "Map", ["{1"], "", [
+      [1, "start_time", "ls:Date-Time", ["[0"], "The specific date/time to initiate the Command"],
+      [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
+      [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
+      [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
+      [1026, "sbom", "sbom:Args", ["<", "[0"], ""]
+    ]],
+
+    ["Profile", "Enumerated", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
+      [1026, "sbom", "Actuator function and specifiers for Software Bill Of Materials retrieval"]
+    ]],
+
+    ["OpenC2-Response", "Record", [], "OpenC2-Response defines the structure of a response to OpenC2-Command.", [
+      [1, "status", "ls:Status-Code", [], "An integer status code."],
+      [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status."],
+      [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
+    ]],
+
+    ["Results", "Map", ["{1"], "Response Results", [
+      [1, "versions", "ls:SemVer", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
+      [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
+      [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
+      [1026, "sbom", "sbom:Results", ["<", "[0"], "Results defined in the Software Bill Of Materials AP"]
+    ]],
+
+    ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
+      [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
+      [1026, "sbom", "sbom:Pairs", ["<", "[0"] "Targets of each Action for Software Bill Of Materials retrieval"]
+    ]],
+
+    ["QueryTargets", "Enumerated", [], "", [
+      [9, "features", ""]
+    ]]
+  ]
+}

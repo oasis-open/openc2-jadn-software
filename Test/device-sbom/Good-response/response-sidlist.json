@@ -2,16 +2,16 @@
   "status": 200,
   "results": {
     "sbom": {
-      "sboms": [
+      "sbom": [
         {
           "type": "cyclonedx",
           "format": "json",
-          "sid": "http://foo"
+          "sid": "http://foo.com/abc"
         },
         {
           "type": "spdx2",
           "format": "cbor",
-          "sid": "http://bar"
+          "sid": "http://bar.com/abc"
         }
       ]
     }

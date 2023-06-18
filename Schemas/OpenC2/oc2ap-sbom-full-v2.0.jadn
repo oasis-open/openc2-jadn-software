@@ -21,7 +21,7 @@
     ["Args", "Map", [], "Profile-defined command arguments", []],
 
     ["Results", "Map", ["{1"], "Profile-defined response results", [
-      [1, "search", "ArrayOf", ["*ls:URI"], "IDs of all SBOMs matching query criteria"],
+      [1, "sbom", "ArrayOf", ["*ls:URI", "[0"], "IDs of all SBOMs matching query criteria"],
       [2, "sbom_list", "SBOM-Info", ["[0", "]0"], "SBOM Info for each ID in sbom_list"]
     ]],
 
@@ -30,7 +30,7 @@
     ]],
 
     ["Query-Targets", "Enumerated", [], "", [
-      [1, "search", ""],
+      [1, "sbom", ""],
       [2, "sbom_list", ""]
     ]],
 

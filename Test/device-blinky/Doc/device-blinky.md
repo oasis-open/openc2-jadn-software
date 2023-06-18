@@ -1,5 +1,5 @@
-         title: "OpenC2 base device schema for LED panel controller using sFractal blinky interface"
-       package: "http://sfractal.com/schemas/blinky-base/v1.0"
+         title: "OpenC2 device schema for LED panel controller using sFractal blinky interface"
+       package: "http://sfractal.com/schemas/blinky/v1.0"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -75,7 +75,7 @@ Response Results
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique   | 0..\* | List of OpenC2 language versions supported by this Consumer         |
-| 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Consumer                         |
+| 2    | **profiles**   | Profile unique  | 0..\* | List of profiles supported by this Consumer                         |
 | 3    | **pairs**      | Pairs           | 0..1  | List of targets applicable to each supported Action                 |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 9001 | **blinky/**    | Results$blinky  | 0..1  | Profile-defined results                                             |
@@ -171,12 +171,6 @@ Specifies the results to be returned from a query features Command
 | 2  | **profiles**   | List of profiles supported by this Consumer                         |
 | 3  | **pairs**      | List of supported Actions and applicable Targets                    |
 | 4  | **rate_limit** | Maximum number of Commands per minute supported by design or policy |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

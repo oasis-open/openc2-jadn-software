@@ -1,7 +1,7 @@
 {
   "info": {
-    "title": "Device that supports only SBOM retrieval",
-    "package": "http://acme.com/base/sbomdevice/v1",
+    "title": "Device schema that supports only SBOM retrieval",
+    "package": "http://acme.com/device/sbomdevice/v1",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
 
@@ -32,7 +32,7 @@
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
       [3, "duration", "Duration", ["[0"], "The length of time for an Command to be in effect"],
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
-      [1026, "sbom", "Args$sbom", ["[0"], "Command arguments for the SBOM actuator profile"]
+      [1026, "sbom", "Args$sbom", ["<", "[0"], "Command arguments for the SBOM actuator profile"]
     ]],
 
     ["OpenC2-Response", "Record", [], "OpenC2-Response defines the structure of a response to OpenC2-Command.", [
@@ -43,15 +43,15 @@
 
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
-      [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
       [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-      [1026, "sbom", "Results$sbom", ["[0", "<"], "Results defined in the Sofware Bill Of Materials AP"]
+      [1026, "sbom", "Results$sbom", ["<", "[0"], "Results defined in the Sofware Bill Of Materials AP"]
     ]],
 
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [1026, "sbom", "Pairs$sbom", ["<"], "Targets of each Action for Software Bill Of Materials retrieval"]
+      [1026, "sbom", "Pairs$sbom", ["<", "[0"], "Targets of each Action for Software Bill Of Materials retrieval"]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
@@ -66,7 +66,7 @@
     ["Args$sbom", "Map", [], "Profile-defined command arguments", []],
 
     ["Results$sbom", "Map", ["{1"], "Profile-defined response results", [
-      [1, "search", "ArrayOf", ["*URI"], "IDs of all SBOMs matching query criteria"],
+      [1, "sbom", "ArrayOf", ["*URI", "[0"], "IDs of all SBOMs matching query criteria"],
       [2, "sbom_list", "SBOM-Info$sbom", ["[0", "]0"], "SBOM Info for each ID in sbom_list"]
     ]],
 
@@ -75,7 +75,7 @@
     ]],
 
     ["Query-Targets$sbom", "Enumerated", [], "", [
-      [1, "search", ""],
+      [1, "sbom", ""],
       [2, "sbom_list", ""]
     ]],
 
@@ -148,8 +148,6 @@
       [3, "pairs", "List of supported Actions and applicable Targets"],
       [4, "rate_limit", "Maximum number of Commands per minute supported by design or policy"]
     ]],
-
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
 
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],

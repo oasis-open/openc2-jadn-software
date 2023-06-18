@@ -10,9 +10,5 @@
       "device_containment":"app_restriction"
     }
    },
-  "actuator": {
-    "er": {
-       "named_group":"accounting"
-    }
-  }
+  "profile": "er"
 }

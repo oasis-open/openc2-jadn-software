@@ -1,5 +1,5 @@
-         title: "OpenC2 base device schema for the PACE collection service"
-       package: "http://acme.com/schemas/device-base/pac/v2.0"
+         title: "OpenC2 device schema for the PACE collection service"
+       package: "http://acme.com/schemas/device/pac/v2.0"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -41,7 +41,7 @@ The Command defines an Action to be performed on a Target
 | 2    | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                            |
 | 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                          |
 | 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: none, ack, status, complete |
-| 1035 | **pac/**               | Args$pac      | 1    | PAC-defined command arguments                                              |
+| 1035 | **pac/**               | Args$pac      | 0..1 | PAC-defined command arguments                                              |
 
 **********
 
@@ -70,7 +70,7 @@ Response Results
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique   | 0..10 | List of OpenC2 language versions supported by this Actuator         |
-| 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Actuator                         |
+| 2    | **profiles**   | Profile unique  | 0..\* | List of profiles supported by this Actuator                         |
 | 3    | **pairs**      | Pairs           | 0..1  | DEPRECATED: targets applicable to each supported Action             |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 1035 | **pac/**       | Results$pac     | 0..1  | PAC-defined results                                                 |
@@ -318,12 +318,6 @@ Cryptographic hash values
 | 1  | **md5**    | Binary{16..16} /x | 0..1 | MD5 hash as defined in [[RFC1321]](#rfc1321)    |
 | 2  | **sha1**   | Binary{20..20} /x | 0..1 | SHA1 hash as defined in [[RFC6234]](#rfc6234)   |
 | 3  | **sha256** | Binary{32..32} /x | 0..1 | SHA256 hash as defined in [[RFC6234]](#rfc6234) |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

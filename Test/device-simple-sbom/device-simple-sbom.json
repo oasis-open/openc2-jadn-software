@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/base/sbomdevice/v1",
+  "$id": "http://acme.com/device/sbomdevice/v1",
   "title": "Device that supports only SBOM retrieval",
   "type": "object",
   "additionalProperties": false,
@@ -156,7 +156,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Nsid",
+            "$ref": "#/definitions/Profile",
             "description": "List of profiles supported by this Consumer"
           }
         },
@@ -559,13 +559,6 @@
         "pairs",
         "rate_limit"
       ]
-    },
-    "Nsid": {
-      "title": "Nsid",
-      "type": "string",
-      "description": "A short identifier that refers to a namespace.",
-      "minLength": 1,
-      "maxLength": 16
     },
     "Response-Type": {
       "title": "Response Type",

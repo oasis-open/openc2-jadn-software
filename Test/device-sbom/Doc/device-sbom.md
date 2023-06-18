@@ -1,5 +1,5 @@
-         title: "Device that supports only SBOM retrieval"
-       package: "http://acme.com/base/sbomdevice/v1"
+         title: "Device schema that supports only SBOM retrieval"
+       package: "http://acme.com/device/sbomdevice/v1"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -51,7 +51,7 @@ Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actu
 | 2    | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                                    |
 | 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                                  |
 | 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: `none`, `ack`, `status`, `complete` |
-| 1026 | **sbom**               | Args$sbom     | 0..1 | Command arguments for the SBOM actuator profile                                    |
+| 1026 | **sbom/**              | Args$sbom     | 0..1 | Command arguments for the SBOM actuator profile                                    |
 
 **********
 
@@ -74,7 +74,7 @@ Response Results
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique   | 0..\* | List of OpenC2 language versions supported by this Consumer         |
-| 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Consumer                         |
+| 2    | **profiles**   | Profile unique  | 0..\* | List of profiles supported by this Consumer                         |
 | 3    | **pairs**      | Pairs           | 0..1  | List of targets applicable to each supported Action                 |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 1026 | **sbom/**      | Results$sbom    | 0..1  | Results defined in the Sofware Bill Of Materials AP                 |
@@ -85,10 +85,10 @@ Targets applicable to each action supported by this device
 
 **Type: Pairs (Map{1..\*})**
 
-| ID   | Name      | Type                         | \# | Description                                                     |
-|------|-----------|------------------------------|----|-----------------------------------------------------------------|
-| 3    | **query** | ArrayOf(QueryTargets) unique | 1  |                                                                 |
-| 1026 | **sbom/** | Pairs$sbom                   | 1  | Targets of each Action for Software Bill Of Materials retrieval |
+| ID   | Name      | Type                         | \#   | Description                                                     |
+|------|-----------|------------------------------|------|-----------------------------------------------------------------|
+| 3    | **query** | ArrayOf(QueryTargets) unique | 1    |                                                                 |
+| 1026 | **sbom/** | Pairs$sbom                   | 0..1 | Targets of each Action for Software Bill Of Materials retrieval |
 
 **********
 
@@ -123,7 +123,7 @@ Profile-defined response results
 
 | ID | Name          | Type           | \#    | Description                              |
 |----|---------------|----------------|-------|------------------------------------------|
-| 1  | **search**    | ArrayOf(URI)   | 1     | IDs of all SBOMs matching query criteria |
+| 1  | **sbom**      | ArrayOf(URI)   | 0..1  | IDs of all SBOMs matching query criteria |
 | 2  | **sbom_list** | SBOM-Info$sbom | 0..\* | SBOM Info for each ID in sbom_list       |
 
 **********
@@ -140,7 +140,7 @@ Profile-defined response results
 
 | ID | Item          | Description |
 |----|---------------|-------------|
-| 1  | **search**    |             |
+| 1  | **sbom**      |             |
 | 2  | **sbom_list** |             |
 
 **********
@@ -272,12 +272,6 @@ Specifies the results to be returned from a query features Command
 | 2  | **profiles**   | List of profiles supported by this Consumer                         |
 | 3  | **pairs**      | List of supported Actions and applicable Targets                    |
 | 4  | **rate_limit** | Maximum number of Commands per minute supported by design or policy |
-
-**********
-
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
 
 **********
 

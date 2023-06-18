@@ -10,7 +10,5 @@
       "device_containment":"network_isolation"
     }
    },
-  "actuator": {
-    "er": {}
-  }
+  "profile": "er"
 }

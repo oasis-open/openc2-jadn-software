@@ -1,7 +1,7 @@
 {
   "info": {
     "title": "Threat Hunting Device",
-    "package": "https://oca.org/casp/threat-hunter-2000",
+    "package": "https://oca.org/casp/device/threat-hunter-2000",
     "version": "0-wd01",
     "description": "Data definitions for Threat Hunting (TH) functions",
     "exports": ["OpenC2-Command", "OpenC2-Response"]
@@ -37,7 +37,7 @@
       [2, "stop_time", "Date-Time", ["[0"], ""],
       [3, "duration", "Duration", ["[0"], ""],
       [4, "response_requested", "Response-Type", ["[0"], ""],
-      [1036, "th", "Args$th", ["[0"], ""]
+      [1036, "th", "Args$th", ["<", "[0"], ""]
     ]],
 
     ["Profile", "Enumerated", [], "", [
@@ -46,15 +46,15 @@
 
     ["Results", "Map", ["{1"], "Response Results", [
       [1, "versions", "SemVer", ["q", "[0", "]10"], "List of OpenC2 language versions supported by this Actuator"],
-      [2, "profiles", "Nsid", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
+      [2, "profiles", "Profile", ["q", "[0", "]0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Pairs", ["[0"], "Targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
-      [1036, "th", "Results$th", ["[0", "<"], "TH-defined results"]
+      [1036, "th", "Results$th", ["<", "[0"], "TH-defined results"]
     ]],
 
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
-      [1036, "th", "Pairs$th", ["<"], "Targets of each Action for Software Bill Of Materials retrieval"]
+      [1036, "th", "Pairs$th", ["<", "[0"], "Targets of each Action for Software Bill Of Materials retrieval"]
     ]],
 
     ["QueryTargets", "Enumerated", [], "", [
@@ -217,8 +217,6 @@
     ["IPv4-Addr", "Binary", ["/ipv4-addr"], "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)", []],
 
     ["IPv6-Addr", "Binary", ["/ipv6-addr"], "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)", []],
-
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
 
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],

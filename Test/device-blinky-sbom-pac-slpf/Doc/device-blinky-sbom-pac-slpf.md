@@ -1,5 +1,5 @@
-         title: "OpenC2 base device schema for LED panel controller using sFractal blinky interface"
-       package: "http://sfractal.com/schemas/blinky-base/v1.0"
+         title: "OpenC2 device schema for LED panel controller using sFractal blinky interface"
+       package: "http://sfractal.com/schemas/device/super-blinky/v1.0"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
@@ -34,8 +34,9 @@ The Command defines an Action to be performed on a Target
 | ID   | Name         | Type          | \# | Description                                                                        |
 |------|--------------|---------------|----|------------------------------------------------------------------------------------|
 | 9    | **features** | Features      | 1  | A set of items used with the query Action to determine an Actuator's capabilities. |
-| 1024 | **slpf/**    | Target$slpf   | 1  |                                                                                    |
-| 1026 | **sbom/**    | Target$sbom   | 1  |                                                                                    |
+| 1024 | **slpf/**    | Target$slpf   | 1  | SLPF-defined targets                                                               |
+| 1026 | **sbom/**    | Target$sbom   | 1  | SBOM-defined targets                                                               |
+| 1035 | **pac/**     | Target$pac    | 1  | PAC-defined targets                                                                |
 | 9001 | **blinky/**  | Target$blinky | 1  | Profile-defined targets                                                            |
 
 **********
@@ -48,9 +49,10 @@ The Command defines an Action to be performed on a Target
 | 2    | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                            |
 | 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                          |
 | 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: none, ack, status, complete |
-| 1024 | **slpf/**              | Args$slpf     | 0..1 |                                                                            |
-| 1026 | **sbom/**              | Args$sbom     | 0..1 |                                                                            |
-| 9001 | **blinky/**            | Args$blinky   | 0..1 | Profile-defined command arguments                                          |
+| 1024 | **slpf/**              | Args$slpf     | 0..1 | SLPF-defined command arguments                                             |
+| 1026 | **sbom/**              | Args$sbom     | 0..1 | SBOM-defined command arguments                                             |
+| 1035 | **pac/**               | Args$pac      | 0..1 | PAC-defined command arguments                                              |
+| 9001 | **blinky/**            | Args$blinky   | 0..1 | Blinky-defined command arguments                                           |
 
 **********
 
@@ -60,6 +62,7 @@ The Command defines an Action to be performed on a Target
 |------|------------|-------------|
 | 1024 | **slpf**   |             |
 | 1026 | **sbom**   |             |
+| 1035 | **pac**    |             |
 | 9001 | **blinky** |             |
 
 **********
@@ -81,13 +84,14 @@ Response Results
 | ID   | Name           | Type                   | \#    | Description                                                         |
 |------|----------------|------------------------|-------|---------------------------------------------------------------------|
 | 1    | **versions**   | SemVer unique          | 0..10 | List of OpenC2 language versions supported by this Actuator         |
-| 2    | **profiles**   | Nsid unique            | 0..\* | List of profiles supported by this Actuator                         |
+| 2    | **profiles**   | Profile unique         | 0..\* | List of profiles supported by this Actuator                         |
 | 3    | **pairs**      | Pairs                  | 0..1  | DEPRECATED: targets applicable to each supported Action             |
 | 4    | **rate_limit** | Number{0.0..\*}        | 0..1  | Maximum number of requests per minute supported by design or policy |
 | 5    | **args**       | Enumerated(Enum[Args]) | 0..\* | List of supported Command Arguments                                 |
-| 1024 | **slpf/**      | Results$slpf           | 0..1  |                                                                     |
-| 1026 | **sbom/**      | Results$sbom           | 0..1  |                                                                     |
-| 9001 | **blinky/**    | Results$blinky         | 0..1  | Profile-defined results                                             |
+| 1024 | **slpf/**      | Results$slpf           | 0..1  | SLPF-defined results                                                |
+| 1026 | **sbom/**      | Results$sbom           | 0..1  | SBOM-defined results                                                |
+| 1035 | **pac/**       | Results$pac            | 0..1  | PAC-defined results                                                 |
+| 9001 | **blinky/**    | Results$blinky         | 0..1  | Blinky-defined results                                              |
 
 **********
 
@@ -95,10 +99,13 @@ Targets applicable to each action supported by this device
 
 **Type: Pairs (Map{1..\*})**
 
-| ID   | Name        | Type                         | \#   | Description |
-|------|-------------|------------------------------|------|-------------|
-| 3    | **query**   | ArrayOf(QueryTargets) unique | 1    |             |
-| 9001 | **blinky/** | Pairs$blinky                 | 0..1 |             |
+| ID   | Name        | Type                         | \#   | Description                        |
+|------|-------------|------------------------------|------|------------------------------------|
+| 3    | **query**   | ArrayOf(QueryTargets) unique | 1    |                                    |
+| 1024 | **slpf/**   | Pairs$slpf                   | 0..1 | SLPF-defined action-target pairs   |
+| 1026 | **sbom/**   | Pairs$sbom                   | 0..1 | SBOM-defined action-target pairs   |
+| 1035 | **pac/**    | Pairs$pac                    | 0..1 | PAC-defined action-target pairs    |
+| 9001 | **blinky/** | Pairs$blinky                 | 0..1 | Blinky-defined action-target pairs |
 
 **********
 
@@ -112,12 +119,188 @@ Targets applicable to each action supported by this device
 
 Profile-defined targets
 
+**Type: Target$pac (Choice)**
+
+| ID | Name      | Type                     | \# | Description |
+|----|-----------|--------------------------|----|-------------|
+| 1  | **attrs** | Attribute-Specifiers$pac | 1  |             |
+| 2  | **sbom**  | SBOM-Specifiers$pac      | 1  |             |
+
+**********
+
+| Type Name    | Type Definition | Description |
+|--------------|-----------------|-------------|
+| **Args$pac** | Map{1..*}       |             |
+
+**********
+
+Profile-defined response results
+
+**Type: Results$pac (Map{1..\*})**
+
+| ID | Name      | Type                  | \#   | Description |
+|----|-----------|-----------------------|------|-------------|
+| 1  | **attrs** | PostureAttributes$pac | 0..1 |             |
+| 2  | **sbom**  | SBOM-Info$pac         | 0..1 |             |
+
+**********
+
+Targets applicable to each action
+
+**Type: Pairs$pac (Map)**
+
+| ID | Name      | Type                              | \# | Description |
+|----|-----------|-----------------------------------|----|-------------|
+| 3  | **query** | ArrayOf(Query-Targets$pac) unique | 1  |             |
+
+**********
+
+**Type: Query-Targets$pac (Enumerated)**
+
+| ID | Item      | Description |
+|----|-----------|-------------|
+| 1  | **attrs** |             |
+| 2  | **sbom**  |             |
+
+**********
+
+**Type: Attribute-Specifiers$pac (Map{1..\*})**
+
+| ID | Name             | Type               | \#   | Description |
+|----|------------------|--------------------|------|-------------|
+| 1  | **os_version**   | Boolean            | 0..1 |             |
+| 2  | **password_min** | Boolean            | 0..1 |             |
+| 3  | **file**         | FileSpecifiers$pac | 0..1 |             |
+
+**********
+
+**Type: SBOM-Specifiers$pac (Map)**
+
+| ID | Name        | Type                                   | \# | Description |
+|----|-------------|----------------------------------------|----|-------------|
+| 1  | **type**    | ArrayOf(Enum[SBOM-Info$pac]) unique    | 1  |             |
+| 2  | **content** | ArrayOf(Enum[SBOM-Content$pac]) unique | 1  |             |
+
+**********
+
+**Type: PostureAttributes$pac (Map{1..\*})**
+
+| ID | Name             | Type           | \#   | Description |
+|----|------------------|----------------|------|-------------|
+| 1  | **os_version**   | OS-Version$pac | 0..1 |             |
+| 2  | **password_min** | Integer        | 0..1 |             |
+| 3  | **file**         | File$pac       | 0..1 |             |
+
+**********
+
+**Type: OS-Version$pac (Record)**
+
+| ID | Name                   | Type        | \#   | Description                          |
+|----|------------------------|-------------|------|--------------------------------------|
+| 1  | **name**               | String      | 1    | Distribution or product name         |
+| 2  | **version**            | String      | 1    | Suitable for presentation OS version |
+| 3  | **major**              | Integer     | 1    | Major release version                |
+| 4  | **minor**              | Integer     | 1    | Minor release version                |
+| 5  | **patch**              | Integer     | 1    | Patch release                        |
+| 6  | **build**              | String      | 1    | Build-specific or variant string     |
+| 7  | **platform**           | String      | 1    | OS Platform or ID                    |
+| 8  | **platform_like**      | String      | 1    | Closely-related platform             |
+| 9  | **codename**           | String      | 1    | OS Release codename                  |
+| 10 | **arch**               | OS-Arch$pac | 1    | OS Architecture                      |
+| 11 | **install_date**       | Integer     | 0..1 | Install date of the OS (seconds)     |
+| 12 | **pid_with_namespace** | String      | 0..1 |                                      |
+| 13 | **mount_namespace_id** | String      | 0..1 |                                      |
+
+**********
+
+Win: wmic os get osarchitecture, or Unix: uname -m
+
+**Type: OS-Arch$pac (Enumerated)**
+
+| ID | Item       | Description |
+|----|------------|-------------|
+| 1  | **32-bit** |             |
+| 2  | **64-bit** |             |
+| 3  | **x86_32** |             |
+| 4  | **x86_64** |             |
+
+**********
+
+**Type: FileSpecifiers$pac (Map{1..\*})**
+
+| ID | Name     | Type   | \#   | Description |
+|----|----------|--------|------|-------------|
+| 1  | **path** | String | 0..1 |             |
+| 2  | **hash** | Hashes | 0..1 |             |
+
+**********
+
+**Type: File$pac (Record)**
+
+| ID | Name     | Type   | \# | Description |
+|----|----------|--------|----|-------------|
+| 1  | **data** | Binary | 1  |             |
+
+**********
+
+**Type: SBOM-Info$pac (Map{1..\*})**
+
+| ID | Name        | Type              | \#   | Description                              |
+|----|-------------|-------------------|------|------------------------------------------|
+| 1  | **uri**     | URI               | 0..1 | Unique identifier or locator of the SBOM |
+| 2  | **summary** | SBOM-Elements$pac | 0..1 | NTIA Minimumum Elements of an SBOM       |
+| 3  | **content** | SBOM-Content$pac  | 0..1 | SBOM structured data                     |
+| 4  | **blob**    | SBOM-Blob$pac     | 0..1 | Uninterpreted SBOM bytes                 |
+
+**********
+
+**Type: SBOM-Elements$pac (Record)**
+
+| ID | Name              | Type         | \#    | Description                                                                          |
+|----|-------------------|--------------|-------|--------------------------------------------------------------------------------------|
+| 1  | **supplier**      | String       | 1..\* | Name(s) of entity that creates, defines, and identifies components                   |
+| 2  | **component**     | String       | 1..\* | Designation(s) assigned to a unit of software defined by the original supplier       |
+| 3  | **version**       | String       | 1     | Identifier used by supplier to specify a change from a previously identified version |
+| 4  | **component_ids** | String       | 1..\* | Other identifiers used to identify a component, or serve as a look-yp key            |
+| 5  | **dependencies**  | String       | 1..\* | Upstream component(s)                                                                |
+| 6  | **author**        | String       | 1     | Name of the entity that creates SBOM data for this component                         |
+| 7  | **timestamp**     | DateTime$pac | 1     | Record of the date and time of the SBOM data assembly                                |
+
+**********
+
+**Type: SBOM-Content$pac (Choice)**
+
+| ID | Name          | Type   | \# | Description                          |
+|----|---------------|--------|----|--------------------------------------|
+| 1  | **cyclonedx** | String | 1  | Placeholder for CycloneDX data model |
+| 2  | **spdx2**     | String | 1  | Placeholder for SPDX v2.x data model |
+| 3  | **spdx3**     | String | 1  | Placeholder for SPDX v3 data model   |
+
+**********
+
+**Type: SBOM-Blob$pac (Record)**
+
+| ID | Name       | Type                               | \# | Description |
+|----|------------|------------------------------------|----|-------------|
+| 1  | **format** | Enumerated(Enum[SBOM-Content$pac]) | 1  |             |
+| 2  | **data**   | Binary                             | 1  |             |
+
+**********
+
+| Type Name        | Type Definition                                                                                  | Description     |
+|------------------|--------------------------------------------------------------------------------------------------|-----------------|
+| **DateTime$pac** | String{pattern="^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$"} | RFC-3339 format |
+
+**********
+
+Profile-defined targets
+
 **Type: Target$sbom (Choice)**
 
 | ID | Name          | Type                 | \# | Description                                  |
 |----|---------------|----------------------|----|----------------------------------------------|
-| 1  | **sbom**      | SBOM-Specifiers$sbom | 1  | Return URI IDs for all or specified SBOMs    |
-| 2  | **sbom_list** | SBOM-List$sbom       | 1  | Return requested SBOM info for specified IDs |
+| 1  | **sbom**      | SBOM-Specifiers$sbom | 1  | Return specific SBOM  ????? how change this? |
+| 2  | **sbom_list** | SBOM-List$sbom       | 1  | Return list of SBOMs ID and metadata         |
 
 **********
 
@@ -131,10 +314,26 @@ Profile-defined response results
 
 **Type: Results$sbom (Map{1..\*})**
 
-| ID | Name          | Type           | \#    | Description                              |
-|----|---------------|----------------|-------|------------------------------------------|
-| 1  | **search**    | ArrayOf(URI)   | 1     | IDs of all SBOMs matching query criteria |
-| 2  | **sbom_list** | SBOM-Info$sbom | 0..\* | SBOM Info for each ID in sbom_list       |
+| ID | Name          | Type                    | \# | Description                               |
+|----|---------------|-------------------------|----|-------------------------------------------|
+| 1  | **sbom_list** | ArrayOf(SBOM-Info$sbom) | 1  | List of all SBOMs matching query criteria |
+
+**********
+
+**Type: Pairs$sbom (Map)**
+
+| ID | Name      | Type                               | \# | Description |
+|----|-----------|------------------------------------|----|-------------|
+| 3  | **query** | ArrayOf(Query-Targets$sbom) unique | 1  |             |
+
+**********
+
+**Type: Query-Targets$sbom (Enumerated)**
+
+| ID | Item          | Description |
+|----|---------------|-------------|
+| 1  | **sbom**      |             |
+| 2  | **sbom_list** |             |
 
 **********
 
@@ -146,16 +345,16 @@ If none specified, return IDs for all SBOMs
 |----|------------|-----------------------------------------|------|-----------------------------|
 | 1  | **type**   | ArrayOf(Enum[SBOM-Content$sbom]) unique | 0..1 | SBOM type                   |
 | 2  | **format** | ArrayOf(DataFormat$sbom) unique         | 0..1 | Data format                 |
-| 3  | **info**   | ArrayOf(Info$sbom){1..\*} unique        | 0..1 | Type of SBOM info to return |
+| 3  | **info**   | ArrayOf(Info$sbom) unique               | 0..1 | Type of SBOM info to return |
 
 **********
 
 **Type: SBOM-List$sbom (Map)**
 
-| ID | Name     | Type                             | \#    | Description                 |
-|----|----------|----------------------------------|-------|-----------------------------|
-| 1  | **sids** | URI                              | 1..\* | SBOM IDs to return          |
-| 2  | **info** | ArrayOf(Info$sbom){1..\*} unique | 1     | Type of SBOM info to return |
+| ID | Name     | Type                      | \#    | Description                 |
+|----|----------|---------------------------|-------|-----------------------------|
+| 1  | **sids** | URI                       | 1..\* | SBOM IDs to return          |
+| 2  | **info** | ArrayOf(Info$sbom) unique | 1     | Type of SBOM info to return |
 
 **********
 
@@ -264,6 +463,57 @@ SLPF results defined in this profile
 
 **********
 
+Targets applicable to each action
+
+**Type: Pairs$slpf (Map)**
+
+| ID | Name       | Type                                | \# | Description |
+|----|------------|-------------------------------------|----|-------------|
+| 6  | **deny**   | ArrayOf(Deny-Targets$slpf) unique   | 1  |             |
+| 8  | **allow**  | ArrayOf(Allow-Targets$slpf) unique  | 1  |             |
+| 16 | **update** | ArrayOf(Update-Targets$slpf) unique | 1  |             |
+| 20 | **delete** | ArrayOf(Delete-Targets$slpf) unique | 1  |             |
+
+**********
+
+**Type: Deny-Targets$slpf (Enumerated)**
+
+| ID | Item                | Description |
+|----|---------------------|-------------|
+| 1  | **ipv4_net**        |             |
+| 2  | **ipv6_net**        |             |
+| 3  | **ipv4_connection** |             |
+| 4  | **ipv6_connection** |             |
+
+**********
+
+**Type: Allow-Targets$slpf (Enumerated)**
+
+| ID | Item                | Description |
+|----|---------------------|-------------|
+| 1  | **ipv4_net**        |             |
+| 2  | **ipv6_net**        |             |
+| 3  | **ipv4_connection** |             |
+| 4  | **ipv6_connection** |             |
+
+**********
+
+**Type: Update-Targets$slpf (Enumerated)**
+
+| ID | Item     | Description |
+|----|----------|-------------|
+| 1  | **file** |             |
+
+**********
+
+**Type: Delete-Targets$slpf (Enumerated)**
+
+| ID | Item            | Description |
+|----|-----------------|-------------|
+| 1  | **rule_number** |             |
+
+**********
+
 **Type: Drop-Process$slpf (Enumerated)**
 
 | ID | Item          | Description                                                                                   |
@@ -369,9 +619,15 @@ Specifies the results to be returned from a query features Command
 
 **********
 
-| Type Name | Type Definition | Description                                    |
-|-----------|-----------------|------------------------------------------------|
-| **Nsid**  | String{1..16}   | A short identifier that refers to a namespace. |
+Cryptographic hash values
+
+**Type: Hashes (Map{1..\*})**
+
+| ID | Name       | Type              | \#   | Description                                     |
+|----|------------|-------------------|------|-------------------------------------------------|
+| 1  | **md5**    | Binary{16..16} /x | 0..1 | MD5 hash as defined in [[RFC1321]](#rfc1321)    |
+| 2  | **sha1**   | Binary{20..20} /x | 0..1 | SHA1 hash as defined in [[RFC6234]](#rfc6234)   |
+| 3  | **sha256** | Binary{32..32} /x | 0..1 | SHA256 hash as defined in [[RFC6234]](#rfc6234) |
 
 **********
 

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/devices/er/v1.0",
-  "title": "OpenC2 device schema for the Acme Endpoint Response service",
+  "$id": "http://acme.com/schemas/device-base/er/v2.0",
+  "title": "OpenC2 base device schema for the Endpoint Response service",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -36,9 +36,9 @@
           "$ref": "#/definitions/Args",
           "description": "Additional information that applies to the Command."
         },
-        "actuator": {
-          "$ref": "#/definitions/Actuator",
-          "description": "The profile defining the function to be performed by the Command."
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
         },
         "command_id": {
           "$ref": "#/definitions/Command-ID",
@@ -120,23 +120,17 @@
           "description": "Common properties of an instance of a computer program as executed on an operating system."
         },
         "er": {
-          "$ref": "#/definitions/AP-Target$er",
+          "$ref": "#/definitions/Target$er",
           "description": "Targets defined in the Endpoint Response actuator profile"
         }
       }
     },
-    "Actuator": {
-      "title": "Actuator",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "er": {
-          "$ref": "#/definitions/AP-Specifiers$er",
-          "description": "Actuator function and specifiers for Endpoint Response"
-        }
-      }
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "enum": [
+        "er"
+      ]
     },
     "Args": {
       "title": "Args",
@@ -162,7 +156,7 @@
           "description": "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"
         },
         "er": {
-          "$ref": "#/definitions/AP-Args$er",
+          "$ref": "#/definitions/Args$er",
           "description": "Command Arguments for Endpoint Response"
         }
       }
@@ -181,7 +175,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/Version",
+            "$ref": "#/definitions/SemVer",
             "description": "List of OpenC2 language versions supported by this Consumer"
           }
         },
@@ -196,80 +190,54 @@
           }
         },
         "pairs": {
-          "$ref": "#/definitions/Action-Targets",
+          "$ref": "#/definitions/Pairs",
           "description": "List of targets applicable to each supported Action"
         },
         "rate_limit": {
           "type": "number",
           "description": "Maximum number of requests per minute supported by design or policy",
           "minimum": 0.0
+        },
+        "er": {
+          "$ref": "#/definitions/Results$er",
+          "description": "Results for Endpoint Response"
         }
       }
     },
-    "Action-Targets": {
-      "title": "Action Targets",
+    "Pairs": {
+      "title": "Pairs",
       "type": "object",
       "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
+      "required": [
+        "query"
+      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
         "query": {
-          "$ref": "#/definitions/Targets"
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
         },
-        "deny": {
-          "$ref": "#/definitions/Targets"
-        },
-        "contain": {
-          "$ref": "#/definitions/Targets"
-        },
-        "allow": {
-          "$ref": "#/definitions/Targets"
-        },
-        "start": {
-          "$ref": "#/definitions/Targets"
-        },
-        "stop": {
-          "$ref": "#/definitions/Targets"
-        },
-        "restart": {
-          "$ref": "#/definitions/Targets"
-        },
-        "set": {
-          "$ref": "#/definitions/Targets"
-        },
-        "update": {
-          "$ref": "#/definitions/Targets"
-        },
-        "create": {
-          "$ref": "#/definitions/Targets"
-        },
-        "delete": {
-          "$ref": "#/definitions/Targets"
+        "er": {
+          "$ref": "#/definitions/Pairs$er",
+          "description": ""
         }
       }
     },
-    "Targets": {
-      "title": "Targets",
-      "type": "array",
-      "description": "Target pointers",
-      "uniqueItems": true,
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "enum": [
-          "device",
-          "features",
-          "file",
-          "ipv4_net",
-          "ipv6_net",
-          "process",
-          "er"
-        ]
-      }
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
     },
-    "AP-Target$er": {
-      "title": "AP Target$er",
+    "Target$er": {
+      "title": "Target$er",
       "type": "object",
       "description": "Profile-defined targets",
       "additionalProperties": false,
@@ -290,6 +258,220 @@
         }
       }
     },
+    "Args$er": {
+      "title": "Args$er",
+      "type": "object",
+      "description": "Profile-defined command arguments",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "account_status": {
+          "$ref": "#/definitions/Account-Status$er",
+          "description": "Specifies whether an account shall be enabled or disabled."
+        },
+        "device_containment": {
+          "$ref": "#/definitions/Device-Containment$er",
+          "description": "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."
+        },
+        "permitted_addresses": {
+          "$ref": "#/definitions/Permitted-Addresses$er",
+          "description": "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."
+        }
+      }
+    },
+    "Results$er": {
+      "title": "Results$er",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {}
+    },
+    "Pairs$er": {
+      "title": "Pairs$er",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deny",
+        "contain",
+        "allow",
+        "start",
+        "stop",
+        "restart",
+        "set",
+        "update",
+        "create",
+        "delete"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "deny": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Deny-Targets$er"
+          }
+        },
+        "contain": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Contain-Targets$er"
+          }
+        },
+        "allow": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Allow-Targets$er"
+          }
+        },
+        "start": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Start-Targets$er"
+          }
+        },
+        "stop": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Stop-Targets$er"
+          }
+        },
+        "restart": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Restart-Targets$er"
+          }
+        },
+        "set": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Set-Targets$er"
+          }
+        },
+        "update": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Update-Targets$er"
+          }
+        },
+        "create": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Create-Targets$er"
+          }
+        },
+        "delete": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Delete-Targets$er"
+          }
+        }
+      }
+    },
+    "Deny-Targets$er": {
+      "title": "Deny Targets$er",
+      "type": "string",
+      "enum": [
+        "file",
+        "ipv4_net",
+        "ipv6_net"
+      ]
+    },
+    "Contain-Targets$er": {
+      "title": "Contain Targets$er",
+      "type": "string",
+      "enum": [
+        "file",
+        "ipv4_net",
+        "ipv6_net"
+      ]
+    },
+    "Allow-Targets$er": {
+      "title": "Allow Targets$er",
+      "type": "string",
+      "enum": [
+        "file",
+        "ipv4_net",
+        "ipv6_net"
+      ]
+    },
+    "Start-Targets$er": {
+      "title": "Start Targets$er",
+      "type": "string",
+      "enum": [
+        "file"
+      ]
+    },
+    "Stop-Targets$er": {
+      "title": "Stop Targets$er",
+      "type": "string",
+      "enum": [
+        "device",
+        "process",
+        "service"
+      ]
+    },
+    "Restart-Targets$er": {
+      "title": "Restart Targets$er",
+      "type": "string",
+      "enum": [
+        "device",
+        "process"
+      ]
+    },
+    "Set-Targets$er": {
+      "title": "Set Targets$er",
+      "type": "string",
+      "enum": [
+        "ipv4_net",
+        "ipv6_net",
+        "registry_entry",
+        "account"
+      ]
+    },
+    "Update-Targets$er": {
+      "title": "Update Targets$er",
+      "type": "string",
+      "enum": [
+        "file"
+      ]
+    },
+    "Create-Targets$er": {
+      "title": "Create Targets$er",
+      "type": "string",
+      "enum": [
+        "registry_entry"
+      ]
+    },
+    "Delete-Targets$er": {
+      "title": "Delete Targets$er",
+      "type": "string",
+      "enum": [
+        "file",
+        "registry_entry",
+        "service"
+      ]
+    },
     "Registry-Entry$er": {
       "title": "Registry Entry$er",
       "type": "object",
@@ -297,7 +479,7 @@
       "required": [
         "type"
       ],
-      "maxProperties": 0,
+      "maxProperties": 100,
       "properties": {
         "key": {
           "type": "string",
@@ -359,28 +541,6 @@
         }
       }
     },
-    "AP-Args$er": {
-      "title": "AP Args$er",
-      "type": "object",
-      "description": "Profile-defined command arguments",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "account_status": {
-          "$ref": "#/definitions/Account-Status$er",
-          "description": "Specifies whether an account shall be enabled or disabled."
-        },
-        "device_containment": {
-          "$ref": "#/definitions/Device-Containment$er",
-          "description": "Specifies which type of isolation an endpoint shall be subjected to (e.g., port isolation, application restriction)."
-        },
-        "permitted_addresses": {
-          "$ref": "#/definitions/Permitted-Addresses$er",
-          "description": "Specifies which IP or domain name addresses shall remain accessible when a device is contained with the 'device_containment' Argument set to 'network_isolation'."
-        }
-      }
-    },
     "Account-Status$er": {
       "title": "Account Status$er",
       "type": "string",
@@ -431,24 +591,6 @@
         }
       }
     },
-    "AP-Specifiers$er": {
-      "title": "AP Specifiers$er",
-      "type": "object",
-      "description": "Profile-defined actuator specifiers, may be empty",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "$ref": "#/definitions/Hostname",
-          "description": "Specifies a particular endpoint with EDR functionality. This specifier Type is a String which MUST be formatted as an internet host name as specified in [[RFC1123]](#rfc1123)."
-        },
-        "named_group": {
-          "type": "string",
-          "description": "User defined collection of devices",
-          "maxLength": 255
-        }
-      }
-    },
     "Device": {
       "title": "Device",
       "type": "object",
@@ -481,9 +623,9 @@
     "Features": {
       "title": "Features",
       "type": "array",
-      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
       "uniqueItems": true,
-      "maxItems": 10,
+      "maxItems": 100,
       "items": {
         "$ref": "#/definitions/Feature"
       }
@@ -674,11 +816,12 @@
       "maxLength": 255,
       "pattern": "^\\S{0,36}$"
     },
-    "Version": {
-      "title": "Version",
+    "SemVer": {
+      "title": "SemVer",
       "type": "string",
-      "description": "Major.Minor version number",
-      "maxLength": 255
+      "description": "Major.Minor.Patch version number",
+      "maxLength": 255,
+      "pattern": "^(\\d{1,4})(\\.(\\d{1,6})){0,2}$"
     }
   }
 }

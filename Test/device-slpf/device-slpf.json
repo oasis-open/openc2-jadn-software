@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://acme.com/schemas/device/slpf2000/v2.4",
-  "title": "OpenC2 device schema for the SLPF-2000 packet filter",
+  "$id": "http://acme.com/schemas/device-base/slpf2000/v2.4",
+  "title": "OpenC2 base device schema for the SLPF-2000 packet filter",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -36,9 +36,9 @@
           "$ref": "#/definitions/Args",
           "description": "Additional information that applies to the Command."
         },
-        "actuator": {
-          "$ref": "#/definitions/Actuator",
-          "description": "The subject of the Action. The Actuator executes the Action on the Target."
+        "profile": {
+          "$ref": "#/definitions/Profile",
+          "description": "The actuator profile defining the function to be performed by the Command."
         },
         "command_id": {
           "$ref": "#/definitions/Command-ID",
@@ -113,7 +113,7 @@
           "description": "A 5-tuple of source and destination IPv6 address ranges, source and destination ports, and protocol."
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Target$slpf",
+          "$ref": "#/definitions/Target$slpf",
           "description": "Profile-defined targets"
         }
       }
@@ -142,23 +142,17 @@
           "description": "The type of Response required for the Command: none, ack, status, complete"
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Args$slpf",
+          "$ref": "#/definitions/Args$slpf",
           "description": "Profile-defined command arguments"
         }
       }
     },
-    "Actuator": {
-      "title": "Actuator",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "slpf": {
-          "$ref": "#/definitions/AP-Specifiers$slpf",
-          "description": "Profile-defined actuator specifiers"
-        }
-      }
+    "Profile": {
+      "title": "Profile",
+      "type": "string",
+      "enum": [
+        "slpf"
+      ]
     },
     "Results": {
       "title": "Results",
@@ -175,7 +169,7 @@
           "minItems": 1,
           "maxItems": 10,
           "items": {
-            "$ref": "#/definitions/Version",
+            "$ref": "#/definitions/SemVer",
             "description": "List of OpenC2 language versions supported by this Actuator"
           }
         },
@@ -190,7 +184,7 @@
           }
         },
         "pairs": {
-          "$ref": "#/definitions/Action-Targets",
+          "$ref": "#/definitions/Pairs",
           "description": "DEPRECATED: targets applicable to each supported Action"
         },
         "rate_limit": {
@@ -215,61 +209,137 @@
           }
         },
         "slpf": {
-          "$ref": "#/definitions/AP-Results$slpf",
+          "$ref": "#/definitions/Results$slpf",
           "description": "Profile-defined results"
         }
       }
     },
-    "Action-Targets": {
-      "title": "Action Targets",
+    "Pairs": {
+      "title": "Pairs",
       "type": "object",
       "description": "Targets applicable to each action supported by this device",
       "additionalProperties": false,
+      "required": [
+        "query",
+        "slpf"
+      ],
       "minProperties": 1,
       "maxProperties": 100,
       "properties": {
         "query": {
-          "$ref": "#/definitions/Targets"
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/QueryTargets"
+          }
         },
-        "deny": {
-          "$ref": "#/definitions/Targets"
-        },
-        "allow": {
-          "$ref": "#/definitions/Targets"
-        },
-        "update": {
-          "$ref": "#/definitions/Targets"
-        },
-        "delete": {
-          "$ref": "#/definitions/Targets"
+        "slpf": {
+          "$ref": "#/definitions/Pairs$slpf",
+          "description": "Targets of each Action for Software Bill Of Materials retrieval"
         }
       }
     },
-    "Targets": {
-      "title": "Targets",
-      "type": "array",
-      "description": "Target pointers",
-      "uniqueItems": true,
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "enum": [
-          "features",
-          "file",
-          "ipv4_net",
-          "ipv6_net",
-          "ipv4_connection",
-          "ipv6_connection",
-          "slpf"
-        ]
+    "QueryTargets": {
+      "title": "QueryTargets",
+      "type": "string",
+      "enum": [
+        "features"
+      ]
+    },
+    "Target$slpf": {
+      "title": "Target$slpf",
+      "type": "object",
+      "description": "SLPF targets",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "rule_number": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"
+        }
       }
+    },
+    "Args$slpf": {
+      "title": "Args$slpf",
+      "type": "object",
+      "description": "SLPF command arguments",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 100,
+      "properties": {
+        "drop_process": {
+          "$ref": "#/definitions/Drop-Process$slpf",
+          "description": "Specifies how to handle denied packets"
+        },
+        "persistent": {
+          "type": "boolean",
+          "description": "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"
+        },
+        "direction": {
+          "$ref": "#/definitions/Direction$slpf",
+          "description": "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"
+        },
+        "insert_rule": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Specifies the identifier of the rule within a list, typically used in a top-down rule list"
+        }
+      }
+    },
+    "Results$slpf": {
+      "title": "Results$slpf",
+      "type": "object",
+      "description": "SLPF results defined in this profile",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "rule_number": {
+          "$ref": "#/definitions/Rule-ID$slpf",
+          "description": "Rule identifier returned from allow or deny Command."
+        }
+      }
+    },
+    "Pairs$slpf": {
+      "title": "Pairs$slpf",
+      "type": "string",
+      "enum": [
+        "query: features",
+        "deny: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
+        "allow: ipv4_net, ipv6_net, ipv4_connection, ipv6_connection",
+        "update: file",
+        "delete: /rule_number"
+      ]
+    },
+    "Drop-Process$slpf": {
+      "title": "Drop Process$slpf",
+      "type": "string",
+      "enum": [
+        "none",
+        "reject",
+        "false_ack"
+      ]
+    },
+    "Direction$slpf": {
+      "title": "Direction$slpf",
+      "type": "string",
+      "enum": [
+        "both",
+        "ingress",
+        "egress"
+      ]
+    },
+    "Rule-ID$slpf": {
+      "title": "Rule ID$slpf",
+      "type": "integer",
+      "description": "Access rule identifier"
     },
     "Features": {
       "title": "Features",
       "type": "array",
-      "description": "An array of zero to ten names used to query a Consume for its supported capabilities.",
+      "description": "An array of names used to query a Consumer for its supported capabilities.",
       "uniqueItems": true,
-      "maxItems": 10,
+      "maxItems": 100,
       "items": {
         "$ref": "#/definitions/Feature"
       }
@@ -487,122 +557,12 @@
       "maxLength": 255,
       "pattern": "^\\S{0,36}$"
     },
-    "Version": {
-      "title": "Version",
+    "SemVer": {
+      "title": "SemVer",
       "type": "string",
-      "description": "Major.Minor version number",
-      "maxLength": 255
-    },
-    "AP-Target$slpf": {
-      "title": "AP Target$slpf",
-      "type": "object",
-      "description": "SLPF targets",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1,
-      "properties": {
-        "rule_number": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Immutable identifier assigned when a rule is created. Identifies a rule to be deleted"
-        }
-      }
-    },
-    "AP-Args$slpf": {
-      "title": "AP Args$slpf",
-      "type": "object",
-      "description": "SLPF command arguments",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 100,
-      "properties": {
-        "drop_process": {
-          "$ref": "#/definitions/Drop-Process$slpf",
-          "description": "Specifies how to handle denied packets"
-        },
-        "persistent": {
-          "type": "boolean",
-          "description": "Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart"
-        },
-        "direction": {
-          "$ref": "#/definitions/Direction$slpf",
-          "description": "Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both"
-        },
-        "insert_rule": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Specifies the identifier of the rule within a list, typically used in a top-down rule list"
-        }
-      }
-    },
-    "AP-Specifiers$slpf": {
-      "title": "AP Specifiers$slpf",
-      "type": "object",
-      "description": "SLPF actuator specifiers (may be empty)",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "hostname": {
-          "type": "string",
-          "description": "RFC 1123 hostname (can be a domain name or IP address) for a particular device with SLPF functionality",
-          "maxLength": 255
-        },
-        "named_group": {
-          "type": "string",
-          "description": "User defined collection of devices with SLPF functionality",
-          "maxLength": 255
-        },
-        "asset_id": {
-          "type": "string",
-          "description": "Unique identifier for a particular SLPF",
-          "maxLength": 255
-        },
-        "asset_tuple": {
-          "type": "array",
-          "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-          "minItems": 1,
-          "maxItems": 10,
-          "items": {
-            "type": "string",
-            "description": "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings",
-            "maxLength": 255
-          }
-        }
-      }
-    },
-    "AP-Results$slpf": {
-      "title": "AP Results$slpf",
-      "type": "object",
-      "description": "SLPF results defined in this profile",
-      "additionalProperties": false,
-      "maxProperties": 100,
-      "properties": {
-        "rule_number": {
-          "$ref": "#/definitions/Rule-ID$slpf",
-          "description": "Rule identifier returned from allow or deny Command."
-        }
-      }
-    },
-    "Drop-Process$slpf": {
-      "title": "Drop Process$slpf",
-      "type": "string",
-      "enum": [
-        "none",
-        "reject",
-        "false_ack"
-      ]
-    },
-    "Direction$slpf": {
-      "title": "Direction$slpf",
-      "type": "string",
-      "enum": [
-        "both",
-        "ingress",
-        "egress"
-      ]
-    },
-    "Rule-ID$slpf": {
-      "title": "Rule ID$slpf",
-      "type": "integer",
-      "description": "Access rule identifier"
+      "description": "Major.Minor.Patch version number",
+      "maxLength": 255,
+      "pattern": "^(\\d{1,4})(\\.(\\d{1,6})){0,2}$"
     }
   }
 }

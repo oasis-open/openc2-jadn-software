@@ -4,7 +4,7 @@
     "package": "http://acme.com/base/sbomdevice/v1",
     "namespaces": {
       "ls": "http://docs.oasis-open.org/openc2/ns/types/v2.0",
-      "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v1.0"
+      "sbom": "http://docs.oasis-open.org/openc2/ns/ap-sbom/v0.5"
     },
     "exports": ["OpenC2-Command", "OpenC2-Response"]
   },
@@ -36,7 +36,7 @@
       [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
       [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
       [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-      [4, "actuator", "Actuator", ["[0"], "The profile defining the function to be performed by the Command."],
+      [4, "profile", "Profile", ["[0"], "The actuator profile defining the function to be performed by the Command."],
       [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
     ]],
 
@@ -57,7 +57,7 @@
       [1026, "sbom", "sbom:Args", ["<", "[0"], ""]
     ]],
 
-    ["Actuator", "Enumerated", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
+    ["Profile", "Enumerated", [], "Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.", [
       [1026, "sbom", "Actuator function and specifiers for Software Bill Of Materials retrieval"]
     ]],
 
@@ -68,7 +68,7 @@
     ]],
 
     ["Results", "Map", ["{1"], "Response Results", [
-      [1, "versions", "ls:Version", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
+      [1, "versions", "ls:SemVer", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
       [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
       [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
@@ -78,6 +78,10 @@
     ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
       [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
       [1026, "sbom", "sbom:Pairs", ["<"], "Targets of each Action for Software Bill Of Materials retrieval"]
+    ]],
+
+    ["QueryTargets", "Enumerated", [], "", [
+      [9, "features", ""]
     ]]
   ]
 }

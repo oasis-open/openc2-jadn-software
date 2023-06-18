@@ -1,18 +1,18 @@
          title: "Device that supports only SBOM retrieval"
-       package: "http://acme.com/sbomdevice/v1"
+       package: "http://acme.com/base/sbomdevice/v1"
        exports: ["OpenC2-Command", "OpenC2-Response"]
 
 The Command defines an Action to be performed on a Target
 
 **Type: OpenC2-Command (Record)**
 
-| ID | Name           | Type       | \#   | Description                                                       |
-|----|----------------|------------|------|-------------------------------------------------------------------|
-| 1  | **action**     | Action     | 1    | The task or activity to be performed (i.e., the 'verb').          |
-| 2  | **target**     | Target     | 1    | The object of the Action. The Action is performed on the Target.  |
-| 3  | **args**       | Args       | 0..1 | Additional information that applies to the Command.               |
-| 4  | **actuator**   | Actuator   | 0..1 | The profile defining the function to be performed by the Command. |
-| 5  | **command_id** | Command-ID | 0..1 | An identifier of this Command.                                    |
+| ID | Name           | Type       | \#   | Description                                                                |
+|----|----------------|------------|------|----------------------------------------------------------------------------|
+| 1  | **action**     | Action     | 1    | The task or activity to be performed (i.e., the 'verb').                   |
+| 2  | **target**     | Target     | 1    | The object of the Action. The Action is performed on the Target.           |
+| 3  | **args**       | Args       | 0..1 | Additional information that applies to the Command.                        |
+| 4  | **profile**    | Profile    | 0..1 | The actuator profile defining the function to be performed by the Command. |
+| 5  | **command_id** | Command-ID | 0..1 | An identifier of this Command.                                             |
 
 **********
 
@@ -33,6 +33,16 @@ The Command defines an Action to be performed on a Target
 
 **********
 
+Table 3.3.1.4 lists the properties (ID/Name) and NSIDs assigned to specific Actuator Profiles. The OpenC2 Namespace Registry is the most current list of active and proposed Actuator Profiles.
+
+**Type: Profile (Enumerated)**
+
+| ID   | Item     | Description |
+|------|----------|-------------|
+| 1026 | **sbom** |             |
+
+**********
+
 **Type: Args (Map{1..\*})**
 
 | ID   | Name                   | Type          | \#   | Description                                                                        |
@@ -41,15 +51,7 @@ The Command defines an Action to be performed on a Target
 | 2    | **stop_time**          | Date-Time     | 0..1 | The specific date/time to terminate the Command                                    |
 | 3    | **duration**           | Duration      | 0..1 | The length of time for an Command to be in effect                                  |
 | 4    | **response_requested** | Response-Type | 0..1 | The type of Response required for the Command: `none`, `ack`, `status`, `complete` |
-| 1026 | **sbom**               | Args$sbom     | 0..1 | Profile-defined command arguments                                                  |
-
-**********
-
-**Type: Actuator (Enumerated)**
-
-| ID   | Item     | Description |
-|------|----------|-------------|
-| 1026 | **sbom** |             |
+| 1026 | **sbom**               | Args$sbom     | 0..1 | Command arguments for the SBOM actuator profile                                    |
 
 **********
 
@@ -71,7 +73,7 @@ Response Results
 
 | ID   | Name           | Type            | \#    | Description                                                         |
 |------|----------------|-----------------|-------|---------------------------------------------------------------------|
-| 1    | **versions**   | Version unique  | 0..\* | List of OpenC2 language versions supported by this Consumer         |
+| 1    | **versions**   | SemVer unique   | 0..\* | List of OpenC2 language versions supported by this Consumer         |
 | 2    | **profiles**   | Nsid unique     | 0..\* | List of profiles supported by this Consumer                         |
 | 3    | **pairs**      | Pairs           | 0..1  | List of targets applicable to each supported Action                 |
 | 4    | **rate_limit** | Number{0.0..\*} | 0..1  | Maximum number of requests per minute supported by design or policy |
@@ -79,12 +81,14 @@ Response Results
 
 **********
 
-**Type: Pairs (Map)**
+Targets applicable to each action supported by this device
 
-| ID   | Name      | Type                         | \# | Description |
-|------|-----------|------------------------------|----|-------------|
-| 3    | **query** | ArrayOf(QueryTargets) unique | 1  |             |
-| 1026 | **sbom**  | Pairs$sbom                   | 1  |             |
+**Type: Pairs (Map{1..\*})**
+
+| ID   | Name      | Type                         | \# | Description                                                     |
+|------|-----------|------------------------------|----|-----------------------------------------------------------------|
+| 3    | **query** | ArrayOf(QueryTargets) unique | 1  |                                                                 |
+| 1026 | **sbom/** | Pairs$sbom                   | 1  | Targets of each Action for Software Bill Of Materials retrieval |
 
 **********
 
@@ -102,14 +106,14 @@ Profile-defined targets
 
 | ID | Name          | Type                 | \# | Description                                  |
 |----|---------------|----------------------|----|----------------------------------------------|
-| 1  | **sbom**      | SBOM-Specifiers$sbom | 1  | Return IDs or SBOMs matching filter criteria |
-| 2  | **sbom_list** | SBOM-List$sbom       | 1  | Return specific SBOMs by ID                  |
+| 1  | **sbom**      | SBOM-Specifiers$sbom | 1  | Return URI IDs for all or specified SBOMs    |
+| 2  | **sbom_list** | SBOM-List$sbom       | 1  | Return requested SBOM info for specified IDs |
 
 **********
 
-| Type Name     | Type Definition | Description |
-|---------------|-----------------|-------------|
-| **Args$sbom** | Map             |             |
+| Type Name     | Type Definition | Description                       |
+|---------------|-----------------|-----------------------------------|
+| **Args$sbom** | Map             | Profile-defined command arguments |
 
 **********
 
@@ -117,9 +121,10 @@ Profile-defined response results
 
 **Type: Results$sbom (Map{1..\*})**
 
-| ID | Name          | Type                    | \# | Description                               |
-|----|---------------|-------------------------|----|-------------------------------------------|
-| 1  | **sbom_list** | ArrayOf(SBOM-Info$sbom) | 1  | List of all SBOMs matching query criteria |
+| ID | Name          | Type           | \#    | Description                              |
+|----|---------------|----------------|-------|------------------------------------------|
+| 1  | **search**    | ArrayOf(URI)   | 1     | IDs of all SBOMs matching query criteria |
+| 2  | **sbom_list** | SBOM-Info$sbom | 0..\* | SBOM Info for each ID in sbom_list       |
 
 **********
 
@@ -135,7 +140,7 @@ Profile-defined response results
 
 | ID | Item          | Description |
 |----|---------------|-------------|
-| 1  | **sbom**      |             |
+| 1  | **search**    |             |
 | 2  | **sbom_list** |             |
 
 **********
@@ -148,16 +153,28 @@ If none specified, return IDs for all SBOMs
 |----|------------|-----------------------------------------|------|-----------------------------|
 | 1  | **type**   | ArrayOf(Enum[SBOM-Content$sbom]) unique | 0..1 | SBOM type                   |
 | 2  | **format** | ArrayOf(DataFormat$sbom) unique         | 0..1 | Data format                 |
-| 3  | **info**   | ArrayOf(Info$sbom) unique               | 0..1 | Type of SBOM info to return |
+| 3  | **info**   | ArrayOf(Info$sbom){1..\*} unique        | 0..1 | Type of SBOM info to return |
 
 **********
 
 **Type: SBOM-List$sbom (Map)**
 
-| ID | Name     | Type                      | \#    | Description                 |
-|----|----------|---------------------------|-------|-----------------------------|
-| 1  | **sids** | URI                       | 1..\* | SBOM IDs to return          |
-| 2  | **info** | ArrayOf(Info$sbom) unique | 1     | Type of SBOM info to return |
+| ID | Name     | Type                             | \#    | Description                 |
+|----|----------|----------------------------------|-------|-----------------------------|
+| 1  | **sids** | URI                              | 1..\* | SBOM IDs to return          |
+| 2  | **info** | ArrayOf(Info$sbom){1..\*} unique | 1     | Type of SBOM info to return |
+
+**********
+
+SBOM-Info fields to return
+
+**Type: Info$sbom (Enumerated)**
+
+| ID | Item        | Description                        |
+|----|-------------|------------------------------------|
+| 1  | **summary** | NTIA Minimumum Elements of an SBOM |
+| 2  | **content** | SBOM structured data               |
+| 3  | **blob**    | Uninterpreted SBOM bytes           |
 
 **********
 
@@ -171,18 +188,6 @@ If none specified, return IDs for all SBOMs
 | 4  | **summary** | SBOM-Elements$sbom                  | 0..1 | NTIA Minimumum Elements of an SBOM       |
 | 5  | **content** | SBOM-Content$sbom                   | 0..1 | SBOM structured data                     |
 | 6  | **blob**    | Binary                              | 0..1 | Uninterpreted SBOM bytes                 |
-
-**********
-
-SBOM-Info fields to return
-
-**Type: Info$sbom (Enumerated)**
-
-| ID | Item        | Description                        |
-|----|-------------|------------------------------------|
-| 1  | **summary** | NTIA Minimumum Elements of an SBOM |
-| 2  | **content** | SBOM structured data               |
-| 3  | **blob**    | Uninterpreted SBOM bytes           |
 
 **********
 
@@ -233,9 +238,9 @@ Serialization Data Formats
 
 **********
 
-| Type Name    | Type Definition         | Description                                                                           |
-|--------------|-------------------------|---------------------------------------------------------------------------------------|
-| **Features** | ArrayOf(Feature) unique | An array of zero to ten names used to query a Consume for its supported capabilities. |
+| Type Name    | Type Definition         | Description                                                                |
+|--------------|-------------------------|----------------------------------------------------------------------------|
+| **Features** | ArrayOf(Feature) unique | An array of names used to query a Consumer for its supported capabilities. |
 
 **********
 
@@ -310,8 +315,8 @@ Specifies the results to be returned from a query features Command
 
 **********
 
-| Type Name   | Type Definition | Description                |
-|-------------|-----------------|----------------------------|
-| **Version** | String          | Major.Minor version number |
+| Type Name  | Type Definition                                 | Description                      |
+|------------|-------------------------------------------------|----------------------------------|
+| **SemVer** | String{pattern="^(\d{1,4})(\.(\d{1,6})){0,2}$"} | Major.Minor.Patch version number |
 
 **********

@@ -37,7 +37,7 @@
     [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
     [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
     [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-    [4, "actuator", "Actuator", ["[0"], "The profile defining the function to be performed by the Command."],
+    [4, "profile", "Profile", ["[0"], "The actuator profile defining the function to be performed by the Command."],
     [5, "command_id", "ls:Command-ID", ["[0"], "An identifier of this Command."]
   ]],
 
@@ -62,11 +62,11 @@
     [13, "ipv4_net", "ls:IPv4-Net", [], "An IPv4 address range including CIDR prefix length."],
     [14, "ipv6_net", "ls:IPv6-Net", [], "An IPv6 address range including prefix length."],
     [18, "process", "ls:Process", [], "Common properties of an instance of a computer program as executed on an operating system."],
-    [1027, "er", "er:AP-Target", ["<"], "Targets defined in the Endpoint Response actuator profile"]
+    [1027, "er", "er:Target", ["<"], "Targets defined in the Endpoint Response actuator profile"]
   ]],
 
-  ["Actuator", "Choice", [], "", [
-    [1027, "er", "er:AP-Specifiers", ["<"], "Actuator function and specifiers for Endpoint Response"]
+  ["Profile", "Enumerated", [], "", [
+    [1027, "er", ""]
   ]],
 
   ["Args", "Map", ["{1"], "", [
@@ -74,7 +74,7 @@
     [2, "stop_time", "ls:Date-Time", ["[0"], "The specific date/time to terminate the Command"],
     [3, "duration", "ls:Duration", ["[0"], "The length of time for an Command to be in effect"],
     [4, "response_requested", "ls:Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`"],
-    [1027, "er", "er:AP-Args", ["[0", "<"], "Command Arguments for Endpoint Response"]
+    [1027, "er", "er:Args", ["[0", "<"], "Command Arguments for Endpoint Response"]
   ]],
 
   ["OpenC2-Response", "Record", [], "OpenC2-Response defines the structure of a response to OpenC2-Command.", [
@@ -84,14 +84,21 @@
   ]],
 
   ["Results", "Map", ["{1"], "Response Results", [
-    [1, "versions", "ls:Version", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
+    [1, "versions", "ls:SemVer", ["q", "[0", "]0"], "List of OpenC2 language versions supported by this Consumer"],
     [2, "profiles", "ls:Nsid", ["q", "[0", "]0"], "List of profiles supported by this Consumer"],
-    [3, "pairs", "Action-Targets", ["[0"], "List of targets applicable to each supported Action"],
-    [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"]
+    [3, "pairs", "Pairs", ["[0"], "List of targets applicable to each supported Action"],
+    [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
+    [1027, "er", "er:Results", ["[0", "<"], "Results for Endpoint Response"]
   ]],
 
-  ["Action-Targets", "MapOf", ["+Action", "*Targets", "{1"], "Targets applicable to each action supported by this device", []],
+  ["Pairs", "Map", ["{1"], "Targets applicable to each action supported by this device", [
+    [3, "query", "ArrayOf", ["*QueryTargets", "q"], ""],
+    [1027, "er", "er:Pairs", ["[0", "<"], ""]
+  ]],
 
-  ["Targets", "ArrayOf", ["*>Target", "{1", "q"], "Target pointers", []]
+  ["QueryTargets", "Enumerated", [], "", [
+    [9, "features", ""]
+  ]]
+
  ]
 }

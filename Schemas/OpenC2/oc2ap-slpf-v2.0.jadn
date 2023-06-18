@@ -40,13 +40,6 @@
     [20, "delete: /rule_number", ""]
   ]],
 
-  ["Specifiers", "Map", [], "SLPF actuator specifiers (may be empty)", [
-    [1, "hostname", "String", ["[0"], "RFC 1123 hostname (can be a domain name or IP address) for a particular device with SLPF functionality"],
-    [2, "named_group", "String", ["[0"], "User defined collection of devices with SLPF functionality"],
-    [3, "asset_id", "String", ["[0"], "Unique identifier for a particular SLPF"],
-    [4, "asset_tuple", "String", ["[0", "]10"], "Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings"]
-  ]],
-
   ["Drop-Process", "Enumerated", [], "", [
     [1, "none", "Drop the packet and do not send a notification to the source of the packet"],
     [2, "reject", "Drop the packet and send an ICMP host unreachable (or equivalent) to the source of the packet"],

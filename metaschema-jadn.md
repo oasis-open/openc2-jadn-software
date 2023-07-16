@@ -2,11 +2,11 @@
 
 JADN and the NIST [Metaschema Modeling Framework](https://pages.nist.gov/metaschema/) have the identical goal:
 "Modeling information Quickly and Easily in Multiple Formats".  The reasons for doing so are identical and
-well-documented by NIST.  JADN has a slightly different focus (emphasising the
+well-documented by NIST.  JADN has a somewhat different focus (emphasising the
 [information-theoretic](https://en.wikipedia.org/wiki/Information_theory) aspects
-of information modeling to support efficient communication) and slightly different details, but there is
-enough in common for the Metaschema documentation to provide the structure for comparison. Each of the headinga
-and bullets below are links to Metaschema, with JADN comparison in the bullet text.
+of information modeling to support efficient communication) and different details, but there is
+enough in common for the Metaschema documentation to provide the structure for comparison.
+Each of the headinga and bullets are links to the Metaschema specification, with JADN comparison below.
 
 ## [Overview](https://pages.nist.gov/metaschema/specification/overview/)
 > The Metaschema framework currently supports XML, JSON, and YAML data formats. Support for YAML is limited
@@ -24,3 +24,53 @@ RFC 8477's
 [Operational](https://github.com/oasis-tcs/openc2-jadn-im/blob/working/imjadn-v1.0-cn02.md#112-the-information-modeling-gap)
 focus - an IM is an abstract but rigorous mechanism for expressing logical data requirements in a way that can be
 unambiguously mapped to multiple data-level details.
+
+## [Information Modeling](https://pages.nist.gov/metaschema/specification/information-modeling/)
+> * An information model consists of information elements
+> * A Metaschema module consists of definitions: Assembly, Flag, Choice, Field
+
+* A JADN information model is a collection of one or more packages (module with namespace)
+* A JADN package consists of definitions: simple, complex datatype, complex classtype
+* A simple Choice is an enumeration, a complex Choice is a union of definitions
+
+## [Graph Theoretical Basis of Metaschema](https://pages.nist.gov/metaschema/specification/information-modeling/#graph-theoretical-basis-of-metaschema)
+> * Information elements are represented as nodes of the graph
+> * A metaschema module is a directed graph
+> * A metaschema module is a multigraph, since two nodes may be connected by multiple edges
+> * A meteschema module is a cyclic graph
+
+* JADN definitions are nodes of the graph
+* There are only two edge types: contain (copy) and reference.
+* A JADN model is a directed graph
+* A JADN model is a multigraph (a node can have multiple incoming edges,
+a complex node can have multiple outgoing edges, to the same or different nodes)
+* A JADN model is a cyclic graph, but
+    * `contain` edges SHOULD form a DAG (nesting is allowed to accommodate bad existing models,
+    but at the risk of unbounded recursion)
+    * `reference` edges (to complex classtype nodes) can be cyclic without restriction
+
+## [Data Types](https://pages.nist.gov/metaschema/specification/datatypes/)
+
+> There are 2 kinds of data types.
+> * simple data types
+> * markup data types
+
+JADN has three kinds of types oriented toward structured data:
+* simple data types (the same xsd simple types as Metaschema)
+* complex data types (containers with fields)
+* complex class types (containers with fields that include id/key)
+
+JADN does not address structured prose text (by lines, paragraphs, etc. 
+
+
+## Questions
+* **Does Metaschema validate itself?**  It appears that information models can be created for application domains,
+but has an information model that validates a Metaschema been created?, Is it possible to create one?
+* **Is it technically possible to merge Metaschema and JADN?** JADN is organized around 'logical values',
+format-independent application variables.  It's unclear whether logical values can be defined for markup text,
+for example a `table` variable that captures everything of interest about tables and can be serialized in
+HTML, Markdown, or ODT.  Is it possible to represent application domains like OSCAL by modeling structured
+data values rather than markup prose?
+* **Is there mutual interest in discovering whether merging is possible or desirable?**
+Despite the identical name (Information Modeling) and goals, the details of modeling structured
+prose appear to be significantly different from modeling structured data.

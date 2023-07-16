@@ -14,7 +14,9 @@ Each of the headings and bullets are links to the Metaschema specification, with
 > This tight binding to supported derivative data formats has many advantages.
 
 JADN defines information elements in a manner that supports a wider range of data formats, for example by
-assigning numeric identifiers to all property names for use in concise data formats.
+assigning numeric identifiers to all property names for use in concise data formats. The information-theoretic
+approach's explicit goal is to isolate information from channel coding (data formats), and serialization
+rules are a binding between the information model and one data format, independent of other data formats.
 
 * [Information Model](https://pages.nist.gov/metaschema/specification/glossary/#information-model): 
 Although JADN

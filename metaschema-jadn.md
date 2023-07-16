@@ -38,6 +38,8 @@ unambiguously mapped to multiple data-level details.
 > * A metaschema module is a directed graph
 > * A metaschema module is a multigraph, since two nodes may be connected by multiple edges
 > * A meteschema module is a cyclic graph
+> * At least one root node must be defined
+> * Nodes involved in a cycle must allow for termination, e.g., with zero minimum cardinality
 
 * JADN definitions are nodes of the graph
 * There are only two edge types: contain (copy) and reference.
@@ -48,6 +50,29 @@ a complex node can have multiple outgoing edges, to the same or different nodes)
     * `contain` edges SHOULD form a DAG (nesting is allowed to accommodate bad existing models,
     but at the risk of unbounded recursion)
     * `reference` edges (to complex classtype nodes) can be cyclic without restriction
+* A DAG has a topological ordering that determines the root nodes, but converting an undirected cyclic graph to a DAG
+means choosing the root nodes which determines the edge directions.
+* Container nodes involved in a cycle must be terminated with zero minimum cardinality or converting edge to reference.
+
+## [Object-Oriented Basis of Metaschema](https://pages.nist.gov/metaschema/specification/information-modeling/#object-oriented-basis-of-metaschema)
+> * composition approach describes information elements
+> * aligns with object-oriented programming, where data objects are instances of a class
+
+* JADN definitions are always Classes, they may be implemented as OOP classes where `logical values` are public class variables
+* For Metaschema example, Computer and ComputerPart are Classes, consistsOf and usbConnectionTo are properties of Computer,
+and the Type of those properties must be either ComputerPart (copy of instance) or ComputerPart* (id of instance).
+Defining edge types as contain or reference is part of designing the JADN model, as is defining the root node(s) when
+converting from an undirected to directed graph.
+* ComputerPart is a data type (does not have an id) unless the model is designed with pointers to (ids of) its instances.
+* ComputerPart has a self reference (a graph cycle) that doesn't need to be broken if consistsOf is an id, not a copy.
+(The real world will have both compound and simple (atomic) computer parts, so this example must terminate with atomic leaf nodes.)
+
+## [Instances](https://pages.nist.gov/metaschema/specification/syntax/instances/)
+> * An assembly definition may contain flag, field, or assembly instances
+
+* Flag is a JADN simple datatype Class (instances are atomic values with no id and no children)
+* JADN makes no distinction between assembly and field definitions - a complex (container) class has fields,
+each with a name (edge label) and a Class (instances are simple, data type, class type copy, or class type reference).
 
 ## [Data Types](https://pages.nist.gov/metaschema/specification/datatypes/)
 
@@ -55,12 +80,12 @@ a complex node can have multiple outgoing edges, to the same or different nodes)
 > * simple data types
 > * markup data types
 
-JADN has three kinds of types oriented toward structured data:
+JADN has three kinds of Classes (nodes):
 * simple data types (the same xsd simple types as Metaschema)
 * complex data types (containers with fields)
-* complex class types (containers with fields that include id/key)
+* complex class types (containers with fields including id/key)
 
-JADN does not address structured prose text (by lines, paragraphs, etc. 
+JADN does not address structured prose text
 
 
 ## Questions

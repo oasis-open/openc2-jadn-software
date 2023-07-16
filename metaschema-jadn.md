@@ -2,11 +2,11 @@
 
 JADN and the NIST [Metaschema Modeling Framework](https://pages.nist.gov/metaschema/) have the identical goal:
 "Modeling information Quickly and Easily in Multiple Formats".  The reasons for doing so are identical and
-well-documented by NIST.  JADN has a slightly different focus (emphasising the
+well-documented by NIST.  JADN has a somewhat different focus (emphasising the
 [information-theoretic](https://en.wikipedia.org/wiki/Information_theory) aspects
 of information modeling to support efficient communication) and different details, but there is
 enough in common for the Metaschema documentation to provide the structure for comparison.
-Each of the headinga and bullets are links to Metaschema, with JADN comparison below.
+Each of the headinga and bullets are links to the Metaschema specification, with JADN comparison below.
 
 ## [Overview](https://pages.nist.gov/metaschema/specification/overview/)
 > The Metaschema framework currently supports XML, JSON, and YAML data formats. Support for YAML is limited
@@ -66,5 +66,11 @@ JADN does not address structured prose text (by lines, paragraphs, etc.
 ## Questions
 * **Does Metaschema validate itself?**  It appears that information models can be created for application domains,
 but has an information model that validates a Metaschema been created?, Is it possible to create one?
-* **Is it technically possible to merge Metaschema and JADN?**
-* **Is there mutual interest in working to discover whether merging is possible or desirable?**
+* **Is it technically possible to merge Metaschema and JADN?** JADN is organized around 'logical values',
+format-independent application variables.  It's unclear whether logical values can be defined for markup text,
+for example a `table` variable that captures everything of interest about tables and can be serialized in
+HTML, Markdown, or ODT.  Is it possible to represent application domains like OSCAL by modeling structured
+data values rather than markup prose?
+* **Is there mutual interest in discovering whether merging is possible or desirable?**
+Despite the identical name (Information Modeling) and goals, the details of modeling structured
+prose appear to be significantly different from modeling structured data.

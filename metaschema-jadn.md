@@ -42,7 +42,7 @@ unambiguously mapped to multiple data-level details.
 > * Nodes involved in a cycle must allow for termination, e.g., with zero minimum cardinality
 
 * JADN definitions are nodes of the graph
-* There are only two edge types: contain (copy) and reference.
+* There are only two edge types: contain (copy) and reference, but edge names (field identifiers) can indicate purpose.
 * A JADN model is a directed graph
 * A JADN model is a multigraph (a node can have multiple incoming edges,
 a complex node can have multiple outgoing edges, to the same or different nodes)
@@ -72,7 +72,8 @@ converting from an undirected to directed graph.
 
 * Flag is a JADN simple datatype Class (instances are atomic values with no id and no children)
 * JADN makes no distinction between assembly and field definitions - a complex (container) class has fields,
-each with a name (edge label) and a Class (instances are simple, data type, class type copy, or class type reference).
+each with an identifier (outgoing edge label) and a destination Class (instances are simple datatype copy,
+complex datatype/classtype copy, or classtype reference).
 
 ## [Data Types](https://pages.nist.gov/metaschema/specification/datatypes/)
 
@@ -81,11 +82,12 @@ each with a name (edge label) and a Class (instances are simple, data type, clas
 > * markup data types
 
 JADN has three kinds of Classes (nodes):
-* simple data types (the same xsd simple types as Metaschema)
-* complex data types (containers with fields)
-* complex class types (containers with fields including id/key)
+* simple data types (the same xsd simple types as Metaschema, plus restriction-based model-defined types.)
+* complex data types (containers with fields.)
+* complex class types (containers with fields including id/key.)
 
-JADN does not address structured prose text
+JADN does not yet address structured prose text; it is unknown whether such text can be modeled as logical values
+and losslessly round-trip serialized.
 
 
 ## Questions

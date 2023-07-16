@@ -4,9 +4,9 @@ JADN and the NIST [Metaschema Modeling Framework](https://pages.nist.gov/metasch
 "Modeling information Quickly and Easily in Multiple Formats".  The reasons for doing so are identical and
 well-documented by NIST.  JADN has a somewhat different focus (emphasising the
 [information-theoretic](https://en.wikipedia.org/wiki/Information_theory) aspects
-of information modeling to support efficient communication) and different details, but there is
+of information modeling to support efficient *and lossless* communication) and different details, but there is
 enough in common for the Metaschema documentation to provide the structure for comparison.
-Each of the headinga and bullets are links to the Metaschema specification, with JADN comparison below.
+Each of the headings and bullets are links to the Metaschema specification, with JADN comparison below.
 
 ## [Overview](https://pages.nist.gov/metaschema/specification/overview/)
 > The Metaschema framework currently supports XML, JSON, and YAML data formats. Support for YAML is limited
@@ -66,6 +66,7 @@ JADN does not address structured prose text (by lines, paragraphs, etc.
 ## Questions
 * **Does Metaschema validate itself?**  It appears that information models can be created for application domains,
 but has an information model that validates a Metaschema been created?, Is it possible to create one?
+A JADN schema is a data object that can be serialized like any other, and can validate itself.
 * **Is it technically possible to merge Metaschema and JADN?** JADN is organized around 'logical values',
 format-independent application variables.  It's unclear whether logical values can be defined for markup text,
 for example a `table` variable that captures everything of interest about tables and can be serialized in

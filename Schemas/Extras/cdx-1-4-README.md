@@ -17,3 +17,5 @@ David Lemire (HII Mission Technologies)
  3) Required / optional values still needed for most record types
  4) May contain duplicative types
  5) Would benefit from re-ordering content more logically
+ 6) Work needed on connection to SPDX license identifiers
+ 7) Word needed on specification of signatures

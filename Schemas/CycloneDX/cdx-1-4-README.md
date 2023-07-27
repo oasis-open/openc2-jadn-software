@@ -18,4 +18,5 @@ David Lemire (HII Mission Technologies)
  4) May contain duplicative types
  5) Would benefit from re-ordering content more logically
  6) Work needed on connection to SPDX license identifiers
- 7) Word needed on specification of signatures
+ 7) Work needed on specification of signatures
+ 8) Not all comments / descriptions from the JSON schema have been included in the JADN schema

@@ -1,8 +1,11 @@
 ## Added 27 July 2023:
+
+Files:
  * cdx-1-4-WIP_2023-07-27.jadn
  * cdx-1-4-WIP_2023-07-27.jidl
+ * cdx-1-4-WIP_2023-07-27.json
   
-Current state of work-in-progress JADN schema based on the [CDX v1.4 JSON schema](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.schema.json).
+Current state of work-in-progress JADN schema based on the [CDX v1.4 JSON schema](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.schema.json).  The JIDL and JSON files are generated from the JADN schema.
 
 ## Created by: 
 David Lemire (HII Mission Technologies)

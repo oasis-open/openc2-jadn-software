@@ -1,0 +1,38 @@
+       title: "Open Security Controls Assessment Language (OSCAL)"
+     package: "http://csrc.nist.gov/ns/oscal/1.0"
+     exports: ["Oscal"]
+      config: {"$FieldName": "^[a-z][-_A-Za-z0-9]{0,31}$"}
+
+Oscal = Choice
+  1 catalog Catalog
+  2 component-definition ComponentDefinition
+  3 system-security-plan SystemSecurityPlan
+
+Catalog = Record
+  1 uuid Uuid
+  2 metadata Metadata
+  3 groups Groups
+
+ComponentDefinition = Record
+  1 uuid Uuid
+  2 metadata Metadata
+  3 components Components
+
+SystemSecurityPlan = Record
+  1 uuid Uuid
+  2 metadata Metadata
+  3 import-profile ImportProfile
+  4 system-characteristics SystemCharacteristics
+  5 system-implementation SystemImplementation
+  6 control-implementation ControlImplementation
+  7 back-matter BackMatter
+
+Metadata = Record
+  1 title String
+  2 last-modified DateTime
+  3 version String
+  4 oscal-version SemVer
+  5 roles Roles [0..*]
+  6 parties Parties [0..*]
+
+Uuid = String /uuid

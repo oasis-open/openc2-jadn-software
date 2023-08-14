@@ -1,0 +1,671 @@
+
+ 1 schema {'elementFormDefault': 'qualified', 'attributeFormDefault': 'unqualified', 'targetNamespace': 'http://csrc.nist.gov/ns/oscal/metaschema/1.0'}
+ . 1 include {'schemaLocation': 'metaschema-prose-module.xsd'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . 2 include {'schemaLocation': 'metaschema-datatypes.xsd'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . 3 element {'name': 'METASCHEMA'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexType {}
+ . . . 1 sequence {}
+ . . . . 1 element {'name': 'schema-name', 'type': 'MarkupLineDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 2 element {'name': 'schema-version', 'type': 'VersionType'}
+ . . . . 3 element {'name': 'short-name', 'type': 'ShortNameType'}
+ . . . . 4 element {'name': 'namespace', 'type': 'URIDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 5 element {'name': 'json-base-uri', 'type': 'JsonBaseUriType'}
+ . . . . 6 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . . 7 element {'name': 'import', 'type': 'MetaschemaImportType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 8 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . . 1 element {'name': 'define-assembly', 'type': 'GlobalAssemblyDefinitionType'}
+ . . . . . 2 element {'name': 'define-field', 'type': 'GlobalFieldDefinitionType'}
+ . . . . . 3 element {'name': 'define-flag', 'type': 'GlobalFlagDefinitionType'}
+ . . . 2 attribute {'name': 'abstract', 'type': 'YesNoType', 'default': 'no'}
+ . . 3 unique {'name': 'unique-constraint-ids'}
+ . . . 1 selector {'xpath': './/allowed-values|.//matches|.//index-has-key|.//is-unique|.//has-cardinality|.//expect|.//index'}
+ . . . 2 field {'xpath': '@id'}
+ . . 4 key {'name': 'key-index-constraint'}
+ . . . 1 selector {'xpath': './/index'}
+ . . . 2 field {'xpath': '@name'}
+ . . 5 <!--comment--> {}
+ . 4 element {'name': 'METASCHEMA-CONSTRAINTS'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexType {}
+ . . . 1 sequence {}
+ . . . . 1 element {'name': 'name', 'type': 'StringDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 2 element {'name': 'version', 'type': 'VersionType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 3 element {'name': 'import', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . . 2 complexType {}
+ . . . . . . 1 attribute {'name': 'href', 'type': 'URIReferenceDatatype', 'use': 'required'}
+ . . . . . . . 1 annotation {}
+ . . . . . . . . 1 documentation {}
+ . . . . 4 element {'name': 'scope', 'maxOccurs': 'unbounded'}
+ . . . . . 1 complexType {}
+ . . . . . . 1 choice {'maxOccurs': 'unbounded'}
+ . . . . . . . 1 element {'name': 'assembly'}
+ . . . . . . . . 1 complexType {}
+ . . . . . . . . . 1 complexContent {}
+ . . . . . . . . . . 1 extension {'base': 'DefineAssemblyConstraintsType'}
+ . . . . . . . . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . . . 2 element {'name': 'field'}
+ . . . . . . . . 1 complexType {}
+ . . . . . . . . . 1 complexContent {}
+ . . . . . . . . . . 1 extension {'base': 'DefineFieldConstraintsType'}
+ . . . . . . . . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . . . 3 element {'name': 'flag'}
+ . . . . . . . . 1 complexType {}
+ . . . . . . . . . 1 complexContent {}
+ . . . . . . . . . . 1 extension {'base': 'DefineFlagConstraintsType'}
+ . . . . . . . . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . . 2 attribute {'name': 'metaschema-namespace', 'type': 'URIDatatype', 'use': 'required'}
+ . . . . . . 3 attribute {'name': 'metaschema-short-name', 'type': 'ShortNameType', 'use': 'required'}
+ . . . . 5 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . 5 complexType {'name': 'MetaschemaImportType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 attribute {'name': 'href', 'type': 'URIReferenceDatatype', 'use': 'required'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . 6 group {'name': 'DefinitionMetadataGroup'}
+ . . 1 sequence {}
+ . . . 1 element {'name': 'formal-name', 'type': 'FormalNameType', 'minOccurs': '0'}
+ . . . 2 element {'name': 'description', 'type': 'MarkupLineDatatype', 'minOccurs': '0'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 element {'name': 'prop', 'type': 'PropertyType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . 4 <!--comment--> {}
+ . 7 complexType {'name': 'PropertyType'}
+ . . 1 attribute {'name': 'namespace', 'type': 'URIDatatype', 'default': 'http://csrc.nist.gov/ns/oscal/metaschema/1.0'}
+ . . 2 attribute {'name': 'name', 'type': 'TokenDatatype', 'use': 'required'}
+ . . 3 attribute {'name': 'value', 'type': 'TokenDatatype', 'use': 'required'}
+ . 8 simpleType {'name': 'ModelNameType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'TokenDatatype'}
+ . 9 complexType {'name': 'GlobalAssemblyDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 choice {}
+ . . . . 1 element {'minOccurs': '0', 'name': 'root-name', 'type': 'ModelNameType'}
+ . . . . 2 element {'minOccurs': '0', 'name': 'use-name', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'json-key', 'type': 'JsonKeyType', 'minOccurs': '0'}
+ . . . 4 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 element {'name': 'flag', 'type': 'FlagReferenceType'}
+ . . . . 2 element {'minOccurs': '0', 'maxOccurs': 'unbounded', 'name': 'define-flag', 'type': 'InlineFlagDefinitionType'}
+ . . . 5 element {'name': 'model', 'minOccurs': '0', 'type': 'AssemblyModelType'}
+ . . . 6 element {'minOccurs': '0', 'name': 'constraint', 'type': 'DefineAssemblyConstraintsType'}
+ . . . 7 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 8 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 4 attribute {'name': 'scope', 'type': 'ScopeType', 'default': 'global'}
+ . . 5 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 10 complexType {'name': 'AssemblyModelType'}
+ . . 1 sequence {}
+ . . . 1 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 element {'name': 'assembly', 'type': 'AssemblyReferenceType'}
+ . . . . 2 element {'name': 'field', 'type': 'FieldReferenceType'}
+ . . . . 3 element {'name': 'define-assembly', 'type': 'InlineAssemblyDefinitionType'}
+ . . . . 4 element {'name': 'define-field', 'type': 'InlineFieldDefinitionType'}
+ . . . . 5 element {'name': 'choice', 'type': 'ChoiceType'}
+ . . . 2 element {'name': 'any', 'type': 'AnyType', 'minOccurs': '0'}
+ . 11 group {'name': 'JsonValueKeyChoiceGroup'}
+ . . 1 sequence {}
+ . . . 1 choice {'minOccurs': '0', 'maxOccurs': '1'}
+ . . . . 1 element {'name': 'json-value-key', 'type': 'JsonValueKeyType'}
+ . . . . 2 element {'name': 'json-value-key-flag', 'type': 'JsonValueKeyFlagType'}
+ . 12 simpleType {'name': 'JsonValueKeyType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'ModelNameType'}
+ . 13 complexType {'name': 'JsonValueKeyFlagType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 attribute {'name': 'flag-ref', 'type': 'ModelNameType'}
+ . 14 complexType {'name': 'GlobalFieldDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'minOccurs': '0', 'name': 'use-name', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'json-key', 'type': 'JsonKeyType', 'minOccurs': '0'}
+ . . . 4 group {'ref': 'JsonValueKeyChoiceGroup'}
+ . . . 5 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 element {'name': 'flag', 'type': 'FlagReferenceType'}
+ . . . . 2 element {'minOccurs': '0', 'maxOccurs': 'unbounded', 'name': 'define-flag', 'type': 'InlineFlagDefinitionType'}
+ . . . 6 element {'minOccurs': '0', 'name': 'constraint', 'type': 'DefineFieldConstraintsType'}
+ . . . 7 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 8 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attributeGroup {'ref': 'FieldValueAttributeGroup'}
+ . . 4 attribute {'name': 'collapsible', 'type': 'YesNoType', 'default': 'no'}
+ . . 5 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 6 attribute {'name': 'scope', 'type': 'ScopeType', 'default': 'global'}
+ . . 7 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 15 complexType {'name': 'GlobalFlagDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'minOccurs': '0', 'name': 'use-name', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'constraint', 'minOccurs': '0', 'type': 'DefineFlagConstraintsType'}
+ . . . 4 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 5 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 4 attributeGroup {'ref': 'FlagValueAttributeGroup'}
+ . . 5 attribute {'name': 'scope', 'type': 'ScopeType', 'default': 'global'}
+ . . 6 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 16 complexType {'name': 'InlineAssemblyDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'name': 'json-key', 'type': 'JsonKeyType', 'minOccurs': '0'}
+ . . . 3 group {'ref': 'JsonValueKeyChoiceGroup'}
+ . . . 4 element {'name': 'group-as', 'type': 'GroupAsType', 'minOccurs': '0'}
+ . . . 5 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 element {'name': 'flag', 'type': 'FlagReferenceType'}
+ . . . . 2 element {'minOccurs': '0', 'maxOccurs': 'unbounded', 'name': 'define-flag', 'type': 'InlineFlagDefinitionType'}
+ . . . 6 element {'name': 'model', 'minOccurs': '0', 'type': 'AssemblyModelType'}
+ . . . 7 element {'minOccurs': '0', 'name': 'constraint', 'type': 'DefineAssemblyConstraintsType'}
+ . . . 8 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 9 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attributeGroup {'ref': 'CardinalitySpecificationGroup'}
+ . . 4 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 5 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 17 complexType {'name': 'InlineFieldDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'name': 'json-key', 'type': 'JsonKeyType', 'minOccurs': '0'}
+ . . . 3 group {'ref': 'JsonValueKeyChoiceGroup'}
+ . . . 4 element {'name': 'group-as', 'type': 'GroupAsType', 'minOccurs': '0'}
+ . . . 5 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 element {'name': 'flag', 'type': 'FlagReferenceType'}
+ . . . . 2 element {'minOccurs': '0', 'maxOccurs': 'unbounded', 'name': 'define-flag', 'type': 'InlineFlagDefinitionType'}
+ . . . 6 element {'minOccurs': '0', 'name': 'constraint', 'type': 'DefineFieldConstraintsType'}
+ . . . 7 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 8 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attributeGroup {'ref': 'FieldValueAttributeGroup'}
+ . . 4 attribute {'name': 'collapsible', 'type': 'YesNoType', 'default': 'no'}
+ . . 5 attributeGroup {'ref': 'CardinalitySpecificationGroup'}
+ . . 6 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 7 attribute {'name': 'in-xml', 'type': 'InXmlWrappedType', 'default': 'WRAPPED'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . . 8 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 18 complexType {'name': 'InlineFlagDefinitionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'name': 'constraint', 'minOccurs': '0', 'type': 'DefineFlagConstraintsType'}
+ . . . 3 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 4 element {'name': 'example', 'type': 'ExampleType', 'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . 3 attribute {'name': 'name', 'use': 'required', 'type': 'ModelNameType'}
+ . . 4 attributeGroup {'ref': 'FlagValueAttributeGroup'}
+ . . 5 attribute {'name': 'required', 'type': 'YesNoType', 'default': 'no'}
+ . . 6 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 19 simpleType {'name': 'FormalNameType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'StringDatatype'}
+ . 20 simpleType {'name': 'JsonBaseUriType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'URIDatatype'}
+ . 21 complexType {'name': 'RemarksType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'MarkupMultilineDatatype'}
+ . . . . 1 attribute {'name': 'class'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . . 2 simpleType {}
+ . . . . . . 1 restriction {'base': 'TokenDatatype'}
+ . . . . . . . 1 enumeration {'value': 'XML'}
+ . . . . . . . . 1 annotation {}
+ . . . . . . . . . 1 documentation {}
+ . . . . . . . 2 enumeration {'value': 'JSON'}
+ . . . . . . . . 1 annotation {}
+ . . . . . . . . . 1 documentation {}
+ . 22 simpleType {'name': 'VersionType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'StringDatatype'}
+ . 23 simpleType {'name': 'ShortNameType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'TokenDatatype'}
+ . 24 complexType {'name': 'AssemblyReferenceType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'minOccurs': '0', 'name': 'use-name', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'group-as', 'type': 'GroupAsType', 'minOccurs': '0'}
+ . . . 4 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . 3 attribute {'name': 'ref', 'use': 'required', 'type': 'ModelNameType'}
+ . . 4 attributeGroup {'ref': 'CardinalitySpecificationGroup'}
+ . . 5 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 25 complexType {'name': 'FieldReferenceType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'minOccurs': '0', 'name': 'use-name', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'group-as', 'type': 'GroupAsType', 'minOccurs': '0'}
+ . . . 4 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . 3 attribute {'name': 'ref', 'use': 'required', 'type': 'ModelNameType'}
+ . . 4 attributeGroup {'ref': 'CardinalitySpecificationGroup'}
+ . . 5 attribute {'name': 'in-xml', 'type': 'InXmlWrappedType', 'default': 'WRAPPED'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . . 6 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 26 simpleType {'name': 'InXmlWrappedType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'WRAPPED'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'WITH_WRAPPER'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 enumeration {'value': 'UNWRAPPED'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 27 attributeGroup {'name': 'CardinalitySpecificationGroup'}
+ . . 1 attribute {'name': 'min-occurs', 'type': 'NonNegativeIntegerDatatype', 'default': '0'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . . 2 attribute {'name': 'max-occurs', 'type': 'NaturalNumberOrUnboundedType', 'default': '1'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . 28 attributeGroup {'name': 'FieldValueAttributeGroup'}
+ . . 1 attribute {'name': 'as-type', 'type': 'FieldDatatypesType', 'default': 'string'}
+ . . 2 attribute {'name': 'default', 'type': 'StringDatatype'}
+ . 29 attributeGroup {'name': 'FlagValueAttributeGroup'}
+ . . 1 <!--comment--> {}
+ . . 2 attribute {'name': 'as-type', 'type': 'SimpleDatatypesType', 'default': 'string'}
+ . . 3 attribute {'name': 'default', 'type': 'StringDatatype'}
+ . 30 simpleType {'name': 'NaturalNumberOrUnboundedType'}
+ . . 1 union {'memberTypes': 'PositiveIntegerDatatype'}
+ . . . 1 simpleType {}
+ . . . . 1 restriction {'base': 'StringDatatype'}
+ . . . . . 1 enumeration {'value': 'unbounded'}
+ . 31 complexType {'abstract': 'true', 'name': 'ConstraintType'}
+ . . 1 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . 2 attribute {'name': 'id', 'type': 'TokenDatatype', 'use': 'optional'}
+ . . 3 attribute {'name': 'level', 'type': 'LevelType', 'default': 'ERROR'}
+ . 32 group {'name': 'ConstraintContentsGroup'}
+ . . 1 sequence {}
+ . . . 1 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . 33 simpleType {'name': 'LevelType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'CRITICAL'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'ERROR'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 enumeration {'value': 'WARNING'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 4 enumeration {'value': 'INFORMATIONAL'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 34 complexType {'name': 'AllowedValuesType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'ConstraintType'}
+ . . . . 1 sequence {}
+ . . . . . 1 element {'name': 'enum', 'type': 'EnumType', 'maxOccurs': 'unbounded'}
+ . . . . . 2 group {'ref': 'ConstraintContentsGroup'}
+ . . . . 2 attribute {'name': 'allow-other', 'type': 'YesNoType', 'default': 'no'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 3 attribute {'name': 'extensible', 'type': 'ExtensibleEnumType', 'default': 'model'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 35 simpleType {'name': 'ExtensibleEnumType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'model'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'external'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 enumeration {'value': 'none'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 36 complexType {'name': 'EnumType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'MarkupLineDatatype'}
+ . . . . 1 attribute {'name': 'value', 'use': 'required', 'type': 'StringDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 2 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 37 attributeGroup {'name': 'DeprecationAttributeGroup'}
+ . . 1 attribute {'name': 'deprecated', 'type': 'VersionType'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . 38 complexType {'name': 'FlagReferenceType'}
+ . . 1 sequence {}
+ . . . 1 group {'ref': 'DefinitionMetadataGroup'}
+ . . . 2 element {'name': 'use-name', 'minOccurs': '0', 'type': 'ModelNameType'}
+ . . . 3 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . 2 attribute {'name': 'ref', 'use': 'required', 'type': 'ModelNameType'}
+ . . 3 attribute {'name': 'required', 'type': 'YesNoType', 'default': 'no'}
+ . . 4 attributeGroup {'ref': 'DeprecationAttributeGroup'}
+ . 39 simpleType {'name': 'RegexType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 restriction {'base': 'StringDatatype'}
+ . 40 simpleType {'name': 'MetaschemaPathType'}
+ . . 1 restriction {'base': 'StringDatatype'}
+ . 41 complexType {'name': 'MatchesConstraintType'}
+ . . 1 <!--comment--> {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'ConstraintType'}
+ . . . . 1 sequence {}
+ . . . . . 1 group {'ref': 'ConstraintContentsGroup'}
+ . . . . 2 attribute {'name': 'regex', 'type': 'RegexType'}
+ . . . . 3 attribute {'name': 'datatype', 'type': 'SimpleDatatypesType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 42 complexType {'name': 'ScopedMatchesConstraintType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'MatchesConstraintType'}
+ . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 43 complexType {'name': 'ScopedAllowedValuesType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'AllowedValuesType'}
+ . . . . 1 <!--comment--> {}
+ . . . . 2 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 44 complexType {'name': 'DefineFlagConstraintsType'}
+ . . 1 sequence {}
+ . . . 1 choice {'maxOccurs': 'unbounded'}
+ . . . . 1 element {'minOccurs': '0', 'name': 'allowed-values', 'type': 'AllowedValuesType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 2 element {'name': 'matches', 'type': 'MatchesConstraintType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 3 element {'name': 'index-has-key', 'type': 'IndexHasKeyConstraintType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . 4 element {'name': 'expect', 'type': 'ExpectConstraintType'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . 2 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . 45 <!--comment--> {}
+ . 46 complexType {'name': 'IndexFieldType'}
+ . . 1 sequence {}
+ . . . 1 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . 2 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . 47 complexType {'name': 'KeyConstraintType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'ConstraintType'}
+ . . . . 1 sequence {}
+ . . . . . 1 element {'name': 'key-field', 'maxOccurs': 'unbounded'}
+ . . . . . . 1 annotation {}
+ . . . . . . . 1 documentation {}
+ . . . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . 2 complexType {}
+ . . . . . . . 1 complexContent {}
+ . . . . . . . . 1 extension {'base': 'IndexFieldType'}
+ . . . . . . . . . 1 attribute {'name': 'pattern', 'type': 'RegexType'}
+ . . . . . . . . . . 1 annotation {}
+ . . . . . . . . . . . 1 documentation {}
+ . . . . . 2 group {'ref': 'ConstraintContentsGroup'}
+ . 48 complexType {'name': 'ScopedKeyConstraintType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'KeyConstraintType'}
+ . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 49 complexType {'name': 'IndexHasKeyConstraintType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'KeyConstraintType'}
+ . . . . 1 attribute {'name': 'name', 'type': 'ModelNameType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 50 complexType {'name': 'ScopedIndexHasKeyConstraintType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'IndexHasKeyConstraintType'}
+ . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 51 complexType {'name': 'ScopedIndexConstraintType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 complexContent {}
+ . . . 1 extension {'base': 'KeyConstraintType'}
+ . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 2 attribute {'name': 'name', 'type': 'ModelNameType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 52 complexType {'name': 'ExpectConstraintType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'ConstraintType'}
+ . . . . 1 sequence {}
+ . . . . . 1 element {'name': 'message', 'type': 'StringDatatype', 'minOccurs': '0'}
+ . . . . . 2 group {'ref': 'ConstraintContentsGroup'}
+ . . . . 2 attribute {'name': 'test', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 53 complexType {'name': 'ScopedExpectConstraintType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'ExpectConstraintType'}
+ . . . . 1 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . 54 group {'name': 'CommonModelConstraintsGroup'}
+ . . 1 choice {}
+ . . . 1 element {'name': 'allowed-values', 'type': 'ScopedAllowedValuesType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 element {'name': 'matches', 'type': 'ScopedMatchesConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 element {'name': 'index-has-key', 'type': 'ScopedIndexHasKeyConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . 4 element {'name': 'expect', 'type': 'ScopedExpectConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 55 complexType {'name': 'HasCardinalityConstraintType'}
+ . . 1 complexContent {}
+ . . . 1 extension {'base': 'ConstraintType'}
+ . . . . 1 sequence {}
+ . . . . . 1 group {'ref': 'ConstraintContentsGroup'}
+ . . . . 2 attribute {'name': 'target', 'type': 'MetaschemaPathType', 'use': 'required'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . 3 attribute {'name': 'min-occurs', 'type': 'NonNegativeIntegerDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . 4 attribute {'name': 'max-occurs', 'type': 'NonNegativeIntegerDatatype'}
+ . . . . . 1 annotation {}
+ . . . . . . 1 documentation {}
+ . . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . 56 group {'name': 'AssemblyConstraintsGroup'}
+ . . 1 choice {}
+ . . . 1 element {'name': 'index', 'type': 'ScopedIndexConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . 2 element {'name': 'is-unique', 'type': 'ScopedKeyConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . 2 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . . . . 3 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . . . 3 element {'name': 'has-cardinality', 'type': 'HasCardinalityConstraintType'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . . . . 1 {http://csrc.nist.gov/ns/oscal/metaschema/1.0}code {}
+ . 57 complexType {'name': 'DefineFieldConstraintsType'}
+ . . 1 sequence {}
+ . . . 1 choice {'minOccurs': '1', 'maxOccurs': 'unbounded'}
+ . . . . 1 group {'ref': 'CommonModelConstraintsGroup'}
+ . . . 2 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . 58 complexType {'name': 'DefineAssemblyConstraintsType'}
+ . . 1 sequence {}
+ . . . 1 choice {'minOccurs': '1', 'maxOccurs': 'unbounded'}
+ . . . . 1 group {'ref': 'CommonModelConstraintsGroup'}
+ . . . . 2 group {'ref': 'AssemblyConstraintsGroup'}
+ . . . 2 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . 59 complexType {'name': 'ChoiceType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 choice {'maxOccurs': 'unbounded'}
+ . . . 1 element {'name': 'assembly', 'type': 'AssemblyReferenceType'}
+ . . . 2 element {'name': 'field', 'type': 'FieldReferenceType'}
+ . . . 3 element {'name': 'define-assembly', 'type': 'InlineAssemblyDefinitionType'}
+ . . . 4 element {'name': 'define-field', 'type': 'InlineFieldDefinitionType'}
+ . 60 complexType {'name': 'AnyType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . 61 complexType {'name': 'ExampleType'}
+ . . 1 sequence {}
+ . . . 1 element {'name': 'description', 'type': 'MarkupLineDatatype', 'minOccurs': '0'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 element {'name': 'remarks', 'type': 'RemarksType', 'minOccurs': '0'}
+ . . . 3 choice {'minOccurs': '0', 'maxOccurs': 'unbounded'}
+ . . . . 1 any {'namespace': '##other', 'processContents': 'lax'}
+ . . 2 attribute {'name': 'href', 'type': 'URIDatatype'}
+ . . 3 attribute {'name': 'path', 'type': 'StringDatatype'}
+ . 62 complexType {'name': 'JsonKeyType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 attribute {'name': 'flag-ref', 'type': 'ModelNameType'}
+ . . 3 <!--comment--> {}
+ . 63 complexType {'name': 'GroupAsType'}
+ . . 1 annotation {}
+ . . . 1 documentation {}
+ . . 2 attribute {'name': 'name', 'type': 'ModelNameType', 'use': 'required'}
+ . . 3 attribute {'name': 'in-json', 'type': 'JsonGroupAsBehaviorType', 'use': 'optional', 'default': 'SINGLETON_OR_ARRAY'}
+ . . . 1 <!--comment--> {}
+ . . . 2 annotation {}
+ . . . . 1 documentation {}
+ . . 4 attribute {'name': 'in-xml', 'type': 'XmlGroupAsBehaviorType', 'use': 'optional', 'default': 'UNGROUPED'}
+ . . . 1 annotation {}
+ . . . . 1 documentation {}
+ . 64 simpleType {'name': 'JsonGroupAsBehaviorType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'ARRAY'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'SINGLETON_OR_ARRAY'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 3 enumeration {'value': 'BY_KEY'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 65 simpleType {'name': 'XmlGroupAsBehaviorType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'GROUPED'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'UNGROUPED'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . 66 simpleType {'name': 'SimpleDatatypesType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'base64'}
+ . . . 2 enumeration {'value': 'boolean'}
+ . . . 3 enumeration {'value': 'date'}
+ . . . 4 enumeration {'value': 'date-time'}
+ . . . 5 enumeration {'value': 'date-time-with-timezone'}
+ . . . 6 enumeration {'value': 'date-with-timezone'}
+ . . . 7 enumeration {'value': 'day-time-duration'}
+ . . . 8 enumeration {'value': 'decimal'}
+ . . . 9 <!--comment--> {}
+ . . . 10 <!--comment--> {}
+ . . . 11 <!--comment--> {}
+ . . . 12 enumeration {'value': 'email-address'}
+ . . . 13 enumeration {'value': 'hostname'}
+ . . . 14 enumeration {'value': 'integer'}
+ . . . 15 enumeration {'value': 'ip-v4-address'}
+ . . . 16 enumeration {'value': 'ip-v6-address'}
+ . . . 17 enumeration {'value': 'non-negative-integer'}
+ . . . 18 enumeration {'value': 'positive-integer'}
+ . . . 19 enumeration {'value': 'string'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 20 enumeration {'value': 'token'}
+ . . . 21 enumeration {'value': 'uri'}
+ . . . 22 enumeration {'value': 'uri-reference'}
+ . . . 23 enumeration {'value': 'uuid'}
+ . . . 24 <!--comment--> {}
+ . . . 25 enumeration {'value': 'base64Binary'}
+ . . . 26 enumeration {'value': 'dateTime'}
+ . . . 27 enumeration {'value': 'dateTime-with-timezone'}
+ . . . 28 enumeration {'value': 'email'}
+ . . . 29 enumeration {'value': 'nonNegativeInteger'}
+ . . . 30 enumeration {'value': 'positiveInteger'}
+ . 67 simpleType {'name': 'FieldDatatypesType'}
+ . . 1 union {'memberTypes': 'SimpleDatatypesType'}
+ . . . 1 simpleType {}
+ . . . . 1 restriction {'base': 'TokenDatatype'}
+ . . . . . 1 <!--comment--> {}
+ . . . . . 2 enumeration {'value': 'markup-line'}
+ . . . . . 3 enumeration {'value': 'markup-multiline'}
+ . 68 <!--comment--> {}
+ . 69 simpleType {'name': 'YesNoType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'yes'}
+ . . . 2 enumeration {'value': 'no'}
+ . 70 simpleType {'name': 'ScopeType'}
+ . . 1 restriction {'base': 'TokenDatatype'}
+ . . . 1 enumeration {'value': 'local'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}
+ . . . 2 enumeration {'value': 'global'}
+ . . . . 1 annotation {}
+ . . . . . 1 documentation {}

@@ -1,0 +1,465 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://csrc.nist.gov/ns/oscal/1.0",
+  "title": "Open Security Controls Assessment Language (OSCAL)",
+  "$ref": "#/definitions/Oscal",
+  "definitions": {
+    "Oscal": {
+      "title": "Oscal",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "catalog": {
+          "$ref": "#/definitions/Catalog",
+          "description": ""
+        }
+      }
+    },
+    "Catalog": {
+      "title": "Catalog",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uuid",
+        "metadata"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/Uuid",
+          "description": ""
+        },
+        "metadata": {
+          "$ref": "#/definitions/Metadata",
+          "description": ""
+        },
+        "groups": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Group",
+            "description": ""
+          }
+        }
+      }
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "last-modified",
+        "version",
+        "oscal-version"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "published": {
+          "$ref": "#/definitions/DateTime",
+          "description": ""
+        },
+        "last-modified": {
+          "$ref": "#/definitions/DateTime",
+          "description": ""
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "oscal-version": {
+          "$ref": "#/definitions/SemVer",
+          "description": ""
+        },
+        "remarks": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "roles": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Role",
+            "description": ""
+          }
+        },
+        "parties": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Party",
+            "description": ""
+          }
+        }
+      }
+    },
+    "Role": {
+      "title": "Role",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/RoleId",
+          "description": ""
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Party": {
+      "title": "Party",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uuid",
+        "type"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/Uuid",
+          "description": ""
+        },
+        "type": {
+          "$ref": "#/definitions/PartyType",
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "remarks": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "links": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Link",
+            "description": ""
+          }
+        }
+      }
+    },
+    "Group": {
+      "title": "Group",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "groups": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Group",
+            "description": ""
+          }
+        },
+        "props": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Property",
+            "description": ""
+          }
+        },
+        "parts": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Part",
+            "description": ""
+          }
+        },
+        "controls": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Control",
+            "description": ""
+          }
+        }
+      }
+    },
+    "Link": {
+      "title": "Link",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rel",
+        "href"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "rel": {
+          "$ref": "#/definitions/LinkType",
+          "description": ""
+        },
+        "href": {
+          "$ref": "#/definitions/Uri",
+          "description": ""
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Parameter": {
+      "title": "Parameter",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "select": {
+          "$ref": "#/definitions/Selection",
+          "description": ""
+        }
+      }
+    },
+    "Selection": {
+      "title": "Selection",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "how-many"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "how-many": {
+          "$ref": "#/definitions/Quantity",
+          "description": ""
+        },
+        "choice": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/ParameterItem",
+            "description": ""
+          }
+        }
+      }
+    },
+    "Property": {
+      "title": "Property",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Part": {
+      "title": "Part",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "props": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Property",
+            "description": ""
+          }
+        },
+        "parts": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Part",
+            "description": ""
+          }
+        },
+        "prose": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Control": {
+      "title": "Control",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "params": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Parameter",
+            "description": ""
+          }
+        },
+        "props": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Property",
+            "description": ""
+          }
+        },
+        "parts": {
+          "type": "array",
+          "description": "",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Part",
+            "description": ""
+          }
+        }
+      }
+    },
+    "LinkType": {
+      "title": "LinkType",
+      "type": "string",
+      "enum": [
+        "implements-policy",
+        "website",
+        "OSCAL-SSP-XML"
+      ]
+    },
+    "PartyType": {
+      "title": "PartyType",
+      "type": "string",
+      "enum": [
+        "organization",
+        "person"
+      ]
+    },
+    "Quantity": {
+      "title": "Quantity",
+      "type": "string",
+      "enum": [
+        "one-or-more"
+      ]
+    },
+    "RoleId": {
+      "title": "RoleId",
+      "type": "string",
+      "enum": [
+        "admin",
+        "asset-owner",
+        "asset-administrator",
+        "customer",
+        "legal-officer",
+        "maintainer",
+        "poc-for-customers",
+        "provider",
+        "role-id"
+      ]
+    },
+    "DateTime": {
+      "title": "DateTime",
+      "type": "string",
+      "maxLength": 255
+    },
+    "ParameterItem": {
+      "title": "ParameterItem",
+      "type": "string",
+      "maxLength": 255
+    },
+    "SemVer": {
+      "title": "SemVer",
+      "type": "string",
+      "maxLength": 255
+    },
+    "Uri": {
+      "title": "Uri",
+      "type": "string",
+      "maxLength": 255
+    },
+    "Uuid": {
+      "title": "Uuid",
+      "type": "string",
+      "format": "uuid",
+      "maxLength": 255
+    }
+  }
+}

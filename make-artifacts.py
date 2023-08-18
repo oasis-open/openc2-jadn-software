@@ -37,7 +37,10 @@ def main(schema_dir: str = SCHEMA_DIR, output_dir: str = OUTPUT_DIR) -> None:
     os.makedirs(css_dir, exist_ok=True)
     shutil.copy(os.path.join(jadn.data_dir(), 'dtheme.css'), css_dir)
     for f in os.listdir(schema_dir):
-        translate(f, schema_dir, output_dir)
+        try:
+            translate(f, schema_dir, output_dir)
+        except (ValueError, IndexError) as e:
+            print(f'### {f}: {e}')
 
 
 if __name__ == '__main__':

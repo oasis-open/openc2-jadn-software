@@ -1,0 +1,413 @@
+{
+  "info": {
+    "title": "Open Security Controls Assessment Language (OSCAL)",
+    "package": "http://csrc.nist.gov/ns/oscal/1.0",
+    "exports": ["Oscal"],
+    "config": {
+      "$FieldName": "^[a-z][-_A-Za-z0-9]{0,63}$"
+    }
+  },
+
+  "types": [
+    ["Oscal", "Choice", [], "", [
+      [1, "catalog", "Catalog", [], ""],
+      [2, "component-definition", "ComponentDefinition", [], ""],
+      [3, "system-security-plan", "SystemSecurityPlan", [], ""]
+    ]],
+
+    ["Catalog", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "metadata", "Metadata", [], ""],
+      [3, "groups", "Group", ["[0", "]0"], ""]
+    ]],
+
+    ["Metadata", "Record", [], "", [
+      [1, "title", "String", [], ""],
+      [2, "published", "DateTime", ["[0"], ""],
+      [3, "last-modified", "DateTime", [], ""],
+      [4, "version", "String", [], ""],
+      [5, "oscal-version", "SemVer", [], ""],
+      [6, "remarks", "String", ["[0"], ""],
+      [7, "roles", "Role", ["[0", "]0"], ""],
+      [8, "parties", "Party", ["[0", "]0"], ""]
+    ]],
+
+    ["Role", "Record", [], "", [
+      [1, "id", "RoleId", [], ""],
+      [2, "title", "String", [], ""]
+    ]],
+
+    ["Party", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "type", "PartyType", [], ""],
+      [3, "name", "String", ["[0"], ""],
+      [4, "remarks", "String", ["[0"], ""],
+      [5, "links", "Link", ["[0", "]0"], ""]
+    ]],
+
+    ["Group", "Record", [], "", [
+      [1, "id", "String", [], ""],
+      [2, "title", "String", [], ""],
+      [3, "groups", "Group", ["[0", "]0"], ""],
+      [4, "props", "Property", ["[0", "]0"], ""],
+      [5, "parts", "Part", ["[0", "]0"], ""],
+      [6, "controls", "Control", ["[0", "]0"], ""]
+    ]],
+
+    ["ComponentDefinition", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "metadata", "Metadata", [], ""],
+      [3, "components", "Component", ["[0", "]0"], ""]
+    ]],
+
+    ["Component", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "type", "ComponentType", [], ""],
+      [3, "title", "String", [], ""],
+      [4, "description", "String", [], ""],
+      [5, "purpose", "String", ["[0"], ""],
+      [6, "status", "ComponentStatus", ["[0"], ""],
+      [7, "props", "Property", ["[0", "]0"], ""],
+      [8, "responsible-roles", "ResponsibleRole", ["[0", "]0"], ""],
+      [9, "protocols", "Protocol", ["[0", "]0"], ""],
+      [10, "links", "Link", ["[0", "]0"], ""],
+      [11, "control-implementations", "ControlImplementation", ["[0", "]0"], ""]
+    ]],
+
+    ["ComponentStatus", "Record", [], "", [
+      [1, "state", "ComponentState", [], ""]
+    ]],
+
+    ["ResponsibleRole", "Record", [], "", [
+      [1, "role-id", "RoleId", [], ""],
+      [2, "party-uuids", "Uuid", ["[0","]0"], ""]
+    ]],
+
+    ["Protocol", "Record", [], "", [
+      [1, "uuid", "String", [], ""],
+      [2, "name", "String", [], ""],
+      [3, "title", "String", [], ""],
+      [4, "port-ranges", "PortRange", ["]0"], ""]
+    ]],
+
+    ["PortRange", "Record", [], "", [
+      [1, "start", "Integer", [], ""],
+      [2, "end", "Integer", [], ""],
+      [3, "transport", "TransportProtocol", [], ""]
+    ]],
+
+    ["Link", "Record", [], "", [
+      [1, "rel", "LinkType", [], ""],
+      [2, "href", "Uri", [], ""],
+      [3, "text", "String", ["[0"], ""]
+    ]],
+
+    ["Parameter", "Record", [], "", [
+      [1, "id", "String", [], ""],
+      [2, "label", "String", [], ""],
+      [3, "select", "Selection", ["[0"], ""]
+    ]],
+
+    ["Selection", "Record", [], "", [
+      [1, "how-many", "Quantity", [], ""],
+      [2, "choice", "ParameterItem", ["[0", "]0"], ""]
+    ]],
+
+    ["Property", "Record", [], "", [
+      [1, "name", "String", [], ""],
+      [2, "value", "String", [], ""]
+    ]],
+
+    ["Part", "Record", [], "", [
+      [1, "id", "String", [], ""],
+      [2, "name", "String", [], ""],
+      [3, "props", "Property", ["[0", "]0"], ""],
+      [4, "parts", "Part", ["[0", "]0"], ""],
+      [5, "prose", "String", ["[0"], ""]
+    ]],
+
+    ["Control", "Record", [], "", [
+      [1, "id", "String", [], ""],
+      [2, "title", "String", [], ""],
+      [3, "params", "Parameter", ["[0", "]0"], ""],
+      [4, "props", "Property", ["[0", "]0"], ""],
+      [5, "parts", "Part", ["[0", "]0"], ""]
+    ]],
+
+    ["ControlImplementation", "Record", [], "", [
+      [1, "description", "String", [], ""],
+      [2, "implemented-requirements", "ControlRequirement", ["[0", "]0"], ""],
+      [3, "uuid", "Uuid", ["[0"], ""],
+      [4, "source", "String", ["[0"], ""]
+    ]],
+
+    ["ControlRequirement", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "description", "String", ["[0"], ""],
+      [3, "remarks", "String", ["[0"], ""],
+      [4, "control-id", "ControlId", [], ""],
+      [5, "set-parameters", "StatementParameter", ["[0", "]0"], ""],
+      [6, "statements", "ControlStatement", ["[0", "]0"], ""]
+    ]],
+
+    ["ControlStatement", "Record", [], "", [
+      [1, "statement-id", "StatementId", [], ""],
+      [2, "uuid", "Uuid", [], ""],
+      [3, "remarks", "String", ["[0"], ""],
+      [4, "by-components", "ComponentStatement", ["[0", "]0"], ""]
+    ]],
+
+    ["ComponentStatement", "Record", [], "", [
+      [1, "component-uuid", "Uuid", [], ""],
+      [2, "uuid", "Uuid", [], ""],
+      [3, "description", "String", [], ""],
+      [4, "props", "Property", ["[0", "]0"], ""],
+      [5, "satisfied", "Satisfied", ["[0", "]0"], ""],
+      [6, "inherited", "Inherited", ["[0", "]0"], ""],
+      [7, "set-parameters", "StatementParameter", ["[0", "]0"], ""],
+      [8, "export", "ExportStatement", ["[0"], ""]
+    ]],
+
+    ["Satisfied", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "responsibility-uuid", "Uuid", [], ""],
+      [3, "description", "String", [], ""],
+      [4, "responsible-roles", "ResponsibleRole", ["[0", "]0"], ""]
+    ]],
+
+    ["Inherited", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "provided-uuid", "Uuid", [], ""],
+      [3, "description", "String", [], ""],
+      [4, "responsible-roles", "ResponsibleRole", ["[0", "]0"], ""]
+    ]],
+
+    ["StatementParameter", "Record", [], "", [
+      [1, "param-id", "StatementParamId", [], ""],
+      [2, "values", "String", ["]0"], ""]
+    ]],
+
+    ["ExportStatement", "Record", [], "", [
+      [1, "description", "String", [], ""],
+      [2, "responsibilities", "Responsibility", ["[0", "]0"], ""],
+      [3, "provided", "Responsibility", ["[0", "]0"], ""]
+    ]],
+
+    ["Responsibility", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "provided-uuid", "Uuid", ["[0"], ""],
+      [3, "description", "String", [], ""],
+      [4, "responsible-roles", "ResponsibleRole", ["]0"], ""]
+    ]],
+
+    ["SystemSecurityPlan", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "metadata", "Metadata", [], ""],
+      [3, "import-profile", "ReferenceLink", [], ""],
+      [4, "system-characteristics", "SystemCharacteristics", [], ""],
+      [5, "system-implementation", "SystemImplementation", [], ""],
+      [6, "control-implementation", "ControlImplementation", [], ""],
+      [7, "back-matter", "BackMatter", ["[0"], ""]
+    ]],
+
+    ["SystemCharacteristics", "Record", [], "", [
+      [1, "system-name", "String", [], ""],
+      [2, "description", "String", [], ""],
+      [3, "remarks", "String", ["[0"], ""],
+      [4, "system-ids", "SystemId", ["[0", "]0"], ""],
+      [5, "security-sensitivity-level", "SensitivityLevel", [], ""],
+      [6, "system-information", "SystemInformation", [], ""],
+      [7, "security-impact-level", "SecurityImpactLevel", [], ""],
+      [8, "status", "SystemStatus", [], ""],
+      [9, "props", "Property", ["[0", "]0"], ""],
+      [10, "authorization-boundary", "AuthorizationBoundary", [], ""]
+    ]],
+
+    ["SystemId", "Record", [], "", [
+      [1, "id", "String", [], ""],
+      [2, "identifier-type", "SystemIdType", ["[0"], ""]
+    ]],
+
+    ["SystemInformation", "Record", [], "", [
+      [1, "information-types", "InformationType", ["[0", "]0"], ""]
+    ]],
+
+    ["InformationType", "Record", [], "", [
+      [1, "title", "String", [], ""],
+      [2, "description", "String", [], ""],
+      [3, "categorizations", "Categorization", ["[0", "]0"], ""],
+      [4, "confidentiality-impact", "Impact", [], ""],
+      [5, "integrity-impact", "Impact", [], ""],
+      [6, "availability-impact", "Impact", [], ""],
+      [7, "uuid", "Uuid", ["[0"], ""]
+    ]],
+
+    ["Categorization", "Record", [], "", [
+      [1, "system", "Uri", [], ""],
+      [2, "information-type-ids", "InformationTypeIds", ["]0"], ""]
+    ]],
+
+    ["Impact", "Record", [], "", [
+      [1, "base", "ImpactLevel", [], ""],
+      [2, "selected", "String", ["[0"], ""],
+      [3, "adjustment-justification", "String", ["[0"], ""]
+    ]],
+
+    ["SecurityImpactLevel", "Record", [], "", [
+      [1, "security-objective-confidentiality", "ImpactLevel", [], ""],
+      [2, "security-objective-integrity", "ImpactLevel", [], ""],
+      [3, "security-objective-availability", "ImpactLevel", [], ""]
+    ]],
+
+    ["AuthorizationBoundary", "Record", [], "", [
+      [1, "description", "String", [], ""]
+    ]],
+
+    ["SystemImplementation", "Record", ["{1"], "", [
+      [1, "remarks", "String", ["[0"], ""],
+      [2, "users", "User", ["[0", "]0"], ""],
+      [3, "components", "Component", ["[0", "]0"], ""],
+      [4, "inventory-items", "InventoryItem", ["[0", "]0"], ""],
+      [5, "leveraged-authorizations", "Authorization", ["[0", "]0"], ""]
+    ]],
+
+    ["InventoryItem", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "description", "String", [], ""],
+      [3, "props", "Property", ["[0", "]0"], ""],
+      [4, "responsible-parties", "ResponsibleRole", ["[0", "]0"], ""],
+      [5, "implemented-components", "ComponentUuid", ["[0", "]0"], ""]
+    ]],
+
+    ["Authorization", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "party-uuid", "Uuid", [], ""],
+      [3, "title", "String", [], ""],
+      [4, "links", "Link", ["]0"], ""],
+      [5, "date-authorized", "DateTime", [], ""]
+    ]],
+
+    ["ComponentUuid", "Record", [], "", [
+      [1, "component-uuid", "Uuid", [], ""]
+    ]],
+
+    ["SystemStatus", "Record", [], "", [
+      [1, "state", "SystemState", [], ""],
+      [2, "remarks", "String", ["[0"], ""]
+    ]],
+
+    ["User", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "title", "String", ["[0"], ""],
+      [3, "role-ids", "RoleId", ["[0", "]0"], ""],
+      [4, "props", "Property", ["[0", "]0"], ""],
+      [5, "authorized-privileges", "Privilege", ["[0", "]0"], ""]
+    ]],
+
+    ["Privilege", "Record", [], "", [
+      [1, "title", "String", [], ""],
+      [2, "functions-performed", "String", ["]0"], ""]
+    ]],
+
+    ["ReferenceLink", "Record", [], "", [
+      [1, "href", "Uri", [], ""]
+    ]],
+
+    ["BackMatter", "Record", [], "", [
+      [1, "resources", "Resource", ["[0", "]0"], ""]
+    ]],
+
+    ["Resource", "Record", [], "", [
+      [1, "uuid", "Uuid", [], ""],
+      [2, "rlinks", "ReferenceLink", ["[0", "]0"], ""]
+    ]],
+
+    ["ComponentState", "Enumerated", [], "", [
+      [1, "operational", ""]
+    ]],
+
+    ["ComponentType", "Enumerated", [], "", [
+      [1, "this-system", ""],
+      [2, "appliance", ""],
+      [3, "application", ""],
+      [4, "guidance", ""],
+      [5, "policy", ""],
+      [6, "process", ""],
+      [7, "software", ""],
+      [8, "system", ""]
+    ]],
+
+    ["ImpactLevel", "Enumerated", [], "", [
+      [1, "fips-199-low", ""],
+      [2, "fips-199-moderate", ""],
+      [3, "fips-199-high", ""]
+    ]],
+
+    ["InformationTypeIds", "Enumerated", [], "", [
+      [1, "C.3.5.8", ""]
+    ]],
+
+    ["LinkType", "Enumerated", [], "", [
+      [1, "implements-policy", ""],
+      [2, "website", ""],
+      [3, "OSCAL-SSP-XML", ""]
+    ]],
+
+    ["PartyType", "Enumerated", [], "", [
+      [1, "organization", ""],
+      [2, "person", ""]
+    ]],
+
+    ["Quantity", "Enumerated", [], "", [
+      [1, "one-or-more", ""]
+    ]],
+
+    ["RoleId", "Enumerated", [], "", [
+      [1, "admin", ""],
+      [2, "asset-owner", ""],
+      [3, "asset-administrator", ""],
+      [4, "customer", ""],
+      [5, "legal-officer", ""],
+      [6, "maintainer", ""],
+      [7, "poc-for-customers", ""],
+      [8, "provider", ""],
+      [9, "role-id", ""]
+    ]],
+
+    ["SensitivityLevel", "Enumerated", [], "", [
+      [1, "low", ""],
+      [2, "moderate", ""],
+      [3, "high", ""]
+    ]],
+
+    ["SystemIdType", "Enumerated", [], "", [
+      [1, "https://ietf.org/rfc/rfc4122", ""]
+    ]],
+
+    ["SystemState", "Enumerated", [], "", [
+      [0, "other", ""],
+      [1, "operational", ""]
+    ]],
+
+    ["TransportProtocol", "Enumerated", [], "", [
+      [1, "TCP", ""],
+      [2, "UDP", ""]
+    ]],
+
+    ["ControlId", "String", [], "", []],
+
+    ["DateTime", "String", [], "", []],
+
+    ["ParameterItem", "String", [], "", []],
+
+    ["SemVer", "String", [], "", []],
+
+    ["StatementId", "String", [], "", []],
+
+    ["StatementParamId", "String", [], "", []],
+
+    ["Uri", "String", [], "", []],
+
+    ["Uuid", "String", ["/uuid"], "", []]
+  ]
+}

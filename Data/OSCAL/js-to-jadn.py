@@ -11,6 +11,8 @@ JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema.json')
 def typename(jsdef):
     if isinstance(jsdef, str):
         td = jss['definitions'][jsdef]
+        if td.get('type', '') == 'string':
+            return jsdef    # Exact type name
         if (d := td.get('$ref', '')).startswith('#/definitions/'):     # Exact type name
             return d.removeprefix('#/definitions/')
         return td.get('title', '??').replace(' ', '')   # Guess type name from title

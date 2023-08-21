@@ -4,9 +4,9 @@ import os
 
 SCHEMA = os.path.join('..', '..', 'Schemas', 'Metaschema', 'oscal.jadn')
 
-with open(SCHEMA) as fp:
+with open(SCHEMA, encoding='utf-8') as fp:
     sc = jadn.load(fp)
-    print(f'{SCHEMA}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(sc)).items()]))
+print(f'{SCHEMA}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(sc)).items()]))
 codec = jadn.codec.Codec(sc, verbose_rec=True, verbose_str=True)
 
 for f in os.scandir('.'):

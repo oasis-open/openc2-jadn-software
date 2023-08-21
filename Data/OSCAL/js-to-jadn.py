@@ -8,7 +8,7 @@ JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
 JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema.json')
 
 
-def typename(jsdef):
+def typedefname(jsdef):
     if isinstance(jsdef, str):
         td = jss['definitions'][jsdef]
         if td.get('type', '') == 'string':
@@ -16,12 +16,13 @@ def typename(jsdef):
         if (d := td.get('$ref', '')).startswith('#/definitions/'):     # Exact type name
             return d.removeprefix('#/definitions/')
         return td.get('title', '??').replace(' ', '')   # Guess type name from title
-    elif ref := jsdef.get('$ref', ''):
+
+
+def typerefname(jsref):
+    if ref := jsref.get('$ref', ''):
         if td := jssx[ref]:
-            return td.split(':', maxsplit=1)[1].capitalize()    # Extract type name from $id
-    else:
-        return jsdef.get('title', '??').replace(' ', '')   # Guess type name from object def title
-    print('  ## unknown type', jsdef)
+            return td.split(':', maxsplit=1)[1].capitalize()   # Extract type name from $id
+    return jsref.get('title', '??').replace(' ', '')  # Guess type name from object def title
 
 
 def define_jadn_type(jsname: str, jstype: dict) -> list:
@@ -38,14 +39,14 @@ def define_jadn_type(jsname: str, jstype: dict) -> list:
             ft = ''
             if v.get('type', '') == 'array':
                 fopts.append(f']{v.get("maxItems", 0)}')
-                ft = typename(v['items'])
+                ft = typerefname(v['items'])
             ftype = v.get('$ref', ft).replace('#/definitions/', '')
             fdef = [n, k, ftype, fopts, v.get('description', '')]
             print(f'    {fdef}')
             fields.append(fdef)
     elif ftype == 'string':
         pass
-    return [typename(jsname), jtype, [], jstype.get('description', ''), fields]
+    return [typedefname(jsname), jtype, [], jstype.get('description', ''), fields]
 
 
 with open(JADN, encoding='utf-8') as fp:

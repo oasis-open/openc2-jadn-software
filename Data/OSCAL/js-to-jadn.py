@@ -5,24 +5,32 @@ from jadn.definitions import *
 
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
 JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
-JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema.json')
+JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema_1.1.0.json')
+DEBUG = True
+D = [(f'${n}' if DEBUG else '') for n in range(10)]
 
 
-def typedefname(jsdef):
-    if isinstance(jsdef, str):
-        td = jss['definitions'][jsdef]
-        if td.get('type', '') == 'string':
-            return jsdef    # Exact type name
-        if (d := td.get('$ref', '')).startswith('#/definitions/'):     # Exact type name
-            return d.removeprefix('#/definitions/')
-        return td.get('title', '??').replace(' ', '')   # Guess type name from title
+def typedefname(jsdef: str) -> str:
+    """
+    Infer type name from a JSON Schema definition
+    """
+    assert isinstance(jsdef, str), f'Not a type definition name: {jsdef}'
+    td = jss['definitions'][jsdef]
+    if td.get('type', '') == 'string':
+        return jsdef + D[0]     # Exact type name
+    if (d := td.get('$ref', '')).startswith('#/definitions/'):  # Exact type name
+        return d.removeprefix('#/definitions/') + D[1]
+    return td.get('title', '??').replace(' ', '') + D[2]    # Guess type name from title
 
 
-def typerefname(jsref):
+def typerefname(jsref: dict) -> str:
+    """
+    Infer a type name from a JSON Schema property reference
+    """
     if ref := jsref.get('$ref', ''):
         if td := jssx[ref]:
-            return td.split(':', maxsplit=1)[1].capitalize()   # Extract type name from $id
-    return jsref.get('title', '??').replace(' ', '')  # Guess type name from object def title
+            return td.split(':', maxsplit=1)[1].capitalize() + D[5]  # Extract type name from $id
+    return jsref.get('title', '??').replace(' ', '') + D[6]  # Guess type name from object def title
 
 
 def define_jadn_type(jsname: str, jstype: dict) -> list:
@@ -48,18 +56,15 @@ def define_jadn_type(jsname: str, jstype: dict) -> list:
         pass
     return [typedefname(jsname), jtype, [], jstype.get('description', ''), fields]
 
+"""
+Create a JADN type from each definition in a Metaschema-generated JSON Schema
+"""
+if __name__ == '__main__':
+    with open(JSCHEMA, encoding='utf-8') as fp:
+        jss = json.load(fp)
+    jssx = {v.get('$id', ''): k for k, v in jss['definitions'].items()}     # Build index from $id to definitions name
 
-with open(JADN, encoding='utf-8') as fp:
-    jns = jadn.load(fp)
-print(f'{JADN}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(jns)).items()]))
-codec = jadn.codec.Codec(jns, verbose_rec=True, verbose_str=True)
-jnsx = {k[TypeName]: {j[FieldName] for j in k[Fields]} for k in jns['types']}
-
-with open(JSCHEMA, encoding='utf-8') as fp:
-    jss = json.load(fp)
-jssx = {v.get('$id', ''): k for k, v in jss['definitions'].items()}
-
-types = []
-for jtn, jtp in jss['definitions'].items():
-    types.append(define_jadn_type(jtn, jtp))
-jadn.dump({'types': types}, 'out.jadn')
+    types = []
+    for jtn, jtp in jss['definitions'].items():
+        types.append(define_jadn_type(jtn, jtp))
+    jadn.dump({'types': types}, 'out.jadn')

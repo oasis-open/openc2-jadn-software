@@ -6,7 +6,7 @@
 > The 3 types of definitions are <define-flag>, <define-field>, and <define-assembly>.
 
 A definition in a JADN module declares a reusable information element within an information model.
-The two types of definitions are <primitive> and <compound>.
+The two types of definitions are `primitive` and `compound`.
 
 > The names of flags, fields, and assemblies are expected to be maintained as separate identifier sets.
 > This allows a flag definition, a field definition, and an assembly definition to each have the same name
@@ -30,8 +30,8 @@ binary, boolean, integer, number, string.
 > A field definition is an edge node in a Metaschema-based model.
 > Fields are typically used to provide supporting information for a containing assembly definition.
 
-There are no standalone fields in a JADN-based model.
-Fields exist only as subcomponents of the containing compound type definition.
+There are no standalone field definitions in a JADN-based model.
+Fields are defined as components of a compound type.
 
 ### Assembly
 
@@ -42,18 +42,16 @@ Fields exist only as subcomponents of the containing compound type definition.
 > while its model instances represent the information being composed.
 
 A compound type definition is the compositional node in a JADN-based model.
-The compound (or "assembly") type is a container of fields, each of which has a type.
-JADN defines five compound types based on characteristics of the contained fields:
-ordered/unordered, unique/non-unique, and anonymous/named:
+The compound (or "assembly") type is a container of fields, each of which has a name and type.
+JADN defines five compound types based on multiplicity characteristics of its fields:
+ordered/unordered, unique/non-unique, and named/unnamed:
 * **Array** - ordered, non-unique value, unnamed
 * **ArrayOf** - ordered or unordered, unique or non-unique value, unnamed
 * **Map** - unordered, non-unique value, unique enumerated name
 * **MapOf** - unordered, non-unique value, unique non-enumerated name
 * **Record** - ordered, non-unique value, unique enumerated name
 
-Each field within a compound type can be any type, primitive or compound.  A critical distinction
-between JADN and Metaschema is the definition of fields only as members of an assembly, and the
-ability to define the multiplicity characteristics of those fields.
+Each field within a compound type can be any type, primitive or compound.
 
 ## Comparison Process
 
@@ -88,7 +86,15 @@ The Metaschema-generated JSON Schema uses two different ways of naming type defi
       "type": "object",
 ```
 
+*A significant distinction between JADN and Metaschema is the definition of fields only as members
+of an assembly, bringing the ability to define the multiplicity characteristics of fields within the
+assembly.*
+
 ## Recommendations
+
+1. Assign a referencable name (e.g., "Catalog") to each defined Metaschema type, uniform in format
+and within a single identifier set.  This would allow fields to uniformly reference both flags and assemblies
+by name.
 
 ## References
 

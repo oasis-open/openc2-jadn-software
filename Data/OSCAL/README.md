@@ -3,7 +3,7 @@
 ## Components
 
 > A definition in a Metaschema module declares a reusable information element within an information model.
-> The 3 types of definitions are <define-flag>, <define-field>, and <define-assembly>.
+> The 3 types of definitions are `<define-flag>`, `<define-field>`, and `<define-assembly>`.
 
 A definition in a JADN module declares a reusable information element within an information model.
 The two types of definitions are `primitive` and `compound`.
@@ -23,7 +23,7 @@ reducing potential for confusion.
 > nine character-based values.
 
 A JADN primitive value is strongly typed using one of the five JADN built-in simple data types:
-binary, boolean, integer, number, string.
+Binary, Boolean, Integer, Number, String.
 
 ### Field
 
@@ -41,14 +41,14 @@ Fields are defined as components of a compound type.
 > An assembly's flag instances will typically characterize or identify this composite object,
 > while its model instances represent the information being composed.
 
-A compound type definition is the compositional node in a JADN-based model.
-The compound (or "assembly") type is a container of fields, each of which has a name and type.
+A `compound` type definition is the compositional node in a JADN-based model.
+Each compound type is a container of fields that assign a local identifier to each field type.
 JADN defines five compound types based on multiplicity characteristics of its fields:
-ordered/unordered, unique/non-unique, and named/unnamed:
-* **Array** - ordered, non-unique value, unnamed
-* **ArrayOf** - ordered or unordered, unique or non-unique single-typed value, unnamed
+ordered/unordered, unique/non-unique, named/unnamed, and heterogeneous/homogeneous value type:
+* **Array** - ordered, non-unique, unnamed individually-typed value
+* **ArrayOf** - ordered or unordered, unique or non-unique, unnamed same-typed values
 * **Map** - unordered, non-unique value, unique enumerated name
-* **MapOf** - unordered, non-unique single-typed value, unique typed name
+* **MapOf** - unordered, non-unique same-typed values, unique typed name
 * **Record** - ordered, non-unique value, unique enumerated name
 
 Each field within a compound type can be any type, primitive or compound.
@@ -66,7 +66,7 @@ Repeat the above steps for the other six more complex OSCAL layers
 Compare the JADN and Metaschema OSCAL IMs for complexity/usability/readability and other -ilities.
 
 ## Observations
-
+### Type Names
 The Metaschema-generated JSON Schema uses two different ways of naming type definitions:
 1) Directly as the definition name:
 ```
@@ -85,16 +85,22 @@ The Metaschema-generated JSON Schema uses two different ways of naming type defi
       "$id": "#assembly_oscal-catalog_catalog",
       "type": "object",
 ```
-
-*A significant distinction between JADN and Metaschema is the definition of fields only as members
+### Contrasts
+* A significant distinction between JADN and Metaschema is the definition of fields only as members
 of an assembly, bringing the ability to define the multiplicity characteristics of fields within the
-assembly.*
+assembly.
+
+* The work-in-progress (many errors to be fixed) module [out.jidl](out.jidl) illustrates what a JADN IM
+would look like. It is currently ~200 lines, vs. 1451 lines for the
+[JSON Schema](../../Schemas/Metaschema/oscal_catalog_schema_1.1.0.json) from which it was generated.
 
 ## Recommendations
 
 1. Assign a referencable name (e.g., "Catalog") to each defined Metaschema type, uniform in format
 and within a single identifier set.  This would allow fields to uniformly reference both flags and assemblies
 by name.
+2. Adopt naming conventions for assembly/flag names (e.g. PascalCase, Train-Case) and field names
+(e.g., camelCase, snake_case) for each specific Information Model (e.g. OSCAL)
 
 ## References
 

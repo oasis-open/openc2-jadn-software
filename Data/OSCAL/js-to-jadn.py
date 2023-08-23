@@ -1,12 +1,11 @@
 import jadn
 import json
 import os
-from jadn.definitions import *
 
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
 JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
 JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema_1.1.0.json')
-DEBUG = True
+DEBUG = False
 D = [(f'${n}' if DEBUG else '') for n in range(10)]
 
 

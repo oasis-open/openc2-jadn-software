@@ -46,9 +46,9 @@ The compound (or "assembly") type is a container of fields, each of which has a 
 JADN defines five compound types based on multiplicity characteristics of its fields:
 ordered/unordered, unique/non-unique, and named/unnamed:
 * **Array** - ordered, non-unique value, unnamed
-* **ArrayOf** - ordered or unordered, unique or non-unique value, unnamed
+* **ArrayOf** - ordered or unordered, unique or non-unique single-typed value, unnamed
 * **Map** - unordered, non-unique value, unique enumerated name
-* **MapOf** - unordered, non-unique value, unique non-enumerated name
+* **MapOf** - unordered, non-unique single-typed value, unique typed name
 * **Record** - ordered, non-unique value, unique enumerated name
 
 Each field within a compound type can be any type, primitive or compound.

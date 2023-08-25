@@ -38,28 +38,35 @@ def typerefname(jsref: dict) -> str:
     return jsref.get('title', '??').replace(' ', '').capitalize() + D[7]  # Guess type name from object def title
 
 
-def define_jadn_type(jsname: str, jstype: dict) -> list:
+def define_jadn_type(jsname: str, jstype: dict, types: list):
+    topts = []
+    tdesc = jstype.get('description', '')
     fields = []
-    jtype = 'String'
-    tname = jsname.split(':', maxsplit=1)[-1]
-    tref = jstype.get('$ref', '').replace('#/definitions/', '*')
-    print(f'  {jsname:<60} {jstype.get("type", tref):>25}: {tname:<25} "{jstype.get("title", "")}"')
-    req = jstype.get('required', [])
     if (ftype := jstype.get('type', None)) == 'object':
-        jtype = 'Record'
+        basetype = 'Record'
+        req = jstype.get('required', [])
         for n, (k, v) in enumerate(jstype.get('properties', {}).items(), start=1):
             fopts = ['[0'] if k not in req else []
-            if v.get('type', '') == 'array':
-                fopts.append(f']{v.get("maxItems", 0)}')
-                ftype = typerefname(v['items'])
+            # if v.get('type', '') == 'array':
+            #    fopts.append(f']{v.get("maxItems", 0)}')
+            #    ftype = typerefname(v['items'])
+            if 'type' in v:
+                define_jadn_type('Foo', v, types)
             else:
                 ftype = typerefname(v)
             fdef = [n, k, ftype, fopts, v.get('description', '')]
             print(f'    {fdef}')
             fields.append(fdef)
+    elif ftype == 'array':
+        basetype = 'ArrayOf'
+        if 'minItems' in jstype:
+            topts.append(f'[{jstype["minItems"]}')
     elif ftype == 'string':
-        pass
-    return [typedefname(jsname), jtype, [], jstype.get('description', ''), fields]
+        basetype = 'String'
+    else:
+        basetype = None
+
+    types.append([typedefname(jsname), basetype, topts, tdesc, fields])
 
 """
 Create a JADN type from each definition in a Metaschema-generated JSON Schema
@@ -75,11 +82,13 @@ if __name__ == '__main__':
     info.update({'exports': ['$Root']})
     info.update({'config': {'$FieldName': '^[a-z][-_A-Za-z0-9]{0,63}$'}})
 
-    types = [define_jadn_type('$Root', jss)]
+    types = []
+    define_jadn_type('$Root', jss, types)
     for jtn, jtp in jss['definitions'].items():
-        types.append(define_jadn_type(jtn, jtp))
+        define_jadn_type(jtn, jtp, types)
+        # types.append(define_jadn_type(jtn, jtp))
 
-    dn = {}
+    dn = {}     # Correlate type definitions with references, for debugging
     rn = {}
     for td in types:
         dn.update({td[TypeName].lower(): td[TypeName]})

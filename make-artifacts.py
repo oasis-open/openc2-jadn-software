@@ -41,7 +41,6 @@ def main(schema_dir: str = SCHEMA_DIR, output_dir: str = OUTPUT_DIR) -> None:
             translate(f, schema_dir, output_dir)
         except (ValueError, IndexError) as e:
             print(f'### {f}: {e}')
-            raise
 
 
 if __name__ == '__main__':

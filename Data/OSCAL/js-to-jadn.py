@@ -1,6 +1,7 @@
 import jadn
 import json
 import os
+from jadn.definitions import TypeName, Fields, FieldType
 
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
 JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
@@ -14,6 +15,9 @@ def typedefname(jsdef: str) -> str:
     Infer type name from a JSON Schema definition
     """
     assert isinstance(jsdef, str), f'Not a type definition name: {jsdef}'
+    if d := jss['definitions'].get(jsdef, ''):
+        if r := d.get('$ref', ''):
+            return f'NoDef${jsdef}' + D[2]
     if ':' in jsdef:
         return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     return jsdef + D[0]     # Exact type name
@@ -31,7 +35,7 @@ def typerefname(jsref: dict) -> str:
                 return td.split(':', maxsplit=1)[1].capitalize() + D[6]  # Extract type name from $id
             if td2 := jss['definitions'].get(td, {}):
                 return typerefname(td2) + D[8]
-    return jsref.get('title', '??').replace(' ', '') + D[7]  # Guess type name from object def title
+    return jsref.get('title', '??').replace(' ', '').capitalize() + D[7]  # Guess type name from object def title
 
 
 def define_jadn_type(jsname: str, jstype: dict) -> list:
@@ -68,9 +72,19 @@ if __name__ == '__main__':
     assert jss['type'] == 'object'
     info = {'package': jss['$id']}
     info.update({'comment': jss['$comment']} if '$comment' in jss else {})
-    info.update({'exports': [typerefname(k) for k in jss['properties'].values()]})
+    info.update({'exports': ['$Root']})
+    info.update({'config': {'$FieldName': '^[a-z][-_A-Za-z0-9]{0,63}$'}})
 
-    types = []
+    types = [define_jadn_type('$Root', jss)]
     for jtn, jtp in jss['definitions'].items():
         types.append(define_jadn_type(jtn, jtp))
+
+    dn = {}
+    rn = {}
+    for td in types:
+        dn.update({td[TypeName].lower(): td[TypeName]})
+        for fd in td[Fields]:
+            rn.update({fd[FieldType].lower(): fd[FieldType]})
+    dd = [(dn.get(k, ''), rn.get(k, '')) for k in sorted(set(dn) | set(rn))]
+
     jadn.dump({'info': info, 'types': types}, 'out.jadn')

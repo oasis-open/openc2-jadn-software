@@ -15,6 +15,8 @@ Catalog = Record                                   // A structured, organized co
    5 groups           Groups optional
    6 back-matter      Back-matter optional         // A collection of resources that may be referenced from within the OSCAL document instance.
 
+Groups = ArrayOf(Group){1..*}
+
 Group = Record                                     // A group of controls, or of groups of controls.
    1 id               TokenDatatype optional       // Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.
    2 class            TokenDatatype optional       // A textual label that provides a sub-type or characterization of the group.
@@ -26,6 +28,8 @@ Group = Record                                     // A group of controls, or of
    8 groups           Groups optional
    9 controls         Controls optional
 
+Controls = ArrayOf(Control){1..*}
+
 Control = Record                                   // A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
    1 id               TokenDatatype                // Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).
    2 class            TokenDatatype optional       // A textual label that provides a sub-type or characterization of the control.
@@ -35,6 +39,8 @@ Control = Record                                   // A structured object repres
    6 links            Links optional
    7 parts            Parts optional
    8 controls         Controls optional
+
+Parts = ArrayOf(Part){1..*}
 
 Part = Record                                      // An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.
    1 id               TokenDatatype optional       // A unique identifier for the part.
@@ -46,6 +52,8 @@ Part = Record                                      // An annotated, markup-based
    7 prose            String optional              // Permits multiple paragraphs, lists, tables etc.
    8 parts            Parts optional
    9 links            Links optional
+
+Params = ArrayOf(Parameter){1..*}
 
 Parameter = Record                                 // Parameters provide a mechanism for the dynamic assignment of value(s) in a control.
    1 id               TokenDatatype                // A unique identifier for the parameter.
@@ -61,9 +69,13 @@ Parameter = Record                                 // Parameters provide a mecha
   11 select           Parameter-selection optional // Presenting a choice among alternatives.
   12 remarks          Remarks optional             // Additional commentary about the containing object.
 
+Constraints = ArrayOf(Parameter-constraint){1..*}
+
 Parameter-constraint = Record                      // A formal or informal expression of a constraint or test.
    1 description      String optional              // A textual summary of the constraint to be applied.
    2 tests            Tests optional
+
+Guidelines = ArrayOf(Parameter-guideline){1..*}
 
 Parameter-guideline = Record                       // A prose statement that provides a recommendation for the use of a parameter.
    1 prose            String                       // Prose permits multiple paragraphs, lists, tables etc.
@@ -94,6 +106,8 @@ Metadata = Record                                  // Provides information about
 Back-matter = Record                               // A collection of resources that may be referenced from within the OSCAL document instance.
    1 resources        Resources optional
 
+Props = ArrayOf(Property){1..*}
+
 Property = Record                                  // An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.
    1 name             TokenDatatype                // A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.
    2 uuid             UUIDDatatype optional        // A unique identifier for a property.
@@ -103,6 +117,8 @@ Property = Record                                  // An attribute, characterist
    6 group            TokenDatatype optional       // An identifier for relating distinct sets of properties.
    7 remarks          Remarks optional             // Additional commentary about the containing object.
 
+Links = ArrayOf(Link){1..*}
+
 Link = Record                                      // A reference to a local or remote resource, that has a specific relation to the containing object.
    1 href             URIReferenceDatatype         // A resolvable URL reference to a resource.
    2 rel              Linkrelationtype optional    // Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.
@@ -110,12 +126,16 @@ Link = Record                                      // A reference to a local or 
    4 resource-fragment StringDatatype optional     // In case where the href points to a back-matter/resource, this value will indicate the URI fragment to append to any rlink associated with the resource. This value MUST be URI encoded.
    5 text             String optional              // A textual label to associate with the link, which may be used for presentation in a tool.
 
+Responsible-parties = ArrayOf(Responsible-party){1..*}
+
 Responsible-party = Record                         // A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.
    1 role-id          TokenDatatype                // A reference to a role performed by a party.
    2 party-uuids      Party-uuids
    3 props            Props optional
    4 links            Links optional
    5 remarks          Remarks optional             // Additional commentary about the containing object.
+
+Actions = ArrayOf(Action){1..*}
 
 Action = Record                                    // An action applied by a role within a given party to the content.
    1 uuid             UUIDDatatype                 // A unique identifier that can be used to reference this defined action elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.
@@ -152,6 +172,8 @@ Address = Record                                   // A postal address for the l
    5 postal-code      StringDatatype optional      // Postal or ZIP code for mailing address.
    6 country          StringDatatype optional      // The ISO 3166-1 alpha-2 country code for the mailing address.
 
+Document-ids = ArrayOf(Document-id){1..*}
+
 Document-id = Record                               // A document identifier qualified by an identifier scheme.
    1 scheme           Documentidentificationscheme optional // Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.
    2 identifier       StringDatatype
@@ -173,22 +195,6 @@ URIReferenceDatatype = String                      // A URI Reference, either a 
 
 UUIDDatatype = String                              // A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.
 
-Params = ArrayOf(Parameter){1..*}
-
-Controls = ArrayOf(Control){1..*}
-
-Groups = ArrayOf(Group){1..*}
-
-Props = ArrayOf(Property){1..*}
-
-Links = ArrayOf(Link){1..*}
-
-Parts = ArrayOf(Part){1..*}
-
-Constraints = ArrayOf(Parameter-constraint){1..*}
-
-Guidelines = ArrayOf(Parameter-guideline){1..*}
-
 Values = ArrayOf(Parameter-value){1..*}
 
 Tests = ArrayOf(Tests){1..*}
@@ -197,17 +203,11 @@ Choice1 = ArrayOf(String){1..*}
 
 Revisions = ArrayOf(Revisions){1..*}
 
-Document-ids = ArrayOf(Document-id){1..*}
-
 Roles = ArrayOf(Roles){1..*}
 
 Locations = ArrayOf(Locations){1..*}
 
 Parties = ArrayOf(Parties){1..*}
-
-Responsible-parties = ArrayOf(Responsible-party){1..*}
-
-Actions = ArrayOf(Action){1..*}
 
 Resources = ArrayOf(Resources){1..*}
 

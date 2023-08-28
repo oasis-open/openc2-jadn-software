@@ -70,6 +70,7 @@ def define_jadn_type(tn: str, tv: dict) -> list:
         req = tv.get('required', [])
         for n, (k, v) in enumerate(tv.get('properties', {}).items(), start=1):
             fopts = ['[0'] if k not in req else []
+            fdesc = v.get('description', '')
             if v.get('type', '') in ('object', 'array'):
                 if ft := newtypes.get(k, {}):
                     if len(set(ft)) == 1:
@@ -78,9 +79,14 @@ def define_jadn_type(tn: str, tv: dict) -> list:
                         ftype = 'Multiple'
                 else:
                     ftype = 'Unknown'
+            elif t := jssx.get(v.get('$ref', ''), ''):
+                ft = jss['definitions'][t]
+                ftype = typerefname('', ft)
+                ftype = ftype if ftype in jss['definitions'] else typerefname('', v)
+                fdesc = ft.get('description', '')
             else:
                 ftype = typerefname('', v)
-            fdef = [n, k, ftype, fopts, v.get('description', '')]
+            fdef = [n, k, ftype, fopts, fdesc]
             fields.append(fdef)
     elif ftype == 'array':
         basetype = 'ArrayOf'
@@ -106,10 +112,8 @@ if __name__ == '__main__':
     assert jss['type'] == 'object'
     info = {'package': jss['$id']}
     info.update({'comment': jss['$comment']} if '$comment' in jss else {})
-    info.update({'exports': ['Root']})
-    info.update({'config': {
-        '$FieldName': '^[$a-z][-_A-Za-z0-9]{0,63}$',
-        '$TypeName': '^[A-Z][-:$A-Za-z0-9]{0,63}$'}})
+    info.update({'exports': ['$Root']})
+    info.update({'config': {'$FieldName': '^[$a-z][-_$A-Za-z0-9]{0,63}$'}})
 
     nt = []
     newtypes = defaultdict(list)
@@ -118,7 +122,7 @@ if __name__ == '__main__':
     for t in nt:
         newtypes[t[0]].append(t[1])
 
-    types = [define_jadn_type('Root', jss)]
+    types = [define_jadn_type('$Root', jss)]
     for jtn, jtp in jss['definitions'].items():
         td = define_jadn_type(jtn, jtp)
         if not td[TypeName].startswith('NoDef$'):

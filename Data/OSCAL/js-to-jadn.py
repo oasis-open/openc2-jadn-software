@@ -4,7 +4,6 @@ import os
 from jadn.definitions import TypeName, Fields, FieldType
 from collections import defaultdict
 
-
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
 JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
 JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema_1.1.0.json')
@@ -20,7 +19,6 @@ def typedefname(jsdef: str) -> str:
     if d := jss['definitions'].get(jsdef, ''):
         if r := d.get('$ref', ''):
             return f'NoDef${jsdef}' + D[2]
-
     if ':' in jsdef:
         return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     return jsdef + D[0]     # Exact type name
@@ -138,11 +136,17 @@ if __name__ == '__main__':
             rn.update({fd[FieldType].lower(): fd[FieldType]})
     dd = [(dn.get(k, ''), rn.get(k, '')) for k in sorted(set(dn) | set(rn))]
 
-    for k, v in newtypes.items():
+    tx = {t[0]: t for t in types}
+    ntx = {k.capitalize(): v[0][1][1][1:] for k, v in newtypes.items()}  # Map ArrayOf name to type name
+    for k, v in newtypes.items():   # Add new types to definitions-level types
         nt = list(set(v))[0]
         tname = k.capitalize()
         tname += '1' if jadn.definitions.is_builtin(tname) else ''
-        types.append([tname, nt[0], list(nt[1]), "", []])
+        tdef = [tname, nt[0], list(nt[1]), "", []]
+        if (rname := ntx.get(tname, '')) in tx:
+            types.insert(types.index(tx[rname]), tdef)
+        else:
+            types.append(tdef)
 
     jadn.dump(schema := {'info': info, 'types': types}, 'out.jadn')
     print('\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))

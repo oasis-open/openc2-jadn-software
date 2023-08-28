@@ -4,6 +4,7 @@ import os
 from jadn.definitions import TypeName, Fields, FieldType
 from collections import defaultdict
 
+
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
 JADN = os.path.join(SCHEMA_DIR, 'oscal-catalog.jadn')
 JSCHEMA = os.path.join(SCHEMA_DIR, 'oscal_catalog_schema_1.1.0.json')
@@ -19,6 +20,7 @@ def typedefname(jsdef: str) -> str:
     if d := jss['definitions'].get(jsdef, ''):
         if r := d.get('$ref', ''):
             return f'NoDef${jsdef}' + D[2]
+
     if ':' in jsdef:
         return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     return jsdef + D[0]     # Exact type name

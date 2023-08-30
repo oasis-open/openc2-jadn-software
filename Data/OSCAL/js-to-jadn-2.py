@@ -1,7 +1,7 @@
 import jadn
 import json
 import os
-from jadn.definitions import TypeName, BaseType, TypeOptions, Fields, FieldType
+from jadn.definitions import TypeName, BaseType, Fields, FieldType
 from collections import defaultdict
 
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
@@ -16,9 +16,9 @@ def typedefname(jsdef: str) -> str:
     Infer type name from a JSON Schema definition
     """
     assert isinstance(jsdef, str), f'Not a type definition name: {jsdef}'
+    if ':' in jsdef:
+        return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     if d := jss['definitions'].get(jsdef, ''):
-        if ':' in jsdef:  # qualified definition name
-            return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
         if r := d.get('$ref', ''):
             return f'NoDef${jsdef}' + D[2]
     return jsdef + D[0]     # Exact type name
@@ -51,37 +51,26 @@ def guess_type(tn: str, td: dict) -> str:
     # return jsref.get('title', '??').replace(' ', '').capitalize() + D[9]  # Guess type name from object def title
 
 
-def singular(name: str) -> str:
-    if name.endswith('s'):
-        return name[:-1]
-    return name + 'item'
-
-
 def scandef(tn: str, tv: dict, nt: list):
     """
     Search type definition for nested definitions, add to new types list nt
     """
-    def maketype(name: str, tval: str):
-        if typerefname(tval):
-            return      # already defined
-
     if (ptype := tv.get('type', '')) == 'object':
         for k, v in tv.get('properties', {}).items():
             if v.get('type', '') == 'array':
-                item_name = singular(typerefname(v['items']))
-                td = define_jadn_type(k, v)
-                nt.append((k, ('ArrayOf', tuple(td[TypeOptions]))))
-
-                maketype(tn, v['items'])
+                topts = [f'{{{v["minItems"]}'] if 'minItems' in v else []
+                if maxv := v["maxItems"] if 'maxItems' in v else []:
+                    topts.append(f'}}{maxv}')
                 if not (vtype := typerefname(v['items'])):
                     vtype = f'{typedefname(tn)}${k}'
                     nt.append(define_jadn_type(vtype, v['items']))
                     scandef(vtype, v['items'], nt)
+                topts.append(f'*{vtype}')
+                nt.append((k, ('ArrayOf', tuple(topts))))
             elif v.get('anyOf', ''):
                 print('  choice:', tn, k, v['anyOf'])
                 vtype = f'{typedefname(tn)}${k}'
                 if td := define_jadn_type(vtype, v):
-                    pass    # xxx
                 nt.append(define_jadn_type(vtype, v))
                 scandef(vtype, v['anyOf'], nt)
             elif typerefname(v):
@@ -132,7 +121,7 @@ def define_jadn_type(tn: str, tv: dict) -> list:
     elif td := tv.get('enum', ''):
         basetype = 'Enumerated'
         for n, v in enumerate(td, start=1):
-            fields.append([n, v, ''])
+            fields.append(n, v, '')
     elif jstype == 'array':     # TODO: process individual items
         basetype = 'ArrayOf'
         topts = [f'[{tv["minItems"]}'] if 'minItems' in tv else []
@@ -143,21 +132,19 @@ def define_jadn_type(tn: str, tv: dict) -> list:
             topts.append(f'%{p}')
         basetype = jstype.capitalize()
     else:
-        print(f'{tn} not a type definition. Reference {typerefname(tv)}?')
-        return []
+        raise ValueError(f'{tn} not a type definition. Reference {typerefname(tv)}?')
+        # return []
 
     return [typedefname(tn), basetype, topts, tdesc, fields]
 
-
+"""
+Create a JADN type from each definition in a Metaschema-generated JSON Schema
+"""
 if __name__ == '__main__':
-    """
-    Create a JADN type from each definition in a Metaschema-generated JSON Schema
-    """
     with open(JSCHEMA, encoding='utf-8') as fp:
         jss = json.load(fp)
-    jssx = {v.get('$id', k): k for k, v in jss['definitions'].items()}     # Index from $id to definitions name
     types = {typedefname(k): v for k, v in jss['definitions'].items()}
-    assert len(types) == len(set(types)), f'Short Typename collision'
+    jssx = {v.get('$id', k): k for k, v in jss['definitions'].items()}     # Build index from $id to definitions name
 
     assert jss['type'] == 'object'
     info = {'package': jss['$id']}

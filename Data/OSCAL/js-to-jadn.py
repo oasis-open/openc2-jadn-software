@@ -1,7 +1,7 @@
 import jadn
 import json
 import os
-from jadn.definitions import TypeName, Fields, FieldType
+from jadn.definitions import TypeName, BaseType, Fields, FieldType
 from collections import defaultdict
 
 SCHEMA_DIR = os.path.join('..', '..', 'Schemas', 'Metaschema')
@@ -16,15 +16,15 @@ def typedefname(jsdef: str) -> str:
     Infer type name from a JSON Schema definition
     """
     assert isinstance(jsdef, str), f'Not a type definition name: {jsdef}'
+    if ':' in jsdef:
+        return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     if d := jss['definitions'].get(jsdef, ''):
         if r := d.get('$ref', ''):
             return f'NoDef${jsdef}' + D[2]
-    if ':' in jsdef:
-        return jsdef.split(':', maxsplit=1)[1].capitalize() + D[1]
     return jsdef + D[0]     # Exact type name
 
 
-def typerefname(prop: str, jsref: dict) -> str:
+def typerefname(jsref: dict) -> str:
     """
     Infer a type name from a JSON Schema property reference
     """
@@ -37,11 +37,18 @@ def typerefname(prop: str, jsref: dict) -> str:
             if ':' in td:
                 return td.split(':', maxsplit=1)[1].capitalize() + D[6]  # Extract type name from $id
             if td2 := jss['definitions'].get(td, {}):
-                return typerefname('', td2) + D[7]
-    if tn := prop.capitalize():
-        tn += '1' if jadn.definitions.is_builtin(tn) else ''
-        return tn + D[8]
-    return jsref.get('title', '??').replace(' ', '').capitalize() + D[9]  # Guess type name from object def title
+                return typerefname(td2) + D[7]
+    return ''
+
+
+def guess_type(tn: str, td: dict) -> str:
+    if tdn := typedefname(tn):
+        return tdn
+    return td.get('title', 'Foo').replace(' ', '')
+    # if tn := prop.capitalize():
+    #     tn += '1' if jadn.definitions.is_builtin(tn) else ''
+    #     return tn + D[8]
+    # return jsref.get('title', '??').replace(' ', '').capitalize() + D[9]  # Guess type name from object def title
 
 
 def scandef(tn: str, tv: dict, nt: list):
@@ -54,49 +61,60 @@ def scandef(tn: str, tv: dict, nt: list):
                 topts = [f'{{{v["minItems"]}'] if 'minItems' in v else []
                 if maxv := v["maxItems"] if 'maxItems' in v else []:
                     topts.append(f'}}{maxv}')
-                topts.append(f'*{typerefname(k, v["items"])}')
+                if not (vtype := typerefname(v['items'])):
+                    vtype = f'{typedefname(tn)}${k}'
+                    nt.append(define_jadn_type(vtype, v['items']))
+                    scandef(vtype, v['items'], nt)
+                topts.append(f'*{vtype}')
                 nt.append((k, ('ArrayOf', tuple(topts))))
             elif v.get('anyOf', ''):
                 print('  choice:', k, v['anyOf'])
-            scandef(k, v, nt)
+            elif typerefname(v):
+                print('  nested property type:', f'{tn}${k}', v)
+                # td = define_jadn_type(k, v)
+                # nt.append(k, (td[BaseType], tuple()))
+        if not tn:
+            print(f'  nested type: "{tv.get("title", "")}"')
 
 
 def define_jadn_type(tn: str, tv: dict) -> list:
     topts = []
     tdesc = tv.get('description', '')
     fields = []
-    if (ftype := tv.get('type', None)) == 'object':
+    if (jstype := tv.get('type', '')) == 'object':
         basetype = 'Record'
         req = tv.get('required', [])
         for n, (k, v) in enumerate(tv.get('properties', {}).items(), start=1):
             fopts = ['[0'] if k not in req else []
             fdesc = v.get('description', '')
-            if v.get('type', '') in ('object', 'array'):
+            if v.get('type', '') == 'array':
                 if ft := newtypes.get(k, {}):
                     if len(set(ft)) == 1:
-                        ftype = typerefname(k, {})
+                        ftype = k.capitalize()
                     else:
                         ftype = 'Multiple'
                 else:
-                    ftype = 'Unknown'
+                    ftype = guess_type(tn, v)
+            elif v.get('type', '') == 'object':
+                ftype = 'Object'
             elif t := jssx.get(v.get('$ref', ''), ''):
                 ft = jss['definitions'][t]
-                ftype = typerefname('', ft)
-                ftype = ftype if ftype in jss['definitions'] else typerefname('', v)
+                ftype = typerefname(ft)
+                ftype = ftype if ftype in jss['definitions'] else typerefname(v)
                 fdesc = ft.get('description', '')
             else:
-                ftype = typerefname('', v)
+                ftype = typerefname(v)
             fdef = [n, k, ftype, fopts, fdesc]
             fields.append(fdef)
-    elif ftype == 'array':
+    elif jstype == 'array':
         basetype = 'ArrayOf'
         topts = [f'[{tv["minItems"]}'] if 'minItems' in tv else []
         topts.append(f']{tv.get("maxItems", 0)}')
-        topts.append(f'#{typerefname("", tv["items"])}')
-    elif ftype == 'string':
+        topts.append(f'#{typerefname(tv["items"])}')
+    elif jstype == 'string':
         basetype = 'String'
     else:
-        basetype = 'Boolean'
+        basetype = typerefname(tv)
 
     return [typedefname(tn), basetype, topts, tdesc, fields]
 
@@ -120,13 +138,16 @@ if __name__ == '__main__':
     for tn, tv in jss['definitions'].items():
         scandef(tn, tv, nt)
     for t in nt:
-        newtypes[t[0]].append(t[1])
+        newtypes[t[0]].append(t[1] if len(t) == 2 else t)
 
+    extra = []
     types = [define_jadn_type('$Root', jss)]
     for jtn, jtp in jss['definitions'].items():
         td = define_jadn_type(jtn, jtp)
-        if not td[TypeName].startswith('NoDef$'):
+        if not td[TypeName].startswith('NoDef$') and jadn.definitions.is_builtin(td[BaseType]):
             types.append(td)
+        else:
+            extra.append(td)
 
     dn = {}     # Correlate type definitions with references, for debugging
     rn = {}
@@ -137,16 +158,19 @@ if __name__ == '__main__':
     dd = [(dn.get(k, ''), rn.get(k, '')) for k in sorted(set(dn) | set(rn))]
 
     tx = {t[0]: t for t in types}
-    ntx = {k.capitalize(): v[0][1][1][1:] for k, v in newtypes.items()}  # Map ArrayOf name to type name
-    for k, v in newtypes.items():   # Add new types to definitions-level types
-        nt = list(set(v))[0]
-        tname = k.capitalize()
-        tname += '1' if jadn.definitions.is_builtin(tname) else ''
-        tdef = [tname, nt[0], list(nt[1]), "", []]
-        if (rname := ntx.get(tname, '')) in tx:
-            types.insert(types.index(tx[rname]), tdef)
+    ntx = {k.capitalize(): v[0][1][1][1:] for k, v in newtypes.items() if v[0][0] == 'ArrayOf'}  # Map ArrayOf vtype option to type name
+    for k, v in newtypes.items():   # Merge nested types into top-level types
+        if len(v[0]) == 2:
+            nt = list(set(v))[0]
+            tname = k.capitalize()
+            tname += '1' if jadn.definitions.is_builtin(tname) else ''
+            tdef = [tname, nt[0], list(nt[1]), "", []]
+            if (rname := ntx.get(tname, '')) in tx:     # Sort array definitions to be with the array items
+                types.insert(types.index(tx[rname]), tdef)
+            else:
+                types.append(tdef)
         else:
-            types.append(tdef)
+            types.append(v[0])
 
     jadn.dump(schema := {'info': info, 'types': types}, 'out.jadn')
     print('\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))

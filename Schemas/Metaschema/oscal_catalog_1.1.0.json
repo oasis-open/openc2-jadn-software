@@ -1,0 +1,1581 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://csrc.nist.gov/ns/oscal/1.1.0/oscal-catalog-schema.json",
+  "$ref": "#/definitions/$Root",
+  "definitions": {
+    "$Root": {
+      "title": "$Root",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "$schema": {
+          "$ref": "#/definitions/URIReferenceDatatype",
+          "description": "A JSON Schema directive to bind a specific schema to its document instance."
+        },
+        "catalog": {
+          "$ref": "#/definitions/Catalog",
+          "description": "A structured, organized collection of control information."
+        }
+      }
+    },
+    "Catalog": {
+      "title": "Catalog",
+      "type": "object",
+      "description": "A structured, organized collection of control information.",
+      "additionalProperties": false,
+      "required": [
+        "uuid",
+        "metadata"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "Provides a globally unique means to identify a given catalog instance."
+        },
+        "metadata": {
+          "$ref": "#/definitions/Metadata",
+          "description": "Provides information about the containing document, and defines concepts that are shared across the document."
+        },
+        "params": {
+          "$ref": "#/definitions/Params",
+          "description": "Parameters provide a mechanism for the dynamic assignment of value(s) in a control."
+        },
+        "controls": {
+          "$ref": "#/definitions/Controls",
+          "description": "A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information."
+        },
+        "groups": {
+          "$ref": "#/definitions/Groups",
+          "description": "A group of controls, or of groups of controls."
+        },
+        "back-matter": {
+          "$ref": "#/definitions/Back-matter",
+          "description": "A collection of resources that may be referenced from within the OSCAL document instance."
+        }
+      }
+    },
+    "Params": {
+      "title": "Params",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Parameter"
+      }
+    },
+    "Controls": {
+      "title": "Controls",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Control"
+      }
+    },
+    "Groups": {
+      "title": "Groups",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Group"
+      }
+    },
+    "Group": {
+      "title": "Group",
+      "type": "object",
+      "description": "A group of controls, or of groups of controls.",
+      "additionalProperties": false,
+      "required": [
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog."
+        },
+        "class": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label that provides a sub-type or characterization of the group."
+        },
+        "title": {
+          "type": "string",
+          "description": "A name given to the group, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "params": {
+          "$ref": "#/definitions/Params",
+          "description": "Parameters provide a mechanism for the dynamic assignment of value(s) in a control."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "parts": {
+          "$ref": "#/definitions/Parts",
+          "description": "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part."
+        },
+        "groups": {
+          "$ref": "#/definitions/Groups",
+          "description": "A group of controls, or of groups of controls."
+        },
+        "controls": {
+          "$ref": "#/definitions/Controls",
+          "description": "A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information."
+        }
+      }
+    },
+    "Props": {
+      "title": "Props",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Property"
+      }
+    },
+    "Links": {
+      "title": "Links",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Link"
+      }
+    },
+    "Parts": {
+      "title": "Parts",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Part"
+      }
+    },
+    "Control": {
+      "title": "Control",
+      "type": "object",
+      "description": "A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles)."
+        },
+        "class": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label that provides a sub-type or characterization of the control."
+        },
+        "title": {
+          "type": "string",
+          "description": "A name given to the control, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "params": {
+          "$ref": "#/definitions/Params",
+          "description": "Parameters provide a mechanism for the dynamic assignment of value(s) in a control."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "parts": {
+          "$ref": "#/definitions/Parts",
+          "description": "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part."
+        },
+        "controls": {
+          "$ref": "#/definitions/Controls",
+          "description": "A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information."
+        }
+      }
+    },
+    "Part": {
+      "title": "Part",
+      "type": "object",
+      "description": "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A unique identifier for the part."
+        },
+        "name": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label that uniquely identifies the part's semantic type, which exists in a value space qualified by the ns."
+        },
+        "ns": {
+          "$ref": "#/definitions/URIDatatype",
+          "description": "An optional namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name."
+        },
+        "class": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "An optional textual providing a sub-type or characterization of the part's name, or a category to which the part belongs."
+        },
+        "title": {
+          "type": "string",
+          "description": "An optional name given to the part, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "prose": {
+          "type": "string",
+          "description": "Permits multiple paragraphs, lists, tables etc.",
+          "maxLength": 1000
+        },
+        "parts": {
+          "$ref": "#/definitions/Parts",
+          "description": "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        }
+      }
+    },
+    "Parameter": {
+      "title": "Parameter",
+      "type": "object",
+      "description": "Parameters provide a mechanism for the dynamic assignment of value(s) in a control.",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A unique identifier for the parameter."
+        },
+        "class": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label that provides a characterization of the type, purpose, use or scope of the parameter."
+        },
+        "depends-on": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "(deprecated) Another parameter invoking this one. This construct has been deprecated and should not be used."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "label": {
+          "type": "string",
+          "description": "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
+          "maxLength": 1000
+        },
+        "usage": {
+          "type": "string",
+          "description": "Describes the purpose and use of a parameter.",
+          "maxLength": 1000
+        },
+        "constraints": {
+          "$ref": "#/definitions/Constraints",
+          "description": "A formal or informal expression of a constraint or test."
+        },
+        "guidelines": {
+          "$ref": "#/definitions/Guidelines",
+          "description": "A prose statement that provides a recommendation for the use of a parameter."
+        },
+        "values": {
+          "$ref": "#/definitions/Values",
+          "description": "A parameter value or set of values."
+        },
+        "select": {
+          "$ref": "#/definitions/Parameter-selection",
+          "description": "Presenting a choice among alternatives."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Constraints": {
+      "title": "Constraints",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Parameter-constraint"
+      }
+    },
+    "Guidelines": {
+      "title": "Guidelines",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Parameter-guideline"
+      }
+    },
+    "Values": {
+      "title": "Values",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/StringDatatype"
+      }
+    },
+    "Parameter-constraint": {
+      "title": "Parameter constraint",
+      "type": "object",
+      "description": "A formal or informal expression of a constraint or test.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A textual summary of the constraint to be applied.",
+          "maxLength": 1000
+        },
+        "tests": {
+          "$ref": "#/definitions/Tests",
+          "description": "A test expression which is expected to be evaluated by a tool."
+        }
+      }
+    },
+    "Tests": {
+      "title": "Tests",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Test"
+      }
+    },
+    "Test": {
+      "title": "Test",
+      "type": "object",
+      "description": "A test expression which is expected to be evaluated by a tool.",
+      "additionalProperties": false,
+      "required": [
+        "expression"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "expression": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "A formal (executable) expression of a constraint."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Parameter-guideline": {
+      "title": "Parameter guideline",
+      "type": "object",
+      "description": "A prose statement that provides a recommendation for the use of a parameter.",
+      "additionalProperties": false,
+      "required": [
+        "prose"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "prose": {
+          "type": "string",
+          "description": "Prose permits multiple paragraphs, lists, tables etc.",
+          "maxLength": 1000
+        }
+      }
+    },
+    "Parameter-selection": {
+      "title": "Parameter selection",
+      "type": "object",
+      "description": "Presenting a choice among alternatives.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "how-many": {
+          "$ref": "#/definitions/Parameter-selection$how-many",
+          "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted."
+        },
+        "choice": {
+          "$ref": "#/definitions/Choice1",
+          "description": "A value selection among several such options."
+        }
+      }
+    },
+    "Parameter-selection$how-many": {
+      "title": "Parameter selection$how many",
+      "type": "object",
+      "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Parameter-selection$how-many$2",
+          "description": ""
+        }
+      }
+    },
+    "Parameter-selection$how-many$2": {
+      "title": "Parameter selection$how many$2",
+      "type": "string",
+      "enum": [
+        "one",
+        "one-or-more"
+      ]
+    },
+    "Choice1": {
+      "title": "Choice1",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "Choice1-item": {
+      "title": "Choice1 item",
+      "type": "string",
+      "description": "A value selection among several such options.",
+      "maxLength": 1000
+    },
+    "Include-all": {
+      "title": "Include all",
+      "type": "object",
+      "description": "Include all controls from the imported catalog or profile resources.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {}
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "type": "object",
+      "description": "Provides information about the containing document, and defines concepts that are shared across the document.",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "last-modified",
+        "version",
+        "oscal-version"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A name given to the document, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "published": {
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype",
+          "description": "The date and time the document was last made available."
+        },
+        "last-modified": {
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype",
+          "description": "The date and time the document was last stored for later retrieval."
+        },
+        "version": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "Used to distinguish a specific revision of an OSCAL document from other previous and future versions."
+        },
+        "oscal-version": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "The OSCAL model version the document was authored against and will conform to as valid."
+        },
+        "revisions": {
+          "$ref": "#/definitions/Revisions",
+          "description": "An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first)."
+        },
+        "document-ids": {
+          "$ref": "#/definitions/Document-ids",
+          "description": "A document identifier qualified by an identifier scheme."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "roles": {
+          "$ref": "#/definitions/Roles",
+          "description": "Defines a function, which might be assigned to a party in a specific situation."
+        },
+        "locations": {
+          "$ref": "#/definitions/Locations",
+          "description": "A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document."
+        },
+        "parties": {
+          "$ref": "#/definitions/Parties",
+          "description": "An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document."
+        },
+        "responsible-parties": {
+          "$ref": "#/definitions/Responsible-parties",
+          "description": "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."
+        },
+        "actions": {
+          "$ref": "#/definitions/Actions",
+          "description": "An action applied by a role within a given party to the content."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Revisions": {
+      "title": "Revisions",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Revision"
+      }
+    },
+    "Revision": {
+      "title": "Revision",
+      "type": "object",
+      "description": "An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).",
+      "additionalProperties": false,
+      "required": [
+        "version"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A name given to the document revision, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "published": {
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype",
+          "description": "The date and time the document was last made available."
+        },
+        "last-modified": {
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype",
+          "description": "The date and time the document was last stored for later retrieval."
+        },
+        "version": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "Used to distinguish a specific revision of an OSCAL document from other previous and future versions."
+        },
+        "oscal-version": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "The OSCAL model version the document was authored against and will conform to as valid."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Document-ids": {
+      "title": "Document ids",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Document-id"
+      }
+    },
+    "Roles": {
+      "title": "Roles",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Role"
+      }
+    },
+    "Role": {
+      "title": "Role",
+      "type": "object",
+      "description": "Defines a function, which might be assigned to a party in a specific situation.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A unique identifier for the role."
+        },
+        "title": {
+          "type": "string",
+          "description": "A name given to the role, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "short-name": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "A short common name, abbreviation, or acronym for the role."
+        },
+        "description": {
+          "type": "string",
+          "description": "A summary of the role's purpose and associated responsibilities.",
+          "maxLength": 1000
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Locations": {
+      "title": "Locations",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Location"
+      }
+    },
+    "Location": {
+      "title": "Location",
+      "type": "object",
+      "description": "A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.",
+      "additionalProperties": false,
+      "required": [
+        "uuid"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "A unique ID for the location, for reference."
+        },
+        "title": {
+          "type": "string",
+          "description": "A name given to the location, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "address": {
+          "$ref": "#/definitions/Address",
+          "description": "A postal address for the location."
+        },
+        "email-addresses": {
+          "$ref": "#/definitions/Email-addresses",
+          "description": "An email address as defined by RFC 5322 Section 3.4.1."
+        },
+        "telephone-numbers": {
+          "$ref": "#/definitions/Telephone-numbers",
+          "description": "A telephone service number as defined by ITU-T E.164."
+        },
+        "urls": {
+          "$ref": "#/definitions/Urls",
+          "description": "The uniform resource locator (URL) for a web site or other resource associated with the location."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Email-addresses": {
+      "title": "Email addresses",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/EmailAddressDatatype"
+      }
+    },
+    "Telephone-numbers": {
+      "title": "Telephone numbers",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Telephone-number"
+      }
+    },
+    "Urls": {
+      "title": "Urls",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/URIDatatype"
+      }
+    },
+    "Parties": {
+      "title": "Parties",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Party"
+      }
+    },
+    "Party": {
+      "title": "Party",
+      "type": "object",
+      "description": "An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document.",
+      "additionalProperties": false,
+      "required": [
+        "uuid",
+        "type"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "A unique identifier for the party."
+        },
+        "type": {
+          "$ref": "#/definitions/Party$type",
+          "description": "A category describing the kind of party the object describes."
+        },
+        "name": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "The full name of the party. This is typically the legal name associated with the party."
+        },
+        "short-name": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "A short common name, abbreviation, or acronym for the party."
+        },
+        "external-ids": {
+          "$ref": "#/definitions/External-ids",
+          "description": "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID)."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "email-addresses": {
+          "$ref": "#/definitions/Email-addresses",
+          "description": "An email address as defined by RFC 5322 Section 3.4.1."
+        },
+        "telephone-numbers": {
+          "$ref": "#/definitions/Telephone-numbers",
+          "description": "A telephone service number as defined by ITU-T E.164."
+        },
+        "addresses": {
+          "$ref": "#/definitions/Addresses",
+          "description": "A postal address for the location."
+        },
+        "location-uuids": {
+          "$ref": "#/definitions/Location-uuids",
+          "description": "Reference to a location by UUID."
+        },
+        "member-of-organizations": {
+          "$ref": "#/definitions/Member-of-organizations",
+          "description": "A reference to another party by UUID, typically an organization, that this subject is associated with."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Party$type": {
+      "title": "Party$type",
+      "type": "object",
+      "description": "A category describing the kind of party the object describes.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Party$type$2",
+          "description": ""
+        }
+      }
+    },
+    "Party$type$2": {
+      "title": "Party$type$2",
+      "type": "string",
+      "enum": [
+        "person",
+        "organization"
+      ]
+    },
+    "External-ids": {
+      "title": "External ids",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/External-id"
+      }
+    },
+    "External-id": {
+      "title": "External id",
+      "type": "object",
+      "description": "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).",
+      "additionalProperties": false,
+      "required": [
+        "scheme",
+        "id"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "scheme": {
+          "$ref": "#/definitions/External-id$scheme",
+          "description": "Indicates the type of external identifier."
+        },
+        "id": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        }
+      }
+    },
+    "External-id$scheme": {
+      "title": "External id$scheme",
+      "type": "object",
+      "description": "Indicates the type of external identifier.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/URIDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/External-id$scheme$2",
+          "description": ""
+        }
+      }
+    },
+    "External-id$scheme$2": {
+      "title": "External id$scheme$2",
+      "type": "string",
+      "enum": [
+        "http://orcid.org/"
+      ]
+    },
+    "Addresses": {
+      "title": "Addresses",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Address"
+      }
+    },
+    "Location-uuids": {
+      "title": "Location uuids",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/UUIDDatatype"
+      }
+    },
+    "Member-of-organizations": {
+      "title": "Member of organizations",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/UUIDDatatype"
+      }
+    },
+    "Responsible-parties": {
+      "title": "Responsible parties",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Responsible-party"
+      }
+    },
+    "Actions": {
+      "title": "Actions",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Action"
+      }
+    },
+    "Back-matter": {
+      "title": "Back matter",
+      "type": "object",
+      "description": "A collection of resources that may be referenced from within the OSCAL document instance.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "resources": {
+          "$ref": "#/definitions/Resources",
+          "description": "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources."
+        }
+      }
+    },
+    "Resources": {
+      "title": "Resources",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Resource"
+      }
+    },
+    "Resource": {
+      "title": "Resource",
+      "type": "object",
+      "description": "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.",
+      "additionalProperties": false,
+      "required": [
+        "uuid"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "A unique identifier for a resource."
+        },
+        "title": {
+          "type": "string",
+          "description": "An optional name given to the resource, which may be used by a tool for display and navigation.",
+          "maxLength": 1000
+        },
+        "description": {
+          "type": "string",
+          "description": "An optional short summary of the resource used to indicate the purpose of the resource.",
+          "maxLength": 1000
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "document-ids": {
+          "$ref": "#/definitions/Document-ids",
+          "description": "A document identifier qualified by an identifier scheme."
+        },
+        "citation": {
+          "$ref": "#/definitions/Resource",
+          "description": "An optional citation consisting of end note text using structured markup."
+        },
+        "rlinks": {
+          "$ref": "#/definitions/Rlinks",
+          "description": "A URL-based pointer to an external resource with an optional hash for verification and change detection."
+        },
+        "base64": {
+          "$ref": "#/definitions/Resource",
+          "description": "A resource encoded using the Base64 alphabet defined by RFC 2045."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Rlinks": {
+      "title": "Rlinks",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Rlink"
+      }
+    },
+    "Rlink": {
+      "title": "Rlink",
+      "type": "object",
+      "description": "A URL-based pointer to an external resource with an optional hash for verification and change detection.",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "href": {
+          "$ref": "#/definitions/URIReferenceDatatype",
+          "description": "A resolvable URL pointing to the referenced resource."
+        },
+        "media-type": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "A label that indicates the nature of a resource, as a data serialization or format."
+        },
+        "hashes": {
+          "$ref": "#/definitions/Hashes",
+          "description": "A representation of a cryptographic digest generated over a resource using a specified hash algorithm."
+        }
+      }
+    },
+    "Hashes": {
+      "title": "Hashes",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/Hash"
+      }
+    },
+    "Property": {
+      "title": "Property",
+      "type": "object",
+      "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object."
+        },
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "A unique identifier for a property."
+        },
+        "ns": {
+          "$ref": "#/definitions/URIDatatype",
+          "description": "A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name."
+        },
+        "value": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "Indicates the value of the attribute, characteristic, or quality."
+        },
+        "class": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A textual label that provides a sub-type or characterization of the property's name."
+        },
+        "group": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "An identifier for relating distinct sets of properties."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Link": {
+      "title": "Link",
+      "type": "object",
+      "description": "A reference to a local or remote resource, that has a specific relation to the containing object.",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "href": {
+          "$ref": "#/definitions/URIReferenceDatatype",
+          "description": "A resolvable URL reference to a resource."
+        },
+        "rel": {
+          "$ref": "#/definitions/Link$rel",
+          "description": "Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose."
+        },
+        "media-type": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "A label that indicates the nature of a resource, as a data serialization or format."
+        },
+        "resource-fragment": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "In case where the href points to a back-matter/resource, this value will indicate the URI fragment to append to any rlink associated with the resource. This value MUST be URI encoded."
+        },
+        "text": {
+          "type": "string",
+          "description": "A textual label to associate with the link, which may be used for presentation in a tool.",
+          "maxLength": 1000
+        }
+      }
+    },
+    "Link$rel": {
+      "title": "Link$rel",
+      "type": "object",
+      "description": "Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Link$rel$2",
+          "description": ""
+        }
+      }
+    },
+    "Link$rel$2": {
+      "title": "Link$rel$2",
+      "type": "string",
+      "enum": [
+        "reference"
+      ]
+    },
+    "Responsible-party": {
+      "title": "Responsible party",
+      "type": "object",
+      "description": "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",
+      "additionalProperties": false,
+      "required": [
+        "role-id",
+        "party-uuids"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "role-id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A reference to a role performed by a party."
+        },
+        "party-uuids": {
+          "$ref": "#/definitions/Party-uuids",
+          "description": "Reference to a party by UUID."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Party-uuids": {
+      "title": "Party uuids",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/UUIDDatatype"
+      }
+    },
+    "Action": {
+      "title": "Action",
+      "type": "object",
+      "description": "An action applied by a role within a given party to the content.",
+      "additionalProperties": false,
+      "required": [
+        "uuid",
+        "type",
+        "system"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/UUIDDatatype",
+          "description": "A unique identifier that can be used to reference this defined action elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document."
+        },
+        "date": {
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype",
+          "description": "The date and time when the action occurred."
+        },
+        "type": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "The type of action documented by the assembly, such as an approval."
+        },
+        "system": {
+          "$ref": "#/definitions/URIDatatype",
+          "description": "Specifies the action type system used."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "responsible-parties": {
+          "$ref": "#/definitions/Responsible-parties",
+          "description": "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Responsible-role": {
+      "title": "Responsible role",
+      "type": "object",
+      "description": "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.",
+      "additionalProperties": false,
+      "required": [
+        "role-id"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "role-id": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": "A human-oriented identifier reference to a role performed."
+        },
+        "props": {
+          "$ref": "#/definitions/Props",
+          "description": "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."
+        },
+        "links": {
+          "$ref": "#/definitions/Links",
+          "description": "A reference to a local or remote resource, that has a specific relation to the containing object."
+        },
+        "party-uuids": {
+          "$ref": "#/definitions/Party-uuids",
+          "description": "Reference to a party by UUID."
+        },
+        "remarks": {
+          "$ref": "#/definitions/Remarks",
+          "description": "Additional commentary about the containing object."
+        }
+      }
+    },
+    "Hash": {
+      "title": "Hash",
+      "type": "object",
+      "description": "A representation of a cryptographic digest generated over a resource using a specified hash algorithm.",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "algorithm": {
+          "$ref": "#/definitions/Hash$algorithm",
+          "description": "The digest method by which a hash is derived."
+        },
+        "value": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        }
+      }
+    },
+    "Hash$algorithm": {
+      "title": "Hash$algorithm",
+      "type": "object",
+      "description": "The digest method by which a hash is derived.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Hash$algorithm$2",
+          "description": ""
+        }
+      }
+    },
+    "Hash$algorithm$2": {
+      "title": "Hash$algorithm$2",
+      "type": "string",
+      "enum": [
+        "SHA-224",
+        "SHA-256",
+        "SHA-384",
+        "SHA-512",
+        "SHA3-224",
+        "SHA3-256",
+        "SHA3-384",
+        "SHA3-512"
+      ]
+    },
+    "Remarks": {
+      "title": "Remarks",
+      "type": "string",
+      "description": "Additional commentary about the containing object.",
+      "maxLength": 1000
+    },
+    "Telephone-number": {
+      "title": "Telephone number",
+      "type": "object",
+      "description": "A telephone service number as defined by ITU-T E.164.",
+      "additionalProperties": false,
+      "required": [
+        "number"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/Telephone-number$type",
+          "description": "Indicates the type of phone number."
+        },
+        "number": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        }
+      }
+    },
+    "Telephone-number$type": {
+      "title": "Telephone number$type",
+      "type": "object",
+      "description": "Indicates the type of phone number.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Telephone-number$type$2",
+          "description": ""
+        }
+      }
+    },
+    "Telephone-number$type$2": {
+      "title": "Telephone number$type$2",
+      "type": "string",
+      "enum": [
+        "home",
+        "office",
+        "mobile"
+      ]
+    },
+    "Address": {
+      "title": "Address",
+      "type": "object",
+      "description": "A postal address for the location.",
+      "additionalProperties": false,
+      "maxProperties": 100,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/Address$type",
+          "description": "Indicates the type of address."
+        },
+        "addr-lines": {
+          "$ref": "#/definitions/Addr-lines",
+          "description": "A single line of an address."
+        },
+        "city": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "City, town or geographical region for the mailing address."
+        },
+        "state": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "State, province or analogous geographical region for a mailing address."
+        },
+        "postal-code": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "Postal or ZIP code for mailing address."
+        },
+        "country": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": "The ISO 3166-1 alpha-2 country code for the mailing address."
+        }
+      }
+    },
+    "Address$type": {
+      "title": "Address$type",
+      "type": "object",
+      "description": "Indicates the type of address.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/TokenDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Address$type$2",
+          "description": ""
+        }
+      }
+    },
+    "Address$type$2": {
+      "title": "Address$type$2",
+      "type": "string",
+      "enum": [
+        "home",
+        "work"
+      ]
+    },
+    "Addr-lines": {
+      "title": "Addr lines",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/StringDatatype"
+      }
+    },
+    "Document-id": {
+      "title": "Document id",
+      "type": "object",
+      "description": "A document identifier qualified by an identifier scheme.",
+      "additionalProperties": false,
+      "required": [
+        "identifier"
+      ],
+      "maxProperties": 100,
+      "properties": {
+        "scheme": {
+          "$ref": "#/definitions/Document-id$scheme",
+          "description": "Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters."
+        },
+        "identifier": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        }
+      }
+    },
+    "Document-id$scheme": {
+      "title": "Document id$scheme",
+      "type": "object",
+      "description": "Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/URIDatatype",
+          "description": ""
+        },
+        "c2": {
+          "$ref": "#/definitions/Document-id$scheme$2",
+          "description": ""
+        }
+      }
+    },
+    "Document-id$scheme$2": {
+      "title": "Document id$scheme$2",
+      "type": "string",
+      "enum": [
+        "http://www.doi.org/"
+      ]
+    },
+    "Base64Datatype": {
+      "title": "Base64Datatype",
+      "type": "string",
+      "description": "Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.",
+      "maxLength": 1000,
+      "pattern": "^[0-9A-Za-z+/]+={0,2}$"
+    },
+    "DateTimeWithTimezoneDatatype": {
+      "title": "DateTimeWithTimezoneDatatype",
+      "type": "string",
+      "description": "A string representing a point in time with a required timezone.",
+      "maxLength": 1000,
+      "pattern": "^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|(-((0[0-9]|1[0-2]):00|0[39]:30)|\\+((0[0-9]|1[0-4]):00|(0[34569]|10):30|(0[58]|12):45)))$"
+    },
+    "EmailAddressDatatype": {
+      "title": "EmailAddressDatatype",
+      "type": "object",
+      "description": "An email address string formatted according to RFC 6531.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "c1": {
+          "$ref": "#/definitions/StringDatatype",
+          "description": ""
+        },
+        "c2": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "EmailAddressDatatype$2": {
+      "title": "EmailAddressDatatype$2",
+      "type": "string",
+      "maxLength": 1000,
+      "pattern": "^.+@.+$"
+    },
+    "StringDatatype": {
+      "title": "StringDatatype",
+      "type": "string",
+      "description": "A non-empty string with leading and trailing whitespace disallowed. Whitespace is: U+9, U+10, U+32 or [ \n\t]+",
+      "maxLength": 1000,
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "TokenDatatype": {
+      "title": "TokenDatatype",
+      "type": "string",
+      "description": "A non-colonized name as defined by XML Schema Part 2: Datatypes Second Edition. https://www.w3.org/TR/xmlschema11-2/#NCName.",
+      "maxLength": 1000,
+      "pattern": "^(\\p{L}|_)(\\p{L}|\\p{N}|[.\\-_])*$"
+    },
+    "URIDatatype": {
+      "title": "URIDatatype",
+      "type": "string",
+      "description": "A universal resource identifier (URI) formatted according to RFC3986.",
+      "maxLength": 1000,
+      "pattern": "^[a-zA-Z][a-zA-Z0-9+\\-.]+:.+$"
+    },
+    "URIReferenceDatatype": {
+      "title": "URIReferenceDatatype",
+      "type": "string",
+      "description": "A URI Reference, either a URI or a relative-reference, formatted according to section 4.1 of RFC3986.",
+      "maxLength": 1000
+    },
+    "UUIDDatatype": {
+      "title": "UUIDDatatype",
+      "type": "string",
+      "description": "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.",
+      "maxLength": 1000,
+      "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"
+    }
+  }
+}

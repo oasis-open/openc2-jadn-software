@@ -2,7 +2,7 @@ import jadn
 import json
 import os
 
-SCHEMA = os.path.join('..', '..', 'Schemas', 'Metaschema', 'oscal-catalog.jadn')
+SCHEMA = os.path.join('..', '..', 'Schemas', 'Metaschema', 'oscal_catalog_1.1.0.jadn')
 
 
 with open(SCHEMA, encoding='utf-8') as fp:
@@ -17,6 +17,6 @@ for f in os.scandir('.'):
         with open(fn, encoding='utf-8') as fd:
             file = json.load(fd)
         try:
-            codec.encode('Oscal', file)
+            codec.encode('$Root', file)
         except ValueError as e:
             print(f'  ### {e}')

@@ -40,8 +40,8 @@ that are tied to a specific data format.
 For example, a logical [IPv4 Subnet](https://www.rfc-editor.org/rfc/rfc4632.html#section-3.1)
 address includes a network number (prefix) and individual addresses within that network,
 modeled as a 32 bit IPv4 address and an integer prefix length. Applications use any in-memory state
-that is convenient to represent IPv4 subnet addresses consisting of the two components defined
-in RFC 4632:
+that is convenient to represent IPv4 subnet addresses for processing, with serialization based on
+the information type consisting of the two components defined in RFC 4632:
 ```
 IPv4-Net = Record
   1 addr        Binary {4..4}
@@ -56,7 +56,10 @@ Many lexical values can be mapped to the same logical value, including:
 * CBOR array: 82 1a c0a8480e 18 18 (8 bytes = array(2), unsigned(3,232,253,966), unsigned(24))
 
 The data format defines which lexical value is used to serialize from and parse to the same in-memory
-logical value. The logical value is unaffected by which lexical value was or will be serialized.
+logical value. The logical value is unaffected by which lexical value was or will be serialized, and
+the information type defines only lexical syntax, not usage constraints or semantics other than
+assembly/field names that may appear in lexical data. Framework information is linked to/from all
+abstract datatypes using a single namespaced path mechanism, e.g., "net:IPv4-Net/prefix_len".
 
 The topics shown in Figure 1 and discussed below are candidate Framework and API capabilities,
 subject to modification as suggested by further research.
@@ -77,6 +80,10 @@ subject to modification as suggested by further research.
 ## Regex Pattern Anchoring
 
 ## Logical Values vs. Lexical Representations
+
+## Syntactic Sugar Extensions
+
+## Logical Datatypes as Framework Templates
 
 ## Type Inheritance
 

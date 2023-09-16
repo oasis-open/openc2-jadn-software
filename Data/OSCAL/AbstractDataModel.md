@@ -61,30 +61,105 @@ the information type defines only lexical syntax, not usage constraints or seman
 assembly/field names that may appear in lexical data. Framework information is linked to/from all
 abstract datatypes using a single namespaced path mechanism, e.g., "net:IPv4-Net/prefix_len".
 
-The topics shown in Figure 1 and discussed below are candidate Framework and API capabilities,
-subject to modification as suggested by further research.
+## Abstract Data Model API
+
+The data that defines an Information Model / Abstract Data Model is a subset of the Framework,
+which allows an ADM to be:
+1) completely generated from framework data
+2) used as a simple source to generate a template framework that can be fleshed out with additional information
+
+To facilitate this two-way translation, the framework and ADM should to the extent possible use the same
+mechanisms to accomplish specific goals.
+
+The topics shown in Figure 1 and discussed below are candidate Framework and ADM capabilities,
+subject to modification as suggested by further research. JADN examples are discussed using
+JADN Information Definition Language (JIDL) text format for readability,
+but the ADM would be defined and implemented as JSON or XML data structures.
 
 ![Metaschema Framework Diagram](../../Images/metaschema-framework.jpg)
 **<div align="center">Fig 1. Information Modeling Framework Capabilities</div>**
 
-## Documentation
+### Documentation
+One of Metaschema's primary purposes is to generate documentation, and it includes a rich and extensible
+set of documentation mechanisms including formal names, descriptions, XML comments, remarks, and examples:
+```xml
+  <define-assembly name="group">
+    <formal-name>Control Group</formal-name>
+    <description>A group of controls, or of groups of controls.</description>
+    <define-flag name="id" as-type="token">
+      <!-- This is an id because the identifier is assigned and managed externally by humans. -->
+      <formal-name>Group Identifier</formal-name>
+      <!-- Identifier Declaration -->
+      <description>Identifies the group for the purpose of cross-linking within the defining instance or from other
+        instances that reference the catalog.
+      </description>
+    </define-flag>
 
-## Includes vs. Imports
+    <!-- ... -->
 
-## Data Formats and Styles
+    <remarks>
+      <p>Catalogs can use the catalog <code>group</code> construct to organize related controls into a single
+        grouping, such as a family of controls or other logical organizational structure.
+      </p>
+      <p>A <code>group</code> may have its own properties, statements, parameters, and references, which are
+        inherited by all controls of that are a member of the group.
+      </p>
+    </remarks>
+    <example>
+      <group xmlns="http://csrc.nist.gov/ns/oscal/1.0" id="xyz">
+        <title>My Group</title>
+        <prop name="required" value="some value"/>
+        <control id="xyz1">
+          <title>Control</title>
+        </control>
+      </group>
+    </example>
+  </define-assembly>
+```
+The purpose of an information model is to define abstract syntax to enable machine processing of messages.
+It can include comments to assist model developers, but is always a "machine-readable annex" to a specification,
+not the specification itself.
 
-## Namespaced Type References
+This example includes descriptions copied from Metaschema's `<description>` elements, included to demonstrate
+correspondence between framework and IM content, and truncated to emphasize that the IM is not the
+documentation source.  The JSON or XML IM data could include full copies of Metaschema descriptions
+or none at all; either way they are ignored when processing.
 
-## Path-based Field References
+The compact presentation of the Group structure is itself a form of documentation, giving the reader a structural
+overview that would be obscured by lengthy descriptions.
 
-## Regex Pattern Anchoring
+-- *Note that the `id` field is optional, a fact that is not readily apparent from inspecting the Metaschema definition,
+and that may (or may not) indicate a bug in the release from which it was derived.*
+```
+Groups = ArrayOf(Group){1..*}
+Group = Record                               // A group of controls,
+   1 id           TokenDatatype optional     // Identifies the group
+   2 class        TokenDatatype optional     // A textual label that
+   3 title        String                     // A name given to the 
+   4 params       Params optional            // Parameters provide a
+   5 props        Props optional             // An attribute, charac
+   6 links        Links optional             // A reference to a loc
+   7 parts        Parts optional             // An annotated, markup
+   8 groups       Groups optional            // A group of controls,
+   9 controls     Controls optional          // A structured object 
+```
+### Includes vs. Imports
 
-## Logical Values vs. Lexical Representations
+### Data Formats and Styles
 
-## Syntactic Sugar Extensions
+### Namespaced Type References
 
-## Logical Datatypes as Framework Templates
+### Path-based Field References
 
-## Type Inheritance
+### Regex Pattern Anchoring
 
-## Model References
+### Logical Values vs. Lexical Representations
+
+### Syntactic Sugar Extensions
+
+### Logical Datatypes as Framework Templates
+
+### Type Inheritance
+
+### Model References
+

@@ -63,25 +63,30 @@ abstract datatypes using a single namespaced path mechanism, e.g., "net:IPv4-Net
 
 ## Abstract Data Model API
 
-The data that defines an Information Model / Abstract Data Model is a subset of the Framework,
-which allows an ADM to be:
+The data that defines an Information Model / Abstract Data Model / Abstract Schema is a subset
+of the Framework, which allows an ADM to be:
 1) completely generated from framework data
 2) used as a simple source to generate a template framework that can be fleshed out with additional information
 
-To facilitate this two-way translation, the framework and ADM should to the extent possible use the same
-mechanisms to accomplish specific goals.
+The ADM defines itself, which:
+1) limits its capabilities to those which can be expressed as a schema
+2) allows it to be converted losslessly between data formats, which in turn means that all processing tools
+that apply to a model in one format (e.g., XML) apply to all formats. This is analogous to processing
+signals in the time domain or frequency domain, whichever is most convenient. The only constraint is that
+tools must transform one valid ADM into another.
+3) allows it to be displayed and discussed in a human-oriented format such as JADN Information
+Definition Language (JIDL) text, before and after being processed by framework tools using a data format.
 
 The topics shown in Figure 1 and discussed below are candidate Framework and ADM capabilities,
-subject to modification as suggested by further research. JADN examples are discussed using
-JADN Information Definition Language (JIDL) text format for readability,
-but the ADM would be defined and implemented as JSON or XML data structures.
+subject to modification as suggested by further research. 
 
 ![Metaschema Framework Diagram](../../Images/metaschema-framework.jpg)
 **<div align="center">Fig 1. Information Modeling Framework Capabilities</div>**
 
 ### Documentation
 One of Metaschema's primary purposes is to generate documentation, and it includes a rich and extensible
-set of documentation mechanisms including formal names, descriptions, XML comments, remarks, and examples:
+set of documentation mechanisms including formal names, descriptions, XML comments, remarks, and examples.
+An excerpt from the `Group` assembly definition illustrates some types of embedded documentation:
 ```xml
   <define-assembly name="group">
     <formal-name>Control Group</formal-name>
@@ -116,20 +121,20 @@ set of documentation mechanisms including formal names, descriptions, XML commen
     </example>
   </define-assembly>
 ```
-The purpose of an information model is to define abstract syntax to enable machine processing of messages.
-It can include comments to assist model developers, but is always a "machine-readable annex" to a specification,
+In contrast, the core of an information model defines abstract syntax to enable machine processing of messages.
+It can include comments to assist model developers, but is intended as a machine-readable annex to a specification,
 not the specification itself.
 
-This example includes descriptions copied from Metaschema's `<description>` elements, included to demonstrate
-correspondence between framework and IM content, and truncated to emphasize that the IM is not the
-documentation source.  The JSON or XML IM data could include full copies of Metaschema descriptions
-or none at all; either way they are ignored when processing.
+The IM `Group` definition includes descriptions copied from Metaschema's `<description>` elements, included to
+demonstrate correspondence between framework and IM content, and truncated to emphasize that the IM is not the
+documentation source.  The JSON or XML IM could include full copies of Metaschema descriptions
+or none at all, but any documentation included in the IM does not affect message processing or code generation.
 
 The compact presentation of the Group structure is itself a form of documentation, giving the reader a structural
 overview that would be obscured by lengthy descriptions.
 
--- *Note that the `id` field is optional, a fact that is not readily apparent from inspecting the Metaschema definition,
-and that may (or may not) indicate a bug in the release from which it was derived.*
+-- *Note that the `id` field is optional, a fact not readily apparent from inspecting the Metaschema definition.
+That may (or may not) indicate a bug in the release from which it was derived.*
 ```
 Groups = ArrayOf(Group){1..*}
 Group = Record                               // A group of controls,
@@ -143,7 +148,6 @@ Group = Record                               // A group of controls,
    8 groups       Groups optional            // A group of controls,
    9 controls     Controls optional          // A structured object 
 ```
-### Includes vs. Imports
 
 ### Data Formats and Styles
 

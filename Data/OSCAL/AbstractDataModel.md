@@ -50,7 +50,7 @@ IPv4-Net = Record
 Many lexical values can be mapped to the same logical value, including:
 * JSON string: "192.168.72.14/24"
 * JSON array: ["c0a8480e",24]
-* JSON object: {"addr": "c0a8480e", "prefix_len": 24]
+* JSON object: {"addr": "c0a8480e", "prefix_len": 24}
 * XML content: \<IPv4-Net\>192.168.72.14/24\</IPv4-Net\>
 * XML attributes: \<IPv4-Net addr="c0a8480e" prefix_len="24"/\>
 * CBOR array: 82 1a c0a8480e 18 18 (8 bytes = array(2), unsigned(3,232,253,966), unsigned(24))
@@ -80,7 +80,7 @@ Definition Language (JIDL) text, before and after being processed by framework t
 The topics shown in Figure 1 and discussed below are candidate Framework and ADM capabilities,
 subject to modification as suggested by further research. 
 
-![Metaschema Framework Diagram](../../Images/metaschema-framework.jpg)
+![Metaschema Framework Diagram](../../Images/metaschema-xasd.jpg)
 **<div align="center">Fig 1. Information Modeling Framework Capabilities</div>**
 
 ### Documentation

@@ -1,13 +1,12 @@
-<XASD>
+<xasd>
   <Info>
-
   </Info>
   <Types>
     <Set name="Schema">
-      <field fid="1" fname="info" ref="Information" minOccurs="0" description="Information about this package" />
-      <field fid="2" fname="types" ref="Types" description="Types defined in this package" />
+      <field fid="1" fname="info" ref="Information" minOccurs="0" description="Information about this package"/>
+      <field fid="2" fname="types" ref="Types" description="Types defined in this package"/>
     </Set>
-    <Set name="Types" ref="Type" />
+    <Set name="Types" ref="Type" minOccurs="1" maxOccurs="unbounded"/>
     <Choice name="Type">
       <field fid="1" fname="binary" type="Binary"/>
       <field fid="2" fname="boolean" type="Boolean"/>
@@ -26,8 +25,7 @@
     </Array>
     <Array name="Bar" ref="Baz" />
     <Set name="Info">
-
     </Set>
-    <String name="Package" pattern="[A-Za-z]"/>
+    <String name="TypeName" pattern="[-_$A-Za-z0-9]+"/>
   </Types>
-</XASD>
+</xasd>

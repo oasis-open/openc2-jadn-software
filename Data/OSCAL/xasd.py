@@ -1,12 +1,14 @@
 """
 Translate JADN to XML Abstract Schema Definition (XASD) format
 """
-import json
 
+import jadn
 from lxml import etree
 from datetime import datetime
 from typing import NoReturn, TextIO, Tuple, Union
-from ..core import check
+from jadn.definitions import TypeName, BaseType, TypeOptions, TypeDesc, Fields
+from jadn.definitions import ItemID, ItemValue, ItemDesc
+from jadn.definitions import FieldID, FieldName, FieldType, FieldOptions, FieldDesc
 
 
 def xasd_style() -> dict:
@@ -18,42 +20,45 @@ def xasd_dumps(schema: dict, style: dict = None) -> str:
     """
     Convert JADN schema to XASD
     """
+    def set_attr(e: etree.Element, at: dict):
+        [e.set(k, str(v)) for k, v in at.items() if not isinstance(v, str) or len(v)]
+
     w = xasd_style()
     if style:
-        w.update(style)   # Override any specified column widths
+        w.update(style)
 
     xasd = etree.Element("xasd")
     if 'info' in schema:
-        xasd.append(etree.Element('Info'))
-    xasd.append(etree.Element('Types'))
-    """
-    info = schema['info'] if 'info' in schema else {}
-    mlist = [k for k in INFO_ORDER if k in info]
-    for k in mlist + list(set(info) - set(mlist)):              # Display info elements in fixed order
-        text += f'{k:>{w["info"]}}: {json.dumps(info[k])}\n'    # TODO: wrap to page width, continuation-line parser
+        xasd.append(info := etree.Element('Info'))
+        # for info in schema['info']:
+        #
+    xasd.append(types := etree.Element('Types'))
 
-    wt = w['desc'] if w['desc'] else w['id'] + w['name'] + w['type']
     for td in schema['types']:
-        tdef = f'{td[TypeName]} = {jadn2typestr(td[BaseType], td[TypeOptions])}'
-        tdesc = ' // ' + td[TypeDesc] if td[TypeDesc] else ''
-        text += f'\n{tdef:<{wt}}{tdesc}'[:w['page']].rstrip() + '\n'
-        idt = td[BaseType] == 'Array' or get_optx(td[TypeOptions], 'id') is not None
-        for fd in td[Fields] if len(td) > Fields else []:       # TODO: constant-length types
-            fname, fdef, fmult, fdesc = jadn2fielddef(fd, td)
-            if td[BaseType] == 'Enumerated':
-                fdesc = ' // ' + fdesc if fdesc else ''
-                fs = f'{fd[ItemID]:>{w["id"]}} {fname}'
-                wf = w['id'] + w['name'] + 2
-            else:
-                fdef += '' if fmult == '1' else ' optional' if fmult == '0..1' else ' [' + fmult + ']'
-                fdesc = ' // ' + fdesc if fdesc else ''
-                wn = 0 if idt else w['name']
-                fs = f'{fd[FieldID]:>{w["id"]}} {fname:<{wn}} {fdef}'
-                wf = w['id'] + w['type'] if idt else wt
-            wf = w['desc'] if w['desc'] else wf
-            text += etrunc(f'{fs:{wf}}{fdesc}'.rstrip(), w['page']) + '\n'
-    """
-    return etree.tostring(xasd, pretty_print=True)
+        te = etree.Element(td[BaseType], attrib={'name': td[TypeName]})
+        set_attr(te, jadn.topts_s2d(td[TypeOptions]))
+        set_attr(te, {'description': td[TypeDesc]})
+        if td[BaseType] == 'Enumerated':
+            for item in td[Fields]:
+                fe = etree.Element('item', attrib={
+                    'id': str(item[ItemID]),
+                    'value': item[ItemValue]})
+                set_attr(fe, {'description': item[ItemDesc]})
+                te.append(fe)
+        elif jadn.definitions.has_fields(td[BaseType]):
+            for field in td[Fields]:
+                fe = etree.Element('field', attrib={
+                    'id': str(field[FieldID]),
+                    'name': field[FieldName],
+                    'type': field[FieldType]})
+                fto, fo = jadn.ftopts_s2d(field[FieldOptions])
+                set_attr(fe, fto)
+                set_attr(fe, fo)
+                set_attr(fe, {'description': field[FieldDesc]})
+                te.append(fe)
+        types.append(te)
+
+    return etree.tostring(xasd, pretty_print=True).decode()
 
 
 def xasd_dump(schema: dict, fname: Union[bytes, str, int], source='', style=None) -> NoReturn:
@@ -82,7 +87,7 @@ def xasd_loads(doc: str) -> dict:
                 types.append(v)
                 fields = types[-1][Fields]
     """
-    return check({'info': info, 'types': types} if info else {'types': types})
+    return jadn.core.check({'info': info, 'types': types} if info else {'types': types})
 
 
 def xasd_load(fp: TextIO) -> dict:

@@ -77,6 +77,9 @@ tools must transform one valid ADM into another.
 3) allows it to be displayed and discussed in a human-oriented format such as JADN Information
 Definition Language (JIDL) text, before and after being processed by framework tools using a data format.
 
+The ADM schema in [JSON format (JADN)](#jadn-json-format) and [XML format (XASD)](#jadn-xasd-xml-format)
+are shown in the Appandix.
+
 The topics shown in Figure 1 and discussed below are candidate Framework and ADM capabilities,
 subject to modification as suggested by further research. 
 
@@ -167,3 +170,204 @@ Group = Record                               // A group of controls,
 
 ### Model References
 
+## Appendix A - Abstract Schemas
+
+### JADN (JSON format)
+```json
+{
+ "info": {
+  "title": "JADN Metaschema",
+  "package": "http://oasis-open.org/jadn/v1.0/schema",
+  "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
+  "license": "CC0-1.0",
+  "exports": ["Schema"],
+  "config": {
+   "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
+  }
+ },
+ "types": [
+  ["Schema", "Record", [], "Definition of a JADN package", [
+    [1, "info", "Information", ["[0"], "Information about this package"],
+    [2, "types", "Types", [], "Types defined in this package"]
+  ]],
+  ["Information", "Map", [], "Information about this package", [
+    [1, "package", "Namespace", [], "Unique name/version of this package"],
+    [2, "version", "String", ["{1", "[0"], "Incrementing version within package"],
+    [3, "title", "String", ["{1", "[0"], "Title"],
+    [4, "description", "String", ["{1", "[0"], "Description"],
+    [5, "comment", "String", ["{1", "[0"], "Comment"],
+    [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
+    [7, "license", "String", ["{1", "[0"], "SPDX licenseId (e.g., 'CC0-1.0')"],
+    [8, "namespaces", "Namespaces", ["[0"], "Referenced packages"],
+    [9, "exports", "Exports", ["[0"], "Type defs exported by this package"],
+    [10, "config", "Config", ["[0"], "Configuration variables"]
+  ]],
+  ["Namespaces", "MapOf", ["*Namespace", "+NSID", "{1"], "Packages with referenced type defs", []],
+  ["Exports", "ArrayOf", ["*TypeName", "{1"], "Type defs intended to be referenced", []],
+  ["Config", "Map", ["{1"], "Config vars override JADN defaults", [
+    [1, "$MaxBinary", "Integer", ["{1", "[0"], "Schema default max octets"],
+    [2, "$MaxString", "Integer", ["{1", "[0"], "Schema default max characters"],
+    [3, "$MaxElements", "Integer", ["{1", "[0"], "Schema default max items/properties"],
+    [4, "$Sys", "String", ["{1", "}1", "[0"], "System character for TypeName"],
+    [5, "$TypeName", "String", ["{1", "}127", "[0"], "TypeName regex"],
+    [6, "$FieldName", "String", ["{1", "}127", "[0"], "FieldName regex"],
+    [7, "$NSID", "String", ["{1", "}127", "[0"], "Namespace Identifier regex"]
+  ]],
+  ["Types", "ArrayOf", ["*Type"], "", []],
+  ["Type", "Array", [], "", [
+    [1, "type_name", "TypeName", [], ""],
+    [2, "base_type", "BaseType", [], ""],
+    [3, "type_options", "Options", [], ""],
+    [4, "type_description", "Description", [], ""],
+    [5, "fields", "JADN-Type", ["&2"], ""]
+  ]],
+  ["BaseType", "Enumerated", [], "", [
+    [1, "Binary", ""],
+    [2, "Boolean", ""],
+    [3, "Integer", ""],
+    [4, "Number", ""],
+    [5, "String", ""],
+    [6, "Enumerated", ""],
+    [7, "Choice", ""],
+    [8, "Array", ""],
+    [9, "ArrayOf", ""],
+    [10, "Map", ""],
+    [11, "MapOf", ""],
+    [12, "Record", ""]
+  ]],
+  ["JADN-Type", "Choice", [], "", [
+    [1, "Binary", "Empty", [], ""],
+    [2, "Boolean", "Empty", [], ""],
+    [3, "Integer", "Empty", [], ""],
+    [4, "Number", "Empty", [], ""],
+    [5, "String", "Empty", [], ""],
+    [6, "Enumerated", "Items", [], ""],
+    [7, "Choice", "Fields", [], ""],
+    [8, "Array", "Fields", [], ""],
+    [9, "ArrayOf", "Empty", [], ""],
+    [10, "Map", "Fields", [], ""],
+    [11, "MapOf", "Empty", [], ""],
+    [12, "Record", "Fields", [], ""]
+  ]],
+  ["Empty", "Array", ["}0"], "", []],
+  ["Items", "ArrayOf", ["*Item"], "", []],
+  ["Item", "Array", [], "", [
+    [1, "item_id", "FieldID", [], ""],
+    [2, "item_value", "String", [], ""],
+    [3, "item_description", "Description", [], ""]
+  ]],
+  ["Fields", "ArrayOf", ["*Field"], "", []],
+  ["Field", "Array", [], "", [
+    [1, "field_id", "FieldID", [], ""],
+    [2, "field_name", "FieldName", [], ""],
+    [3, "field_type", "TypeRef", [], ""],
+    [4, "field_options", "Options", [], ""],
+    [5, "field_description", "Description", [], ""]
+  ]],
+  ["FieldID", "Integer", ["{0"], "", []],
+  ["Options", "ArrayOf", ["*Option", "}10"], "", []],
+  ["Option", "String", ["{1"], "", []],
+  ["Description", "String", ["}2048"], "", []],
+  ["Namespace", "String", ["/uri"], "Unique name of a package", []],
+  ["NSID", "String", ["%$NSID"], "Default = ^[A-Za-z][A-Za-z0-9]{0,7}$", []],
+  ["TypeName", "String", ["%$TypeName"], "Default = ^[A-Z][-$A-Za-z0-9]{0,63}$", []],
+  ["FieldName", "String", ["%$FieldName"], "Default = ^[a-z][_A-Za-z0-9]{0,63}$", []],
+  ["TypeRef", "String", [], "Autogenerated pattern ($NSID ':')? $TypeName", []]
+ ]
+}
+```
+### JADN (XASD XML format)
+```xml
+<xasd>
+  <Info/>
+  <Types>
+    <Record name="Schema" description="Definition of a JADN package">
+      <field id="1" name="info" type="Information" minc="0" description="Information about this package"/>
+      <field id="2" name="types" type="Types" description="Types defined in this package"/>
+    </Record>
+    <Map name="Information" description="Information about this package">
+      <field id="1" name="package" type="Namespace" description="Unique name/version of this package"/>
+      <field id="2" name="version" type="String" minc="0" minv="1" description="Incrementing version within package"/>
+      <field id="3" name="title" type="String" minc="0" minv="1" description="Title"/>
+      <field id="4" name="description" type="String" minc="0" minv="1" description="Description"/>
+      <field id="5" name="comment" type="String" minc="0" minv="1" description="Comment"/>
+      <field id="6" name="copyright" type="String" minc="0" minv="1" description="Copyright notice"/>
+      <field id="7" name="license" type="String" minc="0" minv="1" description="SPDX licenseId (e.g., 'CC0-1.0')"/>
+      <field id="8" name="namespaces" type="Namespaces" minc="0" description="Referenced packages"/>
+      <field id="9" name="exports" type="Exports" minc="0" description="Type defs exported by this package"/>
+      <field id="10" name="config" type="Config" minc="0" description="Configuration variables"/>
+    </Map>
+    <MapOf name="Namespaces" ktype="NSID" minv="1" vtype="Namespace" description="Packages with referenced type defs"/>
+    <ArrayOf name="Exports" vtype="TypeName" minv="1" description="Type defs intended to be referenced"/>
+    <Map name="Config" minv="1" description="Config vars override JADN defaults">
+      <field id="1" name="$MaxBinary" type="Integer" minc="0" minv="1" description="Schema default max octets"/>
+      <field id="2" name="$MaxString" type="Integer" minc="0" minv="1" description="Schema default max characters"/>
+      <field id="3" name="$MaxElements" type="Integer" minc="0" minv="1" description="Schema default max items/properties"/>
+      <field id="4" name="$Sys" type="String" minc="0" minv="1" maxv="1" description="System character for TypeName"/>
+      <field id="5" name="$TypeName" type="String" minc="0" minv="1" maxv="127" description="TypeName regex"/>
+      <field id="6" name="$FieldName" type="String" minc="0" minv="1" maxv="127" description="FieldName regex"/>
+      <field id="7" name="$NSID" type="String" minc="0" minv="1" maxv="127" description="Namespace Identifier regex"/>
+    </Map>
+    <ArrayOf name="Types" vtype="Type"/>
+    <Array name="Type">
+      <field id="1" name="type_name" type="TypeName"/>
+      <field id="2" name="base_type" type="BaseType"/>
+      <field id="3" name="type_options" type="Options"/>
+      <field id="4" name="type_description" type="Description"/>
+      <field id="5" name="fields" type="JADN-Type" tagid="2"/>
+    </Array>
+    <Enumerated name="BaseType">
+      <item id="1" value="Binary"/>
+      <item id="2" value="Boolean"/>
+      <item id="3" value="Integer"/>
+      <item id="4" value="Number"/>
+      <item id="5" value="String"/>
+      <item id="6" value="Enumerated"/>
+      <item id="7" value="Choice"/>
+      <item id="8" value="Array"/>
+      <item id="9" value="ArrayOf"/>
+      <item id="10" value="Map"/>
+      <item id="11" value="MapOf"/>
+      <item id="12" value="Record"/>
+    </Enumerated>
+    <Choice name="JADN-Type">
+      <field id="1" name="Binary" type="Empty"/>
+      <field id="2" name="Boolean" type="Empty"/>
+      <field id="3" name="Integer" type="Empty"/>
+      <field id="4" name="Number" type="Empty"/>
+      <field id="5" name="String" type="Empty"/>
+      <field id="6" name="Enumerated" type="Items"/>
+      <field id="7" name="Choice" type="Fields"/>
+      <field id="8" name="Array" type="Fields"/>
+      <field id="9" name="ArrayOf" type="Empty"/>
+      <field id="10" name="Map" type="Fields"/>
+      <field id="11" name="MapOf" type="Empty"/>
+      <field id="12" name="Record" type="Fields"/>
+    </Choice>
+    <Array name="Empty" maxv="0"/>
+    <ArrayOf name="Items" vtype="Item"/>
+    <Array name="Item">
+      <field id="1" name="item_id" type="FieldID"/>
+      <field id="2" name="item_value" type="String"/>
+      <field id="3" name="item_description" type="Description"/>
+    </Array>
+    <ArrayOf name="Fields" vtype="Field"/>
+    <Array name="Field">
+      <field id="1" name="field_id" type="FieldID"/>
+      <field id="2" name="field_name" type="FieldName"/>
+      <field id="3" name="field_type" type="TypeRef"/>
+      <field id="4" name="field_options" type="Options"/>
+      <field id="5" name="field_description" type="Description"/>
+    </Array>
+    <Integer name="FieldID" minv="0"/>
+    <ArrayOf name="Options" vtype="Option" maxv="10"/>
+    <String name="Option" minv="1"/>
+    <String name="Description" maxv="2048"/>
+    <String name="Namespace" format="uri" description="Unique name of a package"/>
+    <String name="NSID" pattern="$NSID" description="Default = ^[A-Za-z][A-Za-z0-9]{0,7}$"/>
+    <String name="TypeName" pattern="$TypeName" description="Default = ^[A-Z][-$A-Za-z0-9]{0,63}$"/>
+    <String name="FieldName" pattern="$FieldName" description="Default = ^[a-z][_A-Za-z0-9]{0,63}$"/>
+    <String name="TypeRef" description="Autogenerated pattern ($NSID ':')? $TypeName"/>
+  </Types>
+</xasd>
+```

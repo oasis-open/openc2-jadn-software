@@ -27,7 +27,10 @@ def xasd_dumps(schema: dict, style: dict = None) -> str:
     if style:
         w.update(style)
 
-    xasd = etree.Element("xasd")
+    exports = schema.get('info', {}).get('exports', [])
+    root = exports[0] if len(exports) == 1 else 'Root'
+
+    xasd = etree.Element(root)
     if 'info' in schema:
         xasd.append(info := etree.Element('Info'))
         # for info in schema['info']:

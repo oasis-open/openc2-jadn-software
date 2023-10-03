@@ -74,22 +74,8 @@ def xasd_dump(schema: dict, fname: Union[bytes, str, int], source='', style=None
 def xasd_loads(doc: str) -> dict:
     info = {}
     types = []
-    """
-    fields = None
-    for line in doc.splitlines():
-        if line:
-            t, v = line2jadn(line, types[-1] if types else None)    # Parse a JIDL line
-            if t == 'F':
-                fields.append(v)
-            elif fields:
-                cleanup_tagid(fields)
-                fields = None
-            if t == 'I':
-                info.update({v[0]: json.loads(v[1])})
-            elif t == 'T':
-                types.append(v)
-                fields = types[-1][Fields]
-    """
+    xasd = etree.fromstring(doc)
+
     return jadn.core.check({'info': info, 'types': types} if info else {'types': types})
 
 

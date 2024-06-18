@@ -1,0 +1,40 @@
+package: "https://www.nist.gov/oscal/"
+title: "OSCAL"
+description: "OSCAL - Open Security Controls Assessment Language"
+namespaces: [
+  : https://www.nist.gov/oscal/metadata/
+  : https://www.nist.gov/oscal/back_matter/
+  cat: https://www.nist.gov/oscal/catalog/
+  prof: https://www.nist.gov/oscal/profile/
+  cat: https://www.nist.gov/oscal/component/
+  ssp: https://www.nist.gov/oscal/system_security_plan/
+]
+exports: ["OSCAL"]
+
+OSCAL = Record
+1 model Enumerated(Enum[Model])
+2 uuid UUID
+3 meta Metadata
+4 body Model(TagId[model])
+5 back_matter BackMatter
+
+Model = Choice
+1 catalog cat:Catalog
+2 profile prof:Profile
+3 component comp:Component
+4 system_security_plan ssp:SystemSecurityPlan
+5 assessment_plan AssessmentPlan
+6 assessment_results AssessmentResults
+7 plan_of_actions_and_milestones PlanOfActionAndMilestones
+
+Metadata = Record
+
+BackMatter = Record
+
+AssessmentPlan = Record
+
+AssessmentResults = Record
+
+PlanOfActionAndMilestones = Record
+
+UUID = Binary  // An RFC4122 Version 4 Universally Unique Identifier that identifies a specific document instance

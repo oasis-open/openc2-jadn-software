@@ -1,0 +1,41 @@
+{
+  "info": {
+    "title": "OSCAL",
+    "package": "https://www.nist.gov/oscal/",
+    "description": "OSCAL - Open Security Controls Assessment Language",
+    "namespaces": [
+      ["", "https://www.nist.gov/oscal/metadata/"],
+      ["", "https://www.nist.gov/oscal/back_matter/"],
+      ["", "https://www.nist.gov/oscal/catalog/"],
+      ["", "https://www.nist.gov/oscal/profile/"],
+      ["", "https://www.nist.gov/oscal/component/"],
+      ["", "https://www.nist.gov/oscal/system_security_plan/"],
+      ["", "https://www.nist.gov/oscal/assessment_plan/"],
+      ["", "https://www.nist.gov/oscal/assessment_results/"],
+      ["", "https://www.nist.gov/oscal/component/plan_of_actions_and_milestones/"]
+    ],
+    "exports": ["OSCAL"]
+  },
+
+  "types": [
+    ["OSCAL", "Record", [], "", [
+      [1, "model", "Enumerated", ["#Model"], ""],
+      [2, "uuid", "UUID", [], ""],
+      [3, "meta", "Metadata", [], ""],
+      [4, "body", "Model", ["&1"], ""],
+      [5, "back_matter", "BackMatter", [], ""]
+    ]],
+
+    ["Model", "Choice", [], "", [
+      [1, "catalog", "Catalog", [], ""],
+      [2, "profile", "Profile", [], ""],
+      [3, "component", "Component", [], ""],
+      [4, "system_security_plan", "SystemSecurityPlan", [], ""],
+      [5, "assessment_plan", "AssessmentPlan", [], ""],
+      [6, "assessment_results", "AssessmentResults", [], ""],
+      [7, "plan_of_actions_and_milestones", "PlanOfActionAndMilestones", [], ""]
+    ]],
+
+    ["UUID", "Binary", [], "An RFC4122 Version 4 Universally Unique Identifier that identifies a specific document instance", []]
+  ]
+}

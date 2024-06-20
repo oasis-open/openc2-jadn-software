@@ -4,6 +4,7 @@ Translate each schema file in Source directory to multiple formats in Out direct
 import fire
 import jadn
 import os
+import posixpath
 import shutil
 
 SCHEMA_DIR = 'Schemas'
@@ -11,12 +12,16 @@ OUTPUT_DIR = 'Out'
 
 
 def translate(filename: str, sdir: str, odir: str) -> None:
-    if not os.path.isfile(p := os.path.join(sdir, filename)):
+    if not os.path.isfile(p := posixpath.join(sdir, filename)):
         return
-    with open(p, encoding='utf8') as fp:
-        schema = jadn.load_any(fp)
-    print(f'{filename}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))
+    try:
+        with open(p, encoding='utf8') as fp:
+            schema = jadn.load_any(fp)
+    except KeyError as e:
+        print(e)
+        return
 
+    print(f'{filename}:\n' + '\n'.join([f'{k:>15}: {v}' for k, v in jadn.analyze(jadn.check(schema)).items()]))
     fn, ext = os.path.splitext(filename)
     jadn.dump(schema, os.path.join(odir, fn + '.jadn'))
     jadn.dump(jadn.transform.unfold_extensions(jadn.transform.strip_comments(schema)),

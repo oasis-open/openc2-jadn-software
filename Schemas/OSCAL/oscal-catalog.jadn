@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL Catalog",
+    "package": "https://www.nist.gov/oscal/catalog/",
+    "exports": ["Catalog"]
+  },
+  "types": [
+    ["Catalog", "Record", [], "", []]
+  ]
+}

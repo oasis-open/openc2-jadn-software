@@ -1,7 +1,7 @@
 {
   "info": {
     "title": "JADN Metaschema",
-    "package": "http://oasis-open.org/jadn/v1.0/schema",
+    "package": "http://oasis-open.org/jadn/v1.1/schema",
     "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
     "license": "CC0-1.0",
     "exports": ["Schema"],
@@ -29,7 +29,19 @@
       [10, "config", "Config", ["[0"], "Configuration variables"]
     ]],
 
-    ["Namespaces", "MapOf", ["*Namespace", "+NSID", "{1"], "Packages with referenced type defs", []],
+    ["Namespaces", "Choice", ["CO"], "anyOf v1.1 or v1.0, in priority order", [
+      [1, "ns_arr", "NsArr", [], "[prefix, namespace] syntax - v1.1"],
+      [2, "ns_obj", "NsObj", [], "{prefix: Namespace} syntax - v1.0"]
+    ]],
+
+    ["NsArr", "ArrayOf", ["*PrefixNs", "{1"], "Type references to other packages - v1.1", []],
+
+    ["PrefixNs", "Array", [], "Prefix corresponding to a namespace IRI", [
+      [1, "prefix", "NSID", [], ""],
+      [2, "namespace", "Namespace", [], ""]
+    ]],
+
+    ["NsObj", "MapOf", ["*Namespace", "+NSID", "{1"], "Type references to other packages - v1.0", []],
 
     ["Exports", "ArrayOf", ["*TypeName", "{1"], "Type defs intended to be referenced", []],
 
@@ -113,7 +125,7 @@
 
     ["Namespace", "String", ["/uri"], "Unique name of a package", []],
 
-    ["NSID", "String", ["%$NSID"], "Default = ^[A-Za-z][A-Za-z0-9]{0,7}$", []],
+    ["NSID", "String", ["%$NSID"], "Default = ^([A-Za-z][A-Za-z0-9]{0,7})?$", []],
 
     ["TypeName", "String", ["%$TypeName"], "Default = ^[A-Z][-$A-Za-z0-9]{0,63}$", []],
 

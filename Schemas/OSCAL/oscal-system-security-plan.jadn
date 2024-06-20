@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL System Security Plan",
+    "package": "https://www.nist.gov/oscal/system_security_plan/",
+    "exports": ["SystemSecurityPlan"]
+  },
+  "types": [
+    ["SystemSecurityPlan", "Record", [], "", []]
+  ]
+}

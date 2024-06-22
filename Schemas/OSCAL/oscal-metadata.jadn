@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL Metadata",
+    "package": "https://www.nist.gov/oscal/metadata/",
+    "exports": ["Metadata"]
+  },
+  "types": [
+    ["Metadata", "Record", [], "", []]
+  ]
+}

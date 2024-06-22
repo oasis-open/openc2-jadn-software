@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://oasis-open.org/openc2/jadn/v1.0",
+  "description": "Validates structure of a JADN schema, does not check values",
+  "type": "object",
+  "required": ["types"],
+  "additionalProperties": false,
+  "properties": {
+    "info": {
+      "type": "object",
+      "required": ["package"],
+      "additionalProperties": false,
+      "properties": {
+        "package": {"type": "string"},
+        "version": {"type": "string"},
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "comment": {"type":  "string"},
+        "copyright": {"type": "string"},
+        "license": {"type": "string"},
+        "namespaces": {"$ref": "#/definitions/Namespaces"},
+        "exports": {"$ref": "#/definitions/Exports"},
+        "config": {"$ref": "#/definitions/Config"}
+      }
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 5,
+        "items": [
+          {"$ref": "#/definitions/TypeName"},
+          {"$ref": "#/definitions/BaseType"},
+          {"$ref": "#/definitions/Options"},
+          {"$ref": "#/definitions/Description"},
+          {"$ref": "#/definitions/Fields"}
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Namespaces": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/definitions/NSID"},
+      "patternProperties": {
+        "": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "Exports": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "Config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$MaxBinary": {"type": "integer", "minValue": 1},
+        "$MaxString": {"type": "integer", "minValue": 1},
+        "$MaxElements": {"type": "integer", "minValue": 1},
+        "$Sys": {"type": "string", "minLength": 1, "maxLength": 1},
+        "$TypeName": {"type": "string", "minLength": 1, "maxLength": 127},
+        "$FieldName": {"type": "string", "minLength": 1, "maxLength": 127},
+        "$NSID": {"type": "string", "minLength": 1, "maxLength": 127}
+      }
+    },
+    "Fields": {
+      "type": "array",
+      "items": [
+        {"anyOf": [
+          {"$ref": "#/definitions/Item"},
+          {"$ref": "#/definitions/Field"}
+        ]}
+      ]
+    },
+    "Item": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": [
+        {"type": "integer"},
+        {"type": "string"},
+        {"$ref": "#/definitions/Description"}
+      ]
+    },
+    "Field": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": [
+        {"type": "integer"},
+        {"$ref": "#/definitions/FieldName"},
+        {"$ref": "#/definitions/TypeRef"},
+        {"$ref": "#/definitions/Options"},
+        {"$ref": "#/definitions/Description"}
+      ]
+    },
+    "NSID": {
+      "type": "string"
+    },
+    "TypeName": {
+      "type": "string"
+    },
+    "TypeRef": {
+      "type": "string"
+    },
+    "FieldName": {
+      "type": "string"
+    },
+    "BaseType": {
+      "type": "string",
+      "enum": ["Binary", "Boolean", "Integer", "Number", "String",
+               "Enumerated", "Choice",
+               "Array", "ArrayOf", "Map", "MapOf", "Record"]
+    },
+    "Options": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "Description": {
+      "type": "string"
+    }
+  }
+}

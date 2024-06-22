@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL Components",
+    "package": "https://www.nist.gov/oscal/component/",
+    "exports": ["Component"]
+  },
+  "types": [
+    ["Component", "Record", [], "", []]
+  ]
+}

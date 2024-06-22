@@ -9,13 +9,17 @@
 Elements = ArrayOf(Element){1..*} unique          // Serialized set of Element values
 
 Payload = Record                                  // Serialized file (or equivalent) for transferring Elements
-   1 namespace        IRI                         // Default namespace for Element ids in this file (rdf BASE)
-   2 prefixes         NamespaceMap [0..1]       // Namespace abbreviations used in this file (rdf PREFIX)
-   3 creationInfo     CreationInformation         // File creation info and element defaults
-   4 elementValue     Element unique [1..*]       // Element values, created in this file or copied
-   5 spdxDocumentId   Link(Element) [0..1]      // SpdxDocument element that describes this file
+   1 namespaceMap     NamespaceMap [0..*]         // Namespace abbreviations used in this file
+   2 creationInfoMap  CreationInformationMap [0..*] // File creation info and element defaults
+   3 element          Element unique [1..*]       // Element values, created in this file or copied
 
-NamespaceMap = MapOf(Prefix, IRI){1..*}
+NamespaceMap = Record
+   1 prefix           String
+   2 namespace        Key(IRI)
+
+CreationInfoMap = Record
+   1 ci               String
+   2 creationInfo     CreationInfo
 
 Element = Record
    1 spdxId           Key(IRI)                    // Element unique identifier: local, prefix:local, or absolute-IRI

@@ -96,10 +96,11 @@ would look like. It is currently ~200 lines, vs. 1451 lines for the
 
 ## Recommendations
 
-1. Assign a referencable name (e.g., "Catalog") to each defined Metaschema type, uniform in format
+1. Investigate organizing Metaschema into "Framework" and "Data Model" layers as described in [ADM](AbstractDataModel.md).
+2. Assign a referencable name (e.g., "Catalog") to each defined Metaschema type, uniform in format
 and within a single identifier set.  This would allow fields to uniformly reference both flags and assemblies
 by name.
-2. Adopt naming conventions for assembly/flag names (e.g. PascalCase, Train-Case) and field names
+3. Adopt naming conventions for assembly/flag names (e.g. PascalCase, Train-Case) and field names
 (e.g., camelCase, snake_case) for each specific Information Model (e.g. OSCAL)
 
 ## References
@@ -115,3 +116,6 @@ from [Assets](https://github.com/usnistgov/OSCAL/releases/)
 
 ### Metaschema
 * [Catalog Release 1.1.0](https://github.com/usnistgov/OSCAL/blob/main/src/metaschema/oscal_catalog_metaschema.xml)
+
+### Abstract Data Model
+* [Abstract Data Model](AbstractDataModel.md)

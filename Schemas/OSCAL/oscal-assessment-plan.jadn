@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL Assessment Plan",
+    "package": "https://www.nist.gov/oscal/assessment_plan/",
+    "exports": ["AssessmentPlan"]
+  },
+  "types": [
+    ["AssessmentPlan", "Record", [], "", []]
+  ]
+}

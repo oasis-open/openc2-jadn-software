@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "OSCAL Back Matter",
+    "package": "https://www.nist.gov/oscal/back_matter/",
+    "exports": ["BackMatter"]
+  },
+  "types": [
+    ["BackMatter", "Record", [], "", []]
+  ]
+}

@@ -1,0 +1,17 @@
+package: "https://schema.ocsf.io/dictionary.schema"
+namespaces: {"da": "https://schema.ocsf.io/dictionary-attribute.schema"}
+title: "Dictionary"
+description: "An attribute dictionary of all available attributes and their types. Event classes are particular sets of attributes from the dictionary."
+exports: ["Object"]
+
+Object = Record // An attribute dictionary of all available attributes and their types. Event classes are particular sets of attributes from the dictionary.
+  1 caption String // A short, human friendly name for the dictionary.
+  2 name String // A name of the dictionary. It must be a unique name. The name is all lower case letters, combine words using underscore.
+  3 description String optional // A concise description of the dictionary.
+  4 attributes da:Dictionary-attribute.schema optional // A set of attributes defined by the dictionary.
+  5 types Datatypes optional // A set of data types defined by the dictionary.
+
+Datatypes = Record // A set of data types defined by the dictionary.
+  1 caption String //A short, human friendly name for these data types.
+  2 description String optional // A concise description of these data types.
+  3 attributes Attributes optional // A set of type attributes defined by the dictionary.  Type attributes must be all lowercase and end in '_t' by convention.

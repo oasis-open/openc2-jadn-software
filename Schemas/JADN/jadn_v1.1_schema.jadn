@@ -31,7 +31,7 @@
 
     ["Namespaces", "Choice", ["CO"], "anyOf v1.1 or v1.0, in priority order", [
       [1, "ns_arr", "NsArr", [], "[prefix, namespace] syntax - v1.1"],
-      [2, "ns_obj", "NsObj", [], "{prefix: Namespace} syntax - v1.0"]
+      [2, "ns_obj", "NsObj", [], "{prefix: namespace} syntax - v1.0"]
     ]],
 
     ["NsArr", "ArrayOf", ["*PrefixNs", "{1"], "Type references to other packages - v1.1", []],
